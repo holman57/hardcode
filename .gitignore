@@ -29,7 +29,7 @@ build/
 **/build/*
 **/build
 flutter_project/build
-pubsepec.lock
+**/pubsepec.lock
 **/generated*
 **/Generated*
 
