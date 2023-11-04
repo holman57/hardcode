@@ -26,6 +26,8 @@ MANIFEST
 build/
 /build/
 **/build/
+**/build/*
+**/build
 flutter_project/build
 
 # PyInstaller
