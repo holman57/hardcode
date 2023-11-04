@@ -29,9 +29,6 @@ build/
 **/build/*
 **/build
 flutter_project/build
-**/pubsepec.lock
-**/generated*
-**/Generated*
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -197,3 +194,11 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+flutter_project/linux/flutter/generated_plugin_registrant.cc
+flutter_project/linux/flutter/generated_plugin_registrant.h
+flutter_project/linux/flutter/generated_plugins.cmake
+flutter_project/macos/Flutter/GeneratedPluginRegistrant.swift
+flutter_project/pubspec.lock
+flutter_project/windows/flutter/generated_plugin_registrant.cc
+flutter_project/windows/flutter/generated_plugin_registrant.h
+flutter_project/windows/flutter/generated_plugins.cmake
