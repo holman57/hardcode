@@ -25,6 +25,7 @@ share/python-wheels/
 MANIFEST
 build/
 /build/
+flutter_project/build
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
