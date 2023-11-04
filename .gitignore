@@ -25,6 +25,7 @@ share/python-wheels/
 MANIFEST
 build/
 /build/
+**/build/
 flutter_project/build
 
 # PyInstaller
