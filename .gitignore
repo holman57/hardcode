@@ -29,6 +29,9 @@ build/
 **/build/*
 **/build
 flutter_project/build
+pubsepec.lock
+generated*
+Generated*
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
