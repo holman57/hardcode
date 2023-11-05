@@ -12,10 +12,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Hard Code',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Hard Code Start'),
+      home: const MyHomePage(title: 'HardCode'),
     );
   }
 }
@@ -45,6 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
+      drawer: Drawer(),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
