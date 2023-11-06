@@ -44,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> readJson() async {
-    final String response = await rootBundle.loadString('db.json');
+    final String response = await rootBundle.loadString('assets/db.json');
     final data = await json.decode(response);
     setState(() {
       _langagues = data["Language"];
