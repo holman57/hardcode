@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -31,6 +32,43 @@ class MyHomePage extends StatefulWidget {
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class PriorityRandomGenerator {
+  var _indicies;
+  var _priorities;
+  var _n;
+
+  PriorityRandomGenerator(nPatterns, priorities) {
+    this._indicies = (nPatterns as List).map((item) => item as String).toList();
+    this._priorities =
+        (priorities as List).map((item) => item as String).toList();
+    this._n = priorities.length;
+  }
+
+  List prefixSums() {
+    List<int> p = List.filled(_n, 0);
+    for (var k = 1; k < _n + 1; k++) {
+      p[k] = (p[k - 1] + _priorities[k - 1] as int);
+    }
+    return p;
+  }
+
+  double doubleInRange(Random source, num start, num end) =>
+      source.nextDouble() * (end - start) + start;
+
+  int pickIndex() {
+    Random random = Random.secure();
+    List preS = prefixSums();
+    int sumP = _priorities.reduce((a, b) => a + b);
+    double p_i = doubleInRange(random, 0, preS.length);
+    for (var i = 0; i < preS.length; i++) {
+      if (p_i > preS[i] && p_i < preS[i + 1]) {
+        return i;
+      }
+    }
+    return -1;
+  }
 }
 
 class _MyHomePageState extends State<MyHomePage> {
