@@ -15,12 +15,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Hard Code',
+      title: 'HardCode',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'HardCode'),
+      home: const MyHomePage(title: ''),
     );
   }
 }
@@ -40,13 +40,13 @@ class PriorityRandomGenerator {
 
   PriorityRandomGenerator(nPatterns, priorities) {
     _priorities =
-        (priorities as List).map((item) => item as String).toList();
+        (priorities as List).map((item) => item as int).toList();
     _n = priorities.length;
   }
 
   List prefixSums() {
     List<int> p = List.filled(_n, 0);
-    for (var k = 1; k < _n + 1; k++) {
+    for (var k = 1; k < _n; k++) {
       p[k] = (p[k - 1] + _priorities[k - 1] as int);
     }
     return p;
@@ -58,7 +58,7 @@ class PriorityRandomGenerator {
   int pickIndex() {
     Random random = Random.secure();
     List preS = prefixSums();
-    int sumP = _priorities.reduce((a, b) => a + b);
+    int sumP = (_priorities as List<int>).reduce((a, b) => a + b);
     double p_i = doubleInRange(random, 0, sumP);
     for (var i = 0; i < preS.length; i++) {
       if (p_i > preS[i] && p_i < preS[i + 1]) {
@@ -75,6 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _prev_question_number = 0;
   int _question_number = 0;
   var _lang_list;
+  var _language;
 
   void _incrementCounter() {
     setState(() {
@@ -95,6 +96,12 @@ class _MyHomePageState extends State<MyHomePage> {
       _lang_list.forEach((item) {
         print(item);
       });
+
+      List<int> lang_priorities = [];
+      _langagues.forEach((k,v) => lang_priorities.add(v));
+      PriorityRandomGenerator prg_language = PriorityRandomGenerator(_lang_list.length, lang_priorities);
+      _language = _lang_list[prg_language.pickIndex()];
+
     });
   }
 
@@ -116,8 +123,8 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              '',
+            Text(
+              '$_language',
             ),
             Text(
               '$_counter',
