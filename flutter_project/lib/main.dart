@@ -35,6 +35,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  var _langagues;
 
   void _incrementCounter() {
     setState(() {
@@ -46,9 +47,9 @@ class _MyHomePageState extends State<MyHomePage> {
     final String response = await rootBundle.loadString('db.json');
     final data = await json.decode(response);
     setState(() {
-      var items = data["Language"];
-      print("..number of items ${items.length}");
-      items.forEach((item) {
+      _langagues = data["Language"];
+      print("..number of items ${_langagues.length}");
+      _langagues.forEach((item) {
         print(item);
       });
     });
