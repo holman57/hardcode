@@ -83,7 +83,7 @@ def renderPatternOptions(answer, pattern):
 
 
 if __name__ == '__main__':
-    with open('db.json') as f:
+    with open('flutter_project/assets/db.json') as f:
         db = json.load(f)
 
     languages = {}
