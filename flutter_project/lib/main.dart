@@ -35,7 +35,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-  var _langagues;
+  var _langagues = {};
+  int _prev_question_number = 0;
+  int _question_number = 0;
+  var _lang_list;
 
   void _incrementCounter() {
     setState(() {
@@ -47,9 +50,13 @@ class _MyHomePageState extends State<MyHomePage> {
     final String response = await rootBundle.loadString('assets/db.json');
     final data = await json.decode(response);
     setState(() {
-      _langagues = data["Language"];
-      print("..number of items ${_langagues.length}");
-      _langagues.forEach((item) {
+      print("Number of Languages ${data["Language"].length}");
+      data["Language"].forEach((item) {
+        _langagues[item] = 1;
+      });
+      _lang_list =
+          (data['Language'] as List).map((item) => item as String).toList();
+      _lang_list.forEach((item) {
         print(item);
       });
     });
@@ -58,8 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => readJson());
+    WidgetsBinding.instance.addPostFrameCallback((_) => readJson());
   }
 
   @override
