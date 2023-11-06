@@ -1,4 +1,8 @@
+import 'dart:convert';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -38,6 +42,25 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  Future<void> readJson() async {
+    final String response = await rootBundle.loadString('db.json');
+    final data = await json.decode(response);
+    setState(() {
+      var items = data["Language"];
+      print("..number of items ${items.length}");
+      items.forEach((item) {
+        print(item);
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => readJson());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'You have pushed the button this many times:',
+              '',
             ),
             Text(
               '$_counter',
