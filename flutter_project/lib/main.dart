@@ -35,15 +35,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class PriorityRandomGenerator {
-  var _indicies;
   var _priorities;
   var _n;
 
   PriorityRandomGenerator(nPatterns, priorities) {
-    this._indicies = (nPatterns as List).map((item) => item as String).toList();
-    this._priorities =
+    _priorities =
         (priorities as List).map((item) => item as String).toList();
-    this._n = priorities.length;
+    _n = priorities.length;
   }
 
   List prefixSums() {
@@ -61,7 +59,7 @@ class PriorityRandomGenerator {
     Random random = Random.secure();
     List preS = prefixSums();
     int sumP = _priorities.reduce((a, b) => a + b);
-    double p_i = doubleInRange(random, 0, preS.length);
+    double p_i = doubleInRange(random, 0, sumP);
     for (var i = 0; i < preS.length; i++) {
       if (p_i > preS[i] && p_i < preS[i + 1]) {
         return i;
