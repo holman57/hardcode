@@ -1,0 +1,216 @@
+{
+  "Language": [
+    "C",
+    "Python",
+    "Go",
+    "C++",
+    "PowerShell",
+    "PHP",
+    "C#",
+    "Bash",
+    "Rust",
+    "Java",
+    "JavaScript",
+    "Ruby",
+    "Kotlin",
+    "Swift",
+    "TypeScript",
+    "Lua",
+    "Scala",
+    "Dart",
+    "SQL"
+  ],
+  "Variables": {
+    "Rust Int Variable Types": [
+      "i8",
+      "i16",
+      "i32",
+      "i64",
+      "i128",
+      "isize",
+      "u8",
+      "u16",
+      "u32",
+      "u64",
+      "u128",
+      "usuze"
+    ],
+    "Int Variable Names": [
+      "myVar",
+      "myvariable",
+      "myNum",
+      "num",
+      "amount",
+      "total",
+      "quantity",
+      "count",
+      "rate",
+      "limit"
+    ],
+    "Random Variables": [
+      "[random int variable]",
+      "[random integer]",
+      "[random rust data type]"
+    ],
+    "Variable Permutations": [
+      "[$|@|None]",
+      "[var|val|int|Int|let|None]",
+      "[local|var|val|int|Int|let|None]",
+      "[: Integer|: Int|: number| int|None]",
+      "[:=|=]",
+      "[;|None]",
+      "[mut |None]",
+      "[DECLARE |None]",
+      "[ INT|None]",
+      "[SET |None]"
+    ],
+    "Declaration": {
+      "Multi-Choice": {
+        "Type": "Primitive Types",
+        "Sub-Type": "Integer Assignment",
+        "Question": [
+          "How do you declare and assign an Integer variable in [language]?",
+          "Which of the following is a correct way to assign an Integer value to a variable in [language]?",
+          "Declare and assign an Integer variable in [language] using:",
+          "Assignment and declaration of an Integer variable in [language] looks like,",
+          "In [language], assigning and declaring an Integer variable is done by",
+          "A Correct way of assigning and declaring an Integer variable using [language] is"
+        ],
+        "True-False": [
+          "Is this a Correct way to declare and assign an Integer variable in [language]?",
+          "The following is a Correct assignment and declaration of an Integer varaible in [language].",
+          "(T/F) An assignment and declaration of an Integer variable in [language]:",
+          "In [language], the Correct way to assign and declare an Integer variable is"
+        ],
+        "Answers": {
+          "Correct": {
+            "C": ["int [random int variable] = [random integer];"],
+            "Python": [
+              "[random int variable] = [random integer]",
+              "[random int variable]=[random integer]"
+            ],
+            "Go": [
+              "[random int variable] := [random integer]",
+              "var [random int variable] = [random integer]",
+              "var [random int variable] int = [random integer]"
+            ],
+            "C++": ["int [random int variable] = [random integer];"],
+            "PowerShell": ["$[random int variable] = [random integer]"],
+            "PHP": [
+              "$[random int variable] = [random integer];",
+              "$[random int variable]=[random integer];"
+            ],
+            "C#": ["int [random int variable] = [random integer];"],
+            "Bash": ["[random int variable]=[random integer]"],
+            "Rust": [
+              "let mut [random int variable]: [random rust data type] = [random integer];",
+              "let [random int variable]: [random rust data type] = [random integer];",
+              "let mut [random int variable] = [random integer];",
+              "let [random int variable] = [random integer];"
+            ],
+            "Java": ["int [random int variable] = [random integer];"],
+            "JavaScript": [
+              "var [random int variable] = [random integer];",
+              "let [random int variable] = [random integer];",
+              "$[random int variable] = [random integer];",
+              "[random int variable] = [random integer];",
+              "[random int variable]=[random integer];",
+              "$[random int variable]=[random integer];"
+            ],
+            "Ruby": [
+              "[random int variable] = [random integer]",
+              "[random int variable]=[random integer]",
+              "@[random int variable] = [random integer]",
+              "@[random int variable]=[random integer]"
+            ],
+            "Kotlin": [
+              "var [random int variable] = [random integer]",
+              "val [random int variable] = [random integer]",
+              "var [random int variable]: Int = [random integer]",
+              "val [random int variable]: Int = [random integer]"
+            ],
+            "Swift": [
+              "var [random int variable] = [random integer]",
+              "let [random int variable] = [random integer]",
+              "var [random int variable]: Int = [random integer]",
+              "let [random int variable]: Int = [random integer]"
+            ],
+            "TypeScript": [
+              "var [random int variable] = [random integer];",
+              "let [random int variable] = [random integer];",
+              "var [random int variable]: number = [random integer];",
+              "let [random int variable]: number = [random integer];"
+            ],
+            "Lua": [
+              "[random int variable] = [random integer]",
+              "local [random int variable] = [random integer]"
+            ],
+            "Scala": [
+              "var [random int variable] = [random integer]",
+              "val [random int variable] = [random integer]",
+              "var [random int variable]: Int = [random integer]",
+              "val [random int variable]: Int = [random integer]"
+            ],
+            "Dart": [
+              "int [random int variable] = [random integer];",
+              "var [random int variable] = [random integer];"
+            ],
+            "SQL": [
+              "DECLARE @[random int variable] INT SET @[random int variable] = [random integer]"
+            ]
+          },
+          "Incorrect": [
+            {
+              "Name": "Group1",
+              "Pattern": "[var|val|int|Int|let|None] [random int variable] = [random integer][;|None]",
+              "Priority": 12
+            },
+            {
+              "Name": "Group2",
+              "Pattern": "[local|var|val|int|Int|let|None] [random int variable][: Integer|: Int|: number| int|None] = [random integer][;|None]",
+              "Priority": 7
+            },
+            {
+              "Name": "Group3",
+              "Pattern": "[random int variable] [:=|=] [random integer][;|None]",
+              "Priority": 5
+            },
+            {
+              "Name": "Group4",
+              "Pattern": "[$|@|None][random int variable] = [random integer][;|None]",
+              "Priority": 4
+            },
+            {
+              "Name": "Group5",
+              "Pattern": "[$|@|None][random int variable]=[random integer][;|None]",
+              "Priority": 3
+            },
+            {
+              "Name": "Group6",
+              "Pattern": "let [mut |None][random int variable]: [random rust data type] = [random integer][;|None]",
+              "Priority": 2
+            },
+            {
+              "Name": "Group7",
+              "Pattern": "let [mut |None][random int variable] = [random integer][;|None]",
+              "Priority": 2
+            },
+            {
+              "Name": "Group8",
+              "Pattern": "[$|@|None][random int variable] = [random integer][;|None]",
+              "Priority": 2
+            },
+            {
+              "Name": "Group9",
+              "Pattern": "[DECLARE |None][$|@|None][random int variable][ INT|None] [SET |None][$|@|None][random int variable] = [random integer]",
+              "Priority": 1
+            }
+          ]
+        }
+      },
+      "Mutability": [],
+      "Multiple Declaration": []
+    }
+  },
+  "Control Flow": []
+}
