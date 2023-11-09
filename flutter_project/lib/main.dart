@@ -39,8 +39,7 @@ class PriorityRandomGenerator {
   var _n;
 
   PriorityRandomGenerator(nPatterns, priorities) {
-    _priorities =
-        (priorities as List).map((item) => item as int).toList();
+    _priorities = (priorities as List).map((item) => item as int).toList();
     _n = priorities.length;
   }
 
@@ -60,7 +59,8 @@ class PriorityRandomGenerator {
     List preS = prefixSums();
     int sumP = (_priorities as List<int>).reduce((a, b) => a + b);
     double p_i = doubleInRange(random, 0, sumP);
-    for (var i = 0; i < preS.length; i++) {
+    if (p_i > preS[preS.length - 1]) return preS.length - 1;
+    for (var i = 0; i < preS.length - 1; i++) {
       if (p_i > preS[i] && p_i < preS[i + 1]) {
         return i;
       }
@@ -87,21 +87,22 @@ class _MyHomePageState extends State<MyHomePage> {
     final String response = await rootBundle.loadString('assets/db.json');
     final data = await json.decode(response);
     setState(() {
-      print("Number of Languages ${data["Language"].length}");
+      // print("Number of Languages ${data["Language"].length}");
       data["Language"].forEach((item) {
         _langagues[item] = 1;
       });
       _lang_list =
           (data['Language'] as List).map((item) => item as String).toList();
-      _lang_list.forEach((item) {
-        print(item);
-      });
+      // _lang_list.forEach((item) {
+      //   print(item);
+      // });
 
       List<int> lang_priorities = [];
-      _langagues.forEach((k,v) => lang_priorities.add(v));
-      PriorityRandomGenerator prg_language = PriorityRandomGenerator(_lang_list.length, lang_priorities);
-      _language = _lang_list[prg_language.pickIndex()];
-
+      _langagues.forEach((k, v) => lang_priorities.add(v));
+      PriorityRandomGenerator prgLanguage =
+          PriorityRandomGenerator(_lang_list.length, lang_priorities);
+      _language = _lang_list[prgLanguage.pickIndex()];
+      print(_language);
     });
   }
 
@@ -134,7 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: readJson,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
