@@ -83,32 +83,58 @@
           "In [language], the Correct way to assign and declare an Integer variable is"
         ],
         "Answers": {
+          "Preferred": {
+            "C": "int [random int variable] = [random integer];",
+            "Python": "[random int variable] = [random integer]",
+            "Go": "[random int variable] := [random integer]",
+            "C++": "int [random int variable] = [random integer];",
+            "PowerShell": "$[random int variable] = [random integer]",
+            "PHP": "$[random int variable] = [random integer];",
+            "C#": "int [random int variable] = [random integer];",
+            "Bash": "[random int variable]=[random integer]",
+            "Rust": "let mut [random int variable] = [random integer];"
+          },
           "Correct": {
-            "C": ["int [random int variable] = [random integer];"],
+            "C": [
+              "int [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+            ],
             "Python": [
-              "[random int variable] = [random integer]",
-              "[random int variable]=[random integer]"
+              "[random int variable][extensible whitespace]=[extensible whitespace][random integer]",
+              "[random int variable]: int[extensible whitespace]=[extensible whitespace][random integer]"
             ],
             "Go": [
-              "[random int variable] := [random integer]",
-              "var [random int variable] = [random integer]",
-              "var [random int variable] int = [random integer]"
+              "[random int variable][extensible whitespace]:=[extensible whitespace][random integer]",
+              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer]",
+              "var [random int variable] int[extensible whitespace]=[extensible whitespace][random integer]"
             ],
-            "C++": ["int [random int variable] = [random integer];"],
-            "PowerShell": ["$[random int variable] = [random integer]"],
+            "C++": [
+              "int [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
+              "auto [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+            ],
+            "PowerShell": [
+              "$[random int variable][extensible whitespace]=[extensible whitespace][random integer]",
+              "[int][extensible whitespace]$[random int variable][extensible whitespace]=[extensible whitespace][random integer]"
+            ],
             "PHP": [
-              "$[random int variable] = [random integer];",
-              "$[random int variable]=[random integer];"
+              "$[random int variable][extensible whitespace]=[extensible whitespace][random integer];"
             ],
-            "C#": ["int [random int variable] = [random integer];"],
-            "Bash": ["[random int variable]=[random integer]"],
+            "C#": [
+              "int [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
+              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+            ],
+            "Bash": [
+              "[random int variable]=[random integer]",
+              "declare -i [random int variable]=[random integer]"
+            ],
             "Rust": [
-              "let mut [random int variable]: [random rust data type] = [random integer];",
-              "let [random int variable]: [random rust data type] = [random integer];",
-              "let mut [random int variable] = [random integer];",
-              "let [random int variable] = [random integer];"
+              "let mut [random int variable]: [random rust data type][extensible whitespace]=[extensible whitespace][random integer];",
+              "let [random int variable]: [random rust data type][extensible whitespace]=[extensible whitespace][random integer];",
+              "let mut [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
+              "let [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
             ],
-            "Java": ["int [random int variable] = [random integer];"],
+            "Java": [
+              "int [random int variable] = [random integer];"
+            ],
             "JavaScript": [
               "var [random int variable] = [random integer];",
               "let [random int variable] = [random integer];",
@@ -162,12 +188,12 @@
           "Incorrect": [
             {
               "Name": "Group1",
-              "Pattern": "[var|val|int|Int|let|None] [random int variable] = [random integer][;|None]",
+              "Pattern": "[auto|var|val|int|Int|let|None] [random int variable] = [random integer][;|None]",
               "Priority": 12
             },
             {
               "Name": "Group2",
-              "Pattern": "[local|var|val|int|Int|let|None] [random int variable][: Integer|: Int|: number| int|None] = [random integer][;|None]",
+              "Pattern": "[local|auto|var|val|int|Int|let|None] [random int variable][: Integer|: Int|: number| int|None] = [random integer][;|None]",
               "Priority": 7
             },
             {
@@ -177,12 +203,12 @@
             },
             {
               "Name": "Group4",
-              "Pattern": "[$|@|None][random int variable] = [random integer][;|None]",
+              "Pattern": "[$|@|None|[int]|_][random int variable] = [random integer][;|None]",
               "Priority": 4
             },
             {
               "Name": "Group5",
-              "Pattern": "[$|@|None][random int variable]=[random integer][;|None]",
+              "Pattern": "[$|@|None|[int]|_][random int variable]=[random integer][;|None]",
               "Priority": 3
             },
             {
@@ -197,12 +223,12 @@
             },
             {
               "Name": "Group8",
-              "Pattern": "[$|@|None][random int variable] = [random integer][;|None]",
+              "Pattern": "[$|@|None|[int]|_][random int variable] = [random integer][;|None]",
               "Priority": 2
             },
             {
               "Name": "Group9",
-              "Pattern": "[DECLARE |None][$|@|None][random int variable][ INT|None] [SET |None][$|@|None][random int variable] = [random integer]",
+              "Pattern": "[DECLARE |None][$|@|None|[int]|_][random int variable][ INT|None] [SET |None][$|@|None|[int]][random int variable] = [random integer]",
               "Priority": 1
             }
           ]
