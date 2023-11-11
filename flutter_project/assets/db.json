@@ -130,7 +130,8 @@
             ],
             "C#": [
               "int [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
-              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
+              "object [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
             ],
             "Bash": [
               "[random int variable]=[random integer][optional semicolon]",
@@ -241,7 +242,7 @@
             },
             {
               "Name": "Group10",
-              "Pattern": "[Object|Integer|declare -i|export] [random int variable] = [random integer][;|None]",
+              "Pattern": "[Object|object|Integer|declare -i|export] [random int variable] = [random integer][;|None]",
               "Priority": 1
             }
           ]
