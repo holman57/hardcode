@@ -87,7 +87,6 @@ class _MyHomePageState extends State<MyHomePage> {
     final String response = await rootBundle.loadString('assets/db.json');
     final data = await json.decode(response);
     setState(() {
-      // print("Number of Languages ${data["Language"].length}");
       data["Language"].forEach((item) {
         _langagues[item] = 1;
       });
