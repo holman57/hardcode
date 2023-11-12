@@ -17,9 +17,29 @@
     "TypeScript",
     "Lua",
     "Scala",
-    "Dart",
-    "SQL"
+    "Dart"
   ],
+  "db_Languages": [
+    "MySQL",
+    "MS SQL Server",
+    "Oracle",
+    "Pandas",
+    "PostgreSQL",
+    "GraphQL",
+    "MQL"
+  ],
+  "Notes": {
+    "C#": [
+      ".NET supports structs and classes.",
+      "Structs are passed by copy, since they are value types.",
+      "Objects are passed by reference, since they are reference types",
+      "The .NET platform manages and reclaims blocks of memory",
+      "The Garbage Collector object GC is part of the system namespace.",
+      "Reference GC.GetTotalMemory(false); to see how much memory an application is using",
+      "Every object derives from the base Object class, inheriting it's methods like ToString().",
+      "C# supports the \"is\" operator"
+    ]
+  },
   "Variables": {
     "Rust Int Variable Types": [
       "i8",
@@ -65,6 +85,12 @@
       "[SET |None]"
     ],
     "Declaration": {
+      "Notes": {
+        "C#": [
+          "C# provides an implicit type conversion using some data types char + int = int.",
+          "You can initialize an integer using the default keyword, int num = default; default will be 0."
+        ]
+      },
       "Multi-Choice": {
         "Type": "Primitive Types",
         "Sub-Type": "Integer Assignment",
@@ -101,8 +127,7 @@
             "TypeScript": "var [random int variable] = [random integer];",
             "Lua": "local [random int variable] = [random integer]",
             "Scala": "var [random int variable] = [random integer]",
-            "Dart": "int [random int variable] = [random integer];",
-            "SQL": "DECLARE @[random int variable] INT SET @[random int variable] = [random integer]"
+            "Dart": "int [random int variable] = [random integer];"
           },
           "Correct": {
             "C": [
@@ -189,9 +214,6 @@
             "Dart": [
               "int [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
               "var [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
-            ],
-            "SQL": [
-              "DECLARE @[random int variable] INT SET @[random int variable][extensible whitespace]=[extensible whitespace][random integer]"
             ]
           },
           "Incorrect": [
@@ -237,11 +259,6 @@
             },
             {
               "Name": "Group9",
-              "Pattern": "[DECLARE |None][$|@|None|[int]|_][random int variable][ INT|None] [SET |None][$|@|None|[int]][random int variable] = [random integer]",
-              "Priority": 1
-            },
-            {
-              "Name": "Group10",
               "Pattern": "[Object|object|Integer|declare -i|export] [random int variable] = [random integer][;|None]",
               "Priority": 1
             }
