@@ -19,7 +19,7 @@
     "Scala",
     "Dart"
   ],
-  "db_Languages": [
+  "db_Language": [
     "MySQL",
     "MS SQL Server",
     "Oracle",
@@ -37,7 +37,11 @@
       "The Garbage Collector object GC is part of the system namespace.",
       "Reference GC.GetTotalMemory(false); to see how much memory an application is using",
       "Every object derives from the base Object class, inheriting it's methods like ToString().",
-      "C# supports the \"is\" operator"
+      "C# supports the \"is\" operator",
+      "Protected members can be accessed by the defining class or any subclass",
+      "Private members can only be accessed by the defining class.",
+      "The \"virtual\" keyword indicates that the method can be overridden by subclasses.\n",
+      "If you don't provide a constructor for a class, the compiler will create a default one."
     ]
   },
   "Variables": {
