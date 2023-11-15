@@ -233,38 +233,38 @@
             },
             {
               "Name": "Group3",
-              "Pattern": "[random int variable] [:=|=] [random integer][;|None]",
+              "Pattern": "[Object|object|Integer|declare -i|export] [random int variable] = [random integer][;|None]",
               "Priority": 5
             },
             {
               "Name": "Group4",
+              "Pattern": "[random int variable] [:=|=] [random integer][;|None]",
+              "Priority": 5
+            },
+            {
+              "Name": "Group5",
               "Pattern": "[$|@|None|[int]|_][random int variable] = [random integer][;|None]",
               "Priority": 4
             },
             {
-              "Name": "Group5",
+              "Name": "Group6",
               "Pattern": "[$|@|None|[int]|_][random int variable]=[random integer][;|None]",
               "Priority": 3
             },
             {
-              "Name": "Group6",
+              "Name": "Group7",
               "Pattern": "let [mut |None][random int variable]: [random rust data type] = [random integer][;|None]",
               "Priority": 2
             },
             {
-              "Name": "Group7",
+              "Name": "Group8",
               "Pattern": "let [mut |None][random int variable] = [random integer][;|None]",
               "Priority": 2
             },
             {
-              "Name": "Group8",
+              "Name": "Group9",
               "Pattern": "[$|@|None|[int]|_][random int variable] = [random integer][;|None]",
               "Priority": 2
-            },
-            {
-              "Name": "Group9",
-              "Pattern": "[Object|object|Integer|declare -i|export] [random int variable] = [random integer][;|None]",
-              "Priority": 1
             }
           ]
         }
