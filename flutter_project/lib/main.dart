@@ -96,10 +96,10 @@ class _MyHomePageState extends State<MyHomePage> {
       //   print(item);
       // });
 
-      List<int> lang_priorities = [];
-      _langagues.forEach((k, v) => lang_priorities.add(v));
+      List<int> langPriorities = [];
+      _langagues.forEach((k, v) => langPriorities.add(v));
       PriorityRandomGenerator prgLanguage =
-          PriorityRandomGenerator(_lang_list.length, lang_priorities);
+          PriorityRandomGenerator(_lang_list.length, langPriorities);
       _language = _lang_list[prgLanguage.pickIndex()];
       print(_language);
     });
