@@ -71,11 +71,13 @@ class PriorityRandomGenerator {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-  var _langagues = {};
+  final _languages = {};
+  var _data;
   int _prev_question_number = 0;
   int _question_number = 0;
-  var _lang_list;
+  var _langList;
   var _language;
+  List<int> _langPriorities = [];
 
   void _incrementCounter() {
     setState(() {
@@ -87,22 +89,25 @@ class _MyHomePageState extends State<MyHomePage> {
     final String response = await rootBundle.loadString('assets/db.json');
     final data = await json.decode(response);
     setState(() {
-      data["Language"].forEach((item) {
-        _langagues[item] = 1;
+      _data = data;
+      _data["Language"].forEach((item) {
+        _languages[item] = 1;
       });
-      _lang_list =
-          (data['Language'] as List).map((item) => item as String).toList();
+      _langList =
+          (_data['Language'] as List).map((item) => item as String).toList();
       // _lang_list.forEach((item) {
       //   print(item);
       // });
 
-      List<int> langPriorities = [];
-      _langagues.forEach((k, v) => langPriorities.add(v));
-      PriorityRandomGenerator prgLanguage =
-          PriorityRandomGenerator(_lang_list.length, langPriorities);
-      _language = _lang_list[prgLanguage.pickIndex()];
-      print(_language);
+      _languages.forEach((k, v) => _langPriorities.add(v));
     });
+  }
+
+  void generateQuestion() {
+    PriorityRandomGenerator prgLanguage =
+        PriorityRandomGenerator(_langList.length, _langPriorities);
+    _language = _langList[prgLanguage.pickIndex()];
+    print(_language);
   }
 
   @override
@@ -134,7 +139,11 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: readJson,
+        onPressed: () {
+          setState(() {
+            generateQuestion();
+          });
+        },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
