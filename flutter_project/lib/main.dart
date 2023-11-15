@@ -70,7 +70,6 @@ class PriorityRandomGenerator {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
   final _languages = {};
   var _data;
   int _prev_question_number = 0;
@@ -78,12 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
   var _langList;
   var _language;
   List<int> _langPriorities = [];
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  var _correctAnswer;
 
   Future<void> readJson() async {
     final String response = await rootBundle.loadString('assets/db.json');
@@ -94,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
         _languages[item] = 1;
       });
       _langList =
-          (_data['Language'] as List).map((item) => item as String).toList();
+          (_data["Language"] as List).map((item) => item as String).toList();
       // _lang_list.forEach((item) {
       //   print(item);
       // });
@@ -107,7 +101,8 @@ class _MyHomePageState extends State<MyHomePage> {
     PriorityRandomGenerator prgLanguage =
         PriorityRandomGenerator(_langList.length, _langPriorities);
     _language = _langList[prgLanguage.pickIndex()];
-    print(_language);
+    _correctAnswer = _data["Variables"]["Declaration"]["Multi-Choice"]
+        ["Answers"]["Preferred"][_language];
   }
 
   @override
@@ -132,8 +127,8 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_language',
             ),
             Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+              '$_correctAnswer',
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
           ],
         ),
