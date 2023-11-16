@@ -78,6 +78,8 @@ class _MyHomePageState extends State<MyHomePage> {
   var _language;
   List<int> _langPriorities = [];
   var _correctAnswer;
+  var _correctPatterns;
+  var _incorrectPatternGroups = [];
 
   Future<void> readJson() async {
     final String response = await rootBundle.loadString('assets/db.json');
@@ -103,6 +105,12 @@ class _MyHomePageState extends State<MyHomePage> {
     _language = _langList[prgLanguage.pickIndex()];
     _correctAnswer = _data["Variables"]["Declaration"]["Multi-Choice"]
         ["Answers"]["Preferred"][_language];
+    _correctPatterns = _data["Variables"]["Declaration"]["Multi-Choice"]
+        ["Answers"]["Correct"][_language];
+    _data['Variables']['Declaration']['Multi-Choice']['Answers']['Incorrect']
+        .forEach((item) {
+      _incorrectPatternGroups.add(item.toString());
+    });
   }
 
   @override
@@ -126,10 +134,12 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               '$_language',
             ),
+            Text('$_correctPatterns'),
             Text(
               '$_correctAnswer',
-              style: Theme.of(context).textTheme.bodyMedium,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
+            Text('$_incorrectPatternGroups'),
           ],
         ),
       ),
