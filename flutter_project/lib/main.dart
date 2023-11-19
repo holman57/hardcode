@@ -91,10 +91,6 @@ class _MyHomePageState extends State<MyHomePage> {
       });
       _langList =
           (_data["Language"] as List).map((item) => item as String).toList();
-      // _lang_list.forEach((item) {
-      //   print(item);
-      // });
-
       _languages.forEach((k, v) => _langPriorities.add(v));
     });
   }
