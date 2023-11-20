@@ -80,6 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
   var _correctAnswer;
   List _correctPatterns = [];
   List _incorrectPatternGroups = [];
+  var _questions;
 
   Future<void> readJson() async {
     final String response = await rootBundle.loadString('assets/db.json');
@@ -103,13 +104,12 @@ class _MyHomePageState extends State<MyHomePage> {
         ["Answers"]["Preferred"][_language];
     _correctPatterns = _data["Variables"]["Declaration"]["Multi-Choice"]
         ["Answers"]["Correct"][_language];
-
     _incorrectPatternGroups.clear();
     _data['Variables']['Declaration']['Multi-Choice']['Answers']['Incorrect']
         .forEach((item) {
-      _incorrectPatternGroups
-          .add([item['Pattern'], item['Priority']]);
+      _incorrectPatternGroups.add([item['Pattern'], item['Priority']]);
     });
+    _questions = _data['Variables']['Declaration']['Multi-Choice']['Question'];
   }
 
   @override
@@ -125,7 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      drawer: Drawer(),
+      drawer: const Drawer(),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
