@@ -86,6 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
   var _variablePermutations;
   var _randomVariableNames;
   var _questionRange;
+  String _question = "";
 
   Future<void> readJson() async {
     final String response = await rootBundle.loadString('assets/db.json');
@@ -126,6 +127,8 @@ class _MyHomePageState extends State<MyHomePage> {
       Random random = Random.secure();
       _questionNumber = random.nextInt(_questionRange);
     }
+    _prevQuestionNumber = _questionNumber;
+    _question = _questions[_questionNumber].replaceAll("[language]", _language);
   }
 
   @override
@@ -147,7 +150,10 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              '$_language',
+              '$_language - $_questionSubType',
+            ),
+            Text(
+              _question,
             ),
             Text('$_correctPatterns'),
             Text(
