@@ -81,6 +81,8 @@ class _MyHomePageState extends State<MyHomePage> {
   List _correctPatterns = [];
   List _incorrectPatternGroups = [];
   var _questions;
+  var _questionType;
+  var _questionSubType;
 
   Future<void> readJson() async {
     final String response = await rootBundle.loadString('assets/db.json');
@@ -110,6 +112,10 @@ class _MyHomePageState extends State<MyHomePage> {
       _incorrectPatternGroups.add([item['Pattern'], item['Priority']]);
     });
     _questions = _data['Variables']['Declaration']['Multi-Choice']['Question'];
+    _questionType = _data['Variables']['Declaration']['Multi-Choice']['Type'];
+    _questionSubType =
+        _data['Variables']['Declaration']['Multi-Choice']['Sub-Type'];
+    
   }
 
   @override
