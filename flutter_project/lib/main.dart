@@ -103,11 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ["Answers"]["Preferred"][_language];
     _correctPatterns = _data["Variables"]["Declaration"]["Multi-Choice"]
         ["Answers"]["Correct"][_language];
-    // Map incorrectPatternGroups = jsonDecode(_data['Variables']['Declaration']
-    //     ['Multi-Choice']['Answers']['Incorrect']);
-    // for (var key in incorrectPatternGroups.keys) {
-    //   _incorrectPatternGroups.add(incorrectPatternGroups[key]);
-    // }
+
     _incorrectPatternGroups.clear();
     _data['Variables']['Declaration']['Multi-Choice']['Answers']['Incorrect']
         .forEach((item) {
