@@ -72,19 +72,20 @@ class PriorityRandomGenerator {
 class _MyHomePageState extends State<MyHomePage> {
   final _languages = {};
   var _data;
-  int _prev_question_number = 0;
-  int _question_number = 0;
+  int _prevQuestionNumber = 0;
+  int _questionNumber = 0;
   var _langList;
   var _language;
   List<int> _langPriorities = [];
   var _correctAnswer;
   List _correctPatterns = [];
   List _incorrectPatternGroups = [];
-  var _questions;
+  List _questions = [];
   var _questionType;
   var _questionSubType;
   var _variablePermutations;
   var _randomVariableNames;
+  var _questionRange;
 
   Future<void> readJson() async {
     final String response = await rootBundle.loadString('assets/db.json');
@@ -113,12 +114,18 @@ class _MyHomePageState extends State<MyHomePage> {
         .forEach((item) {
       _incorrectPatternGroups.add([item['Pattern'], item['Priority']]);
     });
-    _questions = _data['Variables']['Declaration']['Multi-Choice']['Question'];
+    _questions =
+        (_data['Variables']['Declaration']['Multi-Choice']['Question'] as List);
     _questionType = _data['Variables']['Declaration']['Multi-Choice']['Type'];
     _questionSubType =
         _data['Variables']['Declaration']['Multi-Choice']['Sub-Type'];
     _variablePermutations = _data['Variables']['Variable Permutations'];
     _randomVariableNames = _data['Variables']['Random Variables'];
+    _questionRange = _questions.length - 1;
+    while (_questionNumber == _prevQuestionNumber) {
+      Random random = Random.secure();
+      _questionNumber = random.nextInt(_questionRange);
+    }
   }
 
   @override
