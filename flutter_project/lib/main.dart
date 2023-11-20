@@ -83,6 +83,8 @@ class _MyHomePageState extends State<MyHomePage> {
   var _questions;
   var _questionType;
   var _questionSubType;
+  var _variablePermutations;
+  var _randomVariableNames;
 
   Future<void> readJson() async {
     final String response = await rootBundle.loadString('assets/db.json');
@@ -115,7 +117,8 @@ class _MyHomePageState extends State<MyHomePage> {
     _questionType = _data['Variables']['Declaration']['Multi-Choice']['Type'];
     _questionSubType =
         _data['Variables']['Declaration']['Multi-Choice']['Sub-Type'];
-    
+    _variablePermutations = _data['Variables']['Variable Permutations'];
+    _randomVariableNames = _data['Variables']['Random Variables'];
   }
 
   @override
