@@ -77,7 +77,6 @@ class _MyHomePageState extends State<MyHomePage> {
   var _langList;
   var _language;
   List<int> _langPriorities = [];
-  var _correctAnswer;
   List _correctPatterns = [];
   List _incorrectPatternGroups = [];
   List _questions = [];
@@ -87,6 +86,9 @@ class _MyHomePageState extends State<MyHomePage> {
   var _randomVariableNames;
   var _questionRange;
   String _question = "";
+  String _correctAnswer = "";
+  List _correctAnswers = [];
+
 
   Future<void> readJson() async {
     final String response = await rootBundle.loadString('assets/db.json');
@@ -106,8 +108,10 @@ class _MyHomePageState extends State<MyHomePage> {
     PriorityRandomGenerator prgLanguage =
         PriorityRandomGenerator(_langList.length, _langPriorities);
     _language = _langList[prgLanguage.pickIndex()];
-    _correctAnswer = _data["Variables"]["Declaration"]["Multi-Choice"]
-        ["Answers"]["Preferred"][_language];
+    _correctAnswer = (_data["Variables"]["Declaration"]["Multi-Choice"]
+        ["Answers"]["Preferred"][_language] as String);
+    _correctAnswers = (_data["Variables"]["Declaration"]["Multi-Choice"]
+    ["Answers"]["Preferred"][_language] as List);
     _correctPatterns = _data["Variables"]["Declaration"]["Multi-Choice"]
         ["Answers"]["Correct"][_language];
     _incorrectPatternGroups.clear();
@@ -122,7 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
         _data['Variables']['Declaration']['Multi-Choice']['Sub-Type'];
     _variablePermutations = _data['Variables']['Variable Permutations'];
     _randomVariableNames = _data['Variables']['Random Variables'];
-    _questionRange = _questions.length - 1;
+    _questionRange = _questions.length;
     while (_questionNumber == _prevQuestionNumber) {
       Random random = Random.secure();
       _questionNumber = random.nextInt(_questionRange);
