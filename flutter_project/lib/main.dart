@@ -74,21 +74,19 @@ class _MyHomePageState extends State<MyHomePage> {
   var _data;
   int _prevQuestionNumber = 0;
   int _questionNumber = 0;
-  var _langList;
-  var _language;
+  List _langList = [];
+  String _language = "";
   List<int> _langPriorities = [];
   List _correctPatterns = [];
   List _incorrectPatternGroups = [];
   List _questions = [];
-  var _questionType;
-  var _questionSubType;
-  var _variablePermutations;
-  var _randomVariableNames;
-  var _questionRange;
+  String _questionType = "";
+  String _questionSubType = "";
+  List _variablePermutations = [];
+  List _randomVariableNames = [];
+  int _questionRange = 0;
   String _question = "";
   String _correctAnswer = "";
-  List _correctAnswers = [];
-
 
   Future<void> readJson() async {
     final String response = await rootBundle.loadString('assets/db.json');
@@ -107,13 +105,11 @@ class _MyHomePageState extends State<MyHomePage> {
   void generateQuestion() {
     PriorityRandomGenerator prgLanguage =
         PriorityRandomGenerator(_langList.length, _langPriorities);
-    _language = _langList[prgLanguage.pickIndex()];
+    _language = (_langList[prgLanguage.pickIndex()] as String);
     _correctAnswer = (_data["Variables"]["Declaration"]["Multi-Choice"]
         ["Answers"]["Preferred"][_language] as String);
-    _correctAnswers = (_data["Variables"]["Declaration"]["Multi-Choice"]
-    ["Answers"]["Preferred"][_language] as List);
-    _correctPatterns = _data["Variables"]["Declaration"]["Multi-Choice"]
-        ["Answers"]["Correct"][_language];
+    _correctPatterns = (_data["Variables"]["Declaration"]["Multi-Choice"]
+        ["Answers"]["Correct"][_language] as List);
     _incorrectPatternGroups.clear();
     _data['Variables']['Declaration']['Multi-Choice']['Answers']['Incorrect']
         .forEach((item) {
@@ -121,11 +117,13 @@ class _MyHomePageState extends State<MyHomePage> {
     });
     _questions =
         (_data['Variables']['Declaration']['Multi-Choice']['Question'] as List);
-    _questionType = _data['Variables']['Declaration']['Multi-Choice']['Type'];
-    _questionSubType =
-        _data['Variables']['Declaration']['Multi-Choice']['Sub-Type'];
-    _variablePermutations = _data['Variables']['Variable Permutations'];
-    _randomVariableNames = _data['Variables']['Random Variables'];
+    _questionType =
+        (_data['Variables']['Declaration']['Multi-Choice']['Type'] as String);
+    _questionSubType = (_data['Variables']['Declaration']['Multi-Choice']
+        ['Sub-Type'] as String);
+    _variablePermutations =
+        (_data['Variables']['Variable Permutations'] as List);
+    _randomVariableNames = (_data['Variables']['Random Variables'] as List);
     _questionRange = _questions.length;
     while (_questionNumber == _prevQuestionNumber) {
       Random random = Random.secure();
