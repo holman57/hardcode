@@ -79,6 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<int> _langPriorities = [];
   List _correctPatterns = [];
   List _incorrectPatternGroups = [];
+  List _incorrectPatternPriorities = [];
   List _questions = [];
   String _questionType = "";
   String _questionSubType = "";
@@ -87,6 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _questionRange = 0;
   String _question = "";
   String _correctAnswer = "";
+  List _choices = [];
 
   Future<void> readJson() async {
     final String response = await rootBundle.loadString('assets/db.json');
@@ -114,6 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _data['Variables']['Declaration']['Multi-Choice']['Answers']['Incorrect']
         .forEach((item) {
       _incorrectPatternGroups.add([item['Pattern'], item['Priority']]);
+      _incorrectPatternPriorities.add(item['Priority']);
     });
     _questions =
         (_data['Variables']['Declaration']['Multi-Choice']['Question'] as List);
@@ -131,6 +134,9 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     _prevQuestionNumber = _questionNumber;
     _question = _questions[_questionNumber].replaceAll("[language]", _language);
+    _choices.add([_correctAnswer, 1]);
+    PriorityRandomGenerator prgChoice = PriorityRandomGenerator(
+        _correctPatterns.length, _incorrectPatternPriorities);
   }
 
   @override
