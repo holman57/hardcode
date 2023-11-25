@@ -104,6 +104,23 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  String renderPatternOptions(answer, pattern) {
+    String render = answer;
+    pattern.forEach((p) {
+      if (answer.contains(p)) {
+        List options = p.replaceAll("[", "").replaceAll("]", "").split("|");
+        Random random = Random.secure();
+        String option = options[random.nextInt(options.length)];
+        if (option == "None") {
+          render = render.replaceAll(p, "");
+        } else {
+          render = render.replaceAll(p, option);
+        }
+      }
+    });
+    return render.trim();
+  }
+
   void generateQuestion() {
     PriorityRandomGenerator prgLanguage =
         PriorityRandomGenerator(_langList.length, _langPriorities);
@@ -137,6 +154,8 @@ class _MyHomePageState extends State<MyHomePage> {
     _choices.add([_correctAnswer, 1]);
     PriorityRandomGenerator prgChoice = PriorityRandomGenerator(
         _correctPatterns.length, _incorrectPatternPriorities);
+
+    // var incorrectAnswer = renderPatternOptions()
   }
 
   @override
@@ -168,7 +187,7 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_correctAnswer',
               style: Theme.of(context).textTheme.titleLarge,
             ),
-            Text('$_incorrectPatternGroups'),
+            Text('$_choices'),
           ],
         ),
       ),
