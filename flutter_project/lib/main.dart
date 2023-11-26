@@ -89,6 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String _question = "";
   String _correctAnswer = "";
   List _choices = [];
+  List _choiceSelections = [];
 
   Future<void> readJson() async {
     final String response = await rootBundle.loadString('assets/db.json');
@@ -152,14 +153,15 @@ class _MyHomePageState extends State<MyHomePage> {
     _prevQuestionNumber = _questionNumber;
     _question = _questions[_questionNumber].replaceAll("[language]", _language);
     _choices.add([_correctAnswer, 1]);
+    _choiceSelections.add(_correctAnswer);
     PriorityRandomGenerator prgChoice = PriorityRandomGenerator(
         _incorrectPatternGroups.length, _incorrectPatternPriorities);
 
     while (_choices.length < 5) {
-      var incorrectAnswer = renderPatternOptions(
+      String incorrectAnswer = renderPatternOptions(
           _incorrectPatternGroups[prgChoice.pickIndex()],
           _variablePermutations);
-      //      if incorrect_answer in [x[0] for x in choices]: continue
+      if (_choiceSelections.contains(incorrectAnswer)) continue;
       //      if incorrect_answer in correct_answers: continue
       //      choices.append([incorrect_answer, 0])
     }
