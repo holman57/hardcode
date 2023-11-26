@@ -153,9 +153,16 @@ class _MyHomePageState extends State<MyHomePage> {
     _question = _questions[_questionNumber].replaceAll("[language]", _language);
     _choices.add([_correctAnswer, 1]);
     PriorityRandomGenerator prgChoice = PriorityRandomGenerator(
-        _correctPatterns.length, _incorrectPatternPriorities);
+        _incorrectPatternGroups.length, _incorrectPatternPriorities);
 
-    // var incorrectAnswer = renderPatternOptions()
+    while (_choices.length < 5) {
+      var incorrectAnswer = renderPatternOptions(
+          _incorrectPatternGroups[prgChoice.pickIndex()],
+          _variablePermutations);
+      //      if incorrect_answer in [x[0] for x in choices]: continue
+      //      if incorrect_answer in correct_answers: continue
+      //      choices.append([incorrect_answer, 0])
+    }
   }
 
   @override
