@@ -1,37 +1,44 @@
 name: Deploy HardCode Flutter Web App
 
 on:
-  workflow_dispatch:
   push:
-    branches:
-      - master
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  workflow_dispatch:
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-
-      - uses: subosito/flutter-action@v1
+      - uses: actions/checkout@v3
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.17.x' 
+          flutter-version: '3.17.x'
           channel: 'beta'
+  
+      - run: flutter --version
 
-      - name: Enable Flutter Web
-        run: flutter config --enable-web
-
-      - name: Download Dependencies
+      - name: Cache pub dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.FLUTTER_HOME }}/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: ${{ runner.os }}-pub-
+      - name: Download pub dependencies
         run: flutter pub get
 
-      - name: Build
-        run: flutter build web
+      - name: Run analyzer
+        run: flutter analyze
 
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Run tests
+        run: flutter test
+
+      - name: Build Web App
+        run: flutter build web --base-href=/hardcode/
+
+      - name: Deploy to GitHub Pages 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/web
-          force_orphan: true
-          user_name: 'github-ci[bot]'
-          user_email: 'github-actions[bot]@users.noreply.github.com'
-          commit_message: 'Publish to gh-pages'
+          folder: build/web
