@@ -72,21 +72,21 @@
       "limit"
     ],
     "Random Variables": [
+      "[extensible whitespace]",
+      "[optional semicolon]",
       "[random int variable]",
       "[random integer]",
       "[random rust data type]"
     ],
     "Variable Permutations": [
-      "[$|@|None]",
-      "[var|val|int|Int|let|None]",
-      "[local|var|val|int|Int|let|None]",
+      "[auto|var|val|int|Int|let|None]",
+      "[local|auto|var|val|int|Int|let|None]",
+      "[Object|object|Integer|declare -i|export]",
       "[: Integer|: Int|: number| int|None]",
       "[:=|=]",
       "[;|None]",
-      "[mut |None]",
-      "[DECLARE |None]",
-      "[ INT|None]",
-      "[SET |None]"
+      "[$|@|None|[int]|_]",
+      "[mut |None]"
     ],
     "Declaration": {
       "Notes": {
