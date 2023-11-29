@@ -106,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   String renderPatternOptions(answer, pattern) {
-    String render = answer;
+    String render = (answer as String);
     pattern.forEach((p) {
       if (answer.contains(p)) {
         List options = p.replaceAll("[", "").replaceAll("]", "").split("|");
@@ -123,6 +123,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void generateQuestion() {
+    _choices.clear();
+    _incorrectPatternGroups.clear();
+    _incorrectPatternPriorities.clear();
     PriorityRandomGenerator prgLanguage =
         PriorityRandomGenerator(_langList.length, _langPriorities);
     _language = (_langList[prgLanguage.pickIndex()] as String);
@@ -159,12 +162,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
     while (_choices.length < 5) {
       String incorrectAnswer = renderPatternOptions(
-          _incorrectPatternGroups[prgChoice.pickIndex()],
+          _incorrectPatternGroups[prgChoice.pickIndex()][0],
           _variablePermutations);
       if (_choiceSelections.contains(incorrectAnswer)) continue;
       if (_correctPatterns.contains(incorrectAnswer)) continue;
       _choices.add([incorrectAnswer, 0]);
     }
+    _choices.forEach((item) {
+      print(item);
+    });
+    print('--------------');
   }
 
   @override
@@ -175,39 +182,42 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      drawer: const Drawer(),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              '$_language - $_questionSubType',
-            ),
-            Text(
-              _question,
-            ),
-            Text('$_correctPatterns'),
-            Text(
-              '$_correctAnswer',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            Text('$_choices'),
-          ],
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: Text(widget.title),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            generateQuestion();
-          });
-        },
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        drawer: const Drawer(),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                '$_language - $_questionSubType',
+              ),
+              Text(
+                _question,
+              ),
+              Text('$_correctPatterns'),
+              Text(
+                _correctAnswer,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              Text('$_choices'),
+            ],
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            setState(() {
+              generateQuestion();
+            });
+          },
+          tooltip: 'Increment',
+          child: const Icon(Icons.add),
+        ),
       ),
     );
   }
