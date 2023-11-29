@@ -23,9 +23,9 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
-flutter_project/build/*
-!flutter_project/build/web/
-!flutter_project/build/web/*
+build/*
+!build/web/
+!build/web/*
 
 
 # PyInstaller
