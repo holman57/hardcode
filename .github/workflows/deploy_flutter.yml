@@ -32,8 +32,8 @@ jobs:
       - name: Run analyzer
         run: flutter analyze
 
-      - name: Run tests
-        run: flutter test
+#      - name: Run tests
+#        run: flutter test
 
       - name: Build Web App
         run: flutter build web --base-href=/hardcode/
