@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy HardCode Flutter Web App
 
 on:
   workflow_dispatch:
@@ -14,8 +14,8 @@ jobs:
 
       - uses: subosito/flutter-action@v1
         with:
-          flutter-version: '1.19.x' 
-          channel: 'beta' # Required for web
+          flutter-version: '3.17.x' 
+          channel: 'beta'
 
       - name: Enable Flutter Web
         run: flutter config --enable-web
