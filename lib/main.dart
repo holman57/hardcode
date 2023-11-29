@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -35,8 +36,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class PriorityRandomGenerator {
-  var _priorities;
-  var _n;
+  List _priorities = [];
+  int _n = 0;
 
   PriorityRandomGenerator(nPatterns, priorities) {
     _priorities = (priorities as List).map((item) => item as int).toList();
@@ -77,7 +78,7 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
 
 class _MyHomePageState extends State<MyHomePage> {
   final _languages = {};
-  var _data;
+  late Map _data;
   int _prevQuestionNumber = 0;
   int _questionNumber = 0;
   List _langList = [];
@@ -87,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final List _incorrectPatternGroups = [];
   final List _incorrectPatternPriorities = [];
   List _questions = [];
-  String _questionType = "";
+  // String _questionType = "";
   String _questionSubType = "";
   List _variablePermutations = [];
   List _variableBranching = [];
@@ -206,8 +207,8 @@ class _MyHomePageState extends State<MyHomePage> {
     });
     _questions =
         (_data['Variables']['Declaration']['Multi-Choice']['Question'] as List);
-    _questionType =
-        (_data['Variables']['Declaration']['Multi-Choice']['Type'] as String);
+    // _questionType =
+    //     (_data['Variables']['Declaration']['Multi-Choice']['Type'] as String);
     _questionSubType = (_data['Variables']['Declaration']['Multi-Choice']
         ['Sub-Type'] as String);
     _variablePermutations =
@@ -233,17 +234,25 @@ class _MyHomePageState extends State<MyHomePage> {
       _choices.add([incorrectAnswer, 0]);
     }
     for (var item in _choices) {
-      print(item);
+      if (kDebugMode) {
+        print(item);
+      }
     }
-    print('--------------');
+    if (kDebugMode) {
+      print('--------------');
+    }
     for (int i = 0; i < _choices.length; i++) {
       _choices[i][0] =
           renderPatternBranching(_choices[i][0], _variableBranching);
     }
     for (var item in _choices) {
-      print(item);
+      if (kDebugMode) {
+        print(item);
+      }
     }
-    print('--------------');
+    if (kDebugMode) {
+      print('--------------');
+    }
   }
 
   @override
