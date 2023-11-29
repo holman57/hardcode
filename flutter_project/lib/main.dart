@@ -69,6 +69,12 @@ class PriorityRandomGenerator {
   }
 }
 
+const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnPpQqRrSsTtUuVvWwXxYyZz';
+Random _rnd = Random();
+
+String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
+    length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
+
 class _MyHomePageState extends State<MyHomePage> {
   final _languages = {};
   var _data;
@@ -90,6 +96,9 @@ class _MyHomePageState extends State<MyHomePage> {
   String _correctAnswer = "";
   List _choices = [];
   List _choiceSelections = [];
+  List _intSmallVarSet = [];
+  List _intVarNames = [];
+  List _intRustVarTypes = [];
 
   Future<void> readJson() async {
     final String response = await rootBundle.loadString('assets/db.json');
@@ -103,6 +112,10 @@ class _MyHomePageState extends State<MyHomePage> {
           (_data["Language"] as List).map((item) => item as String).toList();
       _languages.forEach((k, v) => _langPriorities.add(v));
     });
+    _intVarNames = (_data['Variables']['Int Variable Names'] as List);
+    _intSmallVarSet =
+        (_data['Variables']['Integer Small Variable Sets'] as List);
+    _intRustVarTypes = (_data['Variables']['Rust Int Variable Types'] as List);
   }
 
   String renderPatternOptions(answer, pattern) {
@@ -122,8 +135,56 @@ class _MyHomePageState extends State<MyHomePage> {
     return render.trim();
   }
 
-  renderPatternBranching(choices, List randomVariableNames) {
-
+  renderPatternBranching(answer, pattern) {
+    String render = answer;
+    Random random = Random.secure();
+    pattern.forEach((p) {
+      if (p.contains("[extensible whitespace]")) {
+        int r = random.nextInt(2);
+        if (r == 0) {
+          render = render.replaceAll(p, " ");
+        } else {
+          render = render.replaceAll(p, "");
+        }
+      }
+      if (p.contains("[optional semicolon]")) {
+        int r = random.nextInt(2);
+        if (r == 0) {
+          render = render.replaceAll(p, ";");
+        } else {
+          render = render.replaceAll(p, "");
+        }
+      }
+      if (p.contains("[random int variable]")) {
+        int r = random.nextInt(3);
+        if (r == 0) {
+          render = render.replaceAll(p, getRandomString(1));
+        } else if (r == 1) {
+          render = render.replaceAll(
+              p, _intVarNames[random.nextInt(_intVarNames.length)]);
+        } else if (r == 2) {
+          render = render.replaceAll(
+              p, _intSmallVarSet[random.nextInt(_intSmallVarSet.length)]);
+        }
+      }
+      if (p.contains("[random integer]")) {
+        int r = random.nextInt(4);
+        if (r == 0) {
+          render = render.replaceAll(p, random.nextInt(10).toString());
+        } else if (r == 1) {
+          render = render.replaceAll(p, random.nextInt(100).toString());
+        } else if (r == 2) {
+          render = render.replaceAll(p, random.nextInt(10000).toString());
+        } else if (r == 3) {
+          render = render.replaceAll(p, random.nextInt(1000000).toString());
+        }
+      }
+      if (p.contains("[random rust data type]")) {
+        render = render.replaceAll(
+            p, _intRustVarTypes[random.nextInt(_intRustVarTypes.length)]);
+      }
+    });
+    return render.trim();
   }
 
   void generateQuestion() {
@@ -131,13 +192,12 @@ class _MyHomePageState extends State<MyHomePage> {
     _incorrectPatternGroups.clear();
     _incorrectPatternPriorities.clear();
     PriorityRandomGenerator prgLanguage =
-    PriorityRandomGenerator(_langList.length, _langPriorities);
+        PriorityRandomGenerator(_langList.length, _langPriorities);
     _language = (_langList[prgLanguage.pickIndex()] as String);
-    _correctAnswer =
-    (_data["Variables"]["Declaration"]["Multi-Choice"]["Answers"]
-    ["Preferred"][_language] as String);
+    _correctAnswer = (_data["Variables"]["Declaration"]["Multi-Choice"]
+        ["Answers"]["Preferred"][_language] as String);
     _correctPatterns = (_data["Variables"]["Declaration"]["Multi-Choice"]
-    ["Answers"]["Correct"][_language] as List);
+        ["Answers"]["Correct"][_language] as List);
     _incorrectPatternGroups.clear();
     _data['Variables']['Declaration']['Multi-Choice']['Answers']['Incorrect']
         .forEach((item) {
@@ -145,13 +205,13 @@ class _MyHomePageState extends State<MyHomePage> {
       _incorrectPatternPriorities.add(item['Priority']);
     });
     _questions =
-    (_data['Variables']['Declaration']['Multi-Choice']['Question'] as List);
+        (_data['Variables']['Declaration']['Multi-Choice']['Question'] as List);
     _questionType =
-    (_data['Variables']['Declaration']['Multi-Choice']['Type'] as String);
-    _questionSubType =
-    (_data['Variables']['Declaration']['Multi-Choice']['Sub-Type'] as String);
+        (_data['Variables']['Declaration']['Multi-Choice']['Type'] as String);
+    _questionSubType = (_data['Variables']['Declaration']['Multi-Choice']
+        ['Sub-Type'] as String);
     _variablePermutations =
-    (_data['Variables']['Variable Permutations'] as List);
+        (_data['Variables']['Variable Permutations'] as List);
     _variableBranching = (_data['Variables']['Random Variables'] as List);
     _questionRange = _questions.length;
     while (_questionNumber == _prevQuestionNumber) {
@@ -172,14 +232,18 @@ class _MyHomePageState extends State<MyHomePage> {
       if (_correctPatterns.contains(incorrectAnswer)) continue;
       _choices.add([incorrectAnswer, 0]);
     }
-    _choices.forEach((item) {
+    for (var item in _choices) {
       print(item);
-    });
+    }
     print('--------------');
     for (int i = 0; i < _choices.length; i++) {
       _choices[i][0] =
           renderPatternBranching(_choices[i][0], _variableBranching);
     }
+    for (var item in _choices) {
+      print(item);
+    }
+    print('--------------');
   }
 
   @override
@@ -194,10 +258,7 @@ class _MyHomePageState extends State<MyHomePage> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme
-              .of(context)
-              .colorScheme
-              .inversePrimary,
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Text(widget.title),
         ),
         drawer: const Drawer(),
@@ -214,10 +275,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Text('$_correctPatterns'),
               Text(
                 _correctAnswer,
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .titleLarge,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               Text('$_choices'),
             ],
@@ -235,3 +293,4 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+}
