@@ -29,6 +29,8 @@ build/
 **/build/*
 **/build
 flutter_project/build
+!*/build/web
+
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
