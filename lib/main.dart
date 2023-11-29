@@ -58,10 +58,10 @@ class PriorityRandomGenerator {
     Random random = Random.secure();
     List preS = prefixSums();
     int sumP = (_priorities as List<int>).reduce((a, b) => a + b);
-    double p_i = doubleInRange(random, 0, sumP);
-    if (p_i > preS[preS.length - 1]) return preS.length - 1;
+    double pI = doubleInRange(random, 0, sumP);
+    if (pI > preS[preS.length - 1]) return preS.length - 1;
     for (var i = 0; i < preS.length - 1; i++) {
-      if (p_i > preS[i] && p_i < preS[i + 1]) {
+      if (pI > preS[i] && pI < preS[i + 1]) {
         return i;
       }
     }
@@ -82,10 +82,10 @@ class _MyHomePageState extends State<MyHomePage> {
   int _questionNumber = 0;
   List _langList = [];
   String _language = "";
-  List<int> _langPriorities = [];
+  final List<int> _langPriorities = [];
   List _correctPatterns = [];
-  List _incorrectPatternGroups = [];
-  List _incorrectPatternPriorities = [];
+  final List _incorrectPatternGroups = [];
+  final List _incorrectPatternPriorities = [];
   List _questions = [];
   String _questionType = "";
   String _questionSubType = "";
@@ -94,8 +94,8 @@ class _MyHomePageState extends State<MyHomePage> {
   int _questionRange = 0;
   String _question = "";
   String _correctAnswer = "";
-  List _choices = [];
-  List _choiceSelections = [];
+  final List _choices = [];
+  final List _choiceSelections = [];
   List _intSmallVarSet = [];
   List _intVarNames = [];
   List _intRustVarTypes = [];
