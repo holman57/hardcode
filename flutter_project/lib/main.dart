@@ -84,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String _questionType = "";
   String _questionSubType = "";
   List _variablePermutations = [];
-  List _randomVariableNames = [];
+  List _variableBranching = [];
   int _questionRange = 0;
   String _question = "";
   String _correctAnswer = "";
@@ -122,17 +122,22 @@ class _MyHomePageState extends State<MyHomePage> {
     return render.trim();
   }
 
+  renderPatternBranching(choices, List randomVariableNames) {
+
+  }
+
   void generateQuestion() {
     _choices.clear();
     _incorrectPatternGroups.clear();
     _incorrectPatternPriorities.clear();
     PriorityRandomGenerator prgLanguage =
-        PriorityRandomGenerator(_langList.length, _langPriorities);
+    PriorityRandomGenerator(_langList.length, _langPriorities);
     _language = (_langList[prgLanguage.pickIndex()] as String);
-    _correctAnswer = (_data["Variables"]["Declaration"]["Multi-Choice"]
-        ["Answers"]["Preferred"][_language] as String);
+    _correctAnswer =
+    (_data["Variables"]["Declaration"]["Multi-Choice"]["Answers"]
+    ["Preferred"][_language] as String);
     _correctPatterns = (_data["Variables"]["Declaration"]["Multi-Choice"]
-        ["Answers"]["Correct"][_language] as List);
+    ["Answers"]["Correct"][_language] as List);
     _incorrectPatternGroups.clear();
     _data['Variables']['Declaration']['Multi-Choice']['Answers']['Incorrect']
         .forEach((item) {
@@ -140,14 +145,14 @@ class _MyHomePageState extends State<MyHomePage> {
       _incorrectPatternPriorities.add(item['Priority']);
     });
     _questions =
-        (_data['Variables']['Declaration']['Multi-Choice']['Question'] as List);
+    (_data['Variables']['Declaration']['Multi-Choice']['Question'] as List);
     _questionType =
-        (_data['Variables']['Declaration']['Multi-Choice']['Type'] as String);
-    _questionSubType = (_data['Variables']['Declaration']['Multi-Choice']
-        ['Sub-Type'] as String);
+    (_data['Variables']['Declaration']['Multi-Choice']['Type'] as String);
+    _questionSubType =
+    (_data['Variables']['Declaration']['Multi-Choice']['Sub-Type'] as String);
     _variablePermutations =
-        (_data['Variables']['Variable Permutations'] as List);
-    _randomVariableNames = (_data['Variables']['Random Variables'] as List);
+    (_data['Variables']['Variable Permutations'] as List);
+    _variableBranching = (_data['Variables']['Random Variables'] as List);
     _questionRange = _questions.length;
     while (_questionNumber == _prevQuestionNumber) {
       Random random = Random.secure();
@@ -159,7 +164,6 @@ class _MyHomePageState extends State<MyHomePage> {
     _choiceSelections.add(_correctAnswer);
     PriorityRandomGenerator prgChoice = PriorityRandomGenerator(
         _incorrectPatternGroups.length, _incorrectPatternPriorities);
-
     while (_choices.length < 5) {
       String incorrectAnswer = renderPatternOptions(
           _incorrectPatternGroups[prgChoice.pickIndex()][0],
@@ -172,6 +176,10 @@ class _MyHomePageState extends State<MyHomePage> {
       print(item);
     });
     print('--------------');
+    for (int i = 0; i < _choices.length; i++) {
+      _choices[i][0] =
+          renderPatternBranching(_choices[i][0], _variableBranching);
+    }
   }
 
   @override
@@ -186,7 +194,10 @@ class _MyHomePageState extends State<MyHomePage> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          backgroundColor: Theme
+              .of(context)
+              .colorScheme
+              .inversePrimary,
           title: Text(widget.title),
         ),
         drawer: const Drawer(),
@@ -203,7 +214,10 @@ class _MyHomePageState extends State<MyHomePage> {
               Text('$_correctPatterns'),
               Text(
                 _correctAnswer,
-                style: Theme.of(context).textTheme.titleLarge,
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .titleLarge,
               ),
               Text('$_choices'),
             ],
@@ -221,4 +235,3 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-}
