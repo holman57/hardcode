@@ -23,7 +23,6 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
-flutter_project/build/
 flutter_project/build/*
 !flutter_project/build/web
 
