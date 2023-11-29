@@ -162,8 +162,8 @@ class _MyHomePageState extends State<MyHomePage> {
           _incorrectPatternGroups[prgChoice.pickIndex()],
           _variablePermutations);
       if (_choiceSelections.contains(incorrectAnswer)) continue;
-      //      if incorrect_answer in correct_answers: continue
-      //      choices.append([incorrect_answer, 0])
+      if (_correctPatterns.contains(incorrectAnswer)) continue;
+      _choices.add([incorrectAnswer, 0]);
     }
   }
 
