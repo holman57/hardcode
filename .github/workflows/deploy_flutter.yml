@@ -6,11 +6,6 @@ on:
     branches:
       - master
 
-permissions:
-  pull-requests: write
-  issues: write
-  repository-projects: write
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
