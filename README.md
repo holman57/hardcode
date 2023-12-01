@@ -1,8 +1,10 @@
-# Multiprogramming
 
-A flashcard style Question-and-Answer system for memorizing the syntax of common programming languages.
+# HardCode
+# [Holman57.github.io/hardcode/](Holman57.github.io/hardcode/)
 
-## Target Languages x 19
+A flashcard-style Question-and-Answer system for memorizing the syntax of common programming languages.
+
+## Target Languages x 18
 
 |        |            |      |
 | ------ | ---------- | ---- |
@@ -11,7 +13,7 @@ A flashcard style Question-and-Answer system for memorizing the syntax of common
 | C#     | Bash       | Rust |
 | Java   | JavaScript | Ruby |
 | Kotlin | TypeScript | Lua  |
-| Scala  | Dart       | SQL  |
+| Scala  | Dart       |      |
 | R      | Swift      |      |
 
 ## Structure
@@ -80,7 +82,7 @@ A flashcard style Question-and-Answer system for memorizing the syntax of common
 
 #### First Parse
 
-- `[language]` : The programming language that corresponds to the question.
+- `[language]` : The programming language corresponding to the question.
 
 #### Second Parse
 
