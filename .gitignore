@@ -26,7 +26,18 @@ MANIFEST
 build/*
 !build/web/
 !build/web/*
-
+android/*
+android/
+ios/*
+ios/
+linux/*
+linux/
+macos/*
+macos/
+web/*
+web/
+windows/*
+windows/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
