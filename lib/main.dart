@@ -88,7 +88,6 @@ class _MyHomePageState extends State<MyHomePage> {
   final List _incorrectPatternGroups = [];
   final List _incorrectPatternPriorities = [];
   List _questions = [];
-  // String _questionType = "";
   String _questionSubType = "";
   List _variablePermutations = [];
   List _variableBranching = [];
@@ -207,8 +206,6 @@ class _MyHomePageState extends State<MyHomePage> {
     });
     _questions =
         (_data['Variables']['Declaration']['Multi-Choice']['Question'] as List);
-    // _questionType =
-    //     (_data['Variables']['Declaration']['Multi-Choice']['Type'] as String);
     _questionSubType = (_data['Variables']['Declaration']['Multi-Choice']
         ['Sub-Type'] as String);
     _variablePermutations =
