@@ -1,0 +1,284 @@
+{
+  "Language": [
+    "C",
+    "Python",
+    "Go",
+    "C++",
+    "PowerShell",
+    "PHP",
+    "C#",
+    "Bash",
+    "Rust",
+    "Java",
+    "JavaScript",
+    "Ruby",
+    "Kotlin",
+    "Swift",
+    "TypeScript",
+    "Lua",
+    "Scala",
+    "Dart"
+  ],
+  "db_Language": [
+    "MySQL",
+    "MS SQL Server",
+    "Oracle",
+    "Pandas",
+    "PostgreSQL",
+    "GraphQL",
+    "MQL"
+  ],
+  "Notes": {
+    "C#": [
+      ".NET supports structs and classes.",
+      "Structs are passed by copy, since they are value types.",
+      "Objects are passed by reference, since they are reference types",
+      "The .NET platform manages and reclaims blocks of memory",
+      "The Garbage Collector object GC is part of the system namespace.",
+      "Reference GC.GetTotalMemory(false); to see how much memory an application is using",
+      "Every object derives from the base Object class, inheriting it's methods like ToString().",
+      "C# supports the \"is\" operator",
+      "Protected members can be accessed by the defining class or any subclass",
+      "Private members can only be accessed by the defining class.",
+      "The \"virtual\" keyword indicates that the method can be overridden by subclasses.\n",
+      "If you don't provide a constructor for a class, the compiler will create a default one."
+    ]
+  },
+  "Variables": {
+    "Rust Int Variable Types": [
+      "i8",
+      "i16",
+      "i32",
+      "i64",
+      "i128",
+      "isize",
+      "u8",
+      "u16",
+      "u32",
+      "u64",
+      "u128",
+      "usuze"
+    ],
+    "Int Variable Names": [
+      "myVar",
+      "myvariable",
+      "myNum",
+      "num",
+      "amount",
+      "total",
+      "quantity",
+      "count",
+      "rate",
+      "limit"
+    ],
+    "Integer Small Variable Sets": [
+      "x",
+      "y",
+      "n",
+      "i",
+      "j"
+    ],
+    "Random Variables": [
+      "[extensible whitespace]",
+      "[optional semicolon]",
+      "[random int variable]",
+      "[random integer]",
+      "[random rust data type]"
+    ],
+    "Variable Permutations": [
+      "[auto|var|val|int|Int|let|None]",
+      "[local|auto|var|val|int|Int|let|None]",
+      "[Object|object|Integer|declare -i|export]",
+      "[: Integer|: Int|: number| int|None]",
+      "[:=|=]",
+      "[;|None]",
+      "[$|@|None|[int]|_]",
+      "[mut |None]"
+    ],
+    "Declaration": {
+      "Notes": {
+        "C#": [
+          "C# provides an implicit type conversion using some data types char + int = int.",
+          "You can initialize an integer using the default keyword, int num = default; default will be 0."
+        ]
+      },
+      "Multi-Choice": {
+        "Type": "Primitive Types",
+        "Sub-Type": "Integer Assignment",
+        "Question": [
+          "How do you declare and assign an Integer variable in [language]?",
+          "Which of the following is a correct way to assign an Integer value to a variable in [language]?",
+          "Declare and assign an Integer variable in [language] using:",
+          "Assignment and declaration of an Integer variable in [language] looks like,",
+          "In [language], assigning and declaring an Integer variable is done by",
+          "A Correct way of assigning and declaring an Integer variable using [language] is"
+        ],
+        "True-False": [
+          "Is this a Correct way to declare and assign an Integer variable in [language]?",
+          "The following is a Correct assignment and declaration of an Integer variable in [language].",
+          "(T/F) An assignment and declaration of an Integer variable in [language]:",
+          "In [language], the Correct way to assign and declare an Integer variable is"
+        ],
+        "Answers": {
+          "Preferred": {
+            "C": "int [random int variable] = [random integer];",
+            "Python": "[random int variable] = [random integer]",
+            "Go": "var [random int variable] int = [random integer]",
+            "C++": "int [random int variable] = [random integer];",
+            "PowerShell": "$[random int variable] = [random integer]",
+            "PHP": "$[random int variable] = [random integer];",
+            "C#": "int [random int variable] = [random integer];",
+            "Bash": "[random int variable]=[random integer]",
+            "Rust": "let mut [random int variable] = [random integer];",
+            "Java": "int [random int variable] = [random integer];",
+            "JavaScript": "var [random int variable] = [random integer];",
+            "Ruby": "[random int variable] = [random integer]",
+            "Kotlin": "var [random int variable] = [random integer]",
+            "Swift": "var [random int variable] = [random integer]",
+            "TypeScript": "var [random int variable] = [random integer];",
+            "Lua": "local [random int variable] = [random integer]",
+            "Scala": "var [random int variable] = [random integer]",
+            "Dart": "int [random int variable] = [random integer];"
+          },
+          "Correct": {
+            "C": [
+              "int [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+            ],
+            "Python": [
+              "[random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "[random int variable]: int[extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+            ],
+            "Go": [
+              "[random int variable][extensible whitespace]:=[extensible whitespace][random integer][optional semicolon]",
+              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "var [random int variable] int[extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+            ],
+            "C++": [
+              "int [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
+              "auto [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+            ],
+            "PowerShell": [
+              "$[random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "[int][extensible whitespace]$[random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+            ],
+            "PHP": [
+              "$[random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+            ],
+            "C#": [
+              "int [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
+              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
+              "object [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+            ],
+            "Bash": [
+              "[random int variable]=[random integer][optional semicolon]",
+              "declare -i [random int variable]=[random integer][optional semicolon]",
+              "export [random int variable]=[random integer][optional semicolon]",
+              "let [random int variable]=[random integer][optional semicolon]"
+            ],
+            "Rust": [
+              "let mut [random int variable]: [random rust data type][extensible whitespace]=[extensible whitespace][random integer];",
+              "let [random int variable]: [random rust data type][extensible whitespace]=[extensible whitespace][random integer];",
+              "let mut [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
+              "let [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+            ],
+            "Java": [
+              "int [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
+              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
+              "Integer [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
+              "Object [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+            ],
+            "JavaScript": [
+              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "let [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "[random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+            ],
+            "Ruby": [
+              "[random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "@[random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+            ],
+            "Kotlin": [
+              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "val [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+            ],
+            "Swift": [
+              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "let [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "var [random int variable]: Int[extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "let [random int variable]: Int[extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+            ],
+            "TypeScript": [
+              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
+              "let [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
+              "var [random int variable]: number[extensible whitespace]=[extensible whitespace][random integer];",
+              "let [random int variable]: number[extensible whitespace]=[extensible whitespace][random integer];"
+            ],
+            "Lua": [
+              "[random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "local [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+            ],
+            "Scala": [
+              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "val [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "var [random int variable]: Int[extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "val [random int variable]: Int[extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+            ],
+            "Dart": [
+              "int [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
+              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+            ]
+          },
+          "Incorrect": [
+            {
+              "Name": "Group1",
+              "Pattern": "[auto|var|val|int|Int|let|None] [random int variable] = [random integer][;|None]",
+              "Priority": 12
+            },
+            {
+              "Name": "Group2",
+              "Pattern": "[local|auto|var|val|int|Int|let|None] [random int variable][: Integer|: Int|: number| int|None] = [random integer][;|None]",
+              "Priority": 7
+            },
+            {
+              "Name": "Group3",
+              "Pattern": "[Object|object|Integer|declare -i|export] [random int variable] = [random integer][;|None]",
+              "Priority": 5
+            },
+            {
+              "Name": "Group4",
+              "Pattern": "[random int variable] [:=|=] [random integer][;|None]",
+              "Priority": 5
+            },
+            {
+              "Name": "Group5",
+              "Pattern": "[$|@|None|[int]|_][random int variable] = [random integer][;|None]",
+              "Priority": 4
+            },
+            {
+              "Name": "Group6",
+              "Pattern": "[$|@|None|[int]|_][random int variable]=[random integer][;|None]",
+              "Priority": 3
+            },
+            {
+              "Name": "Group7",
+              "Pattern": "let [mut |None][random int variable]: [random rust data type] = [random integer][;|None]",
+              "Priority": 2
+            },
+            {
+              "Name": "Group8",
+              "Pattern": "let [mut |None][random int variable] = [random integer][;|None]",
+              "Priority": 2
+            },
+            {
+              "Name": "Group9",
+              "Pattern": "[$|@|None|[int]|_][random int variable] = [random integer][;|None]",
+              "Priority": 2
+            }
+          ]
+        }
+      },
+      "Mutability": [],
+      "Multiple Declaration": []
+    }
+  },
+  "Control Flow": []
+}
