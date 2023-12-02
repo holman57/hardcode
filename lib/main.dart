@@ -284,6 +284,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               Text('$_choices'),
+              OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.black,
+                  side: const BorderSide(
+                    color: Colors.blue,
+                  ),
+                ),
+                onPressed: () {},
+                child: const Text("Tap on this"),
+              ),
             ],
           ),
         ),
