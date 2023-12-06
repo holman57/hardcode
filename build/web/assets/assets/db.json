@@ -19,16 +19,26 @@
     "Scala",
     "Dart"
   ],
-  "db_Language": [
+  "DB": [
     "MySQL",
-    "MS SQL Server",
+    "T-SQL",
     "Oracle",
-    "Pandas",
     "PostgreSQL",
+    "Pandas",
+    "Neo4j",
     "GraphQL",
-    "MQL"
+    "MQL",
+    "MariaDB",
+    "MongoDB",
+    "Amazon DynamoDB",
+    "Microsoft Azure Cosmos DB",
+    "Google Cloud Firestore",
+    "Relational Algebra"
   ],
-  "Notes": {
+  "General Notes": [
+    "Always declare and initialize all your variables at the beginning of your scope."
+  ],
+  "Language Specific Notes": {
     "C#": [
       ".NET supports structs and classes.",
       "Structs are passed by copy, since they are value types.",
