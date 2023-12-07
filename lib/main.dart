@@ -294,26 +294,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () {},
                 child: const Text("Tap on this"),
               ),
-              OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.black,
-                  side: const BorderSide(
-                    color: Colors.blue,
-                  ),
-                ),
-                onPressed: () {},
-                child: const Text("Tap on this"),
-              ),
-              OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.black,
-                  side: const BorderSide(
-                    color: Colors.blue,
-                  ),
-                ),
-                onPressed: () {},
-                child: const Text("Tap on this"),
-              ),
             ],
           ),
         ),
