@@ -99,6 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List _intSmallVarSet = [];
   List _intVarNames = [];
   List _intRustVarTypes = [];
+  List<String> letters = ["A", "B", "C", "D"];
 
   Future<void> readJson() async {
     final String response = await rootBundle.loadString('assets/db.json');
@@ -284,6 +285,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               Text('$_choices'),
+              Column(
+                children: letters.map((String char){
+                  return OutlinedButton(onPressed: () {  },
+                  child: Text(char));
+                }).toList(),
+              ),
               OutlinedButton(
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.black,
@@ -294,8 +301,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () {},
                 child: const Text("Tap on this"),
               ),
+
             ],
           ),
+
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
