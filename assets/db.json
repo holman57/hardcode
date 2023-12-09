@@ -35,9 +35,23 @@
     "Google Cloud Firestore",
     "Relational Algebra"
   ],
+  "Language Structure": {
+    "Variables": [
+      "Declaration",
+      "Data Types",
+      "Mutability",
+      "Multiple Inline Declarations"
+    ],
+    "Control Flow": [
+      "Loops",
+      "Signals and Traps"
+    ]
+},
   "TODO": [
     "POSIX regular expressions",
-    "GNU Grep, Awk, and sed"
+    "GNU Grep, Awk, and sed",
+    "Difference between Globs and Regex",
+    "Types of Shell Expansion"
   ],
   "General Language Notes": [
     "Always declare and initialize all your variables at the beginning of your scope."
