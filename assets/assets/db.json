@@ -35,8 +35,14 @@
     "Google Cloud Firestore",
     "Relational Algebra"
   ],
-  "General Notes": [
+  "General Language Notes": [
     "Always declare and initialize all your variables at the beginning of your scope."
+  ],
+  "General DB Notes": [
+    "The simplest form of a NoSQL database is called a Key-Value database and it's designed kind of like a dictionary.",
+    "A Document database is a type of NoSQL database that can store multiple key values in a structure called a document. Documents roughly parallel rows in a table. Keys are scalars. And values may be complex data structures such as arrays or lists.",
+    "A Wide Column database is a type of NoSQL database where the columns are not fixed and the data is denormalized. The values can be complex structures such as arrays or lists.",
+    "A Graph database is a type of NoSQL database that represents a network of connected entities. Entities are liked by edges. Entities and edges each have their own properties that can be queried."
   ],
   "Language Specific Notes": {
     "C#": [
