@@ -35,6 +35,10 @@
     "Google Cloud Firestore",
     "Relational Algebra"
   ],
+  "TODO": [
+    "POSIX regular expressions",
+    "GNU Grep, Awk, and sed"
+  ],
   "General Language Notes": [
     "Always declare and initialize all your variables at the beginning of your scope."
   ],
