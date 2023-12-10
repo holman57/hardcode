@@ -37,6 +37,21 @@
     "Firestore",
     "Relational Algebra"
   ],
+  "Operating System": {
+    "Names": [
+      "Desktop",
+      "Mobile"
+    ],
+    "Desktop": [
+      "Windows",
+      "Linux",
+      "Mac"
+    ],
+    "Mobile": [
+      "Android",
+      "iOS"
+    ]
+  },
   "Language Structure": {
     "Variables": [
       "Declaration",
@@ -52,17 +67,38 @@
       "Loops",
       "Signals and Traps"
     ],
-    "Data Structures": [],
-    "String Manipulation": [],
-    "File I/O": [
+    "String Manipulation": [
+      "Concatenation",
+      "Slicing",
+      "String Interpolation"
+    ],
+    "File-System Interface": [
       "Read from STDIN",
       "Write to STDOUT",
       "Read from a File",
-      "Write to a File"
+      "Write to a File",
+      "Directory Structure"
     ],
     "Mathematics": [
-      "Combinatorics"
-    ]
+      "Combinatorics",
+      "Exponentiation",
+      "Division",
+      "Common Mathematical Expressions"
+    ],
+    "Data Structures": [
+      "Array",
+      "List",
+      "Map",
+      "Heap",
+      "Stack"
+    ],
+    "Event Loop": [],
+    "Process": [],
+    "Concurrency": [],
+    "CPU Scheduling": [],
+    "Synchronization": [],
+    "Deadlocks": [],
+    "Memory Management": []
   },
   "TODO": {
     "General": [
@@ -98,7 +134,8 @@
     "HTTP",
     "Ethernet",
     "Bluetooth",
-    "DNS"
+    "DNS",
+    "Network Services"
   ],
   "General Language Notes": [
     "Always declare and initialize all your variables at the beginning of your scope."
