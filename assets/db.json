@@ -51,7 +51,17 @@
     "POSIX regular expressions",
     "GNU Grep, Awk, and sed",
     "Difference between Globs and Regex",
-    "Types of Shell Expansion"
+    "Types of Shell Expansion",
+    "Mac, Linux, Windows shell scripting",
+    "Socket Programming"
+  ],
+  "Networking": [
+    "OSI Model",
+    "Application Layer",
+    "Transport Layer",
+    "Socket Programming",
+    "Network Layer",
+    "Link Layer"
   ],
   "General Language Notes": [
     "Always declare and initialize all your variables at the beginning of your scope."
