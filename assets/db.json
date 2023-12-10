@@ -42,7 +42,8 @@
       "Declaration",
       "Data Types",
       "Mutability",
-      "Multiple Inline Declarations"
+      "Multiple Inline Declarations",
+      "Nullability"
     ],
     "Functions": [],
     "Operators": [],
@@ -54,25 +55,50 @@
     "Data Structures": [],
     "String Manipulation": [],
     "File I/O": [
+      "Read from STDIN",
+      "Write to STDOUT",
       "Read from a File",
       "Write to a File"
+    ],
+    "Mathematics": [
+      "Combinatorics"
     ]
-},
-  "TODO": [
-    "POSIX regular expressions",
-    "GNU Grep, Awk, and sed",
-    "Difference between Globs and Regex",
-    "Types of Shell Expansion",
-    "Mac, Linux, Windows shell scripting",
-    "Socket Programming"
-  ],
+  },
+  "TODO": {
+    "General": [
+      "POSIX regular expressions",
+      "GNU Grep, Awk, and sed",
+      "Difference between Globs and Regex",
+      "Types of Shell Expansion",
+      "Mac, Linux, Windows shell scripting",
+      "Socket Programming"
+    ],
+    "SQL": [
+      "Views",
+      "Partition by",
+      "Composite Keys"
+    ]
+  },
   "Networking": [
-    "OSI Model",
-    "Application Layer",
-    "Transport Layer",
     "Socket Programming",
-    "Network Layer",
-    "Link Layer"
+    "Data-Flow through a Network Stack",
+    "OSI Model",
+    "Application",
+    "Network",
+    "Link",
+    "Session",
+    "Presentation",
+    "Transport",
+    "Data",
+    "Physical",
+    "Common Protocols",
+    "TCP",
+    "UDP",
+    "IP",
+    "HTTP",
+    "Ethernet",
+    "Bluetooth",
+    "DNS"
   ],
   "General Language Notes": [
     "Always declare and initialize all your variables at the beginning of your scope."
