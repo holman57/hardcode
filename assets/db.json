@@ -44,9 +44,18 @@
       "Mutability",
       "Multiple Inline Declarations"
     ],
+    "Functions": [],
+    "Operators": [],
     "Control Flow": [
+      "Conditional Expressions",
       "Loops",
       "Signals and Traps"
+    ],
+    "Data Structures": [],
+    "String Manipulation": [],
+    "File I/O": [
+      "Read from a File",
+      "Write to a File"
     ]
 },
   "TODO": [
