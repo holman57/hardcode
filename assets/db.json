@@ -30,9 +30,11 @@
     "MQL",
     "MariaDB",
     "MongoDB",
-    "Amazon DynamoDB",
-    "Microsoft Azure Cosmos DB",
-    "Google Cloud Firestore",
+    "Redis",
+    "HBase",
+    "DynamoDB",
+    "Cosmos DB",
+    "Firestore",
     "Relational Algebra"
   ],
   "Language Structure": {
