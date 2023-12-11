@@ -60,6 +60,7 @@
       "Multiple Inline Declarations",
       "Nullability"
     ],
+    "Comments": [],
     "Functions": [],
     "Operators": [],
     "Control Flow": [
@@ -85,6 +86,10 @@
       "Division",
       "Common Mathematical Expressions"
     ],
+    "Date and Time Manipulation": [
+      "Date",
+      "Weekday"
+    ],
     "Data Structures": [
       "Array",
       "List",
@@ -92,7 +97,13 @@
       "Heap",
       "Stack"
     ],
-    "Event Loop": [],
+    "Timers": [],
+    "Event Loop": [
+      "Blocking",
+      "Asynchronous",
+      "Event Queue",
+      "API pool"
+    ],
     "Process": [],
     "Concurrency": [],
     "CPU Scheduling": [],
@@ -135,7 +146,9 @@
     "Ethernet",
     "Bluetooth",
     "DNS",
-    "Network Services"
+    "Network Services",
+    "IP Addressing",
+    "Subnetting"
   ],
   "General Language Notes": [
     "Always declare and initialize all your variables at the beginning of your scope."
