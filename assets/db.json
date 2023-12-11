@@ -37,6 +37,13 @@
     "Firestore",
     "Relational Algebra"
   ],
+  "OOP": [
+    "Java",
+    "C#",
+    "Python",
+    "C++",
+    "JavaScript"
+  ],
   "Operating System": {
     "Names": [
       "Desktop",
@@ -78,7 +85,9 @@
       "Write to STDOUT",
       "Read from a File",
       "Write to a File",
-      "Directory Structure"
+      "Directory Structure",
+      "JSON",
+      "XML"
     ],
     "Mathematics": [
       "Combinatorics",
@@ -89,6 +98,19 @@
     "Date and Time Manipulation": [
       "Date",
       "Weekday"
+    ],
+    "Classes": [
+      "Declaration",
+      "Access Modifiers",
+      "Attributes",
+      "Methods",
+      "Encapsulation",
+      "Abstraction",
+      "Inheritance",
+      "Polymorphism",
+      "Data Hiding",
+      "Constructor",
+      "Getters and Setters"
     ],
     "Data Structures": [
       "Array",
@@ -182,6 +204,18 @@
       "While Scala is a pure object-oriented programming language, it is also fully functional.",
       "In Scala variables are immutable by default.",
       "Scala follows a Lazy Computation model where expressions are only evaluated when required. This increases performance by reducing compile time."
+    ]
+  },
+  "DB Specific Notes": {
+    "MongoDB": [
+      "A collection in MongoDB is the same as a table in a relational databases.",
+      "A document in MongoDB is the same as a row in a relational databases.",
+      "A single entry in a collection is called a document.",
+      "A filter query fetches documents from a collection.",
+      "Operators are used to perform different filters or operations on a collection or a document.",
+      "Aggregation pipelines are used to perform aggregations or join operations on multiple collections.",
+      "Projection is used to select specific fields from a collection, reduce array data, and select specific fields from embedded documents.",
+      "GridFS is used to store large files."
     ]
   },
   "Variables": {
