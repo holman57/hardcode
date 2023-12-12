@@ -24,6 +24,7 @@
     "T-SQL",
     "Oracle",
     "PostgreSQL",
+    "SQLite",
     "Pandas",
     "Neo4j",
     "GraphQL",
@@ -172,10 +173,39 @@
     "IP Addressing",
     "Subnetting"
   ],
+  "Artificial Intelligence": {
+    "Names": [
+      "Machine Learning"
+    ],
+    "Machine Learning": {
+      "Names": [
+        "Missing Values",
+        "Categorical Variables",
+        "Frameworks"
+      ],
+      "Frameworks": [
+        "sklearn",
+        "Tensorflow",
+        "PyTorch"
+      ],
+      "Missing Values": [
+        "Drop Column",
+        "Drop Row",
+        "Imputation"
+      ],
+      "Categorical Variables": [
+        "Cardinality",
+        "Ordinal Encoding",
+        "One-Hot Encoding"
+      ]
+    }
+  },
   "General Language Notes": [
-    "Always declare and initialize all your variables at the beginning of your scope."
+    "Always declare and initialize all your variables at the beginning of your scope.",
+    "Statically typed programming languages are those in which variables need to be defined before they are used."
   ],
   "General DB Notes": [
+    "Instead of using joins, NoSQL databases often use techniques such as embedding and referencing to combine data from multiple documents or collections.",
     "The simplest form of a NoSQL database is called a Key-Value database and it's designed kind of like a dictionary.",
     "A Document database is a type of NoSQL database that can store multiple key values in a structure called a document. Documents roughly parallel rows in a table. Keys are scalars. And values may be complex data structures such as arrays or lists.",
     "A Wide Column database is a type of NoSQL database where the columns are not fixed and the data is denormalized. The values can be complex structures such as arrays or lists.",
@@ -199,6 +229,12 @@
       "The \"virtual\" keyword indicates that the method can be overridden by subclasses.\n",
       "If you don't provide a constructor for a class, the compiler will create a default one.",
       "Testing frameworks such as NUnit make C# amenable to test-driven development and thus a good language for use with Extreme Programming."
+    ],
+    "Dart": [
+      "Type inference allows us to declare a variable without explicitly mentioning the data type.",
+      "In Dart, we can insert the var keyword in place of the data type.",
+      "If you want a variable to hold objects of many types, you can declare a variable using the dynamic keyword.",
+      "The type num is generic enough to hold both int and double."
     ],
     "Scala": [
       "While Scala is a pure object-oriented programming language, it is also fully functional.",
