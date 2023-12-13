@@ -205,6 +205,10 @@
     "Statically typed programming languages are those in which variables need to be defined before they are used."
   ],
   "General DB Notes": [
+    "A database system is self-describing because it not only contains the database itself, but also the meta-data which defines and describes the data and relationships between tables in the database.",
+    "Insulation between the programs and data is also called program-data independence.",
+
+    "A view is a subset of the database, which is defined and dedicated for particular users of the system. ",
     "Instead of using joins, NoSQL databases often use techniques such as embedding and referencing to combine data from multiple documents or collections.",
     "The simplest form of a NoSQL database is called a Key-Value database and it's designed kind of like a dictionary.",
     "A Document database is a type of NoSQL database that can store multiple key values in a structure called a document. Documents roughly parallel rows in a table. Keys are scalars. And values may be complex data structures such as arrays or lists.",
