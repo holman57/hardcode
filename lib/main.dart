@@ -95,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String _question = "";
   String _correctAnswer = "";
   final List _choices = [];
-  final List _choiceSelections = [];
+  final List<String> _choiceSelections = [];
   List _intSmallVarSet = [];
   List _intVarNames = [];
   List _intRustVarTypes = [];
@@ -286,7 +286,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Text('$_choices'),
               Column(
-                children: letters.map((String char){
+                children: _choiceSelections.map((String char){
                   return OutlinedButton(onPressed: () {  },
                   child: Text(char));
                 }).toList(),
@@ -299,7 +299,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 onPressed: () {},
-                child: const Text("Tap on this"),
+                child: const Text("OutlinedButton Example"),
               ),
 
             ],
