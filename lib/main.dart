@@ -99,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List _intSmallVarSet = [];
   List _intVarNames = [];
   List _intRustVarTypes = [];
-  List<String> letters = ["A", "B", "C", "D"];
+  final List<String> _answerGroup = [];
 
   Future<void> readJson() async {
     final String response = await rootBundle.loadString('assets/db.json');
@@ -117,6 +117,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _intSmallVarSet =
         (_data['Variables']['Integer Small Variable Sets'] as List);
     _intRustVarTypes = (_data['Variables']['Rust Int Variable Types'] as List);
+    generateQuestion();
   }
 
   String renderPatternOptions(answer, pattern) {
@@ -189,6 +190,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void generateQuestion() {
+    _answerGroup.clear();
     _choices.clear();
     _incorrectPatternGroups.clear();
     _incorrectPatternPriorities.clear();
@@ -231,6 +233,7 @@ class _MyHomePageState extends State<MyHomePage> {
       if (_correctPatterns.contains(incorrectAnswer)) continue;
       _choices.add([incorrectAnswer, 0]);
     }
+    _choices.shuffle();
     for (var item in _choices) {
       if (kDebugMode) {
         print(item);
@@ -251,6 +254,9 @@ class _MyHomePageState extends State<MyHomePage> {
     if (kDebugMode) {
       print('--------------');
     }
+    _choices.forEach((e) {
+      _answerGroup.add(e[0]);
+    });
   }
 
   @override
@@ -279,29 +285,32 @@ class _MyHomePageState extends State<MyHomePage> {
               Text(
                 _question,
               ),
-              Text('$_correctPatterns'),
-              Text(
-                _correctAnswer,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              Text('$_choices'),
+              //
+              // Text('$_correctPatterns'),
+              // Text(
+              //   _correctAnswer,
+              //   style: Theme.of(context).textTheme.titleLarge,
+              // ),
+              // Text('$_choices'),
+              //
               Column(
-                children: _choiceSelections.map((String char){
+                children: _answerGroup.map((String char){
                   return OutlinedButton(onPressed: () {  },
                   child: Text(char));
                 }).toList(),
               ),
-              OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.black,
-                  side: const BorderSide(
-                    color: Colors.blue,
-                  ),
-                ),
-                onPressed: () {},
-                child: const Text("OutlinedButton Example"),
-              ),
-
+              //
+              // OutlinedButton(
+              //   style: OutlinedButton.styleFrom(
+              //     foregroundColor: Colors.black,
+              //     side: const BorderSide(
+              //       color: Colors.blue,
+              //     ),
+              //   ),
+              //   onPressed: () {},
+              //   child: const Text("OutlinedButton Example"),
+              // ),
+              //
             ],
           ),
 
