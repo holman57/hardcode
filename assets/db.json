@@ -146,7 +146,8 @@
     "SQL": [
       "Views",
       "Partition by",
-      "Composite Keys"
+      "Composite Keys",
+      "Set Operators"
     ]
   },
   "Networking": [
