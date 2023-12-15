@@ -1,6 +1,6 @@
 
 # HardCode
-# [Holman57.github.io/hardcode/](Holman57.github.io/hardcode/)
+# [Holman57.github.io/hardcode/](https://holman57.github.io/hardcode/)
 
 A flashcard-style Question-and-Answer system for memorizing the syntax of common programming languages.
 

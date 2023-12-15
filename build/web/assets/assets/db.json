@@ -24,6 +24,7 @@
     "T-SQL",
     "Oracle",
     "PostgreSQL",
+    "SQLite",
     "Pandas",
     "Neo4j",
     "GraphQL",
@@ -37,13 +38,37 @@
     "Firestore",
     "Relational Algebra"
   ],
+  "OOP": [
+    "Java",
+    "C#",
+    "Python",
+    "C++",
+    "JavaScript"
+  ],
+  "Operating System": {
+    "Names": [
+      "Desktop",
+      "Mobile"
+    ],
+    "Desktop": [
+      "Windows",
+      "Linux",
+      "Mac"
+    ],
+    "Mobile": [
+      "Android",
+      "iOS"
+    ]
+  },
   "Language Structure": {
     "Variables": [
       "Declaration",
       "Data Types",
       "Mutability",
-      "Multiple Inline Declarations"
+      "Multiple Inline Declarations",
+      "Nullability"
     ],
+    "Comments": [],
     "Functions": [],
     "Operators": [],
     "Control Flow": [
@@ -51,33 +76,140 @@
       "Loops",
       "Signals and Traps"
     ],
-    "Data Structures": [],
-    "String Manipulation": [],
-    "File I/O": [
+    "String Manipulation": [
+      "Concatenation",
+      "Slicing",
+      "String Interpolation"
+    ],
+    "File-System Interface": [
+      "Read from STDIN",
+      "Write to STDOUT",
       "Read from a File",
-      "Write to a File"
+      "Write to a File",
+      "Directory Structure",
+      "JSON",
+      "XML"
+    ],
+    "Mathematics": [
+      "Combinatorics",
+      "Exponentiation",
+      "Division",
+      "Common Mathematical Expressions"
+    ],
+    "Date and Time Manipulation": [
+      "Date",
+      "Weekday"
+    ],
+    "Classes": [
+      "Declaration",
+      "Access Modifiers",
+      "Attributes",
+      "Methods",
+      "Encapsulation",
+      "Abstraction",
+      "Inheritance",
+      "Polymorphism",
+      "Data Hiding",
+      "Constructor",
+      "Getters and Setters"
+    ],
+    "Data Structures": [
+      "Array",
+      "List",
+      "Map",
+      "Heap",
+      "Stack"
+    ],
+    "Timers": [],
+    "Event Loop": [
+      "Blocking",
+      "Asynchronous",
+      "Event Queue",
+      "API pool"
+    ],
+    "Process": [],
+    "Concurrency": [],
+    "CPU Scheduling": [],
+    "Synchronization": [],
+    "Deadlocks": [],
+    "Memory Management": []
+  },
+  "TODO": {
+    "General": [
+      "POSIX regular expressions",
+      "GNU Grep, Awk, and sed",
+      "Difference between Globs and Regex",
+      "Types of Shell Expansion",
+      "Mac, Linux, Windows shell scripting",
+      "Socket Programming"
+    ],
+    "SQL": [
+      "Views",
+      "Partition by",
+      "Composite Keys"
     ]
-},
-  "TODO": [
-    "POSIX regular expressions",
-    "GNU Grep, Awk, and sed",
-    "Difference between Globs and Regex",
-    "Types of Shell Expansion",
-    "Mac, Linux, Windows shell scripting",
-    "Socket Programming"
-  ],
+  },
   "Networking": [
-    "OSI Model",
-    "Application Layer",
-    "Transport Layer",
     "Socket Programming",
-    "Network Layer",
-    "Link Layer"
+    "Data-Flow through a Network Stack",
+    "OSI Model",
+    "Application",
+    "Network",
+    "Link",
+    "Session",
+    "Presentation",
+    "Transport",
+    "Data",
+    "Physical",
+    "Common Protocols",
+    "TCP",
+    "UDP",
+    "IP",
+    "HTTP",
+    "Ethernet",
+    "Bluetooth",
+    "DNS",
+    "Network Services",
+    "IP Addressing",
+    "Subnetting"
   ],
+  "Artificial Intelligence": {
+    "Names": [
+      "Machine Learning"
+    ],
+    "Machine Learning": {
+      "Names": [
+        "Missing Values",
+        "Categorical Variables",
+        "Frameworks"
+      ],
+      "Frameworks": [
+        "sklearn",
+        "Tensorflow",
+        "PyTorch"
+      ],
+      "Missing Values": [
+        "Drop Column",
+        "Drop Row",
+        "Imputation"
+      ],
+      "Categorical Variables": [
+        "Cardinality",
+        "Ordinal Encoding",
+        "One-Hot Encoding"
+      ]
+    }
+  },
   "General Language Notes": [
-    "Always declare and initialize all your variables at the beginning of your scope."
+    "Always declare and initialize all your variables at the beginning of your scope.",
+    "Statically typed programming languages are those in which variables need to be defined before they are used."
   ],
   "General DB Notes": [
+    "A database system is self-describing because it not only contains the database itself, but also the meta-data which defines and describes the data and relationships between tables in the database.",
+    "Insulation between the programs and data is also called program-data independence.",
+
+    "A view is a subset of the database, which is defined and dedicated for particular users of the system. ",
+    "Instead of using joins, NoSQL databases often use techniques such as embedding and referencing to combine data from multiple documents or collections.",
     "The simplest form of a NoSQL database is called a Key-Value database and it's designed kind of like a dictionary.",
     "A Document database is a type of NoSQL database that can store multiple key values in a structure called a document. Documents roughly parallel rows in a table. Keys are scalars. And values may be complex data structures such as arrays or lists.",
     "A Wide Column database is a type of NoSQL database where the columns are not fixed and the data is denormalized. The values can be complex structures such as arrays or lists.",
@@ -102,10 +234,28 @@
       "If you don't provide a constructor for a class, the compiler will create a default one.",
       "Testing frameworks such as NUnit make C# amenable to test-driven development and thus a good language for use with Extreme Programming."
     ],
+    "Dart": [
+      "Type inference allows us to declare a variable without explicitly mentioning the data type.",
+      "In Dart, we can insert the var keyword in place of the data type.",
+      "If you want a variable to hold objects of many types, you can declare a variable using the dynamic keyword.",
+      "The type num is generic enough to hold both int and double."
+    ],
     "Scala": [
       "While Scala is a pure object-oriented programming language, it is also fully functional.",
       "In Scala variables are immutable by default.",
       "Scala follows a Lazy Computation model where expressions are only evaluated when required. This increases performance by reducing compile time."
+    ]
+  },
+  "DB Specific Notes": {
+    "MongoDB": [
+      "A collection in MongoDB is the same as a table in a relational databases.",
+      "A document in MongoDB is the same as a row in a relational databases.",
+      "A single entry in a collection is called a document.",
+      "A filter query fetches documents from a collection.",
+      "Operators are used to perform different filters or operations on a collection or a document.",
+      "Aggregation pipelines are used to perform aggregations or join operations on multiple collections.",
+      "Projection is used to select specific fields from a collection, reduce array data, and select specific fields from embedded documents.",
+      "GridFS is used to store large files."
     ]
   },
   "Variables": {
