@@ -254,9 +254,9 @@ class _MyHomePageState extends State<MyHomePage> {
     if (kDebugMode) {
       print('--------------');
     }
-    _choices.forEach((e) {
+    for (var e in _choices) {
       _answerGroup.add(e[0]);
-    });
+    }
   }
 
   @override
