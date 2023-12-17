@@ -18765,7 +18765,7 @@ Xe:function Xe(a){this.a=a},
 Xb:function Xb(a){this.a=a},
 Xa:function Xa(a,b){this.a=a
 this.b=b},
-X8:function X8(){},
+X8:function X8(a){this.a=a},
 Xc:function Xc(a){this.a=a},
 X9:function X9(a){this.a=a},
 Oc(a){var s=new A.aY(new Float64Array(16))
@@ -53794,11 +53794,10 @@ return new A.k0(new A.Xa(this.a,a),s,s,s,s,B.H,s,!1,s,A.SM(a),s)},
 $S:347}
 A.Xa.prototype={
 $0(){var s=this.a
-if(J.bf(s.db[B.b.h6(s.fy,this.b)],1)===1){s.qk()
-s.ar(new A.X8())}},
+if(J.bf(s.db[B.b.h6(s.fy,this.b)],1)===1)s.ar(new A.X8(s))},
 $S:0}
 A.X8.prototype={
-$0(){},
+$0(){this.a.qk()},
 $S:0}
 A.Xc.prototype={
 $0(){var s=this.a
