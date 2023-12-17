@@ -300,8 +300,11 @@ class _MyHomePageState extends State<MyHomePage> {
                         int answer =
                             _choices[_answerGroup.indexOf(answerButton)][1];
                         if (answer == 1) {
-                          generateQuestion();
-                          setState(() {});
+
+                          setState(() {
+                            generateQuestion();
+                          });
+
                         }
                       },
                       child: Text(answerButton));
