@@ -514,9 +514,34 @@
           ]
         }
       },
-      "Mutability": [],
-      "Multiple Declaration": []
+      "Data Types": {
+        "Notes": {
+          "General": []
+        },
+        "Multi-Choice": {
+          "Type": "Primitive Types",
+          "Sub-Type": "Floating Point Assignment",
+          "Question": [
+            "How do you declare and assign an Integer variable in [language]?",
+            "Which of the following is a correct way to assign an Integer value to a variable in [language]?",
+            "Declare and assign an Integer variable in [language] using:",
+            "Assignment and declaration of an Integer variable in [language] looks like,",
+            "In [language], assigning and declaring an Integer variable is done by",
+            "A Correct way of assigning and declaring an Integer variable using [language] is"
+          ],
+          "True-False": [
+            "Is this a Correct way to declare and assign an Integer variable in [language]?",
+            "The following is a Correct assignment and declaration of an Integer variable in [language].",
+            "(T/F) An assignment and declaration of an Integer variable in [language]:",
+            "In [language], the Correct way to assign and declare an Integer variable is"
+          ],
+          "Answers": {
+          },
+          "Mutability": [],
+          "Multiple Declaration": []
+        }
+      },
+      "Control Flow": []
     }
-  },
-  "Control Flow": []
+  }
 }
