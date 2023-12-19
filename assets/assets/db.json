@@ -38,27 +38,11 @@
     "Firestore",
     "Relational Algebra"
   ],
-  "OOP": [
-    "Java",
-    "C#",
-    "Python",
-    "C++",
-    "JavaScript"
-  ],
+  "OOP": ["Java", "C#", "Python", "C++", "JavaScript"],
   "Operating System": {
-    "Names": [
-      "Desktop",
-      "Mobile"
-    ],
-    "Desktop": [
-      "Windows",
-      "Linux",
-      "Mac"
-    ],
-    "Mobile": [
-      "Android",
-      "iOS"
-    ]
+    "Names": ["Desktop", "Mobile"],
+    "Desktop": ["Windows", "Linux", "Mac"],
+    "Mobile": ["Android", "iOS"]
   },
   "Language Structure": {
     "Variables": [
@@ -68,19 +52,12 @@
       "Multiple Inline Declarations",
       "Nullability"
     ],
+    "Arrays": ["Declaration", "Sum Elements"],
     "Comments": [],
     "Functions": [],
     "Operators": [],
-    "Control Flow": [
-      "Conditional Expressions",
-      "Loops",
-      "Signals and Traps"
-    ],
-    "String Manipulation": [
-      "Concatenation",
-      "Slicing",
-      "String Interpolation"
-    ],
+    "Control Flow": ["Conditional Expressions", "Loops", "Signals and Traps"],
+    "String Manipulation": ["Concatenation", "Slicing", "String Interpolation"],
     "File-System Interface": [
       "Read from STDIN",
       "Write to STDOUT",
@@ -98,12 +75,11 @@
       "Monthly Interest Rate",
       "Accrued Value",
       "Confidence Interval",
-      "Standard Error"
+      "Standard Error",
+      "Combinations",
+      "Permutations"
     ],
-    "Date and Time Manipulation": [
-      "Date",
-      "Weekday"
-    ],
+    "Date and Time Manipulation": ["Date", "Weekday"],
     "Classes": [
       "Declaration",
       "Access Modifiers",
@@ -117,24 +93,10 @@
       "Constructor",
       "Getters and Setters"
     ],
-    "Algorithms": [
-      "BFS",
-      "DFS"
-    ],
-    "Data Structures": [
-      "Array",
-      "List",
-      "Map",
-      "Heap",
-      "Stack"
-    ],
+    "Algorithms": ["BFS", "DFS"],
+    "Data Structures": ["Array", "List", "Map", "Heap", "Stack"],
     "Timers": [],
-    "Event Loop": [
-      "Blocking",
-      "Asynchronous",
-      "Event Queue",
-      "API pool"
-    ],
+    "Event Loop": ["Blocking", "Asynchronous", "Event Queue", "API pool"],
     "Iterators": [],
     "Process": [],
     "Concurrency": [],
@@ -144,10 +106,7 @@
     "Memory Management": []
   },
   "TODO": {
-    "Names": [
-      "Language",
-      "DB"
-    ],
+    "Names": ["Language", "DB"],
     "Language": {
       "General": [
         "POSIX regular expressions",
@@ -160,17 +119,10 @@
     },
     "DB": [
       {
-        "General": [
-          "Column-wise Operations"
-        ]
+        "General": ["Column-wise Operations"]
       },
       {
-        "SQL": [
-          "Views",
-          "Partition by",
-          "Composite Keys",
-          "Set Operators"
-        ]
+        "SQL": ["Views", "Partition by", "Composite Keys", "Set Operators"]
       }
     ]
   },
@@ -199,25 +151,11 @@
     "Subnetting"
   ],
   "Artificial Intelligence": {
-    "Names": [
-      "Machine Learning"
-    ],
+    "Names": ["Machine Learning"],
     "Machine Learning": {
-      "Names": [
-        "Missing Values",
-        "Categorical Variables",
-        "Frameworks"
-      ],
-      "Frameworks": [
-        "sklearn",
-        "Tensorflow",
-        "PyTorch"
-      ],
-      "Missing Values": [
-        "Drop Column",
-        "Drop Row",
-        "Imputation"
-      ],
+      "Names": ["Missing Values", "Categorical Variables", "Frameworks"],
+      "Frameworks": ["sklearn", "Tensorflow", "PyTorch"],
+      "Missing Values": ["Drop Column", "Drop Row", "Imputation"],
       "Categorical Variables": [
         "Cardinality",
         "Ordinal Encoding",
@@ -309,13 +247,7 @@
       "rate",
       "limit"
     ],
-    "Integer Small Variable Sets": [
-      "x",
-      "y",
-      "n",
-      "i",
-      "j"
-    ],
+    "Integer Small Variable Sets": ["x", "y", "n", "i", "j"],
     "Random Variables": [
       "[extensible whitespace]",
       "[optional semicolon]",
@@ -535,13 +467,37 @@
             "(T/F) An assignment and declaration of an Integer variable in [language]:",
             "In [language], the Correct way to assign and declare an Integer variable is"
           ],
-          "Answers": {
-          },
+          "Answers": {},
           "Mutability": [],
           "Multiple Declaration": []
         }
       },
       "Control Flow": []
     }
-  }
+  },
+  "Arrays": {
+    "Declaration": {
+      "Notes": {
+        "C": []
+      },
+      "Multi-Choice": {
+        "Type": "Array General",
+        "Sub-Type": "Array Declaration",
+        "Question": [],
+        "Answers": {}
+      }
+    },
+    "Sum Elements": {
+      "Notes": {
+        "JavaScript": ["var sum = arr => arr.reduce((a,b) => a + b);"]
+      },
+      "Multi-Choice": {
+        "Type": "Array General",
+        "Sub-Type": "Array Declaration",
+        "Question": [],
+        "Answers": {}
+      }
+    }
+  },
+  "Control Flow": {}
 }
