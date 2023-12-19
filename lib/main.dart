@@ -294,9 +294,21 @@ class _MyHomePageState extends State<MyHomePage> {
               // Text('$_choices'),
               //
               Column(
-                children: _answerGroup.map((String char){
-                  return OutlinedButton(onPressed: () {  },
-                  child: Text(char));
+                children: _answerGroup.map((String answerButton) {
+                  return OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(40),
+                      ),
+                      onPressed: () {
+                        int answer =
+                            _choices[_answerGroup.indexOf(answerButton)][1];
+                        if (answer == 1) {
+                          setState(() {
+                            generateQuestion();
+                          });
+                        }
+                      },
+                      child: Text(answerButton));
                 }).toList(),
               ),
               //
@@ -313,7 +325,6 @@ class _MyHomePageState extends State<MyHomePage> {
               //
             ],
           ),
-
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
