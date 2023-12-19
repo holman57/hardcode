@@ -68,6 +68,10 @@
       "Multiple Inline Declarations",
       "Nullability"
     ],
+    "Arrays": [
+      "Declaration",
+      "Sum Elements"
+    ],
     "Comments": [],
     "Functions": [],
     "Operators": [],
@@ -98,7 +102,9 @@
       "Monthly Interest Rate",
       "Accrued Value",
       "Confidence Interval",
-      "Standard Error"
+      "Standard Error",
+      "Combinations",
+      "Permutations"
     ],
     "Date and Time Manipulation": [
       "Date",
@@ -518,5 +524,31 @@
       "Multiple Declaration": []
     }
   },
-  "Control Flow": []
+  "Arrays": {
+    "Declaration": {
+      "Notes": {
+        "C": []
+      },
+      "Multi-Choice": {
+        "Type": "Array General",
+        "Sub-Type": "Array Declaration",
+        "Question": [],
+        "Answers": {}
+      }
+    },
+    "Sum Elements": {
+      "Notes": {
+        "JavaScript": [
+          "var sum = arr => arr.reduce((a,b) => a + b);"
+        ]
+      },
+      "Multi-Choice": {
+        "Type": "Array General",
+        "Sub-Type": "Array Declaration",
+        "Question": [],
+        "Answers": {}
+      }
+    }
+  },
+  "Control Flow": {}
 }
