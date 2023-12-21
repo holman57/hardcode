@@ -52,11 +52,15 @@
       "Multiple Inline Declarations",
       "Nullability"
     ],
+    "Control Flow": [
+      "Conditional Expressions",
+      "Loops",
+      "Signals and Traps"
+    ],
     "Arrays": ["Declaration", "Sum Elements"],
     "Comments": [],
     "Functions": [],
     "Operators": [],
-    "Control Flow": ["Conditional Expressions", "Loops", "Signals and Traps"],
     "String Manipulation": ["Concatenation", "Slicing", "String Interpolation"],
     "File-System Interface": [
       "Read from STDIN",
