@@ -124,7 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
     String render = (answer as String);
     pattern.forEach((p) {
       if (answer.contains(p)) {
-        List options = p.replaceAll("[", "").replaceAll("]", "").split("|");
+        List options = p.substring(1, p.length - 1).split("|");
         Random random = Random.secure();
         String option = options[random.nextInt(options.length)];
         if (option == "None") {
