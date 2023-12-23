@@ -79,6 +79,11 @@
       "Continue",
       "Return"
     ],
+    "Strings": [
+      "Declare",
+      "Length",
+      "Slicing"
+    ],
     "Arrays": [
       "Declaration",
       "Sum Elements"
