@@ -199,8 +199,34 @@ class _MyHomePageState extends State<MyHomePage> {
     _language = (_langList[prgLanguage.pickIndex()] as String);
     _correctAnswer = (_data["Variables"]["Declaration"]["Multi-Choice"]
         ["Answers"]["Preferred"][_language] as String);
+    Random random = Random.secure();
+    int answerSelection = 0;
+    if (random.nextInt(2) == 1) {
+      answerSelection = random.nextInt(_data["Variables"]["Declaration"]
+                  ["Multi-Choice"]["Answers"]["Correct"][_language]
+              .length);
+      _correctAnswer = (_data["Variables"]["Declaration"]["Multi-Choice"]
+          ["Answers"]["Correct"][_language][answerSelection] as String);
+      if (random.nextInt(4) == 1) {
+        _correctAnswer =
+            _correctAnswer.replaceAll("[extensible whitespace]", "");
+      } else {
+        _correctAnswer =
+            _correctAnswer.replaceAll("[extensible whitespace]", " ");
+      }
+      if (random.nextInt(2) == 1) {
+        _correctAnswer = _correctAnswer.replaceAll("[optional semicolon]", "");
+      } else {
+        _correctAnswer = _correctAnswer.replaceAll("[optional semicolon]", ";");
+      }
+    }
+    if (kDebugMode) {
+      print('\n');
+      print(_correctAnswer);
+      print('\n');
+    }
     _correctPatterns = (_data["Variables"]["Declaration"]["Multi-Choice"]
-        ["Answers"]["Correct"][_language] as List);
+    ["Answers"]["Correct"][_language] as List);
     _incorrectPatternGroups.clear();
     _data['Variables']['Declaration']['Multi-Choice']['Answers']['Incorrect']
         .forEach((item) {
@@ -216,7 +242,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _variableBranching = (_data['Variables']['Random Variables'] as List);
     _questionRange = _questions.length;
     while (_questionNumber == _prevQuestionNumber) {
-      Random random = Random.secure();
+      random = Random.secure();
       _questionNumber = random.nextInt(_questionRange);
     }
     _prevQuestionNumber = _questionNumber;
