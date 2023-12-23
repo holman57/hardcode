@@ -68,13 +68,36 @@
       "Multiple Inline Declarations",
       "Nullability"
     ],
-    "Comments": [],
-    "Functions": [],
-    "Operators": [],
     "Control Flow": [
-      "Conditional Expressions",
-      "Loops",
-      "Signals and Traps"
+      "If-Then",
+      "If-Then-Else",
+      "Switch",
+      "For",
+      "While",
+      "Do-While",
+      "Break",
+      "Continue",
+      "Return"
+    ],
+    "Strings": [
+      "Declare",
+      "Length",
+      "Slicing"
+    ],
+    "Arrays": [
+      "Declaration",
+      "Sum Elements"
+    ],
+    "Operators": [
+      "arithmetic",
+      "logical"
+    ],
+    "Comments": [
+      "Inline",
+      "Block"
+    ],
+    "Functions": [
+      "Declaration"
     ],
     "String Manipulation": [
       "Concatenation",
@@ -98,7 +121,9 @@
       "Monthly Interest Rate",
       "Accrued Value",
       "Confidence Interval",
-      "Standard Error"
+      "Standard Error",
+      "Combinations",
+      "Permutations"
     ],
     "Date and Time Manipulation": [
       "Date",
@@ -119,14 +144,16 @@
     ],
     "Algorithms": [
       "BFS",
-      "DFS"
+      "DFS",
+      "Divide and Conquer"
     ],
     "Data Structures": [
       "Array",
       "List",
       "Map",
       "Heap",
-      "Stack"
+      "Stack",
+      "Graph"
     ],
     "Timers": [],
     "Event Loop": [
@@ -136,7 +163,7 @@
       "API pool"
     ],
     "Iterators": [],
-    "Process": [],
+    "Processes": [],
     "Concurrency": [],
     "CPU Scheduling": [],
     "Synchronization": [],
@@ -535,13 +562,39 @@
             "(T/F) An assignment and declaration of an Integer variable in [language]:",
             "In [language], the Correct way to assign and declare an Integer variable is"
           ],
-          "Answers": {
-          },
+          "Answers": {},
           "Mutability": [],
           "Multiple Declaration": []
         }
       },
       "Control Flow": []
     }
-  }
+  },
+  "Arrays": {
+    "Declaration": {
+      "Notes": {
+        "C": []
+      },
+      "Multi-Choice": {
+        "Type": "Array General",
+        "Sub-Type": "Array Declaration",
+        "Question": [],
+        "Answers": {}
+      }
+    },
+    "Sum Elements": {
+      "Notes": {
+        "JavaScript": [
+          "var sum = arr => arr.reduce((a,b) => a + b);"
+        ]
+      },
+      "Multi-Choice": {
+        "Type": "Array General",
+        "Sub-Type": "Array Declaration",
+        "Question": [],
+        "Answers": {}
+      }
+    }
+  },
+  "Control Flow": {}
 }
