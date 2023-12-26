@@ -155,6 +155,9 @@
       "Stack",
       "Graph"
     ],
+    "Dynamic Programming": [
+      "Climbing Stairs"
+    ],
     "Timers": [],
     "Event Loop": [
       "Blocking",
