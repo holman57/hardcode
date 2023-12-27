@@ -77,7 +77,8 @@
       "Do-While",
       "Break",
       "Continue",
-      "Return"
+      "Return",
+      "Yield"
     ],
     "Strings": [
       "Declare",
@@ -86,7 +87,8 @@
     ],
     "Arrays": [
       "Declaration",
-      "Sum Elements"
+      "Sum Elements",
+      "Generators"
     ],
     "Operators": [
       "arithmetic",
