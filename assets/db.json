@@ -80,6 +80,11 @@
       "Return",
       "Yield"
     ],
+    "Strings": [
+      "Declare",
+      "Length",
+      "Slicing"
+    ],
     "Arrays": [
       "Declaration",
       "Sum Elements",
@@ -151,6 +156,9 @@
       "Heap",
       "Stack",
       "Graph"
+    ],
+    "Dynamic Programming": [
+      "Climbing Stairs"
     ],
     "Timers": [],
     "Event Loop": [
