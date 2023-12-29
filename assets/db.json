@@ -83,28 +83,28 @@
     "Strings": [
       "Declare",
       "Length",
-      "Slicing"
+      "Concatenation",
+      "Slicing",
+      "Interpolation"
     ],
     "Arrays": [
       "Declaration",
+      "Accessing an Element",
       "Sum Elements",
       "Generators"
     ],
     "Operators": [
-      "arithmetic",
-      "logical"
+      "Arithmetic",
+      "Logical",
+      "Precedence"
     ],
     "Comments": [
       "Inline",
       "Block"
     ],
     "Functions": [
-      "Declaration"
-    ],
-    "String Manipulation": [
-      "Concatenation",
-      "Slicing",
-      "String Interpolation"
+      "Declaration",
+      "Overriding"
     ],
     "File-System Interface": [
       "Read from STDIN",
