@@ -571,20 +571,165 @@
           "Mutability": [],
           "Multiple Declaration": []
         }
-      },
-      "Control Flow": []
+      }
+
+    }
+  },
+  "Control Flow": {
+    "Notes": {
+      "C": [],
+      "Python": [],
+      "Go": [],
+      "C++": [],
+      "PowerShell": [],
+      "PHP": [],
+      "C#": [],
+      "Bash": [],
+      "Rust": [],
+      "Java": [],
+      "JavaScript": [],
+      "Ruby": [],
+      "Kotlin": [],
+      "Swift": [],
+      "TypeScript": [],
+      "Lua": [],
+      "Scala": [],
+      "Dart": []
+    },
+    "If-Then": {
+      "Multi-Choice": {
+        "Type": "",
+        "Sub-Type": "",
+        "Question": [],
+        "True-False": [],
+        "Answers": {
+          "Preferred": {
+            "C": "",
+            "Python": "",
+            "Go": "",
+            "C++": "",
+            "PowerShell": "",
+            "PHP": "",
+            "C#": "",
+            "Bash": "",
+            "Rust": "",
+            "Java": "",
+            "JavaScript": "",
+            "Ruby": "",
+            "Kotlin": "",
+            "Swift": "",
+            "TypeScript": "",
+            "Lua": "",
+            "Scala": "",
+            "Dart": ""
+          },
+          "Correct": {
+            "C": [],
+            "Python": [],
+            "Go": [],
+            "C++": [],
+            "PowerShell": [],
+            "PHP": [],
+            "C#": [],
+            "Bash": [],
+            "Rust": [],
+            "Java": [],
+            "JavaScript": [],
+            "Ruby": [],
+            "Kotlin": [],
+            "Swift": [],
+            "TypeScript": [],
+            "Lua": [],
+            "Scala": [],
+            "Dart": []
+          },
+          "Incorrect": [
+            {
+              "Name": "Group1",
+              "Pattern": "",
+              "Priority": 0
+            }
+          ]
+        }
+      }
     }
   },
   "Arrays": {
+    "Notes": {
+      "C": [],
+      "Python": [],
+      "Go": [],
+      "C++": [],
+      "PowerShell": [],
+      "PHP": [],
+      "C#": [],
+      "Bash": [],
+      "Rust": [],
+      "Java": [],
+      "JavaScript": [],
+      "Ruby": [],
+      "Kotlin": [],
+      "Swift": [],
+      "TypeScript": [],
+      "Lua": [],
+      "Scala": [],
+      "Dart": []
+    },
     "Declaration": {
-      "Notes": {
-        "C": []
-      },
       "Multi-Choice": {
-        "Type": "Array General",
-        "Sub-Type": "Array Declaration",
+        "Type": "",
+        "Sub-Type": "",
         "Question": [],
-        "Answers": {}
+        "True-False": [],
+        "Answers": {
+          "Preferred": {
+            "C": "",
+            "Python": "",
+            "Go": "",
+            "C++": "",
+            "PowerShell": "",
+            "PHP": "",
+            "C#": "",
+            "Bash": "",
+            "Rust": "",
+            "Java": "",
+            "JavaScript": "",
+            "Ruby": "",
+            "Kotlin": "",
+            "Swift": "",
+            "TypeScript": "",
+            "Lua": "",
+            "Scala": "",
+            "Dart": ""
+          },
+          "Correct": {
+            "C": [],
+            "Python": [],
+            "Go": [],
+            "C++": [],
+            "PowerShell": [],
+            "PHP": [],
+            "C#": [],
+            "Bash": [],
+            "Rust": [],
+            "Java": [],
+            "JavaScript": [],
+            "Ruby": [],
+            "Kotlin": [],
+            "Swift": [],
+            "TypeScript": [],
+            "Lua": [],
+            "Scala": [],
+            "Dart": []
+          },
+          "Incorrect": [
+            {
+              "Name": "Group1",
+              "Pattern": "",
+              "Priority": 0
+            }
+          ]
+        }
       }
     },
     "Sum Elements": {
@@ -600,6 +745,5 @@
         "Answers": {}
       }
     }
-  },
-  "Control Flow": {}
+  }
 }
