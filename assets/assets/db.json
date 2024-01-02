@@ -598,14 +598,18 @@
     },
     "If-Then": {
       "Multi-Choice": {
-        "Type": "",
-        "Sub-Type": "",
-        "Question": [],
-        "True-False": [],
+        "Type": "Conditional Logic",
+        "Sub-Type": "If Statement",
+        "Question": [
+          "How do you write an If statement in [language]?"
+        ],
+        "True-False": [
+          "Is this the correct way to write an If statement in [language]?"
+        ],
         "Answers": {
           "Preferred": {
-            "C": "",
-            "Python": "",
+            "C": "if ([expression]) {[code block]}",
+            "Python": "if [expression]:[code block]",
             "Go": "",
             "C++": "",
             "PowerShell": "",
