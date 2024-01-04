@@ -70,7 +70,7 @@
     ],
     "Control Flow": [
       "If-Then",
-      "If-Then-Else",
+      "If-Else",
       "Switch",
       "For",
       "While",
@@ -151,6 +151,7 @@
     ],
     "Data Structures": [
       "Array",
+      "Linked List",
       "List",
       "Map",
       "Heap",
@@ -572,7 +573,6 @@
           "Multiple Declaration": []
         }
       }
-
     }
   },
   "Control Flow": {
@@ -747,6 +747,168 @@
         "Sub-Type": "Array Declaration",
         "Question": [],
         "Answers": {}
+      }
+    }
+  },
+  "Algorithms": {
+    "Notes": {
+      "C": [],
+      "Python": [],
+      "Go": [],
+      "C++": [],
+      "PowerShell": [],
+      "PHP": [],
+      "C#": [],
+      "Bash": [],
+      "Rust": [],
+      "Java": [],
+      "JavaScript": [],
+      "Ruby": [],
+      "Kotlin": [],
+      "Swift": [],
+      "TypeScript": [],
+      "Lua": [],
+      "Scala": [],
+      "Dart": []
+    },
+    "Depth First Search": {
+      "Multi-Choice": {
+        "Type": "",
+        "Sub-Type": "",
+        "Question": [
+          ""
+        ],
+        "True-False": [
+          ""
+        ],
+        "Answers": {
+          "Preferred": {
+            "C": "",
+            "Python": "",
+            "Go": "",
+            "C++": "",
+            "PowerShell": "",
+            "PHP": "",
+            "C#": "",
+            "Bash": "",
+            "Rust": "",
+            "Java": "",
+            "JavaScript": "",
+            "Ruby": "",
+            "Kotlin": "",
+            "Swift": ""
+          },
+          "Correct": {
+            "C": [],
+            "Python": [],
+            "Go": [],
+            "C++": [],
+            "PowerShell": [],
+            "PHP": [],
+            "C#": [],
+            "Bash": [],
+            "Rust": [],
+            "Java": [],
+            "JavaScript": [],
+            "Ruby": [],
+            "Kotlin": [],
+            "Swift": [],
+            "TypeScript": [],
+            "Lua": [],
+            "Scala": [],
+            "Dart": []
+          },
+          "Incorrect": [
+            {
+              "Name": "Group1",
+              "Pattern": "",
+              "Priority": 0
+            }
+          ]
+        }
+      }
+    }
+  },
+  "Data Structures": {
+    "Notes": {
+      "C": [],
+      "Python": [],
+      "Go": [],
+      "C++": [],
+      "PowerShell": [],
+      "PHP": [],
+      "C#": [],
+      "Bash": [],
+      "Rust": [],
+      "Java": [],
+      "JavaScript": [],
+      "Ruby": [],
+      "Kotlin": [],
+      "Swift": [],
+      "TypeScript": [],
+      "Lua": [],
+      "Scala": [],
+      "Dart": []
+    },
+    "Linked List": {
+      "Multi-Choice": {
+        "Type": "",
+        "Sub-Type": "",
+        "Question": [
+          ""
+        ],
+        "True-False": [
+          ""
+        ],
+        "Answers": {
+          "Preferred": {
+            "C": "",
+            "Python": "",
+            "Go": "",
+            "C++": "",
+            "PowerShell": "",
+            "PHP": "",
+            "C#": "",
+            "Bash": "",
+            "Rust": "",
+            "Java": "",
+            "JavaScript": "",
+            "Ruby": "",
+            "Kotlin": "",
+            "Swift": "",
+            "TypeScript": "",
+            "Lua": "",
+            "Scala": "",
+            "Dart": ""
+          },
+          "Correct": {
+            "C": [],
+            "Python": [],
+            "Go": [],
+            "C++": [],
+            "PowerShell": [],
+            "PHP": [],
+            "C#": [],
+            "Bash": [],
+            "Rust": [],
+            "Java": [],
+            "JavaScript": [],
+            "Ruby": [],
+            "Kotlin": [],
+            "Swift": [],
+            "TypeScript": [],
+            "Lua": [],
+            "Scala": [],
+            "Dart": []
+          },
+          "Incorrect": [
+            {
+              "Name": "Group1",
+              "Pattern": "",
+              "Priority": 0
+            }
+          ]
+        }
       }
     }
   }
