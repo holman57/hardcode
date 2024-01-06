@@ -96,7 +96,11 @@
     "Operators": [
       "Arithmetic",
       "Logical",
-      "Precedence"
+      "Precedence",
+      "Ternary"
+    ],
+    "Expressions": [
+      "When"
     ],
     "Comments": [
       "Inline",
@@ -620,15 +624,15 @@
             "C#": "if ([expression]) {[code block]}",
             "Bash": "if [ [expression] ]; then [code block] fi",
             "Rust": "if [expression] {[code block]}",
-            "Java": "",
-            "JavaScript": "",
-            "Ruby": "",
-            "Kotlin": "",
-            "Swift": "",
-            "TypeScript": "",
-            "Lua": "",
-            "Scala": "",
-            "Dart": ""
+            "Java": "if ([expression]) {[code block]}",
+            "JavaScript": "if ([expression]) {[code block]}",
+            "Ruby": "if [expression] [code block] end",
+            "Kotlin": "if ([expression]) {[code block]}",
+            "Swift": "if ([expression]) {[code block]}",
+            "TypeScript": "if ([expression]) {[code block]}",
+            "Lua": "if [expression] then [code block] end",
+            "Scala": "if ([expression]) {[code block]}",
+            "Dart": "if ([expression]) {[code block]}"
           },
           "Correct": {
             "C": [],
