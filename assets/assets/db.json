@@ -295,6 +295,9 @@
       "If you don't provide a constructor for a class, the compiler will create a default one.",
       "Testing frameworks such as NUnit make C# amenable to test-driven development and thus a good language for use with Extreme Programming."
     ],
+    "PowerShell": [
+      "Cmdlets are in the form of Verb-Noun. For example, the command Get-ChildItem can be used to list our current directory."
+    ],
     "Dart": [
       "Type inference allows us to declare a variable without explicitly mentioning the data type.",
       "In Dart, we can insert the var keyword in place of the data type.",
