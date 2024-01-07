@@ -667,14 +667,20 @@
   },
   "Arrays": {
     "Notes": {
-      "C": [],
+      "C": [
+        "C arrays must be declared with a size."
+      ],
       "Python": [],
       "Go": [],
       "C++": [],
       "PowerShell": [],
       "PHP": [],
       "C#": [],
-      "Bash": [],
+      "Bash": [
+        "Unlike numerically indexed, the associative arrays must be declared before they can be used.",
+        "Numeric arrays are declared using a Lowercase a (declare -a arr_name)",
+        "Associative arrays are declared using an Uppercase A (declare -A arr_name)"
+      ],
       "Rust": [],
       "Java": [],
       "JavaScript": [],
@@ -688,21 +694,23 @@
     },
     "Declaration": {
       "Multi-Choice": {
-        "Type": "",
-        "Sub-Type": "",
-        "Question": [],
+        "Type": "Array Declaration",
+        "Sub-Type": "Integer Arrays",
+        "Question": [
+          "How do you declare an array of Integers in [language]?"
+        ],
         "True-False": [],
         "Answers": {
           "Preferred": {
-            "C": "",
-            "Python": "",
-            "Go": "",
-            "C++": "",
-            "PowerShell": "",
-            "PHP": "",
-            "C#": "",
-            "Bash": "",
-            "Rust": "",
+            "C": "int [random array name][[random integer]];",
+            "Python": "[random array name] = []",
+            "Go": "var [random array name] [[random integer]]int",
+            "C++": "int [random array name][[random integer]];",
+            "PowerShell": "$[random array name] = @()",
+            "PHP": "$[random array name] = array();",
+            "C#": "int[] [random array name];",
+            "Bash": "declare -a [random array name]",
+            "Rust": "let mut [random array name]: [[rust int data type]; [random small int]] = [0; [random small int]];",
             "Java": "",
             "JavaScript": "",
             "Ruby": "",
@@ -722,7 +730,11 @@
             "PHP": [],
             "C#": [],
             "Bash": [],
-            "Rust": [],
+            "Rust": [
+              "let variable_name = [value1,value2,value3];",
+              "let variable_name:[dataType;size] = [value1,value2,value3];",
+              "let variable_name:[dataType;size] = [default_value_for_elements,size];"
+            ],
             "Java": [],
             "JavaScript": [],
             "Ruby": [],
