@@ -711,8 +711,8 @@
             "C#": "int[] [random array name];",
             "Bash": "declare -a [random array name]",
             "Rust": "let mut [random array name]: [[rust int data type]; [random small int]] = [0; [random small int]];",
-            "Java": "",
-            "JavaScript": "",
+            "Java": "int [random array name][];",
+            "JavaScript": "let [random array name] = [];",
             "Ruby": "",
             "Kotlin": "",
             "Swift": "",
@@ -735,8 +735,15 @@
               "let variable_name:[dataType;size] = [value1,value2,value3];",
               "let variable_name:[dataType;size] = [default_value_for_elements,size];"
             ],
-            "Java": [],
-            "JavaScript": [],
+            "Java": [
+              "int [random array name][];",
+              "int[] [random array name];"
+            ],
+            "JavaScript": [
+              "let [random array name] = [];",
+              "var [random array name] = [];",
+              "[random array name] = [];"
+            ],
             "Ruby": [],
             "Kotlin": [],
             "Swift": [],
