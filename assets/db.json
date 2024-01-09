@@ -713,9 +713,9 @@
             "Rust": "let mut [random array name]: [[rust int data type]; [random small int]] = [0; [random small int]];",
             "Java": "int [random array name][];",
             "JavaScript": "let [random array name] = [];",
-            "Ruby": "",
-            "Kotlin": "",
-            "Swift": "",
+            "Ruby": "[random array name] = Array.new",
+            "Kotlin": "val [random array name] = arrayOf([random sequence])",
+            "Swift": "var [random array name]: [Integer] = []",
             "TypeScript": "",
             "Lua": "",
             "Scala": "",
@@ -744,9 +744,19 @@
               "var [random array name] = [];",
               "[random array name] = [];"
             ],
-            "Ruby": [],
-            "Kotlin": [],
-            "Swift": [],
+            "Ruby": [
+              "[random array name] = Array.new([random integer])",
+              "[random array name] = Array.new([random integer], [random string])",
+              "[random array name] = Array.[]([random sequence])",
+              "[random array name] = Array.[[random sequence]]",
+              "[random array name] = Array([random .. sequence])"
+            ],
+            "Kotlin": [
+              "val [random array name] = IntArray([random integer])"
+            ],
+            "Swift": [
+              "var [random array name]: Array<Integer> = Array()"
+            ],
             "TypeScript": [],
             "Lua": [],
             "Scala": [],
