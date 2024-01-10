@@ -695,7 +695,7 @@
     "Declaration": {
       "Multi-Choice": {
         "Type": "Array Declaration",
-        "Sub-Type": "Integer Arrays",
+        "Sub-Type": "Integer Array",
         "Question": [
           "How do you declare an array of Integers in [language]?"
         ],
@@ -716,7 +716,7 @@
             "Ruby": "[random array name] = Array.new",
             "Kotlin": "val [random array name] = arrayOf([random sequence])",
             "Swift": "var [random array name]: [Integer] = []",
-            "TypeScript": "",
+            "TypeScript": "let [random array name]: number[] = [];",
             "Lua": "",
             "Scala": "",
             "Dart": ""
@@ -757,7 +757,21 @@
             "Swift": [
               "var [random array name]: Array<Integer> = Array()"
             ],
-            "TypeScript": [],
+            "TypeScript": [
+              "let [random array name]: number[] = new Array();",
+              "let [random array name]: number[] = Array();",
+              "let [random array name]: Array<number> = [];",
+              "let [random array name]: Array<number> = new Array();",
+              "let [random array name]: Array<number> = Array();",
+              "let [random array name] = [] as number[];",
+              "let [random array name] = new Array() as Array<number>;",
+              "let [random array name] = Array() as number[];",
+              "let [random array name] = <number[]>[];",
+              "let [random array name] = <Array<number>> new Array();",
+              "let [random array name] = <number[]> Array();",
+              "let [random array name] = new Array<number>();",
+              "let [random array name] = Array<number>();"
+            ],
             "Lua": [],
             "Scala": [],
             "Dart": []
