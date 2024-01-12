@@ -717,7 +717,7 @@
             "Kotlin": "val [random array name] = arrayOf([random sequence])",
             "Swift": "var [random array name]: [Integer] = []",
             "TypeScript": "let [random array name]: number[] = [];",
-            "Lua": "",
+            "Lua": "[random array name] = {}",
             "Scala": "",
             "Dart": ""
           },
