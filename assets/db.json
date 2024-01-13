@@ -718,8 +718,8 @@
             "Swift": "var [random array name]: [Integer] = []",
             "TypeScript": "let [random array name]: number[] = [];",
             "Lua": "[random array name] = {}",
-            "Scala": "",
-            "Dart": ""
+            "Scala": "val [random array name]: Array[Int] = Array()",
+            "Dart": "var [random array name] = new List([random integer]);"
           },
           "Correct": {
             "C": [],
