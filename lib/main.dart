@@ -197,15 +197,15 @@ class _MyHomePageState extends State<MyHomePage> {
     PriorityRandomGenerator prgLanguage =
         PriorityRandomGenerator(_langList.length, _langPriorities);
     _language = (_langList[prgLanguage.pickIndex()] as String);
-    _correctAnswer = (_data["Variables"]["Declaration"]["Multi-Choice"]
+    _correctAnswer = (_data["Variables"]["Declaration"]["Integer Assignment"]
         ["Answers"]["Preferred"][_language] as String);
     Random random = Random.secure();
     int answerSelection = 0;
     if (random.nextInt(2) == 1) {
       answerSelection = random.nextInt(_data["Variables"]["Declaration"]
-                  ["Multi-Choice"]["Answers"]["Correct"][_language]
-              .length);
-      _correctAnswer = (_data["Variables"]["Declaration"]["Multi-Choice"]
+              ["Integer Assignment"]["Answers"]["Correct"][_language]
+          .length);
+      _correctAnswer = (_data["Variables"]["Declaration"]["Integer Assignment"]
           ["Answers"]["Correct"][_language][answerSelection] as String);
       if (random.nextInt(4) == 1) {
         _correctAnswer =
@@ -225,17 +225,18 @@ class _MyHomePageState extends State<MyHomePage> {
       print(_correctAnswer);
       print('\n');
     }
-    _correctPatterns = (_data["Variables"]["Declaration"]["Multi-Choice"]
-    ["Answers"]["Correct"][_language] as List);
+    _correctPatterns = (_data["Variables"]["Declaration"]["Integer Assignment"]
+        ["Answers"]["Correct"][_language] as List);
     _incorrectPatternGroups.clear();
-    _data['Variables']['Declaration']['Multi-Choice']['Answers']['Incorrect']
+    _data['Variables']['Declaration']['Integer Assignment']['Answers']
+            ['Incorrect']
         .forEach((item) {
       _incorrectPatternGroups.add([item['Pattern'], item['Priority']]);
       _incorrectPatternPriorities.add(item['Priority']);
     });
-    _questions =
-        (_data['Variables']['Declaration']['Multi-Choice']['Question'] as List);
-    _questionSubType = (_data['Variables']['Declaration']['Multi-Choice']
+    _questions = (_data['Variables']['Declaration']['Integer Assignment']
+        ['Question'] as List);
+    _questionSubType = (_data['Variables']['Declaration']['Integer Assignment']
         ['Sub-Type'] as String);
     _variablePermutations =
         (_data['Variables']['Variable Permutations'] as List);
