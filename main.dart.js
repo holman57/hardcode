@@ -53704,7 +53704,7 @@ Wf(a,b){var s={}
 s.a=a
 J.l6(b,new A.Xq(s,this,$.HS()))
 return B.d.qc(s.a)},
-qk(){var s,r,q,p,o,n,m,l,k,j,i,h,g=this,f="Variables",e="Declaration",d="Multi-Choice",c="Answers",b="Correct",a="[extensible whitespace]",a0="[optional semicolon]",a1=g.fy
+qk(){var s,r,q,p,o,n,m,l,k,j,i,h,g=this,f="Variables",e="Declaration",d="Integer Assignment",c="Answers",b="Correct",a="[extensible whitespace]",a0="[optional semicolon]",a1=g.fy
 B.b.H(a1)
 s=g.db
 B.b.H(s)
