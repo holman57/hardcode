@@ -598,26 +598,26 @@
               "var [random float variable] float[extensible whitespace]=[extensible whitespace][random float][optional semicolon]"
             ],
             "C++": [
-              "int [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
-              "auto [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+              "float [random float variable][extensible whitespace]=[extensible whitespace][random float];",
+              "auto [random float variable][extensible whitespace]=[extensible whitespace][random float];"
             ],
             "PowerShell": [
-              "$[random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
-              "[int][extensible whitespace]$[random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+              "$[random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]",
+              "[float][extensible whitespace]$[random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]"
             ],
             "PHP": [
-              "$[random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+              "$[random float variable][extensible whitespace]=[extensible whitespace][random float];"
             ],
             "C#": [
-              "int [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
-              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
-              "object [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+              "int [random float variable][extensible whitespace]=[extensible whitespace][random float];",
+              "var [random float variable][extensible whitespace]=[extensible whitespace][random float];",
+              "object [random float variable][extensible whitespace]=[extensible whitespace][random float];"
             ],
             "Bash": [
-              "[random int variable]=[random integer][optional semicolon]",
-              "declare -i [random int variable]=[random integer][optional semicolon]",
-              "export [random int variable]=[random integer][optional semicolon]",
-              "let [random int variable]=[random integer][optional semicolon]"
+              "[random float variable]=[random float][optional semicolon]",
+              "declare -f [random float variable]=[random float][optional semicolon]",
+              "export [random float variable]=[random float][optional semicolon]",
+              "let [random float variable]=[random float][optional semicolon]"
             ],
             "Rust": [
               "let mut [random int variable]: [random rust data type][extensible whitespace]=[extensible whitespace][random integer];",
