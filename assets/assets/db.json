@@ -586,16 +586,16 @@
           },
           "Correct": {
             "C": [
-              "int [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+              "int [random float variable][extensible whitespace]=[extensible whitespace][random float];"
             ],
             "Python": [
-              "[random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
-              "[random int variable]: int[extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+              "[random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]",
+              "[random float variable]: float[extensible whitespace]=[extensible whitespace][random float][optional semicolon]"
             ],
             "Go": [
-              "[random int variable][extensible whitespace]:=[extensible whitespace][random integer][optional semicolon]",
-              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
-              "var [random int variable] int[extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+              "[random float variable][extensible whitespace]:=[extensible whitespace][random float][optional semicolon]",
+              "var [random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]",
+              "var [random float variable] float[extensible whitespace]=[extensible whitespace][random float][optional semicolon]"
             ],
             "C++": [
               "int [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
