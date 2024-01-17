@@ -651,24 +651,24 @@
               "let [random float variable]: Int[extensible whitespace]=[extensible whitespace][random float][optional semicolon]"
             ],
             "TypeScript": [
-              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
-              "let [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
-              "var [random int variable]: number[extensible whitespace]=[extensible whitespace][random integer];",
-              "let [random int variable]: number[extensible whitespace]=[extensible whitespace][random integer];"
+              "var [random float variable][extensible whitespace]=[extensible whitespace][random float];",
+              "let [random float variable][extensible whitespace]=[extensible whitespace][random float];",
+              "var [random float variable]: number[extensible whitespace]=[extensible whitespace][random float];",
+              "let [random float variable]: number[extensible whitespace]=[extensible whitespace][random float];"
             ],
             "Lua": [
-              "[random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
-              "local [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+              "[random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]",
+              "local [random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]"
             ],
             "Scala": [
-              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
-              "val [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
-              "var [random int variable]: Int[extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
-              "val [random int variable]: Int[extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+              "var [random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]",
+              "val [random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]",
+              "var [random float variable]: Int[extensible whitespace]=[extensible whitespace][random float][optional semicolon]",
+              "val [random float variable]: Int[extensible whitespace]=[extensible whitespace][random float][optional semicolon]"
             ],
             "Dart": [
-              "int [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
-              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+              "int [random float variable][extensible whitespace]=[extensible whitespace][random float];",
+              "var [random float variable][extensible whitespace]=[extensible whitespace][random float];"
             ]
           },
           "Incorrect": [
