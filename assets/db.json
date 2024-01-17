@@ -620,35 +620,35 @@
               "let [random float variable]=[random float][optional semicolon]"
             ],
             "Rust": [
-              "let mut [random int variable]: [random rust data type][extensible whitespace]=[extensible whitespace][random integer];",
-              "let [random int variable]: [random rust data type][extensible whitespace]=[extensible whitespace][random integer];",
-              "let mut [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
-              "let [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+              "let mut [random float variable]: [random rust float data type][extensible whitespace]=[extensible whitespace][random float];",
+              "let [random float variable]: [random rust float data type][extensible whitespace]=[extensible whitespace][random float];",
+              "let mut [random float variable][extensible whitespace]=[extensible whitespace][random float];",
+              "let [random float variable][extensible whitespace]=[extensible whitespace][random float];"
             ],
             "Java": [
-              "int [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
-              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
-              "Integer [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
-              "Object [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+              "float [random float variable][extensible whitespace]=[extensible whitespace][random float];",
+              "var [random float variable][extensible whitespace]=[extensible whitespace][random float];",
+              "Float [random float variable][extensible whitespace]=[extensible whitespace][random float];",
+              "Object [random float variable][extensible whitespace]=[extensible whitespace][random float];"
             ],
             "JavaScript": [
-              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
-              "let [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
-              "[random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+              "var [random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]",
+              "let [random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]",
+              "[random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]"
             ],
             "Ruby": [
-              "[random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
-              "@[random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+              "[random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]",
+              "@[random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]"
             ],
             "Kotlin": [
-              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
-              "val [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+              "var [random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]",
+              "val [random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]"
             ],
             "Swift": [
-              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
-              "let [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
-              "var [random int variable]: Int[extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
-              "let [random int variable]: Int[extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+              "var [random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]",
+              "let [random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]",
+              "var [random float variable]: Int[extensible whitespace]=[extensible whitespace][random float][optional semicolon]",
+              "let [random float variable]: Int[extensible whitespace]=[extensible whitespace][random float][optional semicolon]"
             ],
             "TypeScript": [
               "var [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
