@@ -90,6 +90,7 @@
     "Arrays": [
       "Declaration",
       "Accessing an Element",
+      "Iterate",
       "Sum Elements",
       "Generators"
     ],
@@ -770,9 +771,9 @@
       "Dart": []
     },
     "If-Then": {
-      "Multi-Choice": {
+      "If-Then": {
         "Type": "Conditional Logic",
-        "Sub-Type": "If Statement",
+        "Sub-Type": "Multi-Choice",
         "Question": [
           "How do you write an If statement in [language]?"
         ],
@@ -952,17 +953,72 @@
         }
       }
     },
+    "Iterate Array": {
+      "Multi-Choice": {
+        "Type": "",
+        "Sub-Type": "Multi-Choice",
+        "Question": [
+          ""
+        ],
+        "True-False": [
+          ""
+        ],
+        "Answers": {
+          "Preferred": {
+            "C": [],
+            "Python": [],
+            "Go": [],
+            "C++": [],
+            "PowerShell": [],
+            "PHP": [],
+            "C#": [],
+            "Bash": [],
+            "Rust": [],
+            "Java": [],
+            "JavaScript": [],
+            "Ruby": [],
+            "Kotlin": [],
+            "Swift": [],
+            "TypeScript": [],
+            "Lua": [],
+            "Scala": [],
+            "Dart": []
+          },
+          "Correct": {
+            "C": [],
+            "Python": [],
+            "Go": [],
+            "C++": [],
+            "PowerShell": [],
+            "PHP": [],
+            "C#": [],
+            "Bash": [],
+            "Rust": [],
+            "Java": [],
+            "JavaScript": [],
+            "Ruby": [],
+            "Kotlin": [],
+            "Swift": [],
+            "TypeScript": [],
+            "Lua": [],
+            "Scala": [],
+            "Dart": []
+          },
+          "Incorrect": [
+            {
+              "Name": "Group1",
+              "Pattern": "",
+              "Priority": 0
+            }
+          ]
+        }
+      }
+    },
     "Sum Elements": {
       "Notes": {
         "JavaScript": [
           "var sum = arr => arr.reduce((a,b) => a + b);"
         ]
-      },
-      "Multi-Choice": {
-        "Type": "Array General",
-        "Sub-Type": "Array Declaration",
-        "Question": [],
-        "Answers": {}
       }
     }
   },
