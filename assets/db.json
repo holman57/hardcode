@@ -667,54 +667,54 @@
               "val [random float variable]: Int[extensible whitespace]=[extensible whitespace][random float][optional semicolon]"
             ],
             "Dart": [
-              "int [random float variable][extensible whitespace]=[extensible whitespace][random float];",
+              "float [random float variable][extensible whitespace]=[extensible whitespace][random float];",
               "var [random float variable][extensible whitespace]=[extensible whitespace][random float];"
             ]
           },
           "Incorrect": [
             {
               "Name": "Group1",
-              "Pattern": "[auto|var|val|int|Int|let|None] [random int variable] = [random integer][;|None]",
+              "Pattern": "[auto|var|val|int|Int|let|None] [random float variable] = [random float][;|None]",
               "Priority": 12
             },
             {
               "Name": "Group2",
-              "Pattern": "[local|auto|var|val|int|Int|let|None] [random int variable][: Integer|: Int|: number| int|None] = [random integer][;|None]",
+              "Pattern": "[local|auto|var|val|float|Float|let|None] [random float variable][: Float|: number| float|None] = [random float][;|None]",
               "Priority": 7
             },
             {
               "Name": "Group3",
-              "Pattern": "[Object|object|Integer|declare -i|export] [random int variable] = [random integer][;|None]",
+              "Pattern": "[Object|object|Float|declare -f|export] [random float variable] = [random float][;|None]",
               "Priority": 5
             },
             {
               "Name": "Group4",
-              "Pattern": "[random int variable] [:=|=] [random integer][;|None]",
+              "Pattern": "[random float variable] [:=|=] [random float][;|None]",
               "Priority": 5
             },
             {
               "Name": "Group5",
-              "Pattern": "[$|@|None|[int]|_][random int variable] = [random integer][;|None]",
+              "Pattern": "[$|@|None|[float]|_][random float variable] = [random float][;|None]",
               "Priority": 4
             },
             {
               "Name": "Group6",
-              "Pattern": "[$|@|None|[int]|_][random int variable]=[random integer][;|None]",
+              "Pattern": "[$|@|None|[float]|_][random float variable]=[random float][;|None]",
               "Priority": 3
             },
             {
               "Name": "Group7",
-              "Pattern": "let [mut |None][random int variable]: [random rust data type] = [random integer][;|None]",
+              "Pattern": "let [mut |None][random float variable]: [random rust float data type] = [random float][;|None]",
               "Priority": 2
             },
             {
               "Name": "Group8",
-              "Pattern": "let [mut |None][random int variable] = [random integer][;|None]",
+              "Pattern": "let [mut |None][random float variable] = [random float][;|None]",
               "Priority": 2
             },
             {
               "Name": "Group9",
-              "Pattern": "[$|@|None|[int]|_][random int variable] = [random integer][;|None]",
+              "Pattern": "[$|@|None|[float]|_][random float variable] = [random float][;|None]",
               "Priority": 2
             }
           ]
