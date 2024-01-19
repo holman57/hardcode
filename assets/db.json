@@ -675,7 +675,7 @@
           "Incorrect": [
             {
               "Name": "Group1",
-              "Pattern": "[auto|var|val|int|Int|let|None] [random float variable] = [random float][;|None]",
+              "Pattern": "[auto|var|val|float|Float|let|None] [random float variable] = [random float][;|None]",
               "Priority": 12
             },
             {
@@ -965,24 +965,24 @@
         ],
         "Answers": {
           "Preferred": {
-            "C": [],
-            "Python": [],
-            "Go": [],
-            "C++": [],
-            "PowerShell": [],
-            "PHP": [],
-            "C#": [],
-            "Bash": [],
-            "Rust": [],
-            "Java": [],
-            "JavaScript": [],
-            "Ruby": [],
-            "Kotlin": [],
-            "Swift": [],
-            "TypeScript": [],
-            "Lua": [],
-            "Scala": [],
-            "Dart": []
+            "C": "for[extensible whitespace](int [random int variable][extensible whitespace]=[extensible whitespace][random integer];[extensible whitespace][random integer][extensible whitespace]<[extensible whitespace][size variable];[extensible whitespace][random int variable][for loop increment])[extensible whitespace]{[code block]}",
+            "Python": "",
+            "Go": "",
+            "C++": "",
+            "PowerShell": "",
+            "PHP": "",
+            "C#": "",
+            "Bash": "",
+            "Rust": "",
+            "Java": "",
+            "JavaScript": "",
+            "Ruby": "",
+            "Kotlin": "",
+            "Swift": "",
+            "TypeScript": "",
+            "Lua": "",
+            "Scala": "",
+            "Dart": ""
           },
           "Correct": {
             "C": [],
