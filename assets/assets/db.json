@@ -965,7 +965,7 @@
         ],
         "Answers": {
           "Preferred": {
-            "C": "for[extensible whitespace](int [random int variable][extensible whitespace]=[extensible whitespace][random integer];[extensible whitespace][random integer][extensible whitespace]<[extensible whitespace][size variable];[extensible whitespace][random int variable][for loop increment])[extensible whitespace]{[code block]}",
+            "C": "for (int [random int variable] = [random integer]; [random integer] < [size variable]; [random int variable][for loop increment]) {[code block]}",
             "Python": "",
             "Go": "",
             "C++": "",
