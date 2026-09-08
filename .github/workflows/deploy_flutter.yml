@@ -1,44 +1,70 @@
-name: Deploy HardCode Flutter Web App
+name: Deploy HardCode to Callisto VM & GitHub Pages
 
 on:
   push:
     branches: ["main"]
-  pull_request:
-    branches: ["main"]
   workflow_dispatch:
 
+concurrency:
+  group: production-deploy
+  cancel-in-progress: true
+
 jobs:
-  build:
+  build-and-deploy:
+    name: Build Flutter Web & Deploy
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.17.x'
-          channel: 'beta'
-  
-      - run: flutter --version
+          channel: 'stable'
+          cache: true
 
-      - name: Cache pub dependencies
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.FLUTTER_HOME }}/.pub-cache
-          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
-          restore-keys: ${{ runner.os }}-pub-
-      - name: Download pub dependencies
+      - name: Verify Flutter Version
+        run: flutter --version
+
+      - name: Download Pub Dependencies
         run: flutter pub get
 
-      - name: Run analyzer
-        run: flutter analyze
+      - name: Build Web Application
+        run: flutter build web --release --base-href=/
 
-#      - name: Run tests
-#        run: flutter test
+      - name: Setup SSH Deploy Key for Callisto VM
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.AZURE_SSH_KEY }}
+          VM_HOST: ${{ secrets.AZURE_VM_HOST }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$VM_HOST" >> ~/.ssh/known_hosts
 
-      - name: Build Web App
-        run: flutter build web --base-href=/hardcode/
+      - name: Deploy to Callisto VM via Rsync
+        env:
+          VM_USER: ${{ secrets.AZURE_VM_USERNAME }}
+          VM_HOST: ${{ secrets.AZURE_VM_HOST }}
+          DEST_PATH: ${{ secrets.AZURE_DEPLOY_PATH }}
+        run: |
+          echo "Deploying to Callisto VM ($VM_HOST)..."
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes" \
+            build/web/ "$VM_USER@$VM_HOST:$DEST_PATH"
+          echo "Sync completed successfully."
 
-      - name: Deploy to GitHub Pages 🚀
+      - name: Reload Nginx on Callisto VM
+        env:
+          VM_USER: ${{ secrets.AZURE_VM_USERNAME }}
+          VM_HOST: ${{ secrets.AZURE_VM_HOST }}
+        run: |
+          ssh -i ~/.ssh/deploy_key "$VM_USER@$VM_HOST" "sudo nginx -t && sudo systemctl reload nginx"
+          echo "Nginx reloaded successfully on Callisto."
+
+      - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: build/web
+          branch: gh-pages
