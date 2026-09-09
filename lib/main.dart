@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'services/database_service.dart';
@@ -83,7 +82,6 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
 class _MyHomePageState extends State<MyHomePage> {
   final _languages = {};
   late Map _data;
-  int _prevQuestionNumber = 0;
   int _questionNumber = 0;
   List _langList = [];
   String _language = "";
@@ -93,6 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final List _incorrectPatternPriorities = [];
   List _questions = [];
   String _questionSubType = "";
+  String _currentCategory = "Integer Assignment";
   List _variablePermutations = [];
   List _variableBranching = [];
   int _questionRange = 0;
@@ -100,13 +99,85 @@ class _MyHomePageState extends State<MyHomePage> {
   String _correctAnswer = "";
   final List _choices = [];
   final List<String> _choiceSelections = [];
+  final Set<String> _incorrectSelections = {};
+  String? _correctAnswerSelected;
   List _intSmallVarSet = [];
   List _intVarNames = [];
   List _intRustVarTypes = [];
+  List _stringVarNames = [];
+  List _stringValues = [];
+  List _boolVarNames = [];
+  List _boolValues = [];
   final List<String> _answerGroup = [];
 
   UserStats _userStats = DatabaseService.instance.getUserStats();
   bool _isLoading = true;
+
+  Timer? _questionTimer;
+  int _remainingSeconds = 20;
+  static const int _totalSeconds = 20;
+  bool _isTimerExpired = false;
+
+  void _startTimer() {
+    _questionTimer?.cancel();
+    _remainingSeconds = _totalSeconds;
+    _isTimerExpired = false;
+    _questionTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) return;
+      if (_remainingSeconds > 1) {
+        setState(() {
+          _remainingSeconds--;
+        });
+      } else {
+        _handleTimeout();
+      }
+    });
+  }
+
+  void _cancelTimer() {
+    _questionTimer?.cancel();
+    _questionTimer = null;
+  }
+
+  void _handleTimeout() async {
+    _cancelTimer();
+    setState(() {
+      _remainingSeconds = 0;
+      _isTimerExpired = true;
+    });
+
+    final updatedStats = await DatabaseService.instance.recordAnswer(
+      language: _language,
+      isCorrect: false,
+      timeRemainingSeconds: 0,
+    );
+
+    if (!mounted) return;
+    setState(() {
+      _userStats = updatedStats;
+    });
+
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            const Icon(Icons.timer_off_outlined, color: Colors.white),
+            const SizedBox(width: 8),
+            Text(
+              "Time's up! Streak reset.",
+              style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
+        backgroundColor: Colors.red.shade800,
+        duration: const Duration(milliseconds: 1500),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      ),
+    );
+  }
 
   Future<void> _loadData() async {
     final data = await DatabaseService.instance.getOrSeedCatalog();
@@ -123,10 +194,14 @@ class _MyHomePageState extends State<MyHomePage> {
           (_data["Language"] as List).map((item) => item as String).toList();
       _languages.forEach((k, v) => _langPriorities.add(v));
     });
-    _intVarNames = (_data['Variables']['Int Variable Names'] as List);
+    _intVarNames = (_data['Variables']['Int Variable Names'] as List? ?? ['x', 'count']);
     _intSmallVarSet =
-        (_data['Variables']['Integer Small Variable Sets'] as List);
-    _intRustVarTypes = (_data['Variables']['Rust Int Variable Types'] as List);
+        (_data['Variables']['Integer Small Variable Sets'] as List? ?? ['x', 'y']);
+    _intRustVarTypes = (_data['Variables']['Rust Int Variable Types'] as List? ?? ['i32']);
+    _stringVarNames = (_data['Variables']['String Variable Names'] as List? ?? ['message', 'title']);
+    _stringValues = (_data['Variables']['String Values'] as List? ?? ['Hello', 'World']);
+    _boolVarNames = (_data['Variables']['Bool Variable Names'] as List? ?? ['isActive', 'isValid']);
+    _boolValues = (_data['Variables']['Bool Values'] as List? ?? ['true', 'false']);
     generateQuestion();
   }
 
@@ -195,28 +270,65 @@ class _MyHomePageState extends State<MyHomePage> {
         render = render.replaceAll(
             p, _intRustVarTypes[random.nextInt(_intRustVarTypes.length)]);
       }
+      if (p.contains("[random string variable]")) {
+        render = render.replaceAll(
+            p, _stringVarNames[random.nextInt(_stringVarNames.length)]);
+      }
+      if (p.contains("[random string]")) {
+        render = render.replaceAll(
+            p, _stringValues[random.nextInt(_stringValues.length)]);
+      }
+      if (p.contains("[random bool variable]")) {
+        render = render.replaceAll(
+            p, _boolVarNames[random.nextInt(_boolVarNames.length)]);
+      }
+      if (p.contains("[random bool]")) {
+        render = render.replaceAll(
+            p, _boolValues[random.nextInt(_boolValues.length)]);
+      }
+      if (p.contains("[random float variable]")) {
+        render = render.replaceAll(p, "rate");
+      }
+      if (p.contains("[random float]")) {
+        render = render.replaceAll(p, "3.14");
+      }
     });
     return render.trim();
   }
 
   void generateQuestion() {
+    _cancelTimer();
     _answerGroup.clear();
     _choices.clear();
     _incorrectPatternGroups.clear();
     _incorrectPatternPriorities.clear();
-    PriorityRandomGenerator prgLanguage =
-        PriorityRandomGenerator(_langList.length, _langPriorities);
-    _language = (_langList[prgLanguage.pickIndex()] as String);
-    _correctAnswer = (_data["Variables"]["Declaration"]["Integer Assignment"]
-        ["Answers"]["Preferred"][_language] as String);
+    _choiceSelections.clear();
+    _incorrectSelections.clear();
+    _correctAnswerSelected = null;
+    _isTimerExpired = false;
+
+    // 1. Adaptive Skill-Level: Pick Category based on user Level
+    final categories = DatabaseService.instance
+        .getAvailableCategoriesForLevel(_userStats.level);
     Random random = Random.secure();
-    int answerSelection = 0;
-    if (random.nextInt(2) == 1) {
-      answerSelection = random.nextInt(_data["Variables"]["Declaration"]
-              ["Integer Assignment"]["Answers"]["Correct"][_language]
-          .length);
-      _correctAnswer = (_data["Variables"]["Declaration"]["Integer Assignment"]
-          ["Answers"]["Correct"][_language][answerSelection] as String);
+    _currentCategory = categories[random.nextInt(categories.length)];
+
+    // 2. Adaptive Spaced Repetition: Sample language based on weak areas
+    final adaptivePriorities = DatabaseService.instance
+        .getAdaptiveLanguagePriorities(_langList.cast<String>());
+    PriorityRandomGenerator prgLanguage =
+        PriorityRandomGenerator(_langList.length, adaptivePriorities);
+    _language = (_langList[prgLanguage.pickIndex()] as String);
+
+    final categoryData =
+        _data["Variables"]["Declaration"][_currentCategory] as Map? ??
+            _data["Variables"]["Declaration"]["Integer Assignment"] as Map;
+
+    _correctAnswer = (categoryData["Answers"]["Preferred"][_language] as String? ?? "");
+    final correctList = (categoryData["Answers"]["Correct"][_language] as List? ?? []);
+    if (correctList.isNotEmpty && random.nextInt(2) == 1) {
+      final answerSelection = random.nextInt(correctList.length);
+      _correctAnswer = (correctList[answerSelection] as String);
       if (random.nextInt(4) == 1) {
         _correctAnswer =
             _correctAnswer.replaceAll("[extensible whitespace]", "");
@@ -230,76 +342,67 @@ class _MyHomePageState extends State<MyHomePage> {
         _correctAnswer = _correctAnswer.replaceAll("[optional semicolon]", ";");
       }
     }
-    if (kDebugMode) {
-      print('\n');
-      print(_correctAnswer);
-      print('\n');
-    }
-    _correctPatterns = (_data["Variables"]["Declaration"]["Integer Assignment"]
-        ["Answers"]["Correct"][_language] as List);
+
+    _correctPatterns = correctList;
     _incorrectPatternGroups.clear();
-    _data['Variables']['Declaration']['Integer Assignment']['Answers']
-            ['Incorrect']
-        .forEach((item) {
+    final incorrectList = (categoryData['Answers']['Incorrect'] as List? ?? []);
+    for (var item in incorrectList) {
       _incorrectPatternGroups.add([item['Pattern'], item['Priority']]);
       _incorrectPatternPriorities.add(item['Priority']);
-    });
-    _questions = (_data['Variables']['Declaration']['Integer Assignment']
-        ['Question'] as List);
-    _questionSubType = (_data['Variables']['Declaration']['Integer Assignment']
-        ['Sub-Type'] as String);
+    }
+
+    _questions = (categoryData['Question'] as List? ?? ["Select the correct syntax for [language]:"]);
+    _questionSubType = (categoryData['Sub-Type'] as String? ?? _currentCategory);
     _variablePermutations =
         (_data['Variables']['Variable Permutations'] as List);
     _variableBranching = (_data['Variables']['Random Variables'] as List);
     _questionRange = _questions.length;
-    while (_questionNumber == _prevQuestionNumber) {
-      random = Random.secure();
-      _questionNumber = random.nextInt(_questionRange);
-    }
-    _prevQuestionNumber = _questionNumber;
+    _questionNumber = random.nextInt(_questionRange);
     _question = _questions[_questionNumber].replaceAll("[language]", _language);
+
     _choices.add([_correctAnswer, 1]);
     _choiceSelections.add(_correctAnswer);
-    PriorityRandomGenerator prgChoice = PriorityRandomGenerator(
-        _incorrectPatternGroups.length, _incorrectPatternPriorities);
-    while (_choices.length < 5) {
-      String incorrectAnswer = renderPatternOptions(
-          _incorrectPatternGroups[prgChoice.pickIndex()][0],
-          _variablePermutations);
-      if (_choiceSelections.contains(incorrectAnswer)) continue;
-      if (_correctPatterns.contains(incorrectAnswer)) continue;
-      _choices.add([incorrectAnswer, 0]);
-    }
-    _choices.shuffle();
-    for (var item in _choices) {
-      if (kDebugMode) {
-        print(item);
+
+    if (_incorrectPatternGroups.isNotEmpty) {
+      PriorityRandomGenerator prgChoice = PriorityRandomGenerator(
+          _incorrectPatternGroups.length, _incorrectPatternPriorities);
+      int attempts = 0;
+      while (_choices.length < 5 && attempts < 50) {
+        attempts++;
+        String incorrectAnswer = renderPatternOptions(
+            _incorrectPatternGroups[prgChoice.pickIndex()][0],
+            _variablePermutations);
+        if (_choiceSelections.contains(incorrectAnswer)) continue;
+        if (_correctPatterns.contains(incorrectAnswer)) continue;
+        _choices.add([incorrectAnswer, 0]);
+        _choiceSelections.add(incorrectAnswer);
       }
     }
-    if (kDebugMode) {
-      print('--------------');
-    }
+
+    _choices.shuffle();
+
     for (int i = 0; i < _choices.length; i++) {
       _choices[i][0] =
           renderPatternBranching(_choices[i][0], _variableBranching);
     }
-    for (var item in _choices) {
-      if (kDebugMode) {
-        print(item);
-      }
-    }
-    if (kDebugMode) {
-      print('--------------');
-    }
+
     for (var e in _choices) {
       _answerGroup.add(e[0]);
     }
+
+    _startTimer();
   }
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => _loadData());
+  }
+
+  @override
+  void dispose() {
+    _cancelTimer();
+    super.dispose();
   }
 
   Widget _buildStatItem({
@@ -370,9 +473,29 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: theme.colorScheme.inversePrimary,
-        title: Text(
-          widget.title.isNotEmpty ? widget.title : 'HardCode',
-          style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold),
+        title: Row(
+          children: [
+            Text(
+              widget.title.isNotEmpty ? widget.title : 'HardCode',
+              style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold),
+            ),
+            const Spacer(),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primaryContainer.withOpacity(0.8),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                'Lvl ${_userStats.level}',
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w800,
+                  color: theme.colorScheme.onPrimaryContainer,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
       drawer: Drawer(
@@ -395,15 +518,42 @@ class _MyHomePageState extends State<MyHomePage> {
                       color: theme.colorScheme.onPrimary,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 2),
                   Text(
-                    'Cross-Platform Hive Database',
+                    '⚡ Level ${_userStats.level} • ${_userStats.rankTitle}',
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 13,
-                      color: theme.colorScheme.onPrimary.withOpacity(0.85),
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.onPrimary.withOpacity(0.95),
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: LinearProgressIndicator(
+                      value: _userStats.levelProgress,
+                      backgroundColor: Colors.white.withOpacity(0.3),
+                      valueColor: const AlwaysStoppedAnimation<Color>(Colors.amberAccent),
+                      minHeight: 6,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${_userStats.currentLevelXp} / 150 XP to Next Level',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 11,
+                      color: theme.colorScheme.onPrimary.withOpacity(0.8),
                     ),
                   ),
                 ],
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.bolt, color: Colors.amber),
+              title: const Text('Total XP'),
+              trailing: Text(
+                '${_userStats.xp} XP',
+                style: GoogleFonts.jetBrainsMono(fontWeight: FontWeight.bold, fontSize: 16),
               ),
             ),
             ListTile(
@@ -432,19 +582,34 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             ListTile(
               leading: const Icon(Icons.quiz_outlined, color: Colors.blue),
-              title: const Text('Total Answered'),
+              title: const Text('Total Solved'),
               trailing: Text(
                 '${_userStats.totalAnswered} (${_userStats.totalCorrect} correct)',
                 style: GoogleFonts.jetBrainsMono(fontWeight: FontWeight.bold, fontSize: 14),
               ),
             ),
             const Divider(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
+              child: Text(
+                'Adaptive Learning Engine',
+                style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold, fontSize: 13),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Text(
+                'HardCode tracks question patterns and error frequencies to prioritize topics and languages where you need practice.',
+                style: GoogleFonts.plusJakartaSans(fontSize: 12, color: Colors.grey.shade700, height: 1.3),
+              ),
+            ),
+            const Divider(),
             if (_userStats.languageStats.isNotEmpty) ...[
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
                 child: Text(
-                  'Per-Language Stats',
-                  style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold, fontSize: 14),
+                  'Per-Language Mastery',
+                  style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold, fontSize: 13),
                 ),
               ),
               ..._userStats.languageStats.entries.map((entry) {
@@ -505,15 +670,23 @@ class _MyHomePageState extends State<MyHomePage> {
             final double buttonVerticalMargin =
                 (6.0 * scale).clamp(3.0, 7.0);
             final double contentSpacing =
-                (24.0 * scale).clamp(10.0, 28.0);
+                (20.0 * scale).clamp(10.0, 26.0);
             final double titleSpacing =
-                (14.0 * scale).clamp(8.0, 18.0);
+                (12.0 * scale).clamp(8.0, 16.0);
             final double statFontSize = (13.0 * scale).clamp(10.0, 15.0);
+
+            // Timer color shift
+            Color timerColor = Colors.green.shade600;
+            if (_remainingSeconds <= 5) {
+              timerColor = Colors.redAccent.shade700;
+            } else if (_remainingSeconds <= 10) {
+              timerColor = Colors.orange.shade700;
+            }
 
             return SingleChildScrollView(
               padding: EdgeInsets.symmetric(
                 horizontal: (20.0 * scale).clamp(10.0, 24.0),
-                vertical: (24.0 * scale).clamp(12.0, 32.0),
+                vertical: (20.0 * scale).clamp(10.0, 28.0),
               ),
               child: Center(
                 child: SizedBox(
@@ -522,6 +695,64 @@ class _MyHomePageState extends State<MyHomePage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
+                      // Gamification Header (Rank, Level, XP)
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: (14.0 * scale).clamp(10.0, 16.0),
+                          vertical: (8.0 * scale).clamp(6.0, 10.0),
+                        ),
+                        margin: EdgeInsets.only(
+                          bottom: (10.0 * scale).clamp(6.0, 14.0),
+                        ),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              theme.colorScheme.primaryContainer.withOpacity(0.5),
+                              theme.colorScheme.surfaceVariant.withOpacity(0.4),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: theme.colorScheme.outline.withOpacity(0.2),
+                          ),
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  '⚡ Level ${_userStats.level} • ${_userStats.rankTitle}',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: (statFontSize * 0.95).clamp(10.0, 14.0),
+                                    fontWeight: FontWeight.w700,
+                                    color: theme.colorScheme.onSurface,
+                                  ),
+                                ),
+                                Text(
+                                  '${_userStats.currentLevelXp} / 150 XP',
+                                  style: GoogleFonts.jetBrainsMono(
+                                    fontSize: (statFontSize * 0.9).clamp(10.0, 13.0),
+                                    fontWeight: FontWeight.bold,
+                                    color: theme.colorScheme.primary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: (6.0 * scale).clamp(4.0, 8.0)),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(4),
+                              child: LinearProgressIndicator(
+                                value: _userStats.levelProgress,
+                                minHeight: (5.0 * scale).clamp(4.0, 7.0),
+                                backgroundColor: theme.colorScheme.outline.withOpacity(0.15),
+                                valueColor: AlwaysStoppedAnimation<Color>(theme.colorScheme.primary),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
                       // Persistent Stats Banner
                       Container(
                         padding: EdgeInsets.symmetric(
@@ -529,7 +760,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           vertical: (8.0 * scale).clamp(5.0, 10.0),
                         ),
                         margin: EdgeInsets.only(
-                          bottom: (16.0 * scale).clamp(8.0, 20.0),
+                          bottom: (12.0 * scale).clamp(8.0, 16.0),
                         ),
                         decoration: BoxDecoration(
                           color: theme.colorScheme.surfaceVariant.withOpacity(0.4),
@@ -567,6 +798,71 @@ class _MyHomePageState extends State<MyHomePage> {
                           ],
                         ),
                       ),
+
+                      // Countdown Timer Bar
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: (12.0 * scale).clamp(8.0, 16.0),
+                          vertical: (6.0 * scale).clamp(4.0, 8.0),
+                        ),
+                        margin: EdgeInsets.only(
+                          bottom: (14.0 * scale).clamp(8.0, 18.0),
+                        ),
+                        decoration: BoxDecoration(
+                          color: timerColor.withOpacity(0.08),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: timerColor.withOpacity(0.3),
+                            width: 1.2,
+                          ),
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.timer_outlined,
+                                      size: (16.0 * scale).clamp(13.0, 18.0),
+                                      color: timerColor,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      _isTimerExpired ? "Time's up!" : 'Time Remaining',
+                                      style: GoogleFonts.plusJakartaSans(
+                                        fontSize: (statFontSize * 0.9).clamp(10.0, 13.0),
+                                        fontWeight: FontWeight.w600,
+                                        color: timerColor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  '${_remainingSeconds}s',
+                                  style: GoogleFonts.jetBrainsMono(
+                                    fontSize: (statFontSize * 1.05).clamp(11.0, 15.0),
+                                    fontWeight: FontWeight.bold,
+                                    color: timerColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: (4.0 * scale).clamp(3.0, 6.0)),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(3),
+                              child: LinearProgressIndicator(
+                                value: _remainingSeconds / _totalSeconds.toDouble(),
+                                minHeight: (4.0 * scale).clamp(3.0, 6.0),
+                                backgroundColor: timerColor.withOpacity(0.15),
+                                valueColor: AlwaysStoppedAnimation<Color>(timerColor),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
                       if (_language.isNotEmpty) ...[
                         Center(
                           child: Container(
@@ -580,7 +876,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text(
-                              '$_language - $_questionSubType',
+                              '$_language • $_questionSubType',
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: badgeFontSize,
                                 fontWeight: FontWeight.w700,
@@ -603,51 +899,93 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                         SizedBox(height: contentSpacing),
                       ],
+
                       Column(
                         children: _answerGroup.map((String answerButton) {
+                          final isWrong = _incorrectSelections.contains(answerButton);
+                          final isCorrectAnswer = (_correctAnswerSelected == answerButton) ||
+                              (_isTimerExpired && _correctAnswer == answerButton);
+                          final isDisabled = _isTimerExpired ||
+                              (_correctAnswerSelected != null) ||
+                              isWrong;
+
                           return AnswerButton(
-                            key: ValueKey('${_questionNumber}_$answerButton'),
+                            key: ValueKey('${_questionNumber}_${answerButton}_${isWrong}_$isCorrectAnswer'),
                             text: answerButton,
                             fontSize: buttonFontSize,
                             verticalPadding: buttonVerticalPadding,
                             horizontalPadding: buttonHorizontalPadding,
                             verticalMargin: buttonVerticalMargin,
-                            onPressed: () async {
-                              int answer = _choices[
-                                  _answerGroup.indexOf(answerButton)][1];
-                              final isCorrect = (answer == 1);
-                              final updatedStats =
-                                  await DatabaseService.instance.recordAnswer(
-                                language: _language,
-                                isCorrect: isCorrect,
-                              );
-                              if (!mounted) return;
-                              setState(() {
-                                _userStats = updatedStats;
-                                if (isCorrect) {
-                                  generateQuestion();
-                                }
-                              });
-                              if (!isCorrect) {
-                                ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      'Incorrect choice. Try again!',
-                                      style: GoogleFonts.plusJakartaSans(
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                    backgroundColor: Colors.redAccent.shade700,
-                                    duration: const Duration(milliseconds: 1200),
-                                    behavior: SnackBarBehavior.floating,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10)),
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 24, vertical: 16),
-                                  ),
-                                );
-                              }
-                            },
+                            isIncorrect: isWrong,
+                            isCorrect: isCorrectAnswer,
+                            isDisabled: isDisabled,
+                            onPressed: isDisabled
+                                ? null
+                                : () async {
+                                    int answer = _choices[
+                                        _answerGroup.indexOf(answerButton)][1];
+                                    final isCorrect = (answer == 1);
+
+                                    if (isCorrect) {
+                                      _cancelTimer();
+                                      final updatedStats =
+                                          await DatabaseService.instance.recordAnswer(
+                                        language: _language,
+                                        isCorrect: true,
+                                        timeRemainingSeconds: _remainingSeconds,
+                                      );
+                                      if (!mounted) return;
+                                      setState(() {
+                                        _correctAnswerSelected = answerButton;
+                                        _userStats = updatedStats;
+                                      });
+
+                                      // Brief celebratory delay before advancing
+                                      Future.delayed(
+                                          const Duration(milliseconds: 700), () {
+                                        if (!mounted) return;
+                                        setState(() {
+                                          generateQuestion();
+                                        });
+                                      });
+                                    } else {
+                                      final updatedStats =
+                                          await DatabaseService.instance.recordAnswer(
+                                        language: _language,
+                                        isCorrect: false,
+                                        timeRemainingSeconds: _remainingSeconds,
+                                      );
+                                      if (!mounted) return;
+                                      setState(() {
+                                        _incorrectSelections.add(answerButton);
+                                        _userStats = updatedStats;
+                                      });
+
+                                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Row(
+                                            children: [
+                                              const Icon(Icons.cancel, color: Colors.white),
+                                              const SizedBox(width: 8),
+                                              Text(
+                                                'Incorrect choice. Try another option!',
+                                                style: GoogleFonts.plusJakartaSans(
+                                                    fontWeight: FontWeight.w600),
+                                              ),
+                                            ],
+                                          ),
+                                          backgroundColor: Colors.redAccent.shade700,
+                                          duration: const Duration(milliseconds: 1200),
+                                          behavior: SnackBarBehavior.floating,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10)),
+                                          margin: const EdgeInsets.symmetric(
+                                              horizontal: 24, vertical: 16),
+                                        ),
+                                      );
+                                    }
+                                  },
                           );
                         }).toList(),
                       ),
@@ -666,7 +1004,7 @@ class _MyHomePageState extends State<MyHomePage> {
           });
         },
         tooltip: 'Next Question',
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.skip_next),
       ),
     );
   }
@@ -674,11 +1012,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
 class AnswerButton extends StatefulWidget {
   final String text;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final double fontSize;
   final double verticalPadding;
   final double horizontalPadding;
   final double verticalMargin;
+  final bool isIncorrect;
+  final bool isCorrect;
+  final bool isDisabled;
 
   const AnswerButton({
     super.key,
@@ -688,6 +1029,9 @@ class AnswerButton extends StatefulWidget {
     this.verticalPadding = 14.0,
     this.horizontalPadding = 20.0,
     this.verticalMargin = 5.0,
+    this.isIncorrect = false,
+    this.isCorrect = false,
+    this.isDisabled = false,
   });
 
   @override
@@ -702,27 +1046,53 @@ class _AnswerButtonState extends State<AnswerButton> {
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
 
+    Color bgColor = theme.colorScheme.surface;
+    Color borderColor = theme.colorScheme.outline.withOpacity(0.35);
+    Color textColor = theme.colorScheme.onSurface;
+    double borderWidth = 1.4;
+
+    if (widget.isIncorrect) {
+      bgColor = Colors.red.withOpacity(0.08);
+      borderColor = Colors.red.shade400;
+      textColor = Colors.red.shade800;
+      borderWidth = 2.0;
+    } else if (widget.isCorrect) {
+      bgColor = Colors.green.withOpacity(0.12);
+      borderColor = Colors.green.shade600;
+      textColor = Colors.green.shade800;
+      borderWidth = 2.2;
+    } else if (_isHovered && !widget.isDisabled) {
+      bgColor = primary.withOpacity(0.08);
+      borderColor = primary;
+      textColor = primary;
+      borderWidth = 2.2;
+    } else if (widget.isDisabled) {
+      bgColor = theme.colorScheme.surface.withOpacity(0.6);
+      borderColor = theme.colorScheme.outline.withOpacity(0.15);
+      textColor = theme.colorScheme.onSurface.withOpacity(0.4);
+    }
+
     return Padding(
       padding: EdgeInsets.symmetric(vertical: widget.verticalMargin),
       child: MouseRegion(
-        onEnter: (_) => setState(() => _isHovered = true),
-        onExit: (_) => setState(() => _isHovered = false),
-        cursor: SystemMouseCursors.click,
+        onEnter: (_) {
+          if (!widget.isDisabled) setState(() => _isHovered = true);
+        },
+        onExit: (_) {
+          if (!widget.isDisabled) setState(() => _isHovered = false);
+        },
+        cursor: widget.isDisabled ? SystemMouseCursors.basic : SystemMouseCursors.click,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 160),
           curve: Curves.easeInOut,
           decoration: BoxDecoration(
-            color: _isHovered
-                ? primary.withOpacity(0.08)
-                : theme.colorScheme.surface,
+            color: bgColor,
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
-              color: _isHovered
-                  ? primary
-                  : theme.colorScheme.outline.withOpacity(0.35),
-              width: _isHovered ? 2.2 : 1.4,
+              color: borderColor,
+              width: borderWidth,
             ),
-            boxShadow: _isHovered
+            boxShadow: (_isHovered && !widget.isDisabled)
                 ? [
                     BoxShadow(
                       color: primary.withOpacity(0.20),
@@ -742,8 +1112,8 @@ class _AnswerButtonState extends State<AnswerButton> {
             color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(14),
-              splashColor: primary.withOpacity(0.12),
-              highlightColor: primary.withOpacity(0.05),
+              splashColor: widget.isDisabled ? Colors.transparent : primary.withOpacity(0.12),
+              highlightColor: widget.isDisabled ? Colors.transparent : primary.withOpacity(0.05),
               onTap: widget.onPressed,
               child: Container(
                 width: double.infinity,
@@ -751,21 +1121,50 @@ class _AnswerButtonState extends State<AnswerButton> {
                   vertical: widget.verticalPadding,
                   horizontal: widget.horizontalPadding,
                 ),
-                child: Center(
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      widget.text,
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.jetBrainsMono(
-                        fontSize: widget.fontSize,
-                        fontWeight:
-                            _isHovered ? FontWeight.bold : FontWeight.w600,
-                        color: _isHovered ? primary : theme.colorScheme.onSurface,
-                        letterSpacing: 0.2,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            widget.text,
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.jetBrainsMono(
+                              fontSize: widget.fontSize,
+                              fontWeight: (_isHovered || widget.isCorrect || widget.isIncorrect)
+                                  ? FontWeight.bold
+                                  : FontWeight.w600,
+                              color: textColor,
+                              letterSpacing: 0.2,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                    if (widget.isIncorrect) ...[
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.all(3),
+                        decoration: BoxDecoration(
+                          color: Colors.red.shade600,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.close, color: Colors.white, size: 14),
+                      ),
+                    ] else if (widget.isCorrect) ...[
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.all(3),
+                        decoration: BoxDecoration(
+                          color: Colors.green.shade600,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.check, color: Colors.white, size: 14),
+                      ),
+                    ],
+                  ],
                 ),
               ),
             ),

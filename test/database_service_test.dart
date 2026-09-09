@@ -9,6 +9,7 @@ void main() {
         bestStreak: 5,
         totalAnswered: 10,
         totalCorrect: 8,
+        xp: 120,
         languageStats: {},
       );
       expect(stats.accuracy, 80.0);
@@ -16,6 +17,7 @@ void main() {
       expect(stats.bestStreak, 5);
       expect(stats.totalAnswered, 10);
       expect(stats.totalCorrect, 8);
+      expect(stats.xp, 120);
     });
 
     test('UserStats handles zero total answered without dividing by zero', () {
@@ -24,9 +26,126 @@ void main() {
         bestStreak: 0,
         totalAnswered: 0,
         totalCorrect: 0,
+        xp: 0,
         languageStats: {},
       );
       expect(stats.accuracy, 0.0);
+    });
+
+    test('UserStats level, currentLevelXp, and levelProgress calculations', () {
+      final stats0 = UserStats(
+        currentStreak: 0,
+        bestStreak: 0,
+        totalAnswered: 0,
+        totalCorrect: 0,
+        xp: 0,
+        languageStats: {},
+      );
+      expect(stats0.level, 1);
+      expect(stats0.currentLevelXp, 0);
+      expect(stats0.levelProgress, 0.0);
+      expect(stats0.rankTitle, 'Novice Coder');
+
+      final statsLevel2 = UserStats(
+        currentStreak: 2,
+        bestStreak: 2,
+        totalAnswered: 5,
+        totalCorrect: 5,
+        xp: 150,
+        languageStats: {},
+      );
+      expect(statsLevel2.level, 2);
+      expect(statsLevel2.currentLevelXp, 0);
+      expect(statsLevel2.levelProgress, 0.0);
+      expect(statsLevel2.rankTitle, 'Syntax Apprentice');
+
+      final statsMidLevel2 = UserStats(
+        currentStreak: 4,
+        bestStreak: 4,
+        totalAnswered: 10,
+        totalCorrect: 9,
+        xp: 225,
+        languageStats: {},
+      );
+      expect(statsMidLevel2.level, 2);
+      expect(statsMidLevel2.currentLevelXp, 75);
+      expect(statsMidLevel2.levelProgress, 0.5);
+
+      final statsLevel3 = UserStats(
+        currentStreak: 5,
+        bestStreak: 5,
+        totalAnswered: 20,
+        totalCorrect: 18,
+        xp: 300,
+        languageStats: {},
+      );
+      expect(statsLevel3.level, 3);
+      expect(statsLevel3.rankTitle, 'Logic Specialist');
+
+      final statsLevel4 = UserStats(
+        currentStreak: 5,
+        bestStreak: 5,
+        totalAnswered: 30,
+        totalCorrect: 28,
+        xp: 450,
+        languageStats: {},
+      );
+      expect(statsLevel4.level, 4);
+      expect(statsLevel4.rankTitle, 'Full-Stack Hacker');
+
+      final statsLevel5 = UserStats(
+        currentStreak: 5,
+        bestStreak: 5,
+        totalAnswered: 40,
+        totalCorrect: 38,
+        xp: 600,
+        languageStats: {},
+      );
+      expect(statsLevel5.level, 5);
+      expect(statsLevel5.rankTitle, 'Systems Architect');
+
+      final statsLevel6 = UserStats(
+        currentStreak: 10,
+        bestStreak: 10,
+        totalAnswered: 50,
+        totalCorrect: 48,
+        xp: 750,
+        languageStats: {},
+      );
+      expect(statsLevel6.level, 6);
+      expect(statsLevel6.rankTitle, 'Code Grandmaster');
+    });
+  });
+
+  group('DatabaseService Logic Tests', () {
+    test('getAvailableCategoriesForLevel scales with level', () {
+      final categoriesL1 =
+          DatabaseService.instance.getAvailableCategoriesForLevel(1);
+      expect(categoriesL1, contains('Integer Assignment'));
+      expect(categoriesL1, contains('Constant Declaration'));
+      expect(categoriesL1.contains('Boolean Assignment'), isFalse);
+      expect(categoriesL1.contains('String Assignment'), isFalse);
+
+      final categoriesL2 =
+          DatabaseService.instance.getAvailableCategoriesForLevel(2);
+      expect(categoriesL2, contains('Boolean Assignment'));
+      expect(categoriesL2.contains('String Assignment'), isFalse);
+
+      final categoriesL3 =
+          DatabaseService.instance.getAvailableCategoriesForLevel(3);
+      expect(categoriesL3, contains('String Assignment'));
+      expect(categoriesL3.length, 4);
+    });
+
+    test(
+        'getAdaptiveLanguagePriorities returns default priority for unexplored languages',
+        () {
+      final priorities = DatabaseService.instance
+          .getAdaptiveLanguagePriorities(['C', 'Rust', 'Go']);
+      expect(priorities.length, 3);
+      for (final p in priorities) {
+        expect(p, 3);
+      }
     });
   });
 }

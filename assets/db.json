@@ -36,7 +36,22 @@
     "DynamoDB",
     "Cosmos DB",
     "Firestore",
-    "Relational Algebra"
+    "Relational Algebra",
+    "DuckDB",
+    "ClickHouse",
+    "Cassandra",
+    "ScyllaDB",
+    "Pinecone",
+    "Milvus",
+    "Qdrant",
+    "ChromaDB",
+    "Weaviate",
+    "CockroachDB",
+    "TiDB",
+    "SurrealDB",
+    "Supabase",
+    "Meilisearch",
+    "Elasticsearch"
   ],
   "OOP": [
     "Java",
@@ -184,7 +199,14 @@
   "TODO": {
     "Names": [
       "Language",
-      "DB"
+      "DB",
+      "Operating Systems",
+      "Computer Networking",
+      "Computer Architecture",
+      "Compilers and Language Runtimes",
+      "Distributed Systems",
+      "Cybersecurity and IT Infrastructure",
+      "Algorithms and Data Structures"
     ],
     "Language": {
       "General": [
@@ -210,6 +232,65 @@
           "Set Operators"
         ]
       }
+    ],
+    "Operating Systems": [
+      "Virtual Memory, Paging, Page Tables, and Translation Lookaside Buffers (TLB)",
+      "Process Lifecycle, Process Control Blocks (PCB), and Context Switching mechanics",
+      "Inter-Process Communication (IPC): Anonymous Pipes, Named Pipes (FIFOs), Shared Memory, and Unix Domain Sockets",
+      "Deadlock Prevention, Detection, Coffman Conditions, and the Banker's Algorithm",
+      "File System Internals: Inodes, Directory Trees, Superblocks, and Journaling (ext4, APFS, NTFS)",
+      "CPU Scheduling Policies: Round-Robin, Completely Fair Scheduler (CFS), Multi-Level Feedback Queues"
+    ],
+    "Computer Networking": [
+      "Transmission Control Protocol (TCP) 3-Way Handshake (SYN, SYN-ACK, ACK) and 4-Way Connection Teardown",
+      "TCP Congestion Control Algorithms (Slow Start, Congestion Avoidance, CUBIC, BBR)",
+      "User Datagram Protocol (UDP) vs TCP: Connectionless delivery, low latency, and packet loss tolerance",
+      "Domain Name System (DNS) Recursive vs Iterative Resolution and Record Types (A, AAAA, CNAME, MX, TXT)",
+      "Transport Layer Security (TLS 1.3) Handshake, Ephemeral Diffie-Hellman Key Exchange, and AEAD Ciphers",
+      "HTTP Protocol Evolution: HTTP/1.1 Head-of-Line Blocking vs HTTP/2 Binary Multiplexing vs HTTP/3 QUIC over UDP",
+      "CIDR Subnet Masking, Variable-Length Subnet Masking (VLSM), and Autonomous System BGP Routing"
+    ],
+    "Computer Architecture": [
+      "CPU Cache Hierarchy: L1 Instruction/Data Caches, L2 Cache, L3 Shared Cache, and 64-byte Cache Lines",
+      "Cache Coherence Protocols: MESI (Modified, Exclusive, Shared, Invalid) and MOESI states",
+      "Instruction Pipelining and Hazards: Structural, Data (Read-After-Write), and Control (Branch Misprediction)",
+      "SIMD (Single Instruction, Multiple Data) Vector Extensions: AVX-512, ARM NEON",
+      "Memory Barriers, Sequential Consistency, and Out-of-Order Instruction Execution",
+      "RISC vs CISC Architectural Design: ARM64 / RISC-V load-store design vs x86-64 complex instruction sets"
+    ],
+    "Compilers and Language Runtimes": [
+      "Lexical Analysis, Tokenization, Deterministic Finite Automata (DFA), and Regular Expressions",
+      "Context-Free Grammars, LL(k) vs LR(k) / LALR Parsers, and Abstract Syntax Tree (AST) Generation",
+      "Intermediate Representation (IR), Static Single Assignment (SSA) form, and LLVM Optimization Passes",
+      "Just-In-Time (JIT) Tiered Compilation vs Ahead-Of-Time (AOT) Machine Code Generation",
+      "Garbage Collection Algorithms: Tracing (Mark-Sweep, Generational, Tri-Color Marking) vs Reference Counting with Cycle Detection",
+      "Stack vs Heap Memory Layout, Call Stack Frames, and Escape Analysis"
+    ],
+    "Distributed Systems": [
+      "CAP Theorem (Consistency, Availability, Partition Tolerance) and Brewer's Trade-offs",
+      "Consensus Algorithms: Raft Leader Election, Heartbeats, and Log Replication vs Multi-Paxos",
+      "Eventual Consistency Models, Conflict-Free Replicated Data Types (CRDTs), and Strong Consistency",
+      "Logical Time in Distributed Networks: Lamport Timestamps and Vector Clocks",
+      "Atomic Commit Protocols: Two-Phase Commit (2PC), Three-Phase Commit (3PC), and the Saga Pattern",
+      "Consistent Hashing with Virtual Nodes for Distributed Caching and Partitioning",
+      "Distributed Tracing, Trace Context Propagation (W3C), and OpenTelemetry Observability"
+    ],
+    "Cybersecurity and IT Infrastructure": [
+      "Asymmetric Public-Key Cryptography: RSA, Elliptic-Curve Cryptography (ECC), and Digital Signatures",
+      "Symmetric Encryption Standards: AES-256-GCM and ChaCha20-Poly1305 Authenticated Encryption",
+      "Cryptographic Hash Functions (SHA-256/SHA-3) and Password KDFs (bcrypt, scrypt, Argon2id)",
+      "Identity and Access Management: OAuth 2.0 Authorization Code Flow with PKCE, OpenID Connect (OIDC), and JWT Verification",
+      "Common Web Application Vulnerabilities: SQL Injection, Cross-Site Scripting (XSS), CSRF, Server-Side Request Forgery (SSRF)",
+      "Memory Corruption Attacks: Stack Buffer Overflows, Heap Spraying, Return-Oriented Programming (ROP), and ASLR/DEP mitigations",
+      "Zero Trust Network Architecture, Microsegmentation, and the Principle of Least Privilege (PoLP)"
+    ],
+    "Algorithms and Data Structures": [
+      "Asymptotic Complexity Analysis: Big-O, Big-Omega, Big-Theta, and Amortized Time Complexity",
+      "Self-Balancing Binary Search Trees: AVL Tree Rotations and Red-Black Tree Invariants",
+      "Graph Shortest Path Algorithms: Dijkstra's with Priority Queue, Bellman-Ford, and A* Heuristic Search",
+      "Minimum Spanning Tree Algorithms: Kruskal's Algorithm with Union-Find and Prim's Algorithm",
+      "String Search Algorithms: Knuth-Morris-Pratt (KMP) Prefix Tables and Boyer-Moore",
+      "Dynamic Programming Strategies: Optimal Substructure, Overlapping Subproblems, Top-Down Memoization, and Bottom-Up Tabulation"
     ]
   },
   "Networking": [
@@ -321,6 +402,49 @@
       "Aggregation pipelines are used to perform aggregations or join operations on multiple collections.",
       "Projection is used to select specific fields from a collection, reduce array data, and select specific fields from embedded documents.",
       "GridFS is used to store large files."
+    ],
+    "PostgreSQL": [
+      "PostgreSQL is an advanced, enterprise-class open-source object-relational database supporting full ACID compliance.",
+      "Multi-Version Concurrency Control (MVCC) enables non-blocking reads and concurrent writes with snapshot isolation.",
+      "PostgreSQL offers first-class support for semi-structured JSONB documents with GIN (Generalized Inverted Index) indexing.",
+      "Advanced capabilities include Common Table Expressions (WITH queries), Window Functions, and pgvector extension for AI embeddings."
+    ],
+    "Redis": [
+      "Redis is an ultra-fast in-memory key-value data structure store used as a primary database, cache, message broker, and streaming engine.",
+      "Rich native data structures include Strings, Hashes, Lists, Sets, Sorted Sets (ZSETs), Bitmaps, and HyperLogLogs.",
+      "Persistence is provided via point-in-time RDB snapshots and append-only file (AOF) operation logging.",
+      "In-memory execution allows sub-millisecond read and write latency across millions of operations per second."
+    ],
+    "SQLite": [
+      "SQLite is a serverless, self-contained, zero-configuration, transactional SQL database engine compiled directly into the application process.",
+      "Transactions are fully ACID-compliant even across operating system crashes or power interruptions.",
+      "Write-Ahead Logging (WAL) mode enables concurrent readers while a single writer is committing changes.",
+      "SQLite powers mobile applications on iOS and Android and client-side web databases via WebAssembly."
+    ],
+    "DuckDB": [
+      "DuckDB is an in-process columnar SQL OLAP database management system built for high-performance analytical queries.",
+      "It features a vectorized query execution engine and processes queries directly on Apache Parquet, Arrow, and CSV files without data duplication.",
+      "Like SQLite for OLTP, DuckDB is serverless and embeds with zero external dependencies."
+    ],
+    "ClickHouse": [
+      "ClickHouse is a column-oriented distributed database designed for real-time analytical reporting at petabyte scale.",
+      "Data in ClickHouse is physically stored sorted by primary key in MergeTree family engines with LZ4 and ZSTD compression.",
+      "Vectorized query execution processes billions of rows per second per server node."
+    ],
+    "Neo4j": [
+      "Neo4j is a native graph database implementing the Property Graph Model with nodes, directional edges/relationships, and key-value properties.",
+      "It uses the Cypher declarative graph query language to traverse complex relationships with index-free adjacency in constant O(1) time per hop.",
+      "Graph databases are optimal for social networks, fraud detection, recommendation engines, and knowledge graphs."
+    ],
+    "DynamoDB": [
+      "Amazon DynamoDB is a fully managed, serverless, key-value NoSQL database engineered for single-digit millisecond latency at any scale.",
+      "Tables are partitioned across storage nodes using a Partition Key (hash key) and an optional Sort Key (range key).",
+      "Global Secondary Indexes (GSIs) and Local Secondary Indexes (LSIs) provide flexible query projections."
+    ],
+    "Vector Databases": [
+      "Vector databases (Pinecone, Qdrant, Milvus, Chroma) index high-dimensional mathematical embeddings generated by machine learning models.",
+      "Semantic similarity between concepts is calculated using distance metrics: Cosine Similarity, Euclidean Distance (L2), and Dot Product.",
+      "Approximate Nearest Neighbor (ANN) indexing structures such as HNSW (Hierarchical Navigable Small World) and IVFFlat provide sub-linear search speed."
     ]
   },
   "Variables": {
@@ -362,7 +486,13 @@
       "[optional semicolon]",
       "[random int variable]",
       "[random integer]",
-      "[random rust data type]"
+      "[random rust data type]",
+      "[random string variable]",
+      "[random string]",
+      "[random bool variable]",
+      "[random bool]",
+      "[random float variable]",
+      "[random float]"
     ],
     "Variable Permutations": [
       "[auto|var|val|int|Int|let|None]",
@@ -746,8 +876,416 @@
           "Mutability": [],
           "Multiple Declaration": []
         }
+      },
+      "String Assignment": {
+        "Type": "Primitive Types",
+        "Sub-Type": "Multi-Choice",
+        "Question": [
+          "How do you declare and assign a String variable in [language]?",
+          "Which of the following is a correct way to assign a String value to a variable in [language]?",
+          "Declare and assign a String variable in [language] using:",
+          "Assignment and declaration of a String variable in [language] looks like:"
+        ],
+        "Answers": {
+          "Preferred": {
+            "C": "char [random string variable][] = \"[random string]\";",
+            "Python": "[random string variable] = \"[random string]\"",
+            "Go": "var [random string variable] string = \"[random string]\"",
+            "C++": "std::string [random string variable] = \"[random string]\";",
+            "PowerShell": "$[random string variable] = \"[random string]\"",
+            "PHP": "$[random string variable] = \"[random string]\";",
+            "C#": "string [random string variable] = \"[random string]\";",
+            "Bash": "[random string variable]=\"[random string]\"",
+            "Rust": "let [random string variable] = \"[random string]\";",
+            "Java": "String [random string variable] = \"[random string]\";",
+            "JavaScript": "const [random string variable] = \"[random string]\";",
+            "Ruby": "[random string variable] = \"[random string]\"",
+            "Kotlin": "val [random string variable] = \"[random string]\"",
+            "Swift": "var [random string variable] = \"[random string]\"",
+            "TypeScript": "const [random string variable]: string = \"[random string]\";",
+            "Lua": "local [random string variable] = \"[random string]\"",
+            "Scala": "val [random string variable]: String = \"[random string]\"",
+            "Dart": "String [random string variable] = \"[random string]\";"
+          },
+          "Correct": {
+            "C": [
+              "char [random string variable][][extensible whitespace]=[extensible whitespace]\"[random string]\";",
+              "const char* [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\";"
+            ],
+            "Python": [
+              "[random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]",
+              "[random string variable]: str[extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]"
+            ],
+            "Go": [
+              "[random string variable][extensible whitespace]:=[extensible whitespace]\"[random string]\"[optional semicolon]",
+              "var [random string variable] string[extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]"
+            ],
+            "C++": [
+              "std::string [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\";",
+              "string [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\";",
+              "auto [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\";"
+            ],
+            "PowerShell": [
+              "$[random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]",
+              "[string]$[random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]"
+            ],
+            "PHP": [
+              "$[random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\";"
+            ],
+            "C#": [
+              "string [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\";",
+              "var [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\";"
+            ],
+            "Bash": [
+              "[random string variable]=\"[random string]\"[optional semicolon]",
+              "declare [random string variable]=\"[random string]\"[optional semicolon]",
+              "export [random string variable]=\"[random string]\"[optional semicolon]"
+            ],
+            "Rust": [
+              "let [random string variable] = \"[random string]\";",
+              "let [random string variable]: &str = \"[random string]\";",
+              "let mut [random string variable] = \"[random string]\";"
+            ],
+            "Java": [
+              "String [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\";",
+              "var [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\";"
+            ],
+            "JavaScript": [
+              "const [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]",
+              "let [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]",
+              "var [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]"
+            ],
+            "Ruby": [
+              "[random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]"
+            ],
+            "Kotlin": [
+              "val [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]",
+              "var [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]"
+            ],
+            "Swift": [
+              "var [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]",
+              "let [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]"
+            ],
+            "TypeScript": [
+              "const [random string variable]: string[extensible whitespace]=[extensible whitespace]\"[random string]\";",
+              "let [random string variable]: string[extensible whitespace]=[extensible whitespace]\"[random string]\";",
+              "let [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\";"
+            ],
+            "Lua": [
+              "local [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]",
+              "[random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]"
+            ],
+            "Scala": [
+              "val [random string variable]: String[extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]",
+              "var [random string variable]: String[extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]"
+            ],
+            "Dart": [
+              "String [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\";",
+              "var [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\";"
+            ]
+          },
+          "Incorrect": [
+            {
+              "Name": "Group1",
+              "Pattern": "[String|str|string|None] [random string variable] := \"[random string]\"[;|None]",
+              "Priority": 10
+            },
+            {
+              "Name": "Group2",
+              "Pattern": "let [random string variable] -> \"[random string]\"[;|None]",
+              "Priority": 8
+            },
+            {
+              "Name": "Group3",
+              "Pattern": "[$|@|None][random string variable] == \"[random string]\"[;|None]",
+              "Priority": 6
+            },
+            {
+              "Name": "Group4",
+              "Pattern": "char [random string variable] = \"[random string]\";",
+              "Priority": 5
+            }
+          ]
+        }
+      },
+      "Boolean Assignment": {
+        "Type": "Primitive Types",
+        "Sub-Type": "Multi-Choice",
+        "Question": [
+          "How do you declare and assign a Boolean variable in [language]?",
+          "Which of the following is a correct Boolean assignment in [language]?",
+          "Declare and assign a boolean value to a variable in [language] using:",
+          "A valid Boolean assignment in [language] is:"
+        ],
+        "Answers": {
+          "Preferred": {
+            "C": "bool [random bool variable] = true;",
+            "Python": "[random bool variable] = True",
+            "Go": "var [random bool variable] bool = true",
+            "C++": "bool [random bool variable] = true;",
+            "PowerShell": "$[random bool variable] = $true",
+            "PHP": "$[random bool variable] = true;",
+            "C#": "bool [random bool variable] = true;",
+            "Bash": "[random bool variable]=true",
+            "Rust": "let [random bool variable]: bool = true;",
+            "Java": "boolean [random bool variable] = true;",
+            "JavaScript": "let [random bool variable] = true;",
+            "Ruby": "[random bool variable] = true",
+            "Kotlin": "val [random bool variable]: Boolean = true",
+            "Swift": "var [random bool variable]: Bool = true",
+            "TypeScript": "const [random bool variable]: boolean = true;",
+            "Lua": "local [random bool variable] = true",
+            "Scala": "val [random bool variable]: Boolean = true",
+            "Dart": "bool [random bool variable] = true;"
+          },
+          "Correct": {
+            "C": [
+              "bool [random bool variable][extensible whitespace]=[extensible whitespace]true;",
+              "int [random bool variable][extensible whitespace]=[extensible whitespace]1;"
+            ],
+            "Python": [
+              "[random bool variable][extensible whitespace]=[extensible whitespace]True[optional semicolon]",
+              "[random bool variable]: bool[extensible whitespace]=[extensible whitespace]True[optional semicolon]"
+            ],
+            "Go": [
+              "var [random bool variable] bool[extensible whitespace]=[extensible whitespace]true[optional semicolon]",
+              "[random bool variable][extensible whitespace]:=[extensible whitespace]true[optional semicolon]"
+            ],
+            "C++": [
+              "bool [random bool variable][extensible whitespace]=[extensible whitespace]true;",
+              "auto [random bool variable][extensible whitespace]=[extensible whitespace]true;"
+            ],
+            "PowerShell": [
+              "$[random bool variable][extensible whitespace]=[extensible whitespace]$true[optional semicolon]",
+              "[bool]$[random bool variable][extensible whitespace]=[extensible whitespace]$true[optional semicolon]"
+            ],
+            "PHP": [
+              "$[random bool variable][extensible whitespace]=[extensible whitespace]true;"
+            ],
+            "C#": [
+              "bool [random bool variable][extensible whitespace]=[extensible whitespace]true;",
+              "var [random bool variable][extensible whitespace]=[extensible whitespace]true;"
+            ],
+            "Bash": [
+              "[random bool variable]=true[optional semicolon]",
+              "[random bool variable]=1[optional semicolon]"
+            ],
+            "Rust": [
+              "let [random bool variable]: bool = true;",
+              "let [random bool variable] = true;",
+              "let mut [random bool variable] = true;"
+            ],
+            "Java": [
+              "boolean [random bool variable][extensible whitespace]=[extensible whitespace]true;",
+              "Boolean [random bool variable][extensible whitespace]=[extensible whitespace]Boolean.TRUE;"
+            ],
+            "JavaScript": [
+              "let [random bool variable][extensible whitespace]=[extensible whitespace]true[optional semicolon]",
+              "const [random bool variable][extensible whitespace]=[extensible whitespace]true[optional semicolon]",
+              "var [random bool variable][extensible whitespace]=[extensible whitespace]true[optional semicolon]"
+            ],
+            "Ruby": [
+              "[random bool variable][extensible whitespace]=[extensible whitespace]true[optional semicolon]"
+            ],
+            "Kotlin": [
+              "val [random bool variable]: Boolean[extensible whitespace]=[extensible whitespace]true[optional semicolon]",
+              "var [random bool variable][extensible whitespace]=[extensible whitespace]true[optional semicolon]"
+            ],
+            "Swift": [
+              "var [random bool variable]: Bool[extensible whitespace]=[extensible whitespace]true[optional semicolon]",
+              "let [random bool variable][extensible whitespace]=[extensible whitespace]true[optional semicolon]"
+            ],
+            "TypeScript": [
+              "const [random bool variable]: boolean[extensible whitespace]=[extensible whitespace]true;",
+              "let [random bool variable]: boolean[extensible whitespace]=[extensible whitespace]true;",
+              "let [random bool variable][extensible whitespace]=[extensible whitespace]true;"
+            ],
+            "Lua": [
+              "local [random bool variable][extensible whitespace]=[extensible whitespace]true[optional semicolon]",
+              "[random bool variable][extensible whitespace]=[extensible whitespace]true[optional semicolon]"
+            ],
+            "Scala": [
+              "val [random bool variable]: Boolean[extensible whitespace]=[extensible whitespace]true[optional semicolon]",
+              "var [random bool variable]: Boolean[extensible whitespace]=[extensible whitespace]true[optional semicolon]"
+            ],
+            "Dart": [
+              "bool [random bool variable][extensible whitespace]=[extensible whitespace]true;",
+              "var [random bool variable][extensible whitespace]=[extensible whitespace]true;"
+            ]
+          },
+          "Incorrect": [
+            {
+              "Name": "Group1",
+              "Pattern": "boolean [random bool variable] = 1[;|None]",
+              "Priority": 10
+            },
+            {
+              "Name": "Group2",
+              "Pattern": "bool [random bool variable] := TRUE[;|None]",
+              "Priority": 8
+            },
+            {
+              "Name": "Group3",
+              "Pattern": "[$|@|None][random bool variable] == True[;|None]",
+              "Priority": 6
+            },
+            {
+              "Name": "Group4",
+              "Pattern": "var [random bool variable] = YES[;|None]",
+              "Priority": 5
+            }
+          ]
+        }
+      },
+      "Constant Declaration": {
+        "Type": "Variables",
+        "Sub-Type": "Multi-Choice",
+        "Question": [
+          "How do you declare an immutable Constant in [language]?",
+          "Which statement correctly declares a Constant variable in [language]?",
+          "Declare an unchangeable constant value in [language] using:"
+        ],
+        "Answers": {
+          "Preferred": {
+            "C": "const int [random int variable] = [random integer];",
+            "Python": "[random int variable]: Final = [random integer]",
+            "Go": "const [random int variable] = [random integer]",
+            "C++": "const int [random int variable] = [random integer];",
+            "PowerShell": "Set-Variable -Name [random int variable] -Value [random integer] -Option Constant",
+            "PHP": "const [random int variable] = [random integer];",
+            "C#": "const int [random int variable] = [random integer];",
+            "Bash": "readonly [random int variable]=[random integer]",
+            "Rust": "const [random int variable]: i32 = [random integer];",
+            "Java": "final int [random int variable] = [random integer];",
+            "JavaScript": "const [random int variable] = [random integer];",
+            "Ruby": "[random int variable] = [random integer]",
+            "Kotlin": "val [random int variable] = [random integer]",
+            "Swift": "let [random int variable] = [random integer]",
+            "TypeScript": "const [random int variable]: number = [random integer];",
+            "Lua": "local [random int variable] <const> = [random integer]",
+            "Scala": "val [random int variable] = [random integer]",
+            "Dart": "const int [random int variable] = [random integer];"
+          },
+          "Correct": {
+            "C": [
+              "const int [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+            ],
+            "Python": [
+              "[random int variable]: Final = [random integer][optional semicolon]"
+            ],
+            "Go": [
+              "const [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "const [random int variable] int[extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+            ],
+            "C++": [
+              "const int [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
+              "constexpr int [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+            ],
+            "PowerShell": [
+              "Set-Variable -Name [random int variable] -Value [random integer] -Option Constant"
+            ],
+            "PHP": [
+              "const [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+            ],
+            "C#": [
+              "const int [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+            ],
+            "Bash": [
+              "readonly [random int variable]=[random integer][optional semicolon]",
+              "declare -r [random int variable]=[random integer][optional semicolon]"
+            ],
+            "Rust": [
+              "const [random int variable]: i32 = [random integer];"
+            ],
+            "Java": [
+              "final int [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+            ],
+            "JavaScript": [
+              "const [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+            ],
+            "Ruby": [
+              "[random int variable] = [random integer][optional semicolon]"
+            ],
+            "Kotlin": [
+              "val [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+            ],
+            "Swift": [
+              "let [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+            ],
+            "TypeScript": [
+              "const [random int variable]: number[extensible whitespace]=[extensible whitespace][random integer];",
+              "const [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+            ],
+            "Lua": [
+              "local [random int variable] <const>[extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+            ],
+            "Scala": [
+              "val [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+            ],
+            "Dart": [
+              "const int [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
+              "final int [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+            ]
+          },
+          "Incorrect": [
+            {
+              "Name": "Group1",
+              "Pattern": "immutable [random int variable] = [random integer][;|None]",
+              "Priority": 10
+            },
+            {
+              "Name": "Group2",
+              "Pattern": "let static [random int variable] = [random integer][;|None]",
+              "Priority": 8
+            },
+            {
+              "Name": "Group3",
+              "Pattern": "var const [random int variable] = [random integer][;|None]",
+              "Priority": 6
+            },
+            {
+              "Name": "Group4",
+              "Pattern": "fixed [random int variable] = [random integer][;|None]",
+              "Priority": 5
+            }
+          ]
+        }
       }
-    }
+    },
+    "String Variable Names": [
+      "message",
+      "title",
+      "greeting",
+      "username",
+      "path",
+      "filename",
+      "email",
+      "description"
+    ],
+    "String Values": [
+      "Hello, World!",
+      "HardCode",
+      "Production",
+      "developer",
+      "main",
+      "success",
+      "data"
+    ],
+    "Bool Variable Names": [
+      "isActive",
+      "isValid",
+      "isReady",
+      "hasPermission",
+      "isComplete",
+      "enabled",
+      "running"
+    ],
+    "Bool Values": [
+      "true",
+      "false",
+      "True",
+      "False"
+    ]
   },
   "Control Flow": {
     "Notes": {
@@ -1183,5 +1721,6 @@
         }
       }
     }
-  }
+  },
+  "version": 2
 }
