@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
         useMaterial3: true,
+        textTheme: GoogleFonts.plusJakartaSansTextTheme(),
       ),
       home: const MyHomePage(title: ''),
     );
@@ -355,9 +357,10 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                             child: Text(
                               '$_language - $_questionSubType',
-                              style: TextStyle(
+                              style: GoogleFonts.plusJakartaSans(
                                 fontSize: badgeFontSize,
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.3,
                                 color: theme.colorScheme.onPrimaryContainer,
                               ),
                             ),
@@ -367,10 +370,11 @@ class _MyHomePageState extends State<MyHomePage> {
                         Text(
                           _question,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: GoogleFonts.plusJakartaSans(
                             fontSize: questionFontSize,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w700,
                             height: 1.3,
+                            color: theme.colorScheme.onSurface,
                           ),
                         ),
                         SizedBox(height: contentSpacing),
@@ -502,12 +506,12 @@ class _AnswerButtonState extends State<AnswerButton> {
                     child: Text(
                       widget.text,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: GoogleFonts.jetBrainsMono(
                         fontSize: widget.fontSize,
                         fontWeight:
                             _isHovered ? FontWeight.bold : FontWeight.w600,
                         color: _isHovered ? primary : theme.colorScheme.onSurface,
-                        fontFamily: 'monospace',
+                        letterSpacing: 0.2,
                       ),
                     ),
                   ),
