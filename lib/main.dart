@@ -199,7 +199,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     _graphController.forward(from: 0.0);
 
     _showTopAlert(
-      message: "Time's up! Streak reset.",
+      message: "Time's up! Correct answer is indicated below.",
       icon: Icons.timer_off_outlined,
       backgroundColor: Colors.red.shade800,
     );
@@ -421,6 +421,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     for (int i = 0; i < _choices.length; i++) {
       _choices[i][0] =
           renderPatternBranching(_choices[i][0], _variableBranching);
+      if (_choices[i][1] == 1) {
+        _correctAnswer = _choices[i][0];
+      }
     }
 
     for (var e in _choices) {
@@ -1124,16 +1127,22 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                       ],
 
                       Column(
-                        children: _answerGroup.map((String answerButton) {
+                        children: _answerGroup.asMap().entries.map((entry) {
+                          final int idx = entry.key;
+                          final String answerButton = entry.value;
+                          final bool isActualCorrectChoice =
+                              (idx < _choices.length && _choices[idx][1] == 1);
                           final isWrong = _incorrectSelections.contains(answerButton);
                           final isCorrectAnswer = (_correctAnswerSelected == answerButton) ||
-                              (_isTimerExpired && _correctAnswer == answerButton);
+                              (_isTimerExpired && isActualCorrectChoice);
+                          final isTimeoutReveal = _isTimerExpired && isActualCorrectChoice;
                           final isDisabled = _isTimerExpired ||
                               (_correctAnswerSelected != null) ||
                               isWrong;
 
                           return AnswerButton(
-                            key: ValueKey('${_questionNumber}_${answerButton}_${isWrong}_$isCorrectAnswer'),
+                            key: ValueKey(
+                                '${_questionNumber}_${answerButton}_${isWrong}_${isCorrectAnswer}_${isTimeoutReveal}_$_isTimerExpired'),
                             text: answerButton,
                             fontSize: buttonFontSize,
                             verticalPadding: buttonVerticalPadding,
@@ -1142,8 +1151,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                             isIncorrect: isWrong,
                             isCorrect: isCorrectAnswer,
                             isDisabled: isDisabled,
+                            isTimeoutReveal: isTimeoutReveal,
                             onPressed: isDisabled
-                                ? null
+                                ? (isTimeoutReveal
+                                    ? () {
+                                        setState(() {
+                                          generateQuestion();
+                                        });
+                                      }
+                                    : null)
                                 : () async {
                                     int answer = _choices[
                                         _answerGroup.indexOf(answerButton)][1];
@@ -1220,6 +1236,35 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                           );
                         }).toList(),
                       ),
+                      if (_isTimerExpired) ...[
+                        SizedBox(height: (16.0 * scale).clamp(12.0, 20.0)),
+                        Center(
+                          child: FilledButton.icon(
+                            onPressed: () {
+                              setState(() {
+                                generateQuestion();
+                              });
+                            },
+                            icon: const Icon(Icons.arrow_forward_rounded, size: 18),
+                            label: const Text('Next Question'),
+                            style: FilledButton.styleFrom(
+                              backgroundColor: theme.colorScheme.primary,
+                              foregroundColor: theme.colorScheme.onPrimary,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: (24.0 * scale).clamp(18.0, 32.0),
+                                vertical: (12.0 * scale).clamp(10.0, 16.0),
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              textStyle: GoogleFonts.plusJakartaSans(
+                                fontSize: (15.0 * scale).clamp(13.0, 17.0),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ],
                   ),
                 ),
@@ -1325,6 +1370,7 @@ class AnswerButton extends StatefulWidget {
   final bool isIncorrect;
   final bool isCorrect;
   final bool isDisabled;
+  final bool isTimeoutReveal;
 
   const AnswerButton({
     super.key,
@@ -1337,6 +1383,7 @@ class AnswerButton extends StatefulWidget {
     this.isIncorrect = false,
     this.isCorrect = false,
     this.isDisabled = false,
+    this.isTimeoutReveal = false,
   });
 
   @override
@@ -1361,7 +1408,7 @@ class _AnswerButtonState extends State<AnswerButton> {
       borderColor = Colors.red.shade400;
       textColor = Colors.red.shade800;
       borderWidth = 2.0;
-    } else if (widget.isCorrect) {
+    } else if (widget.isCorrect || widget.isTimeoutReveal) {
       bgColor = Colors.green.withOpacity(0.12);
       borderColor = Colors.green.shade600;
       textColor = Colors.green.shade800;
@@ -1372,21 +1419,27 @@ class _AnswerButtonState extends State<AnswerButton> {
       textColor = primary;
       borderWidth = 2.2;
     } else if (widget.isDisabled) {
-      bgColor = theme.colorScheme.surface.withOpacity(0.6);
-      borderColor = theme.colorScheme.outline.withOpacity(0.15);
-      textColor = theme.colorScheme.onSurface.withOpacity(0.4);
+      bgColor = theme.colorScheme.surface.withOpacity(0.55);
+      borderColor = theme.colorScheme.outline.withOpacity(0.14);
+      textColor = theme.colorScheme.onSurface.withOpacity(0.35);
     }
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: widget.verticalMargin),
       child: MouseRegion(
         onEnter: (_) {
-          if (!widget.isDisabled) setState(() => _isHovered = true);
+          if (!widget.isDisabled || widget.isTimeoutReveal) {
+            setState(() => _isHovered = true);
+          }
         },
         onExit: (_) {
-          if (!widget.isDisabled) setState(() => _isHovered = false);
+          if (!widget.isDisabled || widget.isTimeoutReveal) {
+            setState(() => _isHovered = false);
+          }
         },
-        cursor: widget.isDisabled ? SystemMouseCursors.basic : SystemMouseCursors.click,
+        cursor: (widget.isDisabled && !widget.isTimeoutReveal)
+            ? SystemMouseCursors.basic
+            : SystemMouseCursors.click,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 160),
           curve: Curves.easeInOut,
@@ -1397,28 +1450,40 @@ class _AnswerButtonState extends State<AnswerButton> {
               color: borderColor,
               width: borderWidth,
             ),
-            boxShadow: (_isHovered && !widget.isDisabled)
+            boxShadow: widget.isTimeoutReveal
                 ? [
                     BoxShadow(
-                      color: primary.withOpacity(0.20),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
+                      color: Colors.green.withOpacity(0.28),
+                      blurRadius: 10,
+                      offset: const Offset(0, 2),
                     ),
                   ]
-                : [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.03),
-                      blurRadius: 4,
-                      offset: const Offset(0, 1),
-                    ),
-                  ],
+                : (_isHovered && (!widget.isDisabled || widget.isTimeoutReveal))
+                    ? [
+                        BoxShadow(
+                          color: primary.withOpacity(0.20),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ]
+                    : [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.03),
+                          blurRadius: 4,
+                          offset: const Offset(0, 1),
+                        ),
+                      ],
           ),
           child: Material(
             color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(14),
-              splashColor: widget.isDisabled ? Colors.transparent : primary.withOpacity(0.12),
-              highlightColor: widget.isDisabled ? Colors.transparent : primary.withOpacity(0.05),
+              splashColor: (widget.isDisabled && !widget.isTimeoutReveal)
+                  ? Colors.transparent
+                  : primary.withOpacity(0.12),
+              highlightColor: (widget.isDisabled && !widget.isTimeoutReveal)
+                  ? Colors.transparent
+                  : primary.withOpacity(0.05),
               onTap: widget.onPressed,
               child: Container(
                 width: double.infinity,
@@ -1438,7 +1503,10 @@ class _AnswerButtonState extends State<AnswerButton> {
                             textAlign: TextAlign.center,
                             style: GoogleFonts.jetBrainsMono(
                               fontSize: widget.fontSize,
-                              fontWeight: (_isHovered || widget.isCorrect || widget.isIncorrect)
+                              fontWeight: (_isHovered ||
+                                      widget.isCorrect ||
+                                      widget.isIncorrect ||
+                                      widget.isTimeoutReveal)
                                   ? FontWeight.bold
                                   : FontWeight.w600,
                               color: textColor,
@@ -1457,6 +1525,38 @@ class _AnswerButtonState extends State<AnswerButton> {
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(Icons.close, color: Colors.white, size: 14),
+                      ),
+                    ] else if (widget.isTimeoutReveal) ...[
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: Colors.green.shade600,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.green.withOpacity(0.35),
+                              blurRadius: 5,
+                              offset: const Offset(0, 1),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.check, color: Colors.white, size: 13),
+                            const SizedBox(width: 4),
+                            Text(
+                              'Correct',
+                              style: GoogleFonts.plusJakartaSans(
+                                color: Colors.white,
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.2,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ] else if (widget.isCorrect) ...[
                       const SizedBox(width: 8),
