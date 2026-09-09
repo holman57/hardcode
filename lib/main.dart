@@ -308,30 +308,35 @@ class _MyHomePageState extends State<MyHomePage> {
             final availableWidth = constraints.maxWidth;
             final availableHeight = constraints.maxHeight;
 
-            final isSmall = availableWidth < 480 || availableHeight < 680;
-            final isMedium = availableWidth < 768 || availableHeight < 850;
+            // Continuous fluid scaling factors based on window width and height
+            final double hScale = (availableWidth / 680.0).clamp(0.65, 1.15);
+            final double vScale = (availableHeight / 750.0).clamp(0.65, 1.10);
+            final double scale = min(hScale, vScale);
 
-            final double questionFontSize =
-                isSmall ? 16.0 : (isMedium ? 19.0 : 22.0);
-            final double badgeFontSize = isSmall ? 12.0 : 14.0;
-            final double buttonFontSize =
-                isSmall ? 15.0 : (isMedium ? 17.0 : 19.0);
+            final double cardWidth =
+                (availableWidth * 0.88).clamp(280.0, 560.0);
+            final double questionFontSize = (22.0 * scale).clamp(14.0, 25.0);
+            final double badgeFontSize = (14.0 * scale).clamp(11.0, 16.0);
+            final double buttonFontSize = (19.0 * scale).clamp(13.0, 22.0);
             final double buttonVerticalPadding =
-                isSmall ? 10.0 : (isMedium ? 13.0 : 16.0);
-            final double buttonHorizontalPadding = isSmall ? 14.0 : 20.0;
+                (16.0 * scale).clamp(9.0, 18.0);
+            final double buttonHorizontalPadding =
+                (20.0 * scale).clamp(12.0, 24.0);
             final double buttonVerticalMargin =
-                isSmall ? 4.0 : (isMedium ? 5.0 : 6.0);
-            final double contentSpacing = isSmall ? 12.0 : 24.0;
-            final double maxCardWidth = isSmall ? 440.0 : 520.0;
+                (6.0 * scale).clamp(3.0, 7.0);
+            final double contentSpacing =
+                (24.0 * scale).clamp(10.0, 28.0);
+            final double titleSpacing =
+                (14.0 * scale).clamp(8.0, 18.0);
 
             return SingleChildScrollView(
               padding: EdgeInsets.symmetric(
-                horizontal: isSmall ? 14.0 : 24.0,
-                vertical: isSmall ? 16.0 : 28.0,
+                horizontal: (20.0 * scale).clamp(10.0, 24.0),
+                vertical: (24.0 * scale).clamp(12.0, 32.0),
               ),
               child: Center(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: maxCardWidth),
+                child: SizedBox(
+                  width: cardWidth,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -340,8 +345,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         Center(
                           child: Container(
                             padding: EdgeInsets.symmetric(
-                              horizontal: isSmall ? 12.0 : 16.0,
-                              vertical: isSmall ? 5.0 : 7.0,
+                              horizontal: (16.0 * scale).clamp(10.0, 18.0),
+                              vertical: (7.0 * scale).clamp(4.0, 8.0),
                             ),
                             decoration: BoxDecoration(
                               color: theme.colorScheme.primaryContainer
@@ -358,7 +363,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                           ),
                         ),
-                        SizedBox(height: isSmall ? 10.0 : 16.0),
+                        SizedBox(height: titleSpacing),
                         Text(
                           _question,
                           textAlign: TextAlign.center,
