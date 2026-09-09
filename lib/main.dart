@@ -118,6 +118,32 @@ class _MyHomePageState extends State<MyHomePage> {
   static const int _totalSeconds = 20;
   bool _isTimerExpired = false;
 
+  String? _topAlertMessage;
+  IconData _topAlertIcon = Icons.cancel;
+  Color _topAlertColor = Colors.redAccent.shade700;
+  Timer? _topAlertTimer;
+
+  void _showTopAlert({
+    required String message,
+    IconData icon = Icons.cancel,
+    Color? backgroundColor,
+    Duration duration = const Duration(milliseconds: 1800),
+  }) {
+    _topAlertTimer?.cancel();
+    setState(() {
+      _topAlertMessage = message;
+      _topAlertIcon = icon;
+      _topAlertColor = backgroundColor ?? Colors.redAccent.shade700;
+    });
+    _topAlertTimer = Timer(duration, () {
+      if (mounted) {
+        setState(() {
+          _topAlertMessage = null;
+        });
+      }
+    });
+  }
+
   void _startTimer() {
     _questionTimer?.cancel();
     _remainingSeconds = _totalSeconds;
@@ -157,25 +183,10 @@ class _MyHomePageState extends State<MyHomePage> {
       _userStats = updatedStats;
     });
 
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            const Icon(Icons.timer_off_outlined, color: Colors.white),
-            const SizedBox(width: 8),
-            Text(
-              "Time's up! Streak reset.",
-              style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w600),
-            ),
-          ],
-        ),
-        backgroundColor: Colors.red.shade800,
-        duration: const Duration(milliseconds: 1500),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      ),
+    _showTopAlert(
+      message: "Time's up! Streak reset.",
+      icon: Icons.timer_off_outlined,
+      backgroundColor: Colors.red.shade800,
     );
   }
 
@@ -298,6 +309,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void generateQuestion() {
     _cancelTimer();
+    _topAlertTimer?.cancel();
+    _topAlertMessage = null;
     _answerGroup.clear();
     _choices.clear();
     _incorrectPatternGroups.clear();
@@ -402,6 +415,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void dispose() {
     _cancelTimer();
+    _topAlertTimer?.cancel();
     super.dispose();
   }
 
@@ -647,48 +661,51 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      body: Center(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final availableWidth = constraints.maxWidth;
-            final availableHeight = constraints.maxHeight;
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final availableWidth = constraints.maxWidth;
+          final availableHeight = constraints.maxHeight;
 
-            // Continuous fluid scaling factors based on window width and height
-            final double hScale = (availableWidth / 680.0).clamp(0.65, 1.15);
-            final double vScale = (availableHeight / 750.0).clamp(0.65, 1.10);
-            final double scale = min(hScale, vScale);
+          // Continuous fluid scaling factors based on window width and height
+          final double hScale = (availableWidth / 680.0).clamp(0.65, 1.15);
+          final double vScale = (availableHeight / 750.0).clamp(0.65, 1.10);
+          final double scale = min(hScale, vScale);
 
-            final double cardWidth =
-                (availableWidth * 0.88).clamp(280.0, 560.0);
-            final double questionFontSize = (22.0 * scale).clamp(14.0, 25.0);
-            final double badgeFontSize = (14.0 * scale).clamp(11.0, 16.0);
-            final double buttonFontSize = (19.0 * scale).clamp(13.0, 22.0);
-            final double buttonVerticalPadding =
-                (16.0 * scale).clamp(9.0, 18.0);
-            final double buttonHorizontalPadding =
-                (20.0 * scale).clamp(12.0, 24.0);
-            final double buttonVerticalMargin =
-                (6.0 * scale).clamp(3.0, 7.0);
-            final double contentSpacing =
-                (20.0 * scale).clamp(10.0, 26.0);
-            final double titleSpacing =
-                (12.0 * scale).clamp(8.0, 16.0);
-            final double statFontSize = (13.0 * scale).clamp(10.0, 15.0);
+          final double cardWidth =
+              (availableWidth * 0.88).clamp(280.0, 560.0);
+          final double questionFontSize = (22.0 * scale).clamp(14.0, 25.0);
+          final double badgeFontSize = (14.0 * scale).clamp(11.0, 16.0);
+          final double buttonFontSize = (19.0 * scale).clamp(13.0, 22.0);
+          final double buttonVerticalPadding =
+              (16.0 * scale).clamp(9.0, 18.0);
+          final double buttonHorizontalPadding =
+              (20.0 * scale).clamp(12.0, 24.0);
+          final double buttonVerticalMargin =
+              (6.0 * scale).clamp(3.0, 7.0);
+          final double contentSpacing =
+              (20.0 * scale).clamp(10.0, 26.0);
+          final double titleSpacing =
+              (12.0 * scale).clamp(8.0, 16.0);
+          final double statFontSize = (13.0 * scale).clamp(10.0, 15.0);
 
-            // Timer color shift
-            Color timerColor = Colors.green.shade600;
-            if (_remainingSeconds <= 5) {
-              timerColor = Colors.redAccent.shade700;
-            } else if (_remainingSeconds <= 10) {
-              timerColor = Colors.orange.shade700;
-            }
+          // Timer color shift
+          Color timerColor = Colors.green.shade600;
+          if (_remainingSeconds <= 5) {
+            timerColor = Colors.redAccent.shade700;
+          } else if (_remainingSeconds <= 10) {
+            timerColor = Colors.orange.shade700;
+          }
 
-            return SingleChildScrollView(
-              padding: EdgeInsets.symmetric(
-                horizontal: (20.0 * scale).clamp(10.0, 24.0),
-                vertical: (20.0 * scale).clamp(10.0, 28.0),
-              ),
-              child: Center(
+          return Stack(
+            children: [
+              Positioned.fill(
+                child: Center(
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: (20.0 * scale).clamp(10.0, 24.0),
+                      vertical: (20.0 * scale).clamp(10.0, 28.0),
+                    ),
+                    child: Center(
                 child: SizedBox(
                   width: cardWidth,
                   child: Column(
@@ -928,6 +945,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
                                     if (isCorrect) {
                                       _cancelTimer();
+                                      _topAlertTimer?.cancel();
                                       final updatedStats =
                                           await DatabaseService.instance.recordAnswer(
                                         language: _language,
@@ -936,6 +954,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       );
                                       if (!mounted) return;
                                       setState(() {
+                                        _topAlertMessage = null;
                                         _correctAnswerSelected = answerButton;
                                         _userStats = updatedStats;
                                       });
@@ -961,28 +980,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                         _userStats = updatedStats;
                                       });
 
-                                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Row(
-                                            children: [
-                                              const Icon(Icons.cancel, color: Colors.white),
-                                              const SizedBox(width: 8),
-                                              Text(
-                                                'Incorrect choice. Try another option!',
-                                                style: GoogleFonts.plusJakartaSans(
-                                                    fontWeight: FontWeight.w600),
-                                              ),
-                                            ],
-                                          ),
-                                          backgroundColor: Colors.redAccent.shade700,
-                                          duration: const Duration(milliseconds: 1200),
-                                          behavior: SnackBarBehavior.floating,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(10)),
-                                          margin: const EdgeInsets.symmetric(
-                                              horizontal: 24, vertical: 16),
-                                        ),
+                                      _showTopAlert(
+                                        message:
+                                            'Incorrect choice. Try another option!',
+                                        icon: Icons.cancel,
+                                        backgroundColor:
+                                            Colors.redAccent.shade700,
                                       );
                                     }
                                   },
@@ -993,10 +996,80 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
               ),
-            );
-          },
+            ),
+          ),
         ),
-      ),
+        // Floating Notification Bubble at the Top of the Page
+        AnimatedPositioned(
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeOutCubic,
+            top: _topAlertMessage != null
+                ? (16.0 * scale).clamp(10.0, 20.0)
+                : -80.0,
+            left: 16,
+            right: 16,
+            child: IgnorePointer(
+              ignoring: _topAlertMessage == null,
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 200),
+                opacity: _topAlertMessage != null ? 1.0 : 0.0,
+                child: Center(
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _topAlertMessage = null;
+                      });
+                    },
+                    child: Container(
+                      constraints: const BoxConstraints(maxWidth: 480),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: (16.0 * scale).clamp(12.0, 20.0),
+                        vertical: (10.0 * scale).clamp(8.0, 12.0),
+                      ),
+                      decoration: BoxDecoration(
+                        color: _topAlertColor,
+                        borderRadius: BorderRadius.circular(30),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.25),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            _topAlertIcon,
+                            color: Colors.white,
+                            size: (18.0 * scale).clamp(15.0, 20.0),
+                          ),
+                          const SizedBox(width: 8),
+                          Flexible(
+                            child: Text(
+                              _topAlertMessage ?? '',
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.plusJakartaSans(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize:
+                                    (13.5 * scale).clamp(11.5, 15.0),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    },
+  ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {
