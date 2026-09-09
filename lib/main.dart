@@ -307,7 +307,7 @@ class _MyHomePageState extends State<MyHomePage> {
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
           child: Center(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 640),
+              constraints: const BoxConstraints(maxWidth: 520),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -316,8 +316,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     Center(
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 14.0,
-                          vertical: 6.0,
+                          horizontal: 16.0,
+                          vertical: 8.0,
                         ),
                         decoration: BoxDecoration(
                           color: theme.colorScheme.primaryContainer
@@ -327,24 +327,24 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: Text(
                           '$_language - $_questionSubType',
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 15,
                             fontWeight: FontWeight.w600,
                             color: theme.colorScheme.onPrimaryContainer,
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 18),
                     Text(
                       _question,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
                         height: 1.3,
                       ),
                     ),
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 32),
                   ],
                   Column(
                     children: _answerGroup.map((String answerButton) {
@@ -405,7 +405,7 @@ class _AnswerButtonState extends State<AnswerButton> {
     final primary = theme.colorScheme.primary;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: MouseRegion(
         onEnter: (_) => setState(() => _isHovered = true),
         onExit: (_) => setState(() => _isHovered = false),
@@ -417,25 +417,25 @@ class _AnswerButtonState extends State<AnswerButton> {
             color: _isHovered
                 ? primary.withOpacity(0.08)
                 : theme.colorScheme.surface,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(14),
             border: Border.all(
               color: _isHovered
                   ? primary
                   : theme.colorScheme.outline.withOpacity(0.35),
-              width: _isHovered ? 2.0 : 1.2,
+              width: _isHovered ? 2.2 : 1.4,
             ),
             boxShadow: _isHovered
                 ? [
                     BoxShadow(
-                      color: primary.withOpacity(0.18),
-                      blurRadius: 10,
-                      offset: const Offset(0, 3),
+                      color: primary.withOpacity(0.20),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
                     ),
                   ]
                 : [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.02),
-                      blurRadius: 3,
+                      color: Colors.black.withOpacity(0.03),
+                      blurRadius: 4,
                       offset: const Offset(0, 1),
                     ),
                   ],
@@ -443,14 +443,14 @@ class _AnswerButtonState extends State<AnswerButton> {
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(14),
               splashColor: primary.withOpacity(0.12),
               highlightColor: primary.withOpacity(0.05),
               onTap: widget.onPressed,
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(
-                  vertical: 16.0,
+                  vertical: 18.0,
                   horizontal: 24.0,
                 ),
                 child: Center(
@@ -458,9 +458,9 @@ class _AnswerButtonState extends State<AnswerButton> {
                     widget.text,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 20,
                       fontWeight:
-                          _isHovered ? FontWeight.w600 : FontWeight.w500,
+                          _isHovered ? FontWeight.bold : FontWeight.w600,
                       color: _isHovered ? primary : theme.colorScheme.onSurface,
                       fontFamily: 'monospace',
                     ),
