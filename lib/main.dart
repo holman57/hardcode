@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'HardCode',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
         useMaterial3: true,
@@ -294,73 +295,180 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(widget.title),
-        ),
-        drawer: const Drawer(),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                '$_language - $_questionSubType',
-              ),
-              Text(
-                _question,
-              ),
-              //
-              // Text('$_correctPatterns'),
-              // Text(
-              //   _correctAnswer,
-              //   style: Theme.of(context).textTheme.titleLarge,
-              // ),
-              // Text('$_choices'),
-              //
-              Column(
-                children: _answerGroup.map((String answerButton) {
-                  return OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(40),
+    final theme = Theme.of(context);
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: theme.colorScheme.inversePrimary,
+        title: Text(widget.title),
+      ),
+      drawer: const Drawer(),
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 640),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  if (_language.isNotEmpty) ...[
+                    Center(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14.0,
+                          vertical: 6.0,
+                        ),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.primaryContainer
+                              .withOpacity(0.7),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          '$_language - $_questionSubType',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: theme.colorScheme.onPrimaryContainer,
+                          ),
+                        ),
                       ),
-                      onPressed: () {
-                        int answer =
-                            _choices[_answerGroup.indexOf(answerButton)][1];
-                        if (answer == 1) {
-                          setState(() {
-                            generateQuestion();
-                          });
-                        }
-                      },
-                      child: Text(answerButton));
-                }).toList(),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      _question,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        height: 1.3,
+                      ),
+                    ),
+                    const SizedBox(height: 28),
+                  ],
+                  Column(
+                    children: _answerGroup.map((String answerButton) {
+                      return AnswerButton(
+                        key: ValueKey('${_questionNumber}_$answerButton'),
+                        text: answerButton,
+                        onPressed: () {
+                          int answer =
+                              _choices[_answerGroup.indexOf(answerButton)][1];
+                          if (answer == 1) {
+                            setState(() {
+                              generateQuestion();
+                            });
+                          }
+                        },
+                      );
+                    }).toList(),
+                  ),
+                ],
               ),
-              //
-              // OutlinedButton(
-              //   style: OutlinedButton.styleFrom(
-              //     foregroundColor: Colors.black,
-              //     side: const BorderSide(
-              //       color: Colors.blue,
-              //     ),
-              //   ),
-              //   onPressed: () {},
-              //   child: const Text("OutlinedButton Example"),
-              // ),
-              //
-            ],
+            ),
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            setState(() {
-              generateQuestion();
-            });
-          },
-          tooltip: 'Increment',
-          child: const Icon(Icons.add),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          setState(() {
+            generateQuestion();
+          });
+        },
+        tooltip: 'Next Question',
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+class AnswerButton extends StatefulWidget {
+  final String text;
+  final VoidCallback onPressed;
+
+  const AnswerButton({
+    super.key,
+    required this.text,
+    required this.onPressed,
+  });
+
+  @override
+  State<AnswerButton> createState() => _AnswerButtonState();
+}
+
+class _AnswerButtonState extends State<AnswerButton> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final primary = theme.colorScheme.primary;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _isHovered = true),
+        onExit: (_) => setState(() => _isHovered = false),
+        cursor: SystemMouseCursors.click,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 160),
+          curve: Curves.easeInOut,
+          decoration: BoxDecoration(
+            color: _isHovered
+                ? primary.withOpacity(0.08)
+                : theme.colorScheme.surface,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: _isHovered
+                  ? primary
+                  : theme.colorScheme.outline.withOpacity(0.35),
+              width: _isHovered ? 2.0 : 1.2,
+            ),
+            boxShadow: _isHovered
+                ? [
+                    BoxShadow(
+                      color: primary.withOpacity(0.18),
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
+                    ),
+                  ]
+                : [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.02),
+                      blurRadius: 3,
+                      offset: const Offset(0, 1),
+                    ),
+                  ],
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(12),
+              splashColor: primary.withOpacity(0.12),
+              highlightColor: primary.withOpacity(0.05),
+              onTap: widget.onPressed,
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  vertical: 16.0,
+                  horizontal: 24.0,
+                ),
+                child: Center(
+                  child: Text(
+                    widget.text,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight:
+                          _isHovered ? FontWeight.w600 : FontWeight.w500,
+                      color: _isHovered ? primary : theme.colorScheme.onSurface,
+                      fontFamily: 'monospace',
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );
