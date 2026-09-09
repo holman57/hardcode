@@ -1,13 +1,14 @@
-import 'dart:convert';
 import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'services/database_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await DatabaseService.instance.init();
   runApp(const MyApp());
 }
 
@@ -104,11 +105,17 @@ class _MyHomePageState extends State<MyHomePage> {
   List _intRustVarTypes = [];
   final List<String> _answerGroup = [];
 
-  Future<void> readJson() async {
-    final String response = await rootBundle.loadString('assets/db.json');
-    final data = await json.decode(response);
+  UserStats _userStats = DatabaseService.instance.getUserStats();
+  bool _isLoading = true;
+
+  Future<void> _loadData() async {
+    final data = await DatabaseService.instance.getOrSeedCatalog();
+    final stats = DatabaseService.instance.getUserStats();
+    if (!mounted) return;
     setState(() {
       _data = data;
+      _userStats = stats;
+      _isLoading = false;
       _data["Language"].forEach((item) {
         _languages[item] = 1;
       });
@@ -292,18 +299,189 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => readJson());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadData());
+  }
+
+  Widget _buildStatItem({
+    required String icon,
+    required String value,
+    required String label,
+    required double fontSize,
+    required ThemeData theme,
+  }) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(icon, style: TextStyle(fontSize: fontSize + 2)),
+        const SizedBox(width: 5),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              value,
+              style: GoogleFonts.jetBrainsMono(
+                fontSize: fontSize,
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.onSurface,
+              ),
+            ),
+            Text(
+              label,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: (fontSize * 0.75).clamp(9.0, 12.0),
+                fontWeight: FontWeight.w600,
+                color: theme.colorScheme.onSurface.withOpacity(0.65),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatDivider(ThemeData theme) {
+    return Container(
+      width: 1,
+      height: 24,
+      color: theme.colorScheme.outline.withOpacity(0.2),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    if (_isLoading) {
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: theme.colorScheme.inversePrimary,
+          title: Text(
+            widget.title.isNotEmpty ? widget.title : 'HardCode',
+            style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold),
+          ),
+        ),
+        body: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: theme.colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: Text(
+          widget.title.isNotEmpty ? widget.title : 'HardCode',
+          style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold),
+        ),
       ),
-      drawer: const Drawer(),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    'HardCode',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.onPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Cross-Platform Hive Database',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 13,
+                      color: theme.colorScheme.onPrimary.withOpacity(0.85),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.local_fire_department, color: Colors.orange),
+              title: const Text('Current Streak'),
+              trailing: Text(
+                '${_userStats.currentStreak}',
+                style: GoogleFonts.jetBrainsMono(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.emoji_events, color: Colors.amber),
+              title: const Text('Best Streak'),
+              trailing: Text(
+                '${_userStats.bestStreak}',
+                style: GoogleFonts.jetBrainsMono(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.track_changes, color: Colors.green),
+              title: const Text('Accuracy'),
+              trailing: Text(
+                '${_userStats.accuracy.toStringAsFixed(1)}%',
+                style: GoogleFonts.jetBrainsMono(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.quiz_outlined, color: Colors.blue),
+              title: const Text('Total Answered'),
+              trailing: Text(
+                '${_userStats.totalAnswered} (${_userStats.totalCorrect} correct)',
+                style: GoogleFonts.jetBrainsMono(fontWeight: FontWeight.bold, fontSize: 14),
+              ),
+            ),
+            const Divider(),
+            if (_userStats.languageStats.isNotEmpty) ...[
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Text(
+                  'Per-Language Stats',
+                  style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold, fontSize: 14),
+                ),
+              ),
+              ..._userStats.languageStats.entries.map((entry) {
+                final lang = entry.key;
+                final stats = Map<String, dynamic>.from(entry.value as Map);
+                final total = stats['total'] ?? 0;
+                final correct = stats['correct'] ?? 0;
+                final pct = total == 0 ? 0 : (correct / total * 100).round();
+                return ListTile(
+                  dense: true,
+                  title: Text(lang, style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w600)),
+                  subtitle: Text('$correct of $total correct'),
+                  trailing: Text(
+                    '$pct%',
+                    style: GoogleFonts.jetBrainsMono(fontWeight: FontWeight.bold),
+                  ),
+                );
+              }),
+              const Divider(),
+            ],
+            ListTile(
+              leading: const Icon(Icons.delete_outline, color: Colors.redAccent),
+              title: const Text('Reset Stats', style: TextStyle(color: Colors.redAccent)),
+              onTap: () async {
+                await DatabaseService.instance.resetStats();
+                if (!mounted) return;
+                setState(() {
+                  _userStats = DatabaseService.instance.getUserStats();
+                });
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
+              },
+            ),
+          ],
+        ),
+      ),
       body: Center(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -330,6 +508,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 (24.0 * scale).clamp(10.0, 28.0);
             final double titleSpacing =
                 (14.0 * scale).clamp(8.0, 18.0);
+            final double statFontSize = (13.0 * scale).clamp(10.0, 15.0);
 
             return SingleChildScrollView(
               padding: EdgeInsets.symmetric(
@@ -343,6 +522,51 @@ class _MyHomePageState extends State<MyHomePage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
+                      // Persistent Stats Banner
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: (14.0 * scale).clamp(8.0, 18.0),
+                          vertical: (8.0 * scale).clamp(5.0, 10.0),
+                        ),
+                        margin: EdgeInsets.only(
+                          bottom: (16.0 * scale).clamp(8.0, 20.0),
+                        ),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.surfaceVariant.withOpacity(0.4),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: theme.colorScheme.outline.withOpacity(0.2),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            _buildStatItem(
+                              icon: '🔥',
+                              value: '${_userStats.currentStreak}',
+                              label: 'Streak',
+                              fontSize: statFontSize,
+                              theme: theme,
+                            ),
+                            _buildStatDivider(theme),
+                            _buildStatItem(
+                              icon: '🏆',
+                              value: '${_userStats.bestStreak}',
+                              label: 'Best',
+                              fontSize: statFontSize,
+                              theme: theme,
+                            ),
+                            _buildStatDivider(theme),
+                            _buildStatItem(
+                              icon: '🎯',
+                              value: '${_userStats.accuracy.toStringAsFixed(0)}%',
+                              label: 'Accuracy',
+                              fontSize: statFontSize,
+                              theme: theme,
+                            ),
+                          ],
+                        ),
+                      ),
                       if (_language.isNotEmpty) ...[
                         Center(
                           child: Container(
@@ -388,13 +612,40 @@ class _MyHomePageState extends State<MyHomePage> {
                             verticalPadding: buttonVerticalPadding,
                             horizontalPadding: buttonHorizontalPadding,
                             verticalMargin: buttonVerticalMargin,
-                            onPressed: () {
+                            onPressed: () async {
                               int answer = _choices[
                                   _answerGroup.indexOf(answerButton)][1];
-                              if (answer == 1) {
-                                setState(() {
+                              final isCorrect = (answer == 1);
+                              final updatedStats =
+                                  await DatabaseService.instance.recordAnswer(
+                                language: _language,
+                                isCorrect: isCorrect,
+                              );
+                              if (!mounted) return;
+                              setState(() {
+                                _userStats = updatedStats;
+                                if (isCorrect) {
                                   generateQuestion();
-                                });
+                                }
+                              });
+                              if (!isCorrect) {
+                                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Incorrect choice. Try again!',
+                                      style: GoogleFonts.plusJakartaSans(
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                    backgroundColor: Colors.redAccent.shade700,
+                                    duration: const Duration(milliseconds: 1200),
+                                    behavior: SnackBarBehavior.floating,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10)),
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 24, vertical: 16),
+                                  ),
+                                );
                               }
                             },
                           );
