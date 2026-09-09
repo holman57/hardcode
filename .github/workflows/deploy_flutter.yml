@@ -30,7 +30,7 @@ jobs:
       - name: Download Pub Dependencies
         run: flutter pub get
 
-      - name: Build Web Application
+      - name: Build Web Application for Callisto VM
         run: flutter build web --release --base-href=/
 
       - name: Setup SSH Deploy Key for Callisto VM
@@ -62,6 +62,9 @@ jobs:
         run: |
           ssh -i ~/.ssh/deploy_key "$VM_USER@$VM_HOST" "sudo nginx -t && sudo systemctl reload nginx"
           echo "Nginx reloaded successfully on Callisto."
+
+      - name: Build Web Application for GitHub Pages
+        run: flutter build web --release --base-href=/hardcode/
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
