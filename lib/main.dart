@@ -79,7 +79,12 @@ Random _rnd = Random();
 String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
     length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
+  late AnimationController _pulseController;
+  late Animation<double> _pulseAnimation;
+  late AnimationController _graphController;
+  List<double> _prevAccuracyHistory = [];
+
   final _languages = {};
   late Map _data;
   int _questionNumber = 0;
@@ -180,8 +185,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (!mounted) return;
     setState(() {
+      _prevAccuracyHistory = List<double>.from(_userStats.accuracyHistory);
       _userStats = updatedStats;
     });
+    _graphController.forward(from: 0.0);
 
     _showTopAlert(
       message: "Time's up! Streak reset.",
@@ -196,6 +203,7 @@ class _MyHomePageState extends State<MyHomePage> {
     if (!mounted) return;
     setState(() {
       _data = data;
+      _prevAccuracyHistory = List<double>.from(stats.accuracyHistory);
       _userStats = stats;
       _isLoading = false;
       _data["Language"].forEach((item) {
@@ -205,6 +213,7 @@ class _MyHomePageState extends State<MyHomePage> {
           (_data["Language"] as List).map((item) => item as String).toList();
       _languages.forEach((k, v) => _langPriorities.add(v));
     });
+    _graphController.forward(from: 0.0);
     _intVarNames = (_data['Variables']['Int Variable Names'] as List? ?? ['x', 'count']);
     _intSmallVarSet =
         (_data['Variables']['Integer Small Variable Sets'] as List? ?? ['x', 'y']);
@@ -409,6 +418,18 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 700),
+    );
+    _pulseAnimation = CurvedAnimation(
+      parent: _pulseController,
+      curve: Curves.easeOutCubic,
+    );
+    _graphController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 450),
+    );
     WidgetsBinding.instance.addPostFrameCallback((_) => _loadData());
   }
 
@@ -416,6 +437,8 @@ class _MyHomePageState extends State<MyHomePage> {
   void dispose() {
     _cancelTimer();
     _topAlertTimer?.cancel();
+    _pulseController.dispose();
+    _graphController.dispose();
     super.dispose();
   }
 
@@ -651,8 +674,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 await DatabaseService.instance.resetStats();
                 if (!mounted) return;
                 setState(() {
+                  _prevAccuracyHistory = [];
                   _userStats = DatabaseService.instance.getUserStats();
                 });
+                _graphController.forward(from: 0.0);
                 if (context.mounted) {
                   Navigator.pop(context);
                 }
@@ -786,30 +811,43 @@ class _MyHomePageState extends State<MyHomePage> {
                             color: theme.colorScheme.outline.withOpacity(0.2),
                           ),
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        child: Column(
                           children: [
-                            _buildStatItem(
-                              icon: '🔥',
-                              value: '${_userStats.currentStreak}',
-                              label: 'Streak',
-                              fontSize: statFontSize,
-                              theme: theme,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                _buildStatItem(
+                                  icon: '🔥',
+                                  value: '${_userStats.currentStreak}',
+                                  label: 'Streak',
+                                  fontSize: statFontSize,
+                                  theme: theme,
+                                ),
+                                _buildStatDivider(theme),
+                                _buildStatItem(
+                                  icon: '🏆',
+                                  value: '${_userStats.bestStreak}',
+                                  label: 'Best',
+                                  fontSize: statFontSize,
+                                  theme: theme,
+                                ),
+                                _buildStatDivider(theme),
+                                _buildStatItem(
+                                  icon: '🎯',
+                                  value: '${_userStats.accuracy.toStringAsFixed(0)}%',
+                                  label: 'Accuracy',
+                                  fontSize: statFontSize,
+                                  theme: theme,
+                                ),
+                              ],
                             ),
-                            _buildStatDivider(theme),
-                            _buildStatItem(
-                              icon: '🏆',
-                              value: '${_userStats.bestStreak}',
-                              label: 'Best',
-                              fontSize: statFontSize,
-                              theme: theme,
-                            ),
-                            _buildStatDivider(theme),
-                            _buildStatItem(
-                              icon: '🎯',
-                              value: '${_userStats.accuracy.toStringAsFixed(0)}%',
-                              label: 'Accuracy',
-                              fontSize: statFontSize,
+                            SizedBox(height: (8.0 * scale).clamp(5.0, 10.0)),
+                            AccuracySparkline(
+                              currentData: _userStats.accuracyHistory,
+                              previousData: _prevAccuracyHistory,
+                              graphAnimation: _graphController,
+                              pulseAnimation: _pulseAnimation,
+                              height: (34.0 * scale).clamp(24.0, 42.0),
                               theme: theme,
                             ),
                           ],
@@ -954,10 +992,14 @@ class _MyHomePageState extends State<MyHomePage> {
                                       );
                                       if (!mounted) return;
                                       setState(() {
+                                        _prevAccuracyHistory = List<double>.from(
+                                            _userStats.accuracyHistory);
                                         _topAlertMessage = null;
                                         _correctAnswerSelected = answerButton;
                                         _userStats = updatedStats;
                                       });
+                                      _graphController.forward(from: 0.0);
+                                      _pulseController.forward(from: 0.0);
 
                                       // Brief celebratory delay before advancing
                                       Future.delayed(
@@ -976,9 +1018,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                       );
                                       if (!mounted) return;
                                       setState(() {
+                                        _prevAccuracyHistory = List<double>.from(
+                                            _userStats.accuracyHistory);
                                         _incorrectSelections.add(answerButton);
                                         _userStats = updatedStats;
                                       });
+                                      _graphController.forward(from: 0.0);
 
                                       _showTopAlert(
                                         message:
@@ -1004,8 +1049,8 @@ class _MyHomePageState extends State<MyHomePage> {
             duration: const Duration(milliseconds: 250),
             curve: Curves.easeOutCubic,
             top: _topAlertMessage != null
-                ? (16.0 * scale).clamp(10.0, 20.0)
-                : -80.0,
+                ? (18.0 * scale).clamp(12.0, 24.0)
+                : -120.0,
             left: 16,
             right: 16,
             child: IgnorePointer(
@@ -1021,19 +1066,23 @@ class _MyHomePageState extends State<MyHomePage> {
                       });
                     },
                     child: Container(
-                      constraints: const BoxConstraints(maxWidth: 480),
+                      constraints: const BoxConstraints(maxWidth: 540),
                       padding: EdgeInsets.symmetric(
-                        horizontal: (16.0 * scale).clamp(12.0, 20.0),
-                        vertical: (10.0 * scale).clamp(8.0, 12.0),
+                        horizontal: (22.0 * scale).clamp(16.0, 30.0),
+                        vertical: (13.0 * scale).clamp(10.0, 18.0),
                       ),
                       decoration: BoxDecoration(
                         color: _topAlertColor,
                         borderRadius: BorderRadius.circular(30),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.35),
+                          width: 1.5,
+                        ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.25),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
+                            color: Colors.black.withOpacity(0.28),
+                            blurRadius: 14,
+                            offset: const Offset(0, 5),
                           ),
                         ],
                       ),
@@ -1043,18 +1092,18 @@ class _MyHomePageState extends State<MyHomePage> {
                           Icon(
                             _topAlertIcon,
                             color: Colors.white,
-                            size: (18.0 * scale).clamp(15.0, 20.0),
+                            size: (24.0 * scale).clamp(19.0, 28.0),
                           ),
-                          const SizedBox(width: 8),
+                          SizedBox(width: (10.0 * scale).clamp(8.0, 14.0)),
                           Flexible(
                             child: Text(
                               _topAlertMessage ?? '',
                               textAlign: TextAlign.center,
                               style: GoogleFonts.plusJakartaSans(
                                 color: Colors.white,
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.w700,
                                 fontSize:
-                                    (13.5 * scale).clamp(11.5, 15.0),
+                                    (15.5 * scale).clamp(13.0, 18.0),
                               ),
                             ),
                           ),
@@ -1245,5 +1294,198 @@ class _AnswerButtonState extends State<AnswerButton> {
         ),
       ),
     );
+  }
+}
+
+class AccuracySparkline extends StatelessWidget {
+  final List<double> currentData;
+  final List<double> previousData;
+  final Animation<double> graphAnimation;
+  final Animation<double> pulseAnimation;
+  final double height;
+  final ThemeData theme;
+
+  const AccuracySparkline({
+    super.key,
+    required this.currentData,
+    required this.previousData,
+    required this.graphAnimation,
+    required this.pulseAnimation,
+    required this.height,
+    required this.theme,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: Listenable.merge([graphAnimation, pulseAnimation]),
+      builder: (context, child) {
+        final double pulseVal = pulseAnimation.value;
+        final Color baseLineColor = theme.colorScheme.primary;
+        final Color pulseLineColor = Colors.greenAccent.shade400;
+        final Color effectiveLineColor =
+            Color.lerp(baseLineColor, pulseLineColor, pulseVal)!;
+
+        return Container(
+          height: height,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: theme.colorScheme.surface.withOpacity(0.4),
+            border: Border.all(
+              color: Color.lerp(
+                theme.colorScheme.outline.withOpacity(0.15),
+                Colors.greenAccent.shade400,
+                pulseVal * 0.85,
+              )!,
+              width: 1.0 + (pulseVal * 1.2),
+            ),
+            boxShadow: pulseVal > 0.01
+                ? [
+                    BoxShadow(
+                      color: Colors.greenAccent.withOpacity(0.35 * pulseVal),
+                      blurRadius: 10 * pulseVal,
+                      spreadRadius: 1.5 * pulseVal,
+                    ),
+                  ]
+                : null,
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(7),
+            child: CustomPaint(
+              size: Size.infinite,
+              painter: AccuracyChartPainter(
+                currentData: currentData,
+                previousData: previousData,
+                progress: graphAnimation.value,
+                lineColor: effectiveLineColor,
+                pulseValue: pulseVal,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class AccuracyChartPainter extends CustomPainter {
+  final List<double> currentData;
+  final List<double> previousData;
+  final double progress;
+  final Color lineColor;
+  final double pulseValue;
+
+  AccuracyChartPainter({
+    required this.currentData,
+    required this.previousData,
+    required this.progress,
+    required this.lineColor,
+    required this.pulseValue,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (size.width <= 0 || size.height <= 0) return;
+
+    List<double> points = [];
+    final int maxLen = max(currentData.length, previousData.length);
+    if (maxLen == 0) {
+      points = [50.0, 50.0];
+    } else {
+      for (int i = 0; i < currentData.length; i++) {
+        final double curr = currentData[i];
+        double prev = curr;
+        if (i < previousData.length) {
+          prev = previousData[i];
+        } else if (previousData.isNotEmpty) {
+          prev = previousData.last;
+        }
+        points.add(prev + (curr - prev) * progress);
+      }
+    }
+
+    if (points.length == 1) {
+      points.insert(0, points[0]);
+    }
+
+    const double paddingX = 6.0;
+    const double paddingY = 4.0;
+    final double drawWidth = size.width - (paddingX * 2);
+    final double drawHeight = size.height - (paddingY * 2);
+    final double stepX = drawWidth / (points.length - 1);
+
+    final List<Offset> offsets = [];
+    for (int i = 0; i < points.length; i++) {
+      final double normalizedY = (points[i] / 100.0).clamp(0.0, 1.0);
+      final double x = paddingX + (i * stepX);
+      final double y = paddingY + drawHeight * (1.0 - normalizedY);
+      offsets.add(Offset(x, y));
+    }
+
+    final Path path = Path();
+    path.moveTo(offsets[0].dx, offsets[0].dy);
+
+    for (int i = 0; i < offsets.length - 1; i++) {
+      final p0 = offsets[i];
+      final p1 = offsets[i + 1];
+      final controlPoint1 = Offset(p0.dx + (p1.dx - p0.dx) / 2, p0.dy);
+      final controlPoint2 = Offset(p0.dx + (p1.dx - p0.dx) / 2, p1.dy);
+      path.cubicTo(
+        controlPoint1.dx,
+        controlPoint1.dy,
+        controlPoint2.dx,
+        controlPoint2.dy,
+        p1.dx,
+        p1.dy,
+      );
+    }
+
+    // Gradient fill under the curve
+    final Path fillPath = Path.from(path);
+    fillPath.lineTo(offsets.last.dx, size.height);
+    fillPath.lineTo(offsets.first.dx, size.height);
+    fillPath.close();
+
+    final Paint fillPaint = Paint()
+      ..shader = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          lineColor.withOpacity(0.35 + (0.25 * pulseValue)),
+          lineColor.withOpacity(0.0),
+        ],
+      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
+    canvas.drawPath(fillPath, fillPaint);
+
+    // Stroke line
+    final Paint linePaint = Paint()
+      ..color = lineColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.2 + (1.0 * pulseValue)
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    canvas.drawPath(path, linePaint);
+
+    // Glowing anchor dot on the latest data point
+    final Offset lastPoint = offsets.last;
+    final Paint dotPaint = Paint()
+      ..color = lineColor
+      ..style = PaintingStyle.fill;
+    final double dotRadius = 3.5 + (1.5 * pulseValue);
+    canvas.drawCircle(lastPoint, dotRadius, dotPaint);
+
+    final Paint haloPaint = Paint()
+      ..color = lineColor.withOpacity(0.4 + (0.4 * pulseValue))
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+    canvas.drawCircle(lastPoint, dotRadius + 3.0, haloPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant AccuracyChartPainter oldDelegate) {
+    return oldDelegate.progress != progress ||
+        oldDelegate.pulseValue != pulseValue ||
+        oldDelegate.lineColor != lineColor ||
+        oldDelegate.currentData != currentData;
   }
 }

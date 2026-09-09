@@ -18,6 +18,21 @@ void main() {
       expect(stats.totalAnswered, 10);
       expect(stats.totalCorrect, 8);
       expect(stats.xp, 120);
+      expect(stats.accuracyHistory, isEmpty);
+    });
+
+    test('UserStats accuracyHistory retains provided values', () {
+      final stats = UserStats(
+        currentStreak: 4,
+        bestStreak: 4,
+        totalAnswered: 4,
+        totalCorrect: 3,
+        xp: 60,
+        accuracyHistory: [100.0, 50.0, 66.7, 75.0],
+        languageStats: {},
+      );
+      expect(stats.accuracyHistory, [100.0, 50.0, 66.7, 75.0]);
+      expect(stats.accuracy, 75.0);
     });
 
     test('UserStats handles zero total answered without dividing by zero', () {
@@ -30,6 +45,7 @@ void main() {
         languageStats: {},
       );
       expect(stats.accuracy, 0.0);
+      expect(stats.accuracyHistory, isEmpty);
     });
 
     test('UserStats level, currentLevelXp, and levelProgress calculations', () {

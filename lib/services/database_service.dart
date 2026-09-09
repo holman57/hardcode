@@ -9,6 +9,7 @@ class UserStats {
   final int totalCorrect;
   final int xp;
   final Map<String, dynamic> languageStats;
+  final List<double> accuracyHistory;
 
   UserStats({
     required this.currentStreak,
@@ -17,6 +18,7 @@ class UserStats {
     required this.totalCorrect,
     required this.xp,
     required this.languageStats,
+    this.accuracyHistory = const [],
   });
 
   double get accuracy =>
@@ -122,6 +124,12 @@ class DatabaseService {
       languageStats = Map<String, dynamic>.from(rawLang);
     }
 
+    final dynamic rawHistory = _userMemoryBox!.get('accuracyHistory');
+    List<double> accuracyHistory = [];
+    if (rawHistory is List) {
+      accuracyHistory = rawHistory.map((e) => (e as num).toDouble()).toList();
+    }
+
     return UserStats(
       currentStreak: currentStreak,
       bestStreak: bestStreak,
@@ -129,6 +137,7 @@ class DatabaseService {
       totalCorrect: totalCorrect,
       xp: xp,
       languageStats: languageStats,
+      accuracyHistory: accuracyHistory,
     );
   }
 
@@ -253,12 +262,25 @@ class DatabaseService {
     langRecord['misses'] = consecutiveMisses;
     languageStats[language] = langRecord;
 
+    final dynamic rawHistory = _userMemoryBox!.get('accuracyHistory');
+    List<double> accuracyHistory = [];
+    if (rawHistory is List) {
+      accuracyHistory = rawHistory.map((e) => (e as num).toDouble()).toList();
+    }
+    final double newAccuracy =
+        totalAnswered == 0 ? 0.0 : (totalCorrect / totalAnswered) * 100.0;
+    accuracyHistory.add(newAccuracy);
+    if (accuracyHistory.length > 20) {
+      accuracyHistory = accuracyHistory.sublist(accuracyHistory.length - 20);
+    }
+
     await _userMemoryBox!.put('currentStreak', currentStreak);
     await _userMemoryBox!.put('bestStreak', bestStreak);
     await _userMemoryBox!.put('totalAnswered', totalAnswered);
     await _userMemoryBox!.put('totalCorrect', totalCorrect);
     await _userMemoryBox!.put('xp', xp);
     await _userMemoryBox!.put('languageStats', languageStats);
+    await _userMemoryBox!.put('accuracyHistory', accuracyHistory);
 
     return UserStats(
       currentStreak: currentStreak,
@@ -267,6 +289,7 @@ class DatabaseService {
       totalCorrect: totalCorrect,
       xp: xp,
       languageStats: languageStats,
+      accuracyHistory: accuracyHistory,
     );
   }
 
