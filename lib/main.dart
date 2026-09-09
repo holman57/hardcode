@@ -84,6 +84,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   late Animation<double> _pulseAnimation;
   late AnimationController _graphController;
   List<double> _prevAccuracyHistory = [];
+  bool _isAccuracyUp = false;
+  double _trendDelta = 0.0;
 
   final _languages = {};
   late Map _data;
@@ -184,9 +186,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
 
     if (!mounted) return;
+    final double delta = updatedStats.accuracy - _userStats.accuracy;
     setState(() {
       _prevAccuracyHistory = List<double>.from(_userStats.accuracyHistory);
       _userStats = updatedStats;
+      _isAccuracyUp = false;
+      _trendDelta = delta;
     });
     _graphController.forward(from: 0.0);
 
@@ -200,11 +205,18 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   Future<void> _loadData() async {
     final data = await DatabaseService.instance.getOrSeedCatalog();
     final stats = DatabaseService.instance.getUserStats();
+    double initialTrend = 0.0;
+    if (stats.accuracyHistory.length >= 2) {
+      initialTrend = stats.accuracyHistory.last -
+          stats.accuracyHistory[stats.accuracyHistory.length - 2];
+    }
     if (!mounted) return;
     setState(() {
       _data = data;
       _prevAccuracyHistory = List<double>.from(stats.accuracyHistory);
       _userStats = stats;
+      _trendDelta = initialTrend;
+      _isAccuracyUp = initialTrend > 0.05;
       _isLoading = false;
       _data["Language"].forEach((item) {
         _languages[item] = 1;
@@ -420,12 +432,20 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     super.initState();
     _pulseController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 700),
+      duration: const Duration(milliseconds: 650),
     );
-    _pulseAnimation = CurvedAnimation(
-      parent: _pulseController,
-      curve: Curves.easeOutCubic,
-    );
+    _pulseAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 0.0, end: 1.0)
+            .chain(CurveTween(curve: Curves.easeOutCubic)),
+        weight: 35,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 1.0, end: 0.0)
+            .chain(CurveTween(curve: Curves.easeInCubic)),
+        weight: 65,
+      ),
+    ]).animate(_pulseController);
     _graphController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 450),
@@ -485,6 +505,67 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       width: 1,
       height: 24,
       color: theme.colorScheme.outline.withOpacity(0.2),
+    );
+  }
+
+  Widget _buildSparklineStatItem({
+    required Widget sparkline,
+    required String label,
+    required double fontSize,
+    required ThemeData theme,
+    required double trendDelta,
+    required String icon,
+  }) {
+    String trendIndicator = '';
+    Color trendColor = theme.colorScheme.onSurface.withOpacity(0.65);
+    if (trendDelta > 0.05) {
+      trendIndicator = '▲';
+      trendColor = Colors.greenAccent.shade700;
+    } else if (trendDelta < -0.05) {
+      trendIndicator = '▼';
+      trendColor = Colors.redAccent.shade700;
+    }
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(icon, style: TextStyle(fontSize: fontSize + 2)),
+        const SizedBox(width: 5),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            sparkline,
+            const SizedBox(height: 2),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (trendIndicator.isNotEmpty) ...[
+                  Text(
+                    trendIndicator,
+                    style: TextStyle(
+                      fontSize: (fontSize * 0.65).clamp(8.0, 11.0),
+                      color: trendColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(width: 2),
+                ],
+                Text(
+                  label,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: (fontSize * 0.75).clamp(9.0, 12.0),
+                    fontWeight: FontWeight.w600,
+                    color: trendIndicator.isNotEmpty
+                        ? trendColor
+                        : theme.colorScheme.onSurface.withOpacity(0.65),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -676,8 +757,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 setState(() {
                   _prevAccuracyHistory = [];
                   _userStats = DatabaseService.instance.getUserStats();
+                  _isAccuracyUp = false;
+                  _trendDelta = 0.0;
                 });
                 _graphController.forward(from: 0.0);
+                _pulseController.reset();
                 if (context.mounted) {
                   Navigator.pop(context);
                 }
@@ -811,44 +895,50 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                             color: theme.colorScheme.outline.withOpacity(0.2),
                           ),
                         ),
-                        child: Column(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                _buildStatItem(
-                                  icon: '🔥',
-                                  value: '${_userStats.currentStreak}',
-                                  label: 'Streak',
-                                  fontSize: statFontSize,
-                                  theme: theme,
-                                ),
-                                _buildStatDivider(theme),
-                                _buildStatItem(
-                                  icon: '🏆',
-                                  value: '${_userStats.bestStreak}',
-                                  label: 'Best',
-                                  fontSize: statFontSize,
-                                  theme: theme,
-                                ),
-                                _buildStatDivider(theme),
-                                _buildStatItem(
-                                  icon: '🎯',
-                                  value: '${_userStats.accuracy.toStringAsFixed(0)}%',
-                                  label: 'Accuracy',
-                                  fontSize: statFontSize,
-                                  theme: theme,
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: (8.0 * scale).clamp(5.0, 10.0)),
-                            AccuracySparkline(
-                              currentData: _userStats.accuracyHistory,
-                              previousData: _prevAccuracyHistory,
-                              graphAnimation: _graphController,
-                              pulseAnimation: _pulseAnimation,
-                              height: (34.0 * scale).clamp(24.0, 42.0),
+                            _buildStatItem(
+                              icon: '🔥',
+                              value: '${_userStats.currentStreak}',
+                              label: 'Streak',
+                              fontSize: statFontSize,
                               theme: theme,
+                            ),
+                            _buildStatDivider(theme),
+                            _buildStatItem(
+                              icon: '🏆',
+                              value: '${_userStats.bestStreak}',
+                              label: 'Best',
+                              fontSize: statFontSize,
+                              theme: theme,
+                            ),
+                            _buildStatDivider(theme),
+                            _buildStatItem(
+                              icon: '🎯',
+                              value: '${_userStats.accuracy.toStringAsFixed(0)}%',
+                              label: 'Accuracy',
+                              fontSize: statFontSize,
+                              theme: theme,
+                            ),
+                            _buildStatDivider(theme),
+                            _buildSparklineStatItem(
+                              icon: '📈',
+                              sparkline: AccuracySparkline(
+                                currentData: _userStats.accuracyHistory,
+                                previousData: _prevAccuracyHistory,
+                                graphAnimation: _graphController,
+                                pulseAnimation: _pulseAnimation,
+                                isAccuracyUp: _isAccuracyUp,
+                                trendDelta: _trendDelta,
+                                width: (54.0 * scale).clamp(42.0, 68.0),
+                                height: (18.0 * scale).clamp(15.0, 22.0),
+                                theme: theme,
+                              ),
+                              label: 'Recent',
+                              fontSize: statFontSize,
+                              theme: theme,
+                              trendDelta: _trendDelta,
                             ),
                           ],
                         ),
@@ -991,15 +1081,23 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                         timeRemainingSeconds: _remainingSeconds,
                                       );
                                       if (!mounted) return;
+                                      final double delta =
+                                          updatedStats.accuracy - _userStats.accuracy;
+                                      final bool accuracyWentUp = (delta > 0.001) ||
+                                          (updatedStats.accuracy >= 99.9);
                                       setState(() {
                                         _prevAccuracyHistory = List<double>.from(
                                             _userStats.accuracyHistory);
                                         _topAlertMessage = null;
                                         _correctAnswerSelected = answerButton;
                                         _userStats = updatedStats;
+                                        _isAccuracyUp = accuracyWentUp;
+                                        _trendDelta = delta;
                                       });
                                       _graphController.forward(from: 0.0);
-                                      _pulseController.forward(from: 0.0);
+                                      if (accuracyWentUp) {
+                                        _pulseController.forward(from: 0.0);
+                                      }
 
                                       // Brief celebratory delay before advancing
                                       Future.delayed(
@@ -1017,11 +1115,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                         timeRemainingSeconds: _remainingSeconds,
                                       );
                                       if (!mounted) return;
+                                      final double delta =
+                                          updatedStats.accuracy - _userStats.accuracy;
                                       setState(() {
                                         _prevAccuracyHistory = List<double>.from(
                                             _userStats.accuracyHistory);
                                         _incorrectSelections.add(answerButton);
                                         _userStats = updatedStats;
+                                        _isAccuracyUp = false;
+                                        _trendDelta = delta;
                                       });
                                       _graphController.forward(from: 0.0);
 
@@ -1302,6 +1404,9 @@ class AccuracySparkline extends StatelessWidget {
   final List<double> previousData;
   final Animation<double> graphAnimation;
   final Animation<double> pulseAnimation;
+  final bool isAccuracyUp;
+  final double trendDelta;
+  final double width;
   final double height;
   final ThemeData theme;
 
@@ -1311,6 +1416,9 @@ class AccuracySparkline extends StatelessWidget {
     required this.previousData,
     required this.graphAnimation,
     required this.pulseAnimation,
+    required this.isAccuracyUp,
+    required this.trendDelta,
+    required this.width,
     required this.height,
     required this.theme,
   });
@@ -1321,44 +1429,67 @@ class AccuracySparkline extends StatelessWidget {
       animation: Listenable.merge([graphAnimation, pulseAnimation]),
       builder: (context, child) {
         final double pulseVal = pulseAnimation.value;
-        final Color baseLineColor = theme.colorScheme.primary;
-        final Color pulseLineColor = Colors.greenAccent.shade400;
-        final Color effectiveLineColor =
-            Color.lerp(baseLineColor, pulseLineColor, pulseVal)!;
+        final Color baseThemeColor = theme.colorScheme.primary;
+
+        // Effective base color determined by recent trend direction
+        Color baseLineColor;
+        if (trendDelta > 0.05) {
+          baseLineColor = const Color(0xFF10B981); // Emerald green
+        } else if (trendDelta < -0.05) {
+          baseLineColor = const Color(0xFFEF4444); // Red/coral
+        } else {
+          baseLineColor = baseThemeColor;
+        }
+
+        const Color pulseLineColor = Color(0xFF00E676); // Radiant neon green
+        final Color effectiveLineColor = isAccuracyUp
+            ? Color.lerp(baseLineColor, pulseLineColor, pulseVal)!
+            : baseLineColor;
+
+        final bool isLightingUp = isAccuracyUp && (pulseVal > 0.01);
 
         return Container(
+          width: width,
           height: height,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: theme.colorScheme.surface.withOpacity(0.4),
+            borderRadius: BorderRadius.circular(6),
+            color: isLightingUp
+                ? Color.lerp(
+                    theme.colorScheme.surface.withOpacity(0.5),
+                    const Color(0xFF10B981).withOpacity(0.25),
+                    pulseVal,
+                  )
+                : theme.colorScheme.surface.withOpacity(0.4),
             border: Border.all(
-              color: Color.lerp(
-                theme.colorScheme.outline.withOpacity(0.15),
-                Colors.greenAccent.shade400,
-                pulseVal * 0.85,
-              )!,
-              width: 1.0 + (pulseVal * 1.2),
+              color: isLightingUp
+                  ? Color.lerp(
+                      theme.colorScheme.outline.withOpacity(0.18),
+                      const Color(0xFF00E676),
+                      pulseVal,
+                    )!
+                  : theme.colorScheme.outline.withOpacity(0.18),
+              width: isLightingUp ? (1.0 + (1.0 * pulseVal)) : 1.0,
             ),
-            boxShadow: pulseVal > 0.01
+            boxShadow: isLightingUp
                 ? [
                     BoxShadow(
-                      color: Colors.greenAccent.withOpacity(0.35 * pulseVal),
-                      blurRadius: 10 * pulseVal,
-                      spreadRadius: 1.5 * pulseVal,
+                      color: const Color(0xFF00E676).withOpacity(0.55 * pulseVal),
+                      blurRadius: 8 * pulseVal,
+                      spreadRadius: 1.0 * pulseVal,
                     ),
                   ]
                 : null,
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(7),
+            borderRadius: BorderRadius.circular(5),
             child: CustomPaint(
-              size: Size.infinite,
+              size: Size(width, height),
               painter: AccuracyChartPainter(
                 currentData: currentData,
                 previousData: previousData,
                 progress: graphAnimation.value,
                 lineColor: effectiveLineColor,
-                pulseValue: pulseVal,
+                pulseValue: isAccuracyUp ? pulseVal : 0.0,
               ),
             ),
           ),
@@ -1408,15 +1539,32 @@ class AccuracyChartPainter extends CustomPainter {
       points.insert(0, points[0]);
     }
 
-    const double paddingX = 6.0;
-    const double paddingY = 4.0;
+    // Dynamic vertical scaling to clearly visualize change in accuracy over time
+    double minVal = points.reduce(min);
+    double maxVal = points.reduce(max);
+    double range = maxVal - minVal;
+    if (range < 15.0) {
+      final double mid = (maxVal + minVal) / 2.0;
+      minVal = (mid - 7.5).clamp(0.0, 85.0);
+      maxVal = (mid + 7.5).clamp(15.0, 100.0);
+      range = maxVal - minVal;
+    } else {
+      final double pad = range * 0.15;
+      minVal = (minVal - pad).clamp(0.0, 100.0);
+      maxVal = (maxVal + pad).clamp(0.0, 100.0);
+      range = maxVal - minVal;
+    }
+    if (range <= 0.001) range = 1.0;
+
+    const double paddingX = 4.0;
+    const double paddingY = 3.0;
     final double drawWidth = size.width - (paddingX * 2);
     final double drawHeight = size.height - (paddingY * 2);
     final double stepX = drawWidth / (points.length - 1);
 
     final List<Offset> offsets = [];
     for (int i = 0; i < points.length; i++) {
-      final double normalizedY = (points[i] / 100.0).clamp(0.0, 1.0);
+      final double normalizedY = ((points[i] - minVal) / range).clamp(0.0, 1.0);
       final double x = paddingX + (i * stepX);
       final double y = paddingY + drawHeight * (1.0 - normalizedY);
       offsets.add(Offset(x, y));
@@ -1451,7 +1599,7 @@ class AccuracyChartPainter extends CustomPainter {
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [
-          lineColor.withOpacity(0.35 + (0.25 * pulseValue)),
+          lineColor.withOpacity(0.35 + (0.35 * pulseValue)),
           lineColor.withOpacity(0.0),
         ],
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
@@ -1461,7 +1609,7 @@ class AccuracyChartPainter extends CustomPainter {
     final Paint linePaint = Paint()
       ..color = lineColor
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.2 + (1.0 * pulseValue)
+      ..strokeWidth = 1.8 + (0.8 * pulseValue)
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round;
     canvas.drawPath(path, linePaint);
@@ -1471,14 +1619,16 @@ class AccuracyChartPainter extends CustomPainter {
     final Paint dotPaint = Paint()
       ..color = lineColor
       ..style = PaintingStyle.fill;
-    final double dotRadius = 3.5 + (1.5 * pulseValue);
+    final double dotRadius = 2.8 + (1.4 * pulseValue);
     canvas.drawCircle(lastPoint, dotRadius, dotPaint);
 
-    final Paint haloPaint = Paint()
-      ..color = lineColor.withOpacity(0.4 + (0.4 * pulseValue))
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
-    canvas.drawCircle(lastPoint, dotRadius + 3.0, haloPaint);
+    if (pulseValue > 0.05) {
+      final Paint haloPaint = Paint()
+        ..color = lineColor.withOpacity(0.45 * pulseValue)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.2;
+      canvas.drawCircle(lastPoint, dotRadius + (2.5 * pulseValue), haloPaint);
+    }
   }
 
   @override
