@@ -303,70 +303,100 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       drawer: const Drawer(),
       body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 520),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  if (_language.isNotEmpty) ...[
-                    Center(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0,
-                          vertical: 8.0,
-                        ),
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.primaryContainer
-                              .withOpacity(0.7),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          '$_language - $_questionSubType',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                            color: theme.colorScheme.onPrimaryContainer,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final availableWidth = constraints.maxWidth;
+            final availableHeight = constraints.maxHeight;
+
+            final isSmall = availableWidth < 480 || availableHeight < 680;
+            final isMedium = availableWidth < 768 || availableHeight < 850;
+
+            final double questionFontSize =
+                isSmall ? 16.0 : (isMedium ? 19.0 : 22.0);
+            final double badgeFontSize = isSmall ? 12.0 : 14.0;
+            final double buttonFontSize =
+                isSmall ? 15.0 : (isMedium ? 17.0 : 19.0);
+            final double buttonVerticalPadding =
+                isSmall ? 10.0 : (isMedium ? 13.0 : 16.0);
+            final double buttonHorizontalPadding = isSmall ? 14.0 : 20.0;
+            final double buttonVerticalMargin =
+                isSmall ? 4.0 : (isMedium ? 5.0 : 6.0);
+            final double contentSpacing = isSmall ? 12.0 : 24.0;
+            final double maxCardWidth = isSmall ? 440.0 : 520.0;
+
+            return SingleChildScrollView(
+              padding: EdgeInsets.symmetric(
+                horizontal: isSmall ? 14.0 : 24.0,
+                vertical: isSmall ? 16.0 : 28.0,
+              ),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: maxCardWidth),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      if (_language.isNotEmpty) ...[
+                        Center(
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: isSmall ? 12.0 : 16.0,
+                              vertical: isSmall ? 5.0 : 7.0,
+                            ),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.primaryContainer
+                                  .withOpacity(0.7),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              '$_language - $_questionSubType',
+                              style: TextStyle(
+                                fontSize: badgeFontSize,
+                                fontWeight: FontWeight.w600,
+                                color: theme.colorScheme.onPrimaryContainer,
+                              ),
+                            ),
                           ),
                         ),
+                        SizedBox(height: isSmall ? 10.0 : 16.0),
+                        Text(
+                          _question,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: questionFontSize,
+                            fontWeight: FontWeight.bold,
+                            height: 1.3,
+                          ),
+                        ),
+                        SizedBox(height: contentSpacing),
+                      ],
+                      Column(
+                        children: _answerGroup.map((String answerButton) {
+                          return AnswerButton(
+                            key: ValueKey('${_questionNumber}_$answerButton'),
+                            text: answerButton,
+                            fontSize: buttonFontSize,
+                            verticalPadding: buttonVerticalPadding,
+                            horizontalPadding: buttonHorizontalPadding,
+                            verticalMargin: buttonVerticalMargin,
+                            onPressed: () {
+                              int answer = _choices[
+                                  _answerGroup.indexOf(answerButton)][1];
+                              if (answer == 1) {
+                                setState(() {
+                                  generateQuestion();
+                                });
+                              }
+                            },
+                          );
+                        }).toList(),
                       ),
-                    ),
-                    const SizedBox(height: 18),
-                    Text(
-                      _question,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        height: 1.3,
-                      ),
-                    ),
-                    const SizedBox(height: 32),
-                  ],
-                  Column(
-                    children: _answerGroup.map((String answerButton) {
-                      return AnswerButton(
-                        key: ValueKey('${_questionNumber}_$answerButton'),
-                        text: answerButton,
-                        onPressed: () {
-                          int answer =
-                              _choices[_answerGroup.indexOf(answerButton)][1];
-                          if (answer == 1) {
-                            setState(() {
-                              generateQuestion();
-                            });
-                          }
-                        },
-                      );
-                    }).toList(),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -385,11 +415,19 @@ class _MyHomePageState extends State<MyHomePage> {
 class AnswerButton extends StatefulWidget {
   final String text;
   final VoidCallback onPressed;
+  final double fontSize;
+  final double verticalPadding;
+  final double horizontalPadding;
+  final double verticalMargin;
 
   const AnswerButton({
     super.key,
     required this.text,
     required this.onPressed,
+    this.fontSize = 18.0,
+    this.verticalPadding = 14.0,
+    this.horizontalPadding = 20.0,
+    this.verticalMargin = 5.0,
   });
 
   @override
@@ -405,7 +443,7 @@ class _AnswerButtonState extends State<AnswerButton> {
     final primary = theme.colorScheme.primary;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: EdgeInsets.symmetric(vertical: widget.verticalMargin),
       child: MouseRegion(
         onEnter: (_) => setState(() => _isHovered = true),
         onExit: (_) => setState(() => _isHovered = false),
@@ -449,20 +487,23 @@ class _AnswerButtonState extends State<AnswerButton> {
               onTap: widget.onPressed,
               child: Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  vertical: 18.0,
-                  horizontal: 24.0,
+                padding: EdgeInsets.symmetric(
+                  vertical: widget.verticalPadding,
+                  horizontal: widget.horizontalPadding,
                 ),
                 child: Center(
-                  child: Text(
-                    widget.text,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight:
-                          _isHovered ? FontWeight.bold : FontWeight.w600,
-                      color: _isHovered ? primary : theme.colorScheme.onSurface,
-                      fontFamily: 'monospace',
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      widget.text,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: widget.fontSize,
+                        fontWeight:
+                            _isHovered ? FontWeight.bold : FontWeight.w600,
+                        color: _isHovered ? primary : theme.colorScheme.onSurface,
+                        fontFamily: 'monospace',
+                      ),
                     ),
                   ),
                 ),
