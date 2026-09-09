@@ -73217,7 +73217,7 @@ case 3:s=5
 return A.K(p.kD(),$async$jF)
 case 5:case 4:m=A.cm(p.a.fz(0,"catalog_version",0))
 o=A.cn(p.a.dj(0,"catalog_json"))
-if(m>=2&&o!=null&&o.length!==0)try{n=t.a.a(B.bR.B9(0,o,null))
+if(m>=3&&o!=null&&o.length!==0)try{n=t.a.a(B.bR.B9(0,o,null))
 q=n
 s=1
 break}catch(f){}s=6
@@ -73225,7 +73225,7 @@ return A.K($.tO().abf("assets/db.json"),$async$jF)
 case 6:k=b
 j=t.a.a(B.bR.B9(0,k,null))
 i=A.fV(J.at(j,"version"))
-if(i==null)i=2
+if(i==null)i=3
 h=p.a
 h.toString
 g=t.z
