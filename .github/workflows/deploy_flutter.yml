@@ -36,7 +36,7 @@ jobs:
         run: flutter pub get
 
       - name: Build Web Application for Callisto VM
-        run: flutter build web --release --base-href=/
+        run: flutter build web --release --base-href=/ --verbose
 
       - name: Setup SSH Deploy Key for Callisto VM
         env:
