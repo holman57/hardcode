@@ -514,7 +514,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     required double fontSize,
     required ThemeData theme,
     required double trendDelta,
-    required String icon,
   }) {
     String trendIndicator = '';
     Color trendColor = theme.colorScheme.onSurface.withOpacity(0.65);
@@ -526,42 +525,35 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       trendColor = Colors.redAccent.shade700;
     }
 
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(icon, style: TextStyle(fontSize: fontSize + 2)),
-        const SizedBox(width: 5),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        sparkline,
+        const SizedBox(height: 2),
+        Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            sparkline,
-            const SizedBox(height: 2),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (trendIndicator.isNotEmpty) ...[
-                  Text(
-                    trendIndicator,
-                    style: TextStyle(
-                      fontSize: (fontSize * 0.65).clamp(8.0, 11.0),
-                      color: trendColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(width: 2),
-                ],
-                Text(
-                  label,
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: (fontSize * 0.75).clamp(9.0, 12.0),
-                    fontWeight: FontWeight.w600,
-                    color: trendIndicator.isNotEmpty
-                        ? trendColor
-                        : theme.colorScheme.onSurface.withOpacity(0.65),
-                  ),
+            if (trendIndicator.isNotEmpty) ...[
+              Text(
+                trendIndicator,
+                style: TextStyle(
+                  fontSize: (fontSize * 0.65).clamp(8.0, 11.0),
+                  color: trendColor,
+                  fontWeight: FontWeight.bold,
                 ),
-              ],
+              ),
+              const SizedBox(width: 2),
+            ],
+            Text(
+              label,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: (fontSize * 0.75).clamp(9.0, 12.0),
+                fontWeight: FontWeight.w600,
+                color: trendIndicator.isNotEmpty
+                    ? trendColor
+                    : theme.colorScheme.onSurface.withOpacity(0.65),
+              ),
             ),
           ],
         ),
@@ -923,7 +915,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                             ),
                             _buildStatDivider(theme),
                             _buildSparklineStatItem(
-                              icon: '📈',
                               sparkline: AccuracySparkline(
                                 currentData: _userStats.accuracyHistory,
                                 previousData: _prevAccuracyHistory,
@@ -931,7 +922,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                 pulseAnimation: _pulseAnimation,
                                 isAccuracyUp: _isAccuracyUp,
                                 trendDelta: _trendDelta,
-                                width: (54.0 * scale).clamp(42.0, 68.0),
+                                width: (60.0 * scale).clamp(46.0, 76.0),
                                 height: (18.0 * scale).clamp(15.0, 22.0),
                                 theme: theme,
                               ),
