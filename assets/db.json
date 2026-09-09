@@ -206,7 +206,8 @@
       "Compilers and Language Runtimes",
       "Distributed Systems",
       "Cybersecurity and IT Infrastructure",
-      "Algorithms and Data Structures"
+      "Algorithms and Data Structures",
+      "Testing Methods"
     ],
     "Language": {
       "General": [
@@ -291,7 +292,39 @@
       "Minimum Spanning Tree Algorithms: Kruskal's Algorithm with Union-Find and Prim's Algorithm",
       "String Search Algorithms: Knuth-Morris-Pratt (KMP) Prefix Tables and Boyer-Moore",
       "Dynamic Programming Strategies: Optimal Substructure, Overlapping Subproblems, Top-Down Memoization, and Bottom-Up Tabulation"
-    ]
+    ],
+    "Testing Methods": {
+      "Description": "Alternative assessment modalities beyond multiple-choice to evaluate syntax mastery, operational order, and conceptual classification",
+      "Methods": [
+        "True/False",
+        "Matching",
+        "Sequencing",
+        "Sorting/Classification"
+      ],
+      "True/False": [
+        "Binary syntax validity verification (e.g., 'Is `const x := 10` valid syntax in Go? True/False')",
+        "Expression evaluation (e.g., 'In Python, does `bool([])` evaluate to True? True/False')",
+        "Language design and typing paradigm assertions (e.g., 'Rust enforces memory safety without a garbage collector. True/False')"
+      ],
+      "Matching": [
+        "Match language keywords and symbols to their semantics (e.g., `defer` in Go, `unsafe` in Rust, `yield` in Python)",
+        "Match algorithmic operations to their average and worst-case time complexities",
+        "Match database engines to their underlying storage engines (e.g., PostgreSQL -> heap/B-tree, Redis -> RAM/dict, Cassandra -> LSM-Tree)",
+        "Match network protocols to their OSI/TCP/IP layer (e.g., BGP -> Layer 3/4, TLS -> Layer 5/6, HTTP/3 -> Layer 7)"
+      ],
+      "Sequencing": [
+        "Arrange scrambled lines of code in correct syntactic and logical execution sequence (Parsons problems)",
+        "Sequence network handshake packets in correct chronological order (e.g., SYN -> SYN-ACK -> ACK)",
+        "Sequence compiler pipeline stages (Lexical Analysis -> Parsing -> Semantic Analysis -> IR Generation -> Optimization -> Code Generation)",
+        "Sequence system boot and process initialization stages (Firmware/UEFI -> Bootloader -> Kernel Init -> Init/systemd)"
+      ],
+      "Sorting/Classification": [
+        "Classify languages by type system: Statically Typed vs Dynamically Typed, Strongly Typed vs Weakly Typed",
+        "Classify languages by memory management: Manual Allocation (C/C++), Automatic GC (Java/Go), Borrowing/Lifetimes (Rust)",
+        "Classify databases by data model: Relational (ACID), Document, Key-Value, Wide-Column, Vector, Graph",
+        "Sort algorithmic complexities from fastest to slowest: O(1) < O(log n) < O(n) < O(n log n) < O(n^2) < O(2^n)"
+      ]
+    }
   },
   "Networking": [
     "Socket Programming",
@@ -1722,5 +1755,5 @@
       }
     }
   },
-  "version": 2
+  "version": 3
 }

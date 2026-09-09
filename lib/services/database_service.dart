@@ -70,7 +70,7 @@ class DatabaseService {
     final String? cachedJson = _catalogBox!.get('catalog_json') as String?;
 
     // If cached version is up to date and valid, use cached catalog
-    if (cachedVersion >= 2 && cachedJson != null && cachedJson.isNotEmpty) {
+    if (cachedVersion >= 3 && cachedJson != null && cachedJson.isNotEmpty) {
       try {
         final Map<String, dynamic> decoded =
             jsonDecode(cachedJson) as Map<String, dynamic>;
@@ -84,7 +84,7 @@ class DatabaseService {
     final String rawAsset = await rootBundle.loadString('assets/db.json');
     final Map<String, dynamic> parsed =
         jsonDecode(rawAsset) as Map<String, dynamic>;
-    final int assetVersion = (parsed['version'] as int?) ?? 2;
+    final int assetVersion = (parsed['version'] as int?) ?? 3;
 
     await _catalogBox!.put('catalog_json', rawAsset);
     await _catalogBox!.put('catalog_version', assetVersion);
