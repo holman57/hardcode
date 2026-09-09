@@ -35,6 +35,50 @@ void main() {
       expect(stats.accuracy, 75.0);
     });
 
+    test('UserStats recentAccuracy reflects rolling window of recent answers', () {
+      // 50 total questions answered (45 correct => 90% cumulative accuracy)
+      // but user struggled recently: only 6 of the last 10 correct => 60% recent accuracy
+      final recentAnswers = [
+        true, true, false, true, false, true, false, true, true, false
+      ];
+      final stats = UserStats(
+        currentStreak: 0,
+        bestStreak: 20,
+        totalAnswered: 50,
+        totalCorrect: 45,
+        xp: 650,
+        recentAnswerResults: recentAnswers,
+        accuracyHistory: [80.0, 70.0, 60.0],
+        languageStats: {},
+      );
+      expect(stats.accuracy, 90.0);
+      expect(stats.recentAccuracy, 60.0);
+      expect(stats.recentAnswerResults.length, 10);
+    });
+
+    test('UserStats recentAccuracy falls back safely when recentAnswerResults is empty', () {
+      final statsWithHistory = UserStats(
+        currentStreak: 2,
+        bestStreak: 2,
+        totalAnswered: 10,
+        totalCorrect: 8,
+        xp: 100,
+        accuracyHistory: [70.0, 80.0],
+        languageStats: {},
+      );
+      expect(statsWithHistory.recentAccuracy, 80.0);
+
+      final statsEmpty = UserStats(
+        currentStreak: 0,
+        bestStreak: 0,
+        totalAnswered: 0,
+        totalCorrect: 0,
+        xp: 0,
+        languageStats: {},
+      );
+      expect(statsEmpty.recentAccuracy, 0.0);
+    });
+
     test('UserStats handles zero total answered without dividing by zero', () {
       final stats = UserStats(
         currentStreak: 0,

@@ -186,7 +186,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
 
     if (!mounted) return;
-    final double delta = updatedStats.accuracy - _userStats.accuracy;
+    final double delta = (updatedStats.accuracyHistory.length >= 2)
+        ? updatedStats.accuracyHistory.last -
+            updatedStats.accuracyHistory[updatedStats.accuracyHistory.length - 2]
+        : (updatedStats.recentAccuracy - _userStats.recentAccuracy);
     setState(() {
       _prevAccuracyHistory = List<double>.from(_userStats.accuracyHistory);
       _userStats = updatedStats;
@@ -1156,10 +1159,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                         timeRemainingSeconds: _remainingSeconds,
                                       );
                                       if (!mounted) return;
-                                      final double delta =
-                                          updatedStats.accuracy - _userStats.accuracy;
-                                      final bool accuracyWentUp = (delta > 0.001) ||
-                                          (updatedStats.accuracy >= 99.9);
+                                      final double delta = (updatedStats.accuracyHistory.length >= 2)
+                                          ? updatedStats.accuracyHistory.last -
+                                              updatedStats.accuracyHistory[updatedStats.accuracyHistory.length - 2]
+                                          : (updatedStats.recentAccuracy - _userStats.recentAccuracy);
+                                      final bool accuracyWentUp = (delta >= -0.001);
                                       setState(() {
                                         _prevAccuracyHistory = List<double>.from(
                                             _userStats.accuracyHistory);
@@ -1190,8 +1194,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                         timeRemainingSeconds: _remainingSeconds,
                                       );
                                       if (!mounted) return;
-                                      final double delta =
-                                          updatedStats.accuracy - _userStats.accuracy;
+                                      final double delta = (updatedStats.accuracyHistory.length >= 2)
+                                          ? updatedStats.accuracyHistory.last -
+                                              updatedStats.accuracyHistory[updatedStats.accuracyHistory.length - 2]
+                                          : (updatedStats.recentAccuracy - _userStats.recentAccuracy);
                                       setState(() {
                                         _prevAccuracyHistory = List<double>.from(
                                             _userStats.accuracyHistory);
@@ -1618,13 +1624,23 @@ class AccuracyChartPainter extends CustomPainter {
     double minVal = points.reduce(min);
     double maxVal = points.reduce(max);
     double range = maxVal - minVal;
-    if (range < 15.0) {
-      final double mid = (maxVal + minVal) / 2.0;
-      minVal = (mid - 7.5).clamp(0.0, 85.0);
-      maxVal = (mid + 7.5).clamp(15.0, 100.0);
+    if (range < 25.0) {
+      if (maxVal >= 80.0) {
+        // High accuracy window: place top near 100%, show downward dips prominently
+        maxVal = 100.0;
+        minVal = max(0.0, maxVal - 30.0);
+      } else if (minVal <= 20.0) {
+        // Low accuracy window: place bottom near 0%, show upward climbs prominently
+        minVal = 0.0;
+        maxVal = min(100.0, minVal + 30.0);
+      } else {
+        final double mid = (maxVal + minVal) / 2.0;
+        minVal = (mid - 15.0).clamp(0.0, 100.0);
+        maxVal = (mid + 15.0).clamp(0.0, 100.0);
+      }
       range = maxVal - minVal;
     } else {
-      final double pad = range * 0.15;
+      final double pad = range * 0.12;
       minVal = (minVal - pad).clamp(0.0, 100.0);
       maxVal = (maxVal + pad).clamp(0.0, 100.0);
       range = maxVal - minVal;

@@ -10,6 +10,7 @@ class UserStats {
   final int xp;
   final Map<String, dynamic> languageStats;
   final List<double> accuracyHistory;
+  final List<bool> recentAnswerResults;
 
   UserStats({
     required this.currentStreak,
@@ -19,10 +20,21 @@ class UserStats {
     required this.xp,
     required this.languageStats,
     this.accuracyHistory = const [],
+    this.recentAnswerResults = const [],
   });
 
+  /// All-time cumulative accuracy percentage.
   double get accuracy =>
       totalAnswered == 0 ? 0.0 : (totalCorrect / totalAnswered) * 100;
+
+  /// Rolling accuracy percentage over the recent question window (last 10 questions).
+  double get recentAccuracy {
+    if (recentAnswerResults.isEmpty) {
+      return accuracyHistory.isNotEmpty ? accuracyHistory.last : accuracy;
+    }
+    final int correct = recentAnswerResults.where((r) => r).length;
+    return (correct / recentAnswerResults.length) * 100.0;
+  }
 
   int get level => (xp / 150).floor() + 1;
   int get currentLevelXp => xp % 150;
@@ -130,6 +142,12 @@ class DatabaseService {
       accuracyHistory = rawHistory.map((e) => (e as num).toDouble()).toList();
     }
 
+    final dynamic rawRecent = _userMemoryBox!.get('recentAnswerResults');
+    List<bool> recentAnswerResults = [];
+    if (rawRecent is List) {
+      recentAnswerResults = rawRecent.map((e) => e == true).toList();
+    }
+
     return UserStats(
       currentStreak: currentStreak,
       bestStreak: bestStreak,
@@ -138,6 +156,7 @@ class DatabaseService {
       xp: xp,
       languageStats: languageStats,
       accuracyHistory: accuracyHistory,
+      recentAnswerResults: recentAnswerResults,
     );
   }
 
@@ -262,16 +281,29 @@ class DatabaseService {
     langRecord['misses'] = consecutiveMisses;
     languageStats[language] = langRecord;
 
+    // Rolling recent window of last 10 questions for responsive accuracy tracking
+    final dynamic rawRecent = _userMemoryBox!.get('recentAnswerResults');
+    List<bool> recentAnswerResults = [];
+    if (rawRecent is List) {
+      recentAnswerResults = rawRecent.map((e) => e == true).toList();
+    }
+    recentAnswerResults.add(isCorrect);
+    if (recentAnswerResults.length > 10) {
+      recentAnswerResults =
+          recentAnswerResults.sublist(recentAnswerResults.length - 10);
+    }
+    final int recentCorrect = recentAnswerResults.where((r) => r).length;
+    final double rollingAccuracy =
+        (recentCorrect / recentAnswerResults.length) * 100.0;
+
     final dynamic rawHistory = _userMemoryBox!.get('accuracyHistory');
     List<double> accuracyHistory = [];
     if (rawHistory is List) {
       accuracyHistory = rawHistory.map((e) => (e as num).toDouble()).toList();
     }
-    final double newAccuracy =
-        totalAnswered == 0 ? 0.0 : (totalCorrect / totalAnswered) * 100.0;
-    accuracyHistory.add(newAccuracy);
-    if (accuracyHistory.length > 20) {
-      accuracyHistory = accuracyHistory.sublist(accuracyHistory.length - 20);
+    accuracyHistory.add(rollingAccuracy);
+    if (accuracyHistory.length > 15) {
+      accuracyHistory = accuracyHistory.sublist(accuracyHistory.length - 15);
     }
 
     await _userMemoryBox!.put('currentStreak', currentStreak);
@@ -281,6 +313,7 @@ class DatabaseService {
     await _userMemoryBox!.put('xp', xp);
     await _userMemoryBox!.put('languageStats', languageStats);
     await _userMemoryBox!.put('accuracyHistory', accuracyHistory);
+    await _userMemoryBox!.put('recentAnswerResults', recentAnswerResults);
 
     return UserStats(
       currentStreak: currentStreak,
@@ -290,6 +323,7 @@ class DatabaseService {
       xp: xp,
       languageStats: languageStats,
       accuracyHistory: accuracyHistory,
+      recentAnswerResults: recentAnswerResults,
     );
   }
 
