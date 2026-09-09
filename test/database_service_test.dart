@@ -208,4 +208,60 @@ void main() {
       }
     });
   });
+
+  group('PatternResolver Tests', () {
+    test('resolves prefix choice patterns like [\$|@|None]title', () {
+      const input = r'[$|@|None]title = "developer";';
+      final allowed = {
+        r'$title = "developer";',
+        r'@title = "developer";',
+        r'title = "developer";',
+      };
+      for (int i = 0; i < 50; i++) {
+        final resolved = PatternResolver.resolveChoicePatterns(input);
+        expect(allowed, contains(resolved));
+        expect(resolved, isNot(contains('[')));
+        expect(resolved, isNot(contains('|')));
+      }
+    });
+
+    test('resolves type choice patterns like [String|str|string|None]', () {
+      const input = '[String|str|string|None] title := "success"';
+      final allowed = {
+        'String title := "success"',
+        'str title := "success"',
+        'string title := "success"',
+        ' title := "success"',
+      };
+      for (int i = 0; i < 50; i++) {
+        final resolved = PatternResolver.resolveChoicePatterns(input);
+        expect(allowed, contains(resolved));
+        expect(resolved, isNot(contains('[')));
+        expect(resolved, isNot(contains('|')));
+      }
+    });
+
+    test('resolves complex nested choice groups and multiple patterns', () {
+      const input = r'[$|@|None|[int]|_]x = 42[;|None]';
+      for (int i = 0; i < 50; i++) {
+        final resolved = PatternResolver.resolveChoicePatterns(input);
+        expect(resolved, isNot(contains('|')));
+        expect(
+          resolved.startsWith(r'$x') ||
+              resolved.startsWith(r'@x') ||
+              resolved.startsWith('x') ||
+              resolved.startsWith('[int]x') ||
+              resolved.startsWith('_x'),
+          isTrue,
+        );
+        expect(resolved.endsWith('42;') || resolved.endsWith('42'), isTrue);
+      }
+    });
+
+    test('leaves strings without choice patterns unchanged', () {
+      expect(PatternResolver.resolveChoicePatterns('int x = 42;'), 'int x = 42;');
+      expect(PatternResolver.resolveChoicePatterns('[random int variable]'),
+          '[random int variable]');
+    });
+  });
 }

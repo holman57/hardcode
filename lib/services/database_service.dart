@@ -1,6 +1,74 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+
+/// Utility class for dynamically parsing and resolving regex/bracketed pattern options.
+class PatternResolver {
+  /// Dynamically resolves all bracketed choice patterns (e.g. `[a|b|None]`, `[$|@|None]`, `[String|str|string|None]`)
+  /// by selecting one option at random and replacing "None" with empty string.
+  static String resolveChoicePatterns(String input, [Random? rng]) {
+    final Random random = rng ?? Random.secure();
+    String result = input;
+    bool foundAny;
+
+    do {
+      foundAny = false;
+      int startIdx = -1;
+      int depth = 0;
+      int pipeCount = 0;
+
+      for (int i = 0; i < result.length; i++) {
+        final String ch = result[i];
+        if (ch == '[') {
+          if (depth == 0) {
+            startIdx = i;
+            pipeCount = 0;
+          }
+          depth++;
+        } else if (ch == ']' && depth > 0) {
+          depth--;
+          if (depth == 0 && startIdx != -1) {
+            if (pipeCount > 0) {
+              final String inner = result.substring(startIdx + 1, i);
+
+              // Split top-level alternatives (respecting any nested brackets)
+              final List<String> options = [];
+              int optStart = 0;
+              int innerDepth = 0;
+              for (int j = 0; j < inner.length; j++) {
+                final String c = inner[j];
+                if (c == '[') {
+                  innerDepth++;
+                } else if (c == ']') {
+                  if (innerDepth > 0) innerDepth--;
+                } else if (c == '|' && innerDepth == 0) {
+                  options.add(inner.substring(optStart, j));
+                  optStart = j + 1;
+                }
+              }
+              options.add(inner.substring(optStart));
+
+              if (options.isNotEmpty) {
+                final String chosen = options[random.nextInt(options.length)];
+                final String replacement = (chosen == "None") ? "" : chosen;
+                result = result.replaceRange(startIdx, i + 1, replacement);
+                foundAny = true;
+                break;
+              }
+            }
+            startIdx = -1;
+            pipeCount = 0;
+          }
+        } else if (ch == '|' && depth == 1) {
+          pipeCount++;
+        }
+      }
+    } while (foundAny);
+
+    return result;
+  }
+}
 
 class UserStats {
   final int currentStreak;
@@ -84,7 +152,7 @@ class DatabaseService {
     final String? cachedJson = _catalogBox!.get('catalog_json') as String?;
 
     // If cached version is up to date and valid, use cached catalog
-    if (cachedVersion >= 3 && cachedJson != null && cachedJson.isNotEmpty) {
+    if (cachedVersion >= 4 && cachedJson != null && cachedJson.isNotEmpty) {
       try {
         final Map<String, dynamic> decoded =
             jsonDecode(cachedJson) as Map<String, dynamic>;
@@ -98,7 +166,7 @@ class DatabaseService {
     final String rawAsset = await rootBundle.loadString('assets/db.json');
     final Map<String, dynamic> parsed =
         jsonDecode(rawAsset) as Map<String, dynamic>;
-    final int assetVersion = (parsed['version'] as int?) ?? 3;
+    final int assetVersion = (parsed['version'] as int?) ?? 4;
 
     await _catalogBox!.put('catalog_json', rawAsset);
     await _catalogBox!.put('catalog_version', assetVersion);

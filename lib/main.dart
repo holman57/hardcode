@@ -240,20 +240,31 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     generateQuestion();
   }
 
+  /// Dynamically resolves all bracketed choice patterns (e.g. `[a|b|None]`, `[$|@|None]`, `[String|str|string|None]`)
+  /// by selecting one option at random and replacing "None" with empty string.
+  static String resolveChoicePatterns(String input, [Random? rng]) =>
+      PatternResolver.resolveChoicePatterns(input, rng);
+
   String renderPatternOptions(answer, pattern) {
     String render = (answer as String);
-    pattern.forEach((p) {
-      if (answer.contains(p)) {
-        List options = p.substring(1, p.length - 1).split("|");
-        Random random = Random.secure();
-        String option = options[random.nextInt(options.length)];
-        if (option == "None") {
-          render = render.replaceAll(p, "");
-        } else {
-          render = render.replaceAll(p, option);
+    final Random random = Random.secure();
+
+    if (pattern is List) {
+      for (final p in pattern) {
+        if (p is String && render.contains(p)) {
+          final List<String> options = p.substring(1, p.length - 1).split("|");
+          final String option = options[random.nextInt(options.length)];
+          if (option == "None") {
+            render = render.replaceAll(p, "");
+          } else {
+            render = render.replaceAll(p, option);
+          }
         }
       }
-    });
+    }
+
+    // Dynamically resolve any remaining bracketed choice expressions (e.g. [$|@|None], [String|str|string|None])
+    render = resolveChoicePatterns(render, random);
     return render.trim();
   }
 
@@ -328,6 +339,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         render = render.replaceAll(p, "3.14");
       }
     });
+
+    // Resolve any remaining choice patterns dynamically
+    render = resolveChoicePatterns(render, random);
     return render.trim();
   }
 

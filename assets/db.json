@@ -1,4 +1,5 @@
 {
+  "version": 4,
   "Language": [
     "C",
     "Python",
@@ -535,7 +536,14 @@
       "[:=|=]",
       "[;|None]",
       "[$|@|None|[int]|_]",
-      "[mut |None]"
+      "[mut |None]",
+      "[String|str|string|None]",
+      "[$|@|None]",
+      "[auto|var|val|float|Float|let|None]",
+      "[local|auto|var|val|float|Float|let|None]",
+      "[: Float|: number| float|None]",
+      "[Object|object|Float|declare -f|export]",
+      "[$|@|None|[float]|_]"
     ],
     "Declaration": {
       "Notes": {
