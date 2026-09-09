@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'HardCode',
+      title: 'HardCode Academy',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
@@ -570,7 +570,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         appBar: AppBar(
           backgroundColor: theme.colorScheme.inversePrimary,
           title: Text(
-            widget.title.isNotEmpty ? widget.title : 'HardCode',
+            widget.title.isNotEmpty ? widget.title : 'HardCode Academy',
             style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold),
           ),
         ),
@@ -583,29 +583,139 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: theme.colorScheme.inversePrimary,
-        title: Row(
-          children: [
-            Text(
-              widget.title.isNotEmpty ? widget.title : 'HardCode',
-              style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold),
-            ),
-            const Spacer(),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.primaryContainer.withOpacity(0.8),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                'Lvl ${_userStats.level}',
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w800,
-                  color: theme.colorScheme.onPrimaryContainer,
+        title: LayoutBuilder(
+          builder: (context, constraints) {
+            final isNarrow = constraints.maxWidth < 460;
+            if (isNarrow) {
+              return Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          widget.title.isNotEmpty
+                              ? widget.title
+                              : 'HardCode Academy',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15.5,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        if (_language.isNotEmpty) ...[
+                          const SizedBox(height: 2),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 7,
+                              vertical: 1.5,
+                            ),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.primaryContainer
+                                  .withOpacity(0.85),
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: theme.colorScheme.outline
+                                    .withOpacity(0.18),
+                                width: 0.8,
+                              ),
+                            ),
+                            child: Text(
+                              _questionSubType.isNotEmpty
+                                  ? '$_language • $_questionSubType'
+                                  : _language,
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 10.5,
+                                fontWeight: FontWeight.w700,
+                                color: theme.colorScheme.onPrimaryContainer,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color:
+                          theme.colorScheme.primaryContainer.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      'Lvl ${_userStats.level}',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800,
+                        color: theme.colorScheme.onPrimaryContainer,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }
+
+            return Row(
+              children: [
+                Text(
+                  widget.title.isNotEmpty ? widget.title : 'HardCode Academy',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
                 ),
-              ),
-            ),
-          ],
+                if (_language.isNotEmpty) ...[
+                  const SizedBox(width: 10),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 3.5,
+                    ),
+                    decoration: BoxDecoration(
+                      color:
+                          theme.colorScheme.primaryContainer.withOpacity(0.85),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: theme.colorScheme.outline.withOpacity(0.18),
+                        width: 1,
+                      ),
+                    ),
+                    child: Text(
+                      _questionSubType.isNotEmpty
+                          ? '$_language • $_questionSubType'
+                          : _language,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.2,
+                        color: theme.colorScheme.onPrimaryContainer,
+                      ),
+                    ),
+                  ),
+                ],
+                const Spacer(),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primaryContainer.withOpacity(0.8),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    'Lvl ${_userStats.level}',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                      color: theme.colorScheme.onPrimaryContainer,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
       drawer: Drawer(
@@ -621,7 +731,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
-                    'HardCode',
+                    'HardCode Academy',
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -775,7 +885,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           final double cardWidth =
               (availableWidth * 0.88).clamp(280.0, 560.0);
           final double questionFontSize = (22.0 * scale).clamp(14.0, 25.0);
-          final double badgeFontSize = (14.0 * scale).clamp(11.0, 16.0);
           final double buttonFontSize = (19.0 * scale).clamp(13.0, 22.0);
           final double buttonVerticalPadding =
               (16.0 * scale).clamp(9.0, 18.0);
@@ -785,8 +894,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               (6.0 * scale).clamp(3.0, 7.0);
           final double contentSpacing =
               (20.0 * scale).clamp(10.0, 26.0);
-          final double titleSpacing =
-              (12.0 * scale).clamp(8.0, 16.0);
           final double statFontSize = (13.0 * scale).clamp(10.0, 15.0);
 
           // Timer color shift
@@ -1000,29 +1107,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                       ),
 
                       if (_language.isNotEmpty) ...[
-                        Center(
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: (16.0 * scale).clamp(10.0, 18.0),
-                              vertical: (7.0 * scale).clamp(4.0, 8.0),
-                            ),
-                            decoration: BoxDecoration(
-                              color: theme.colorScheme.primaryContainer
-                                  .withOpacity(0.7),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              '$_language • $_questionSubType',
-                              style: GoogleFonts.plusJakartaSans(
-                                fontSize: badgeFontSize,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 0.3,
-                                color: theme.colorScheme.onPrimaryContainer,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: titleSpacing),
                         Text(
                           _question,
                           textAlign: TextAlign.center,
