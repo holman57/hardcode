@@ -1,5 +1,5 @@
 {
-  "version": 5,
+  "version": 6,
   "Language": [
     "C",
     "Python",
@@ -1849,6 +1849,41 @@
             "statement": "A Translation Lookaside Buffer (TLB) caches recent virtual-to-physical address translations to accelerate memory lookups.",
             "is_true": true,
             "explanation": "The TLB is a hardware MMU cache specifically designed to avoid costly page table walks in RAM."
+          },
+          {
+            "statement": "Virtual memory translation uses the Translation Lookaside Buffer (TLB) as a hardware cache to avoid accessing page tables in main memory on every instruction.",
+            "is_true": true,
+            "explanation": "The TLB caches recent virtual-to-physical address mappings, reducing average memory translation latency to near-L1 cache speeds."
+          },
+          {
+            "statement": "In a Little-Endian architecture, the most significant byte of a multi-byte word is stored at the lowest memory address.",
+            "is_true": false,
+            "explanation": "Little-Endian stores the LEAST significant byte at the lowest address. Big-Endian stores the most significant byte first."
+          },
+          {
+            "statement": "Direct Memory Access (DMA) allows high-speed I/O devices to transfer data directly to and from main memory without continuous CPU intervention.",
+            "is_true": true,
+            "explanation": "DMA controllers transfer blocks of data between I/O channels and memory independently, only interrupting the CPU when the transfer is complete."
+          },
+          {
+            "statement": "Branch predictors in modern superscalar CPUs speculatively execute instructions before conditional branch outcomes are definitively resolved.",
+            "is_true": true,
+            "explanation": "If the prediction is correct, pipeline stalls are avoided. If incorrect, speculative results are flushed."
+          },
+          {
+            "statement": "A cache Write-Through policy updates main memory immediately on every write, whereas Write-Back only writes dirty blocks when evicted.",
+            "is_true": true,
+            "explanation": "Write-Through ensures memory is always coherent with cache, but incurs high write traffic. Write-Back minimizes bus traffic by delaying writes."
+          },
+          {
+            "statement": "SIMD (Single Instruction, Multiple Data) execution performs different operations on identical data elements simultaneously.",
+            "is_true": false,
+            "explanation": "SIMD executes the SAME operation across multiple data points in parallel using wide vector registers."
+          },
+          {
+            "statement": "Register Renaming eliminates false data dependencies such as Write-After-Read (WAR) and Write-After-Write (WAW) hazards.",
+            "is_true": true,
+            "explanation": "By mapping architectural register names to a larger pool of physical registers, the processor allows independent instructions to execute out of order."
           }
         ],
         "Matching": [
@@ -1860,6 +1895,34 @@
               "Instruction Register (IR)": "Holds instruction currently being decoded or executed",
               "Control Unit (CU)": "Directs flow of data and sequence of CPU operations",
               "Translation Lookaside Buffer (TLB)": "High-speed MMU cache for virtual memory address translations"
+            }
+          },
+          {
+            "prompt": "Match the memory hierarchy tier with its typical access latency",
+            "pairs": {
+              "L1 CPU Cache": "~1 nanosecond (4 cycles)",
+              "L2 CPU Cache": "~4 nanoseconds (14 cycles)",
+              "L3 Shared Cache": "~15 nanoseconds (50 cycles)",
+              "Main Memory (DDR5 DRAM)": "~60-100 nanoseconds",
+              "NVMe SSD Storage": "~10-50 microseconds"
+            }
+          },
+          {
+            "prompt": "Match the computer architecture concept with its primary mechanism",
+            "pairs": {
+              "Pipelining": "Overlaps execution of consecutive instructions across clock cycles",
+              "Superscalar": "Issues multiple independent instructions per clock cycle",
+              "Hyper-Threading": "Exposes multiple logical cores per physical core sharing execution units",
+              "Out-of-Order Execution": "Dispatches instructions based on operand readiness rather than program order"
+            }
+          },
+          {
+            "prompt": "Match the x86 assembly instruction with its core operation",
+            "pairs": {
+              "MOV": "Transfers data between registers or between memory and registers",
+              "LEA": "Computes memory effective address without accessing memory contents",
+              "CMP": "Subtracts operands to set CPU condition flags without storing result",
+              "CALL": "Pushes return address to stack and jumps to procedure label"
             }
           }
         ],
@@ -1885,6 +1948,27 @@
               "Non-Volatile SSD (NVMe)",
               "Rotational Hard Disk Drive (HDD)"
             ]
+          },
+          {
+            "prompt": "Order the steps of a CPU hardware interrupt handling sequence",
+            "ordered_sequence": [
+              "I/O device asserts interrupt signal on interrupt line",
+              "CPU completes current instruction execution",
+              "CPU saves Program Counter and processor status flags to stack",
+              "CPU reads interrupt vector number and loads ISR address from table",
+              "CPU executes Interrupt Service Routine (ISR) handler code",
+              "IRET instruction restores saved state and resumes interrupted process"
+            ]
+          },
+          {
+            "prompt": "Order the stages of the Von Neumann instruction cycle",
+            "ordered_sequence": [
+              "Instruction Fetch from memory address in PC",
+              "Instruction Decode by Control Unit into control signals",
+              "Operand Address Calculation and fetch from registers or memory",
+              "Instruction Execution by ALU or execution unit",
+              "Writeback of computation result into destination register"
+            ]
           }
         ],
         "Sorting-Classification": [
@@ -1905,6 +1989,83 @@
                 "x86-64 (AMD64)"
               ]
             }
+          },
+          {
+            "prompt": "Classify computer memory types into Volatile (loses data on power loss) or Non-Volatile (retains data without power)",
+            "categories": [
+              "Volatile",
+              "Non-Volatile"
+            ],
+            "items": {
+              "Volatile": [
+                "SRAM (L1/L2/L3 Cache)",
+                "DRAM (System RAM)",
+                "CPU Register File"
+              ],
+              "Non-Volatile": [
+                "NAND Flash (SSD)",
+                "EEPROM / BIOS ROM",
+                "Magnetic HDD",
+                "NVRAM"
+              ]
+            }
+          },
+          {
+            "prompt": "Classify pipelining pipeline hazards into their canonical hazard types",
+            "categories": [
+              "Data Hazard",
+              "Structural Hazard",
+              "Control Hazard"
+            ],
+            "items": {
+              "Data Hazard": [
+                "Read-After-Write (RAW) dependency",
+                "Write-After-Read (WAR) hazard"
+              ],
+              "Structural Hazard": [
+                "Memory bus port contention",
+                "Single ALU requested by two stages"
+              ],
+              "Control Hazard": [
+                "Conditional branch misprediction",
+                "Unconditional Jump redirection"
+              ]
+            }
+          }
+        ],
+        "Multi-Choice": [
+          {
+            "question": "Which CPU cache mapping policy allows any block of main memory to be placed anywhere in the cache?",
+            "choices": [
+              "Fully Associative Cache",
+              "Direct-Mapped Cache",
+              "2-Way Set Associative Cache",
+              "Write-Through Cache"
+            ],
+            "correct_index": 0,
+            "explanation": "A fully associative cache places any memory block into any available cache line, eliminating conflict misses at the expense of complex search hardware."
+          },
+          {
+            "question": "What is the primary function of the Translation Lookaside Buffer (TLB)?",
+            "choices": [
+              "Cache virtual-to-physical address translations",
+              "Predict branch outcomes in loops",
+              "Store ALU arithmetic overflow flags",
+              "Hold instructions fetched from L2 cache"
+            ],
+            "correct_index": 0,
+            "explanation": "The TLB caches recently resolved page table entries to avoid multi-level page table traversals in DRAM."
+          },
+          {
+            "question": "In 64-bit x86-64 architecture, how many general purpose registers (RAX, RBX, etc.) are available to the programmer?",
+            "choices": [
+              "16",
+              "8",
+              "32",
+              "64"
+            ],
+            "correct_index": 0,
+            "explanation": "x86-64 expanded the original 8 32-bit registers (EAX..ESP) to 16 64-bit general-purpose registers (RAX..RSP and R8..R15)."
           }
         ]
       }
@@ -1929,6 +2090,41 @@
             "statement": "Backpropagation computes the Hessian matrix of second-order derivatives to update weights.",
             "is_true": false,
             "explanation": "Standard backpropagation computes first-order partial derivatives (gradient vector), not the expensive second-order Hessian matrix."
+          },
+          {
+            "statement": "Without non-linear activation functions (like ReLU or GELU), a deep neural network with 100 hidden layers has no more representational capacity than a single-layer linear regression model.",
+            "is_true": true,
+            "explanation": "The composition of linear functions W_n * ... * W_1 * x is mathematically equivalent to a single linear transformation W_combined * x."
+          },
+          {
+            "statement": "Overfitting occurs when a machine learning model achieves high training accuracy but generalizes poorly to unseen validation or test data.",
+            "is_true": true,
+            "explanation": "Overfitting means the model has memorized noise in the training set rather than learning true generalizable relationships."
+          },
+          {
+            "statement": "Dropout randomly zeroes out a fraction of neuron activations during evaluation/inference to ensure deterministic output.",
+            "is_true": false,
+            "explanation": "Dropout is active ONLY during training to prevent co-adaptation. During evaluation/inference, all weights are active and scaled."
+          },
+          {
+            "statement": "In self-attention mechanisms, computation of the attention weight matrix scales quadratically O(N^2) with input sequence length N.",
+            "is_true": true,
+            "explanation": "Every token attends to every other token, producing an N x N matrix multiplication (Query * Key^T)."
+          },
+          {
+            "statement": "The Adam optimizer maintains running exponentially decaying averages of past gradients (first moment) and squared gradients (second moment).",
+            "is_true": true,
+            "explanation": "Adam adapts per-parameter learning rates using both momentum (1st moment) and variance scaling (2nd moment)."
+          },
+          {
+            "statement": "In K-Means clustering, the optimal number of clusters K is determined automatically by the algorithm without any hyperparameter specification.",
+            "is_true": false,
+            "explanation": "K is a required input hyperparameter. Techniques like the Elbow Method or Silhouette Score are used to pick K."
+          },
+          {
+            "statement": "Residual connections (skip connections) mitigate vanishing gradients in very deep networks by providing an identity gradient highway during backpropagation.",
+            "is_true": true,
+            "explanation": "Because d/dx (F(x) + x) = F'(x) + 1, gradients can flow back through the '+1' identity term without being exponentially degraded."
           }
         ],
         "Matching": [
@@ -1940,6 +2136,34 @@
               "Adam Optimizer": "Adaptive moment estimation combining momentum and RMSprop",
               "ReLU (Rectified Linear Unit)": "f(x) = max(0, x), preventing vanishing gradients for positive inputs",
               "Token Embedding": "Maps discrete vocabulary token IDs to continuous high-dimensional vectors"
+            }
+          },
+          {
+            "prompt": "Match each neural network activation function with its core mathematical behavior",
+            "pairs": {
+              "ReLU (Rectified Linear Unit)": "Returns max(0, x), zeroing negative inputs and preserving positive inputs linearly",
+              "Sigmoid": "Squashes inputs into range (0, 1), commonly used for binary probabilities",
+              "Softmax": "Normalizes an unconstrained vector of logits into a probability distribution summing to 1",
+              "GELU (Gaussian Error Linear Unit)": "Weights inputs by standard Gaussian CDF, standard in modern Transformers"
+            }
+          },
+          {
+            "prompt": "Match machine learning evaluation metrics with their target diagnostic purposes",
+            "pairs": {
+              "Precision": "Ratio of True Positives to all Predicted Positives (minimizes false alarms)",
+              "Recall": "Ratio of True Positives to all Actual Positives (minimizes missed detections)",
+              "F1-Score": "Harmonic mean of Precision and Recall for balanced evaluation",
+              "Mean Squared Error (MSE)": "Penalizes large continuous regression prediction errors quadratically",
+              "AUC-ROC": "Measures classifier discriminative capability across all decision thresholds"
+            }
+          },
+          {
+            "prompt": "Match deep learning components with their fundamental architectural role",
+            "pairs": {
+              "Layer Normalization": "Normalizes activations across features within each individual training sample",
+              "Positional Encoding": "Injects sequence token order information into permutation-invariant attention",
+              "Cross-Entropy Loss": "Quantifies difference between predicted probability distribution and one-hot ground truth",
+              "Weight Decay (L2)": "Regularizes network by adding squared parameter magnitude to the loss"
             }
           }
         ],
@@ -1953,6 +2177,37 @@
               "Backward pass (backpropagation) to compute gradients",
               "Optimizer step to update model parameters",
               "Zeroing gradients for the next iteration"
+            ]
+          },
+          {
+            "prompt": "Order the sequence of operations in a standard deep learning model training iteration",
+            "ordered_sequence": [
+              "Fetch and tokenize mini-batch of training inputs and labels",
+              "Execute forward pass through network layers to generate predicted logits",
+              "Compute loss function comparing logits against ground truth labels",
+              "Zero out accumulated parameter gradients in optimizer",
+              "Execute backward pass (backpropagation) to compute parameter gradients via chain rule",
+              "Optimizer updates model weights using computed gradients (weight step)"
+            ]
+          },
+          {
+            "prompt": "Order the steps of Scaled Dot-Product Attention computation in a Transformer layer",
+            "ordered_sequence": [
+              "Project input embeddings into Query (Q), Key (K), and Value (V) matrices",
+              "Compute raw attention scores via matrix multiplication: Q * K^T",
+              "Scale raw scores by dividing by square root of key dimension sqrt(d_k)",
+              "Apply Softmax across columns to obtain normalized attention weights",
+              "Multiply attention weight distribution matrix with Value matrix V"
+            ]
+          },
+          {
+            "prompt": "Order the steps of the K-Means Clustering algorithm until convergence",
+            "ordered_sequence": [
+              "Randomly initialize K centroid coordinates in feature space",
+              "Compute Euclidean distance from every data point to all K centroids",
+              "Assign each data point to its closest centroid cluster",
+              "Recompute each centroid position as the arithmetic mean of assigned points",
+              "Repeat assignment and update steps until centroids cease moving"
             ]
           }
         ],
@@ -1981,6 +2236,85 @@
                 "Robotics joint control with reward feedback"
               ]
             }
+          },
+          {
+            "prompt": "Classify machine learning algorithms by their learning paradigm",
+            "categories": [
+              "Supervised Learning",
+              "Unsupervised Learning",
+              "Reinforcement Learning"
+            ],
+            "items": {
+              "Supervised Learning": [
+                "Linear Regression",
+                "Support Vector Machines (SVM)",
+                "ResNet Convolutional Network"
+              ],
+              "Unsupervised Learning": [
+                "K-Means Clustering",
+                "Principal Component Analysis (PCA)",
+                "Autoencoders"
+              ],
+              "Reinforcement Learning": [
+                "Deep Q-Networks (DQN)",
+                "Proximal Policy Optimization (PPO)",
+                "SARSA"
+              ]
+            }
+          },
+          {
+            "prompt": "Classify machine learning tasks into Classification vs Regression",
+            "categories": [
+              "Classification",
+              "Regression"
+            ],
+            "items": {
+              "Classification": [
+                "Spam email detection (Spam / Not Spam)",
+                "Image digit recognition (0-9)",
+                "Medical disease diagnosis"
+              ],
+              "Regression": [
+                "Housing market price estimation",
+                "Stock price volatility forecasting",
+                "Vehicle travel time prediction"
+              ]
+            }
+          }
+        ],
+        "Multi-Choice": [
+          {
+            "question": "Why do modern Transformers scale attention logits by 1 / sqrt(d_k) before applying Softmax?",
+            "choices": [
+              "To prevent dot products from growing large and pushing Softmax into tiny gradient regions",
+              "To enforce non-negativity across attention weights",
+              "To reduce memory footprint from O(N^2) to O(N)",
+              "To ensure matrices match dimension width for multiplication"
+            ],
+            "correct_index": 0,
+            "explanation": "For large dimensions d_k, dot products grow large in magnitude, pushing Softmax into regions with extremely small gradients. Scaling stabilizes variance."
+          },
+          {
+            "question": "Which regularization technique randomly drops hidden units and their connections during training to prevent feature co-adaptation?",
+            "choices": [
+              "Dropout",
+              "Batch Normalization",
+              "Early Stopping",
+              "Gradient Clipping"
+            ],
+            "correct_index": 0,
+            "explanation": "Dropout prevents units from co-adapting too much by randomly dropping units during forward/backward passes."
+          },
+          {
+            "question": "In gradient descent optimization, what problem does a learning rate that is set too large cause?",
+            "choices": [
+              "Loss diverges or oscillates wildly without converging",
+              "Model gets trapped indefinitely in shallow local minima",
+              "Gradients vanish to zero on the very first step",
+              "Parameters fail to update due to numerical underflow"
+            ],
+            "correct_index": 0,
+            "explanation": "An excessively high learning rate causes updates to overshoot the minimum, leading to divergence or unstable oscillations."
           }
         ]
       }
@@ -2005,6 +2339,41 @@
             "statement": "Breaking any single one of the four Coffman conditions prevents system deadlock from occurring.",
             "is_true": true,
             "explanation": "All four conditions must hold simultaneously for a deadlock to exist; breaking any one guarantees deadlock freedom."
+          },
+          {
+            "statement": "Threads belonging to the same process share the process's heap memory, global variables, and open file descriptors.",
+            "is_true": true,
+            "explanation": "Threads share virtual address space, heap, and open handles, while maintaining individual program counters, registers, and stacks."
+          },
+          {
+            "statement": "A page fault occurs only when physical RAM is physically damaged or has hardware memory bit rot.",
+            "is_true": false,
+            "explanation": "A page fault is an ordinary CPU exception raised when a requested virtual page is not currently mapped in physical RAM (e.g., swapped to disk)."
+          },
+          {
+            "statement": "In preemptive CPU scheduling, the operating system kernel can forcibly suspend a currently running process to run another process.",
+            "is_true": true,
+            "explanation": "Preemption allows the scheduler to enforce fair time-slicing via hardware timer interrupts."
+          },
+          {
+            "statement": "Thrashing is a state in which the OS spends significantly more time swapping pages between disk and RAM than executing actual application code.",
+            "is_true": true,
+            "explanation": "Thrashing occurs when the total working sets of active processes exceed available physical memory."
+          },
+          {
+            "statement": "Spinlocks are optimal for synchronization when waiting threads are expected to wait for long periods of time (multiple seconds).",
+            "is_true": false,
+            "explanation": "Spinlocks busy-wait in a tight loop burning CPU cycles. They are only appropriate for extremely brief critical sections in multicore kernels."
+          },
+          {
+            "statement": "The Copy-on-Write (CoW) optimization defers duplicating memory pages after a fork() system call until either process writes to a page.",
+            "is_true": true,
+            "explanation": "Both parent and child share read-only pages until a write triggers a page fault that duplicates only the modified page."
+          },
+          {
+            "statement": "All four Coffman conditions (Mutual Exclusion, Hold and Wait, No Preemption, Circular Wait) must simultaneously hold for deadlock to occur.",
+            "is_true": true,
+            "explanation": "If any one of the four Coffman conditions is broken, deadlock cannot occur."
           }
         ],
         "Matching": [
@@ -2017,6 +2386,33 @@
               "Condition Variable": "Allows threads to sleep until notified of a specific state predicate change",
               "Memory Barrier (Fence)": "Prevents CPU/compiler reordering of memory reads and writes across boundary"
             }
+          },
+          {
+            "prompt": "Match each OS scheduling algorithm with its fundamental behavior",
+            "pairs": {
+              "Round Robin (RR)": "Allocates fixed time quanta cyclically among all ready processes",
+              "Shortest Job First (SJF)": "Minimizes average waiting time but requires future execution duration",
+              "Completely Fair Scheduler (CFS)": "Tracks virtual runtime using a red-black tree for balanced CPU share",
+              "Multilevel Feedback Queue (MLFQ)": "Dynamically adjusts process priority based on I/O burst frequency"
+            }
+          },
+          {
+            "prompt": "Match the Unix system call to its operating system responsibility",
+            "pairs": {
+              "fork()": "Duplicates calling process to create a new child process",
+              "execve()": "Replaces current process memory and code with a new executable program",
+              "mmap()": "Maps files or anonymous backing store directly into virtual address space",
+              "pipe()": "Constructs a unidirectional inter-process communication byte stream"
+            }
+          },
+          {
+            "prompt": "Match the memory management concept to its definition",
+            "pairs": {
+              "Internal Fragmentation": "Unused allocated memory within an allocated fixed-size page or block",
+              "External Fragmentation": "Sufficient total free memory exists but is broken into non-contiguous slices",
+              "Working Set": "Set of memory pages referenced by a process in the most recent time window",
+              "Page Replacement Algorithm": "Decides which physical frame to evict when allocating a new page"
+            }
           }
         ],
         "Sequencing": [
@@ -2028,6 +2424,38 @@
               "Running (Executing instructions on CPU core)",
               "Waiting / Blocked (Awaiting I/O or event completion)",
               "Terminated (Exited and awaiting cleanup)"
+            ]
+          },
+          {
+            "prompt": "Order the lifecycle state transitions of a Unix process from creation to termination",
+            "ordered_sequence": [
+              "Created / New via fork() syscall",
+              "Ready state waiting in CPU runqueue",
+              "Running state executing on CPU core",
+              "Blocked / Waiting state awaiting I/O or event completion",
+              "Terminated / Zombie state awaiting parent wait() collection"
+            ]
+          },
+          {
+            "prompt": "Order the sequence of actions taken during an OS page fault resolution",
+            "ordered_sequence": [
+              "CPU raises Page Fault Exception upon invalid TLB/PTE lookup",
+              "CPU switches to Kernel Mode and invokes Page Fault Handler",
+              "Kernel verifies virtual address validity and finds backing file/swap slot",
+              "Kernel allocates a free physical frame (evicting a page if necessary)",
+              "Kernel issues disk I/O to read page contents into frame",
+              "Kernel updates Page Table Entry and resumes faulting user instruction"
+            ]
+          },
+          {
+            "prompt": "Order the steps of a CPU context switch between two user processes",
+            "ordered_sequence": [
+              "Timer interrupt or blocking syscall triggers kernel entry",
+              "Kernel saves current registers and Program Counter to process PCB",
+              "Scheduler algorithm selects next process from ready queue",
+              "Kernel updates Page Table Base Register (CR3) to switch address spaces",
+              "Kernel loads saved register state from next process PCB",
+              "Kernel executes return-from-trap to resume new process in user mode"
             ]
           }
         ],
@@ -2050,6 +2478,81 @@
                 "Directly programming disk DMA controller"
               ]
             }
+          },
+          {
+            "prompt": "Classify process resources into Thread-Private (unique per thread) vs Process-Shared (shared across threads)",
+            "categories": [
+              "Thread-Private",
+              "Process-Shared"
+            ],
+            "items": {
+              "Thread-Private": [
+                "Execution Stack",
+                "Program Counter (PC)",
+                "CPU Register Set",
+                "Thread-Local Storage (TLS)"
+              ],
+              "Process-Shared": [
+                "Virtual Address Space",
+                "Heap Memory",
+                "Open File Descriptors",
+                "Global Variables"
+              ]
+            }
+          },
+          {
+            "prompt": "Classify scheduling algorithms into Preemptive or Non-Preemptive",
+            "categories": [
+              "Preemptive",
+              "Non-Preemptive"
+            ],
+            "items": {
+              "Preemptive": [
+                "Round Robin",
+                "Shortest Remaining Time First (SRTF)",
+                "Completely Fair Scheduler (CFS)"
+              ],
+              "Non-Preemptive": [
+                "First-Come First-Served (FCFS)",
+                "Non-preemptive Shortest Job First",
+                "Priority Non-preemptive"
+              ]
+            }
+          }
+        ],
+        "Multi-Choice": [
+          {
+            "question": "Which system call is used in Unix to create a child process that shares memory until either process writes?",
+            "choices": [
+              "fork()",
+              "clone() with CLONE_VM",
+              "pthread_create()",
+              "vfork()"
+            ],
+            "correct_index": 0,
+            "explanation": "fork() creates an identical child process using Copy-on-Write page table flags."
+          },
+          {
+            "question": "What occurs when the total working sets of all running processes exceed physical RAM capacity?",
+            "choices": [
+              "Thrashing",
+              "Deadlock",
+              "Segmentation fault",
+              "Priority inversion"
+            ],
+            "correct_index": 0,
+            "explanation": "Thrashing occurs when the system becomes saturated by page-in and page-out disk transfers."
+          },
+          {
+            "question": "Which synchronization primitive puts the calling thread to sleep when a lock is contended, rather than spinning?",
+            "choices": [
+              "Mutex / Semaphore",
+              "Spinlock",
+              "Atomic CAS",
+              "Test-and-Set register"
+            ],
+            "correct_index": 0,
+            "explanation": "A mutex or semaphore deschedules the waiting thread and puts it on a waitqueue, yielding CPU time to other runnable threads."
           }
         ]
       }
@@ -2069,6 +2572,41 @@
             "statement": "HTTP/3 runs over TCP with TLS 1.3 encryption.",
             "is_true": false,
             "explanation": "HTTP/3 runs over QUIC, which is built on top of UDP to eliminate Head-of-Line (HoL) blocking."
+          },
+          {
+            "statement": "TCP provides reliable, in-order byte stream delivery with congestion control, while UDP provides connectionless, best-effort datagram delivery.",
+            "is_true": true,
+            "explanation": "TCP incorporates acknowledgments, retransmissions, and window-based congestion control; UDP delivers datagrams with minimal overhead."
+          },
+          {
+            "statement": "IPv4 uses 32-bit addresses providing ~4.3 billion unique IPs, whereas IPv6 uses 128-bit addresses providing 3.4 x 10^38 unique IPs.",
+            "is_true": true,
+            "explanation": "IPv6 solved IPv4 address exhaustion by expanding address width from 32 to 128 bits."
+          },
+          {
+            "statement": "The Address Resolution Protocol (ARP) translates a domain name (e.g. google.com) directly to a MAC address.",
+            "is_true": false,
+            "explanation": "DNS resolves domain names to IP addresses. ARP resolves an IPv4 address to a local physical Layer 2 MAC address."
+          },
+          {
+            "statement": "HTTPS encrypts the HTTP payload using Transport Layer Security (TLS) over TCP port 443.",
+            "is_true": true,
+            "explanation": "HTTPS runs standard HTTP over an encrypted TLS connection, ensuring confidentiality and integrity."
+          },
+          {
+            "statement": "HTTP/1.1 allows head-of-line blocking on a single TCP connection, whereas HTTP/2 multiplexes streams concurrently over one connection.",
+            "is_true": true,
+            "explanation": "HTTP/2 introduces binary framing and multiplexed virtual streams, preventing slow requests from stalling others on the same socket."
+          },
+          {
+            "statement": "A subnet with CIDR prefix /24 contains 256 total IP addresses, of which 254 are assignable to host network interfaces.",
+            "is_true": true,
+            "explanation": "Network address (.0) and broadcast address (.255) are reserved, leaving 254 usable host addresses."
+          },
+          {
+            "statement": "Network Address Translation (NAT) maps private RFC 1918 IP addresses to one or more public IP addresses at the router boundary.",
+            "is_true": true,
+            "explanation": "NAT / NAPT re-writes IP headers and port numbers to allow multiple private LAN devices to share public IPs."
           }
         ],
         "Matching": [
@@ -2081,6 +2619,35 @@
               "Ethernet / Wi-Fi (802.11)": "Data Link Layer (Layer 2)",
               "DNS": "Application Layer (Layer 7)"
             }
+          },
+          {
+            "prompt": "Match standard Internet network protocols with their default transport port numbers",
+            "pairs": {
+              "SSH (Secure Shell)": "TCP Port 22",
+              "DNS (Domain Name System)": "UDP/TCP Port 53",
+              "HTTP (Web Unencrypted)": "TCP Port 80",
+              "HTTPS (Web Encrypted via TLS)": "TCP Port 443",
+              "SMTP (Simple Mail Transfer)": "TCP Port 25"
+            }
+          },
+          {
+            "prompt": "Match the OSI 7-Layer Model layer with its primary data protocol or entity",
+            "pairs": {
+              "Layer 7 - Application": "HTTP, DNS, SSH, FTP",
+              "Layer 4 - Transport": "TCP, UDP segment flow control",
+              "Layer 3 - Network": "IP packets and routing (BGP, OSPF)",
+              "Layer 2 - Data Link": "Ethernet frames, MAC addressing, Switches",
+              "Layer 1 - Physical": "Cables, radio frequencies, bitstreams"
+            }
+          },
+          {
+            "prompt": "Match HTTP status code class ranges to their standard semantic definitions",
+            "pairs": {
+              "2xx Status Codes": "Success (e.g., 200 OK, 201 Created, 204 No Content)",
+              "3xx Status Codes": "Redirection (e.g., 301 Moved Permanently, 304 Not Modified)",
+              "4xx Status Codes": "Client Error (e.g., 400 Bad Request, 401 Unauthorized, 404 Not Found)",
+              "5xx Status Codes": "Server Error (e.g., 500 Internal Error, 502 Bad Gateway, 503 Unavailable)"
+            }
           }
         ],
         "Sequencing": [
@@ -2091,6 +2658,38 @@
               "Server responds with SYN-ACK packet (ISN_s and ACK=ISN_c + 1)",
               "Client sends ACK packet (ACK=ISN_s + 1)",
               "Connection is ESTABLISHED and data transfer begins"
+            ]
+          },
+          {
+            "prompt": "Order the sequence of network queries performed during recursive DNS resolution",
+            "ordered_sequence": [
+              "Browser checks local client cache and OS hosts file",
+              "Query sent to Local Recursive DNS Resolver (ISP or 8.8.8.8)",
+              "Recursive Resolver queries Root Nameserver (e.g. a.root-servers.net)",
+              "Recursive Resolver queries Top-Level Domain (TLD) Nameserver (.com)",
+              "Recursive Resolver queries Authoritative Nameserver for the domain",
+              "Authoritative Nameserver returns IP A-record to Recursive Resolver and client"
+            ]
+          },
+          {
+            "prompt": "Order the steps of a TCP 4-way connection teardown (Graceful Close)",
+            "ordered_sequence": [
+              "Active closer sends FIN segment to peer",
+              "Passive receiver responds with ACK segment (half-closed)",
+              "Passive receiver completes remaining transmission and sends FIN segment",
+              "Active closer responds with final ACK segment",
+              "Active closer waits for TIME_WAIT duration (2MSL) before releasing socket"
+            ]
+          },
+          {
+            "prompt": "Order the handshake sequence for establishing a TLS 1.3 encrypted session",
+            "ordered_sequence": [
+              "Client sends ClientHello with supported cipher suites and key share",
+              "Server responds with ServerHello and server key share",
+              "Server sends EncryptedExtensions and digital Certificate",
+              "Server sends CertificateVerify and Finished verification hash",
+              "Client validates certificate and sends Finished verification hash",
+              "Symmetric encrypted application data exchange begins"
             ]
           }
         ],
@@ -2115,6 +2714,84 @@
                 "Video conferencing video feed"
               ]
             }
+          },
+          {
+            "prompt": "Classify standard internet protocols by their underlying transport protocol (TCP vs UDP)",
+            "categories": [
+              "TCP",
+              "UDP"
+            ],
+            "items": {
+              "TCP": [
+                "HTTPS / Web",
+                "SSH / Remote Terminal",
+                "FTP / File Transfer",
+                "BGP / Routing"
+              ],
+              "UDP": [
+                "DNS Lookups",
+                "DHCP Address Assignment",
+                "NTP Time Sync",
+                "VoIP / Real-time Audio"
+              ]
+            }
+          },
+          {
+            "prompt": "Classify network identifiers into their corresponding OSI protocol layers",
+            "categories": [
+              "Layer 2 (Data Link)",
+              "Layer 3 (Network)",
+              "Layer 4 (Transport)"
+            ],
+            "items": {
+              "Layer 2 (Data Link)": [
+                "48-bit MAC Address (e.g. 00:1A:2B:3C:4D:5E)",
+                "VLAN Tag ID"
+              ],
+              "Layer 3 (Network)": [
+                "IPv4 Address (e.g. 192.168.1.1)",
+                "IPv6 Address (e.g. 2001:db8::1)"
+              ],
+              "Layer 4 (Transport)": [
+                "TCP Port Number",
+                "UDP Port Number"
+              ]
+            }
+          }
+        ],
+        "Multi-Choice": [
+          {
+            "question": "What is the primary purpose of the TCP 3-way handshake?",
+            "choices": [
+              "Synchronize sequence numbers and allocate socket buffers",
+              "Exchange symmetric encryption keys",
+              "Discover router IP addresses via ARP",
+              "Authenticate username and password credentials"
+            ],
+            "correct_index": 0,
+            "explanation": "The SYN, SYN-ACK, ACK sequence synchronizes initial sequence numbers (ISNs) and establishes connection parameters between endpoints."
+          },
+          {
+            "question": "Which protocol is responsible for mapping an IPv4 address to a physical MAC address on a local Ethernet LAN?",
+            "choices": [
+              "ARP (Address Resolution Protocol)",
+              "DNS (Domain Name System)",
+              "DHCP (Dynamic Host Config)",
+              "ICMP (Internet Control Message)"
+            ],
+            "correct_index": 0,
+            "explanation": "ARP broadcasts on the local Layer 2 segment to query which host owns a target IPv4 address, receiving its MAC address in reply."
+          },
+          {
+            "question": "What HTTP status code represents a temporary redirection where the client should retain the original HTTP method (e.g. POST)?",
+            "choices": [
+              "307 Temporary Redirect",
+              "301 Moved Permanently",
+              "302 Found",
+              "304 Not Modified"
+            ],
+            "correct_index": 0,
+            "explanation": "HTTP 307 guarantees that the request method and body will not be changed when redirecting, unlike older 302 implementations."
           }
         ]
       }
@@ -2139,6 +2816,41 @@
             "statement": "QuickSort worst-case time complexity is O(N^2) when poor pivot selection causes maximally unbalanced partitions.",
             "is_true": true,
             "explanation": "If the pivot is always the minimum or maximum element (e.g. sorted array with first element as pivot), QuickSort degrades to O(N^2)."
+          },
+          {
+            "statement": "The worst-case time complexity of Quicksort is O(n^2), occurring when the chosen pivot is always the maximum or minimum element.",
+            "is_true": true,
+            "explanation": "When pivots divide partitions into sizes 0 and n-1, recurrence becomes T(n) = T(n-1) + O(n), yielding O(n^2)."
+          },
+          {
+            "statement": "Any comparison-based sorting algorithm requires at least Omega(n log n) comparisons in the worst case to sort n elements.",
+            "is_true": true,
+            "explanation": "A decision tree of n! permutations requires height log2(n!) = Omega(n log n) to distinguish all possible orderings."
+          },
+          {
+            "statement": "Dijkstra's shortest path algorithm operates correctly on graphs with negative edge weights.",
+            "is_true": false,
+            "explanation": "Dijkstra assumes distances are monotonically non-decreasing. Negative edge weights require the Bellman-Ford algorithm."
+          },
+          {
+            "statement": "Dynamic Programming requires two key properties: Optimal Substructure and Overlapping Subproblems.",
+            "is_true": true,
+            "explanation": "Optimal substructure enables building global solutions from subproblems; overlapping subproblems allows memoization of repeated work."
+          },
+          {
+            "statement": "If a problem is in NP-Complete, it can definitely be solved in polynomial time O(n^k) on a deterministic Turing machine.",
+            "is_true": false,
+            "explanation": "NP-Complete problems can be VERIFIED in polynomial time, but whether they can be SOLVED in polynomial time is the unsolved P vs NP question."
+          },
+          {
+            "statement": "Counting Sort can sort n integers in O(n + k) time where k is the maximum key value, without performing element-to-element comparisons.",
+            "is_true": true,
+            "explanation": "Counting sort tallies occurrences into a frequency array, bypassing the Omega(n log n) comparison lower bound."
+          },
+          {
+            "statement": "Breadth-First Search (BFS) is guaranteed to find the path with the fewest edges between two vertices in an unweighted graph.",
+            "is_true": true,
+            "explanation": "BFS explores vertices level by level, ensuring that the first time a destination is visited, it was reached via the minimal edge count."
           }
         ],
         "Matching": [
@@ -2150,6 +2862,35 @@
               "BubbleSort": "O(N^2)",
               "Counting Sort": "O(N + K) - Non-comparison based",
               "HeapSort": "O(N log N) - In-place guaranteed"
+            }
+          },
+          {
+            "prompt": "Match each classic sorting algorithm with its worst-case asymptotic time complexity",
+            "pairs": {
+              "Merge Sort": "O(n log n)",
+              "Standard Quicksort": "O(n^2)",
+              "Heapsort": "O(n log n)",
+              "Bubble Sort": "O(n^2)",
+              "Radix Sort (d digits)": "O(d * (n + k))"
+            }
+          },
+          {
+            "prompt": "Match the graph algorithm with its primary problem application",
+            "pairs": {
+              "Kruskal's Algorithm": "Finds a Minimum Spanning Tree (MST) using Disjoint Sets",
+              "Dijkstra's Algorithm": "Single-Source Shortest Path with non-negative edge weights",
+              "Bellman-Ford Algorithm": "Shortest path with negative weights and negative cycle detection",
+              "Floyd-Warshall Algorithm": "All-Pairs Shortest Paths via dynamic programming matrix",
+              "Kahn's Algorithm": "Topological sort of vertices in a Directed Acyclic Graph (DAG)"
+            }
+          },
+          {
+            "prompt": "Match the asymptotic notation with its rigorous mathematical meaning",
+            "pairs": {
+              "Big-O (O)": "Asymptotic Upper Bound (f(n) <= c * g(n))",
+              "Big-Omega (Omega)": "Asymptotic Lower Bound (f(n) >= c * g(n))",
+              "Big-Theta (Theta)": "Asymptotically Tight Bound (c1 * g(n) <= f(n) <= c2 * g(n))",
+              "Little-o (o)": "Strict Upper Bound (f(n) grows strictly slower than g(n))"
             }
           }
         ],
@@ -2165,6 +2906,38 @@
               "O(N) - Linear",
               "O(log N) - Logarithmic",
               "O(1) - Constant"
+            ]
+          },
+          {
+            "prompt": "Order the steps of the Merge Sort algorithm on an input array",
+            "ordered_sequence": [
+              "Check base case: if array length is 0 or 1, return",
+              "Calculate midpoint index of the current array slice",
+              "Recursively call Merge Sort on the left subarray",
+              "Recursively call Merge Sort on the right subarray",
+              "Merge the two sorted halves into a combined sorted array"
+            ]
+          },
+          {
+            "prompt": "Order the steps of Dijkstra's Algorithm for finding single-source shortest paths",
+            "ordered_sequence": [
+              "Initialize all vertex distances to infinity, set source distance to 0",
+              "Push source vertex with priority 0 into min-priority queue",
+              "Pop vertex u with minimum distance from priority queue",
+              "Iterate through each neighboring edge (u, v) with weight w",
+              "Relax edge: if dist[u] + w < dist[v], update dist[v] and push v to queue",
+              "Repeat until priority queue is empty"
+            ]
+          },
+          {
+            "prompt": "Order the execution steps of Binary Search on a sorted array",
+            "ordered_sequence": [
+              "Initialize low pointer to 0 and high pointer to array length minus 1",
+              "Compute midpoint index mid = low + (high - low) / 2",
+              "Compare search key with element at array[mid]",
+              "If key equals array[mid], return mid as found index",
+              "If key is smaller, update high = mid - 1; if larger, update low = mid + 1",
+              "Repeat loop while low <= high; return not-found sentinel if exited"
             ]
           }
         ],
@@ -2188,6 +2961,81 @@
                 "Floyd-Warshall (All-Pairs Shortest Path)"
               ]
             }
+          },
+          {
+            "prompt": "Classify sorting algorithms by their stability (preserves original relative order of equal keys)",
+            "categories": [
+              "Stable",
+              "Unstable"
+            ],
+            "items": {
+              "Stable": [
+                "Merge Sort",
+                "Insertion Sort",
+                "Bubble Sort",
+                "Timsort"
+              ],
+              "Unstable": [
+                "Quicksort",
+                "Heapsort",
+                "Selection Sort"
+              ]
+            }
+          },
+          {
+            "prompt": "Classify algorithmic problems by their computational complexity class",
+            "categories": [
+              "P (Polynomial Time)",
+              "NP-Complete (Intractable)"
+            ],
+            "items": {
+              "P (Polynomial Time)": [
+                "Shortest Path (Dijkstra)",
+                "Minimum Spanning Tree (Prim)",
+                "Connected Components (BFS)"
+              ],
+              "NP-Complete (Intractable)": [
+                "Traveling Salesperson (Decision)",
+                "Boolean 3-SAT",
+                "Knapsack 0/1 (Decision)",
+                "Graph Clique Problem"
+              ]
+            }
+          }
+        ],
+        "Multi-Choice": [
+          {
+            "question": "What is the average time complexity of searching an element in a balanced Binary Search Tree with n nodes?",
+            "choices": [
+              "O(log n)",
+              "O(1)",
+              "O(n)",
+              "O(n log n)"
+            ],
+            "correct_index": 0,
+            "explanation": "Each comparison in a balanced BST halves the search space, yielding O(log n) time complexity."
+          },
+          {
+            "question": "Which algorithm finds the Minimum Spanning Tree by iteratively adding the lowest-weight edge that does not form a cycle?",
+            "choices": [
+              "Kruskal's Algorithm",
+              "Dijkstra's Algorithm",
+              "Floyd-Warshall Algorithm",
+              "Tarjan's Algorithm"
+            ],
+            "correct_index": 0,
+            "explanation": "Kruskal sorts all edges and uses a Disjoint Set (Union-Find) structure to prevent cycles."
+          },
+          {
+            "question": "Under what condition does standard Quicksort exhibit its worst-case O(n^2) runtime?",
+            "choices": [
+              "When array is already sorted and pivot is always chosen as first/last element",
+              "When all elements in the array are randomized",
+              "When the pivot is chosen using median-of-three",
+              "When array length is a power of two"
+            ],
+            "correct_index": 0,
+            "explanation": "Picking an extreme element as pivot on an already sorted array yields partitions of size 0 and n-1 at each step, resulting in O(n^2) comparisons."
           }
         ]
       }
@@ -2207,6 +3055,41 @@
             "statement": "A Min-Heap guarantees that the root element is always the minimum element in the entire data structure.",
             "is_true": true,
             "explanation": "By heap property, parent <= children everywhere, ensuring the root holds the global minimum in O(1) access time."
+          },
+          {
+            "statement": "In an AVL tree, the balance factor (height of left subtree minus height of right subtree) of any node is strictly limited to -1, 0, or +1.",
+            "is_true": true,
+            "explanation": "If a balance factor reaches +/-2 after an insert or delete, tree rotations are performed to restore AVL balance."
+          },
+          {
+            "statement": "Accessing an arbitrary element by index in a singly linked list has O(1) time complexity.",
+            "is_true": false,
+            "explanation": "Linked lists do not provide random access; accessing index k requires traversing k pointers from the head, which is O(n)."
+          },
+          {
+            "statement": "A binary Min-Heap guarantees that for every node with a parent, parent.key <= node.key.",
+            "is_true": true,
+            "explanation": "The min-heap property ensures that the root node always contains the minimum element in the entire heap."
+          },
+          {
+            "statement": "Bloom filters can return false positives (claiming an element is present when it isn't), but will NEVER return false negatives.",
+            "is_true": true,
+            "explanation": "If all k hash bits for an element are 1, it might be a collision (false positive). If any bit is 0, the item was definitely never inserted."
+          },
+          {
+            "statement": "A Hash Table with Open Addressing stores colliding elements in linked lists allocated outside the primary bucket array.",
+            "is_true": false,
+            "explanation": "Separate Chaining uses external linked lists. Open Addressing stores all entries within the primary array using probing."
+          },
+          {
+            "statement": "A Trie (Prefix Tree) lookup for a word of length m has time complexity O(m), independent of the total number of words stored.",
+            "is_true": true,
+            "explanation": "Lookup follows m character edges in sequence, making performance depend only on key length."
+          },
+          {
+            "statement": "In a Red-Black tree, every path from the root to any descendant leaf must contain the exact same number of black nodes.",
+            "is_true": true,
+            "explanation": "This Black-Height invariant ensures that the longest path is at most twice as long as the shortest path, guaranteeing O(log n) height."
           }
         ],
         "Matching": [
@@ -2219,6 +3102,34 @@
               "Binary Search Tree": "Maintains sorted order with O(log N) average search",
               "Trie (Prefix Tree)": "Efficient retrieval of keys with shared prefixes (O(M) string length)"
             }
+          },
+          {
+            "prompt": "Match each data structure with its principal data access pattern discipline",
+            "pairs": {
+              "Stack": "LIFO (Last-In, First-Out)",
+              "Queue": "FIFO (First-In, First-Out)",
+              "Deque": "Double-ended insertion and deletion at both front and back",
+              "Priority Queue": "Element with highest priority is served before other elements",
+              "Ring Buffer": "Fixed-size circular buffer overwriting oldest data on overflow"
+            }
+          },
+          {
+            "prompt": "Match the tree data structure to its defining invariant property",
+            "pairs": {
+              "Binary Search Tree": "Left subtree keys < Node key < Right subtree keys",
+              "Min-Heap": "Parent key <= Both child keys; Complete binary tree",
+              "AVL Tree": "Balance factor |height(left) - height(right)| <= 1 for all nodes",
+              "B-Tree": "Self-balancing multi-way tree with broad nodes optimized for disk I/O"
+            }
+          },
+          {
+            "prompt": "Match hash collision resolution techniques with their operational mechanisms",
+            "pairs": {
+              "Separate Chaining": "Stores colliding keys in linked lists or balanced trees at bucket pointers",
+              "Linear Probing": "Searches sequential consecutive array slots: (hash + i) % size",
+              "Quadratic Probing": "Searches slots using quadratic offsets: (hash + c1*i + c2*i^2) % size",
+              "Double Hashing": "Uses a second hash function to compute variable probing intervals"
+            }
           }
         ],
         "Sequencing": [
@@ -2229,6 +3140,38 @@
               "Compare new element with its parent node",
               "If new element > parent, swap them (heapify-up / sift-up)",
               "Repeat parent comparison until heap property is restored or root is reached"
+            ]
+          },
+          {
+            "prompt": "Order the steps of inserting a new element into a Binary Min-Heap",
+            "ordered_sequence": [
+              "Append new element at the next available leaf slot at bottom of tree",
+              "Compute parent index: (current_index - 1) / 2",
+              "Compare new element with parent element",
+              "If new element is smaller, swap with parent",
+              "Update current index to parent index and repeat upward",
+              "Terminate when parent is smaller or root is reached (Heapify-Up complete)"
+            ]
+          },
+          {
+            "prompt": "Order the steps of removing and returning the minimum element from a Binary Min-Heap",
+            "ordered_sequence": [
+              "Extract and save the root element (minimum value)",
+              "Move the last leaf element in the heap to the root position",
+              "Compare root with its left and right children to find the smaller child",
+              "If root is larger than the smaller child, swap with that child",
+              "Repeat downward traversal until heap property is restored (Heapify-Down)",
+              "Return the saved minimum element"
+            ]
+          },
+          {
+            "prompt": "Order the pointer manipulation steps to delete a target node from a Singly Linked List",
+            "ordered_sequence": [
+              "Traverse list keeping tracking pointers to curr and prev nodes",
+              "Locate the target node to delete",
+              "Update prev.next pointer to point directly to curr.next",
+              "Set curr.next pointer to null",
+              "Deallocate or garbage-collect the unlinked target node"
             ]
           }
         ],
@@ -2253,6 +3196,82 @@
                 "Adjacency List Directed Graph"
               ]
             }
+          },
+          {
+            "prompt": "Classify data structures into Linear (elements arranged sequentially) or Non-Linear (hierarchical / interconnected)",
+            "categories": [
+              "Linear",
+              "Non-Linear"
+            ],
+            "items": {
+              "Linear": [
+                "Dynamic Array",
+                "Singly Linked List",
+                "Double-Ended Queue",
+                "Stack"
+              ],
+              "Non-Linear": [
+                "Binary Search Tree",
+                "Directed Graph",
+                "Fibonacci Heap",
+                "Trie"
+              ]
+            }
+          },
+          {
+            "prompt": "Classify memory layout patterns of data structures into Contiguous vs Node-Based (pointer-linked)",
+            "categories": [
+              "Contiguous Memory",
+              "Node-Based (Pointer)"
+            ],
+            "items": {
+              "Contiguous Memory": [
+                "Fixed Array",
+                "Dynamic Vector (std::vector / ArrayList)",
+                "Flat Hash Table"
+              ],
+              "Node-Based (Pointer)": [
+                "Doubly Linked List",
+                "AVL Tree",
+                "Adjacency List Graph",
+                "Skip List"
+              ]
+            }
+          }
+        ],
+        "Multi-Choice": [
+          {
+            "question": "What is the amortized time complexity of inserting an element into a dynamic array (like std::vector or ArrayList)?",
+            "choices": [
+              "O(1)",
+              "O(n)",
+              "O(log n)",
+              "O(n^2)"
+            ],
+            "correct_index": 0,
+            "explanation": "Because geometric doubling allocates 2x capacity on overflow, n insertions cost O(n) total reallocation work, yielding O(1) amortized time."
+          },
+          {
+            "question": "Which data structure is ideal for implementing a Least Recently Used (LRU) Cache with O(1) get and put operations?",
+            "choices": [
+              "Hash Map paired with Doubly Linked List",
+              "Binary Search Tree paired with Queue",
+              "Min-Heap paired with Array",
+              "Single Circular Linked List"
+            ],
+            "correct_index": 0,
+            "explanation": "The hash map provides O(1) key lookup, while the doubly linked list allows O(1) node removal and re-insertion at the head."
+          },
+          {
+            "question": "What is the worst-case time complexity of lookup in a hash table with n keys using separate chaining when all keys collide into the same bucket?",
+            "choices": [
+              "O(n)",
+              "O(1)",
+              "O(log n)",
+              "O(n^2)"
+            ],
+            "correct_index": 0,
+            "explanation": "If all keys hash to the same bucket, the bucket degenerates into a linear linked list of n elements, resulting in O(n) sequential search."
           }
         ]
       }
@@ -2272,6 +3291,41 @@
             "statement": "The Halting Problem is undecidable: no general algorithm can determine whether an arbitrary program will eventually halt.",
             "is_true": true,
             "explanation": "Proven by Alan Turing in 1936 using a diagonalization argument."
+          },
+          {
+            "statement": "Deterministic Finite Automata (DFA) and Non-deterministic Finite Automata (NFA) recognize the exact same class of languages (Regular Languages).",
+            "is_true": true,
+            "explanation": "By the Powerset Construction (subset construction), every NFA can be converted to an equivalent DFA with at most 2^k states."
+          },
+          {
+            "statement": "The Halting Problem is undecidable: no general Turing machine can determine whether an arbitrary program will halt on a given input.",
+            "is_true": true,
+            "explanation": "Alan Turing proved this fundamental theorem in 1936 using Cantor's diagonal argument."
+          },
+          {
+            "statement": "Standard regular expressions (without backreferences) can recognize the language of balanced parentheses { a^n b^n | n >= 0 }.",
+            "is_true": false,
+            "explanation": "Regular expressions lack memory/stack to count arbitrary matching nesting. This requires a Context-Free Grammar / Pushdown Automaton."
+          },
+          {
+            "statement": "An undirected graph is bipartite if and only if it contains no odd-length cycles.",
+            "is_true": true,
+            "explanation": "A graph can be 2-colored (bipartite) if and only if every cycle has an even number of vertices."
+          },
+          {
+            "statement": "Every connected acyclic graph (tree) with n vertices contains exactly n - 1 edges.",
+            "is_true": true,
+            "explanation": "This is a fundamental theorem of graph theory provable by induction."
+          },
+          {
+            "statement": "In propositional logic, the conditional statement P -> Q is logically equivalent to (NOT P) OR Q.",
+            "is_true": true,
+            "explanation": "Material implication is false only when P is True and Q is False; in all other cases (NOT P) OR Q evaluates to True."
+          },
+          {
+            "statement": "By De Morgan's Laws, NOT (A AND B) is logically equivalent to (NOT A) AND (NOT B).",
+            "is_true": false,
+            "explanation": "De Morgan's law flips the operator: NOT (A AND B) is equivalent to (NOT A) OR (NOT B)."
           }
         ],
         "Matching": [
@@ -2283,6 +3337,34 @@
               "Context-Sensitive Languages": "Linear Bounded Automata (LBA)",
               "Recursively Enumerable Languages": "Turing Machine"
             }
+          },
+          {
+            "prompt": "Match each Chomsky Hierarchy grammar level with its minimal recognizing automaton",
+            "pairs": {
+              "Type 3 - Regular Grammar": "Finite State Automaton (DFA / NFA)",
+              "Type 2 - Context-Free Grammar": "Non-deterministic Pushdown Automaton (PDA)",
+              "Type 1 - Context-Sensitive Grammar": "Linear Bounded Automaton (LBA)",
+              "Type 0 - Unrestricted Grammar": "Turing Machine"
+            }
+          },
+          {
+            "prompt": "Match discrete mathematics graph concepts with their definitions",
+            "pairs": {
+              "Eulerian Path": "A trail in a graph that visits every EDGE exactly once",
+              "Hamiltonian Path": "A path in a graph that visits every VERTEX exactly once",
+              "Degree of Vertex": "The number of edges incident to a vertex",
+              "Spanning Tree": "A subgraph that is a tree and includes all vertices of the graph"
+            }
+          },
+          {
+            "prompt": "Match discrete math set operations with their formal set builder definitions",
+            "pairs": {
+              "Union (A U B)": "{ x | x in A or x in B }",
+              "Intersection (A n B)": "{ x | x in A and x in B }",
+              "Set Difference (A \\ B)": "{ x | x in A and x not in B }",
+              "Cartesian Product (A x B)": "{ (a, b) | a in A and b in B }",
+              "Power Set P(A)": "The set of all subsets of A, containing 2^|A| elements"
+            }
           }
         ],
         "Sequencing": [
@@ -2293,6 +3375,37 @@
               "Type 2: Context-Free Languages",
               "Type 1: Context-Sensitive Languages",
               "Type 0: Recursively Enumerable Languages (Turing-recognizable)"
+            ]
+          },
+          {
+            "prompt": "Order the foundational steps of a proof by Mathematical Induction for statement P(n)",
+            "ordered_sequence": [
+              "Clearly state the proposition P(n) to be proven for integers n >= 1",
+              "Base Case: Prove that P(1) holds true explicitly",
+              "Inductive Hypothesis: Assume that P(k) holds true for an arbitrary integer k >= 1",
+              "Inductive Step: Use the hypothesis to prove that P(k + 1) must also hold true",
+              "Conclusion: Conclude that by induction P(n) holds for all integers n >= 1"
+            ]
+          },
+          {
+            "prompt": "Order the steps of the Euclidean Algorithm to find the Greatest Common Divisor (GCD) of a and b",
+            "ordered_sequence": [
+              "Ensure a >= b > 0 (swap if necessary)",
+              "Compute remainder r = a mod b",
+              "If r equals 0, return b as the Greatest Common Divisor",
+              "Assign a = b and b = r",
+              "Repeat modulo computation until remainder reaches 0"
+            ]
+          },
+          {
+            "prompt": "Order the trace execution of a Deterministic Finite Automaton (DFA) evaluating an input string",
+            "ordered_sequence": [
+              "Initialize automaton state pointer to designated start state q0",
+              "Read next character symbol c from input stream",
+              "Lookup state transition function delta(current_state, c) to determine next state",
+              "Update state pointer to the resulting next state",
+              "Repeat character reading until input string reaches end-of-file",
+              "If final state belongs to accept states F, accept string; otherwise reject"
             ]
           }
         ],
@@ -2314,6 +3427,365 @@
                 "(P OR Q) AND (NOT P) AND (NOT Q)"
               ]
             }
+          },
+          {
+            "prompt": "Classify languages into Regular vs Context-Free vs Undecidable",
+            "categories": [
+              "Regular",
+              "Context-Free (Non-Regular)",
+              "Undecidable"
+            ],
+            "items": {
+              "Regular": [
+                "Identifiers matching [a-zA-Z_][a-zA-Z0-9_]*",
+                "Strings with even number of zeros",
+                "Hexadecimal numbers matching 0x[0-9a-fA-F]+"
+              ],
+              "Context-Free (Non-Regular)": [
+                "Balanced parentheses strings ()",
+                "Palindromes { w w^R }",
+                "Equal count strings { a^n b^n }"
+              ],
+              "Undecidable": [
+                "Turing Machine Halting Problem",
+                "Post Correspondence Problem (PCP)"
+              ]
+            }
+          },
+          {
+            "prompt": "Classify mathematical sets into Countable vs Uncountable",
+            "categories": [
+              "Countable",
+              "Uncountable"
+            ],
+            "items": {
+              "Countable": [
+                "Natural Numbers (N)",
+                "Integers (Z)",
+                "Rational Numbers (Q)",
+                "Set of all valid Python programs"
+              ],
+              "Uncountable": [
+                "Real Numbers (R)",
+                "Open interval (0, 1)",
+                "Power set of Natural Numbers P(N)"
+              ]
+            }
+          }
+        ],
+        "Multi-Choice": [
+          {
+            "question": "What is the cardinality of the power set of a finite set with n elements?",
+            "choices": [
+              "2^n",
+              "n^2",
+              "n!",
+              "2n"
+            ],
+            "correct_index": 0,
+            "explanation": "Each element has 2 choices: to be included or excluded in a subset, yielding 2^n total subsets."
+          },
+          {
+            "question": "Which of the following computational models is strictly more powerful than a Pushdown Automaton?",
+            "choices": [
+              "Turing Machine",
+              "Deterministic Finite Automaton",
+              "Non-deterministic Finite Automaton",
+              "Combinational Logic Gate Circuit"
+            ],
+            "correct_index": 0,
+            "explanation": "A Turing machine with an infinite tape can recognize Type 0 and Type 1 grammars, strictly exceeding PDA stack capabilities."
+          },
+          {
+            "question": "In boolean algebra, what is the dual of the identity (A AND 1) = A?",
+            "choices": [
+              "(A OR 0) = A",
+              "(A AND 0) = 0",
+              "(A OR 1) = 1",
+              "(NOT A OR 0) = A"
+            ],
+            "correct_index": 0,
+            "explanation": "By duality principle, swapping AND with OR and 1 with 0 gives (A OR 0) = A."
+          }
+        ]
+      }
+    },
+    "Programming Languages & Compilers": {
+      "introduction": "Core concepts and architectural fundamentals of Programming Languages & Compilers.",
+      "remediation": "Review key definitions and common misconceptions in Programming Languages & Compilers.",
+      "deep_dive": "Advanced architectural principles and formal proofs for Programming Languages & Compilers.",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "In Rust, variables are immutable by default unless explicitly declared with the 'mut' keyword.",
+            "is_true": true,
+            "explanation": "Rust enforces immutability by default to prevent accidental data races and guarantee memory safety."
+          },
+          {
+            "statement": "In Go, importing a package or declaring a local variable without using it results in a compile-time error.",
+            "is_true": true,
+            "explanation": "Go's compiler strictly rejects unused imports and unused local variables to prevent code bloat."
+          },
+          {
+            "statement": "In Python, tuples can be modified in-place by assigning new values to their indexed elements.",
+            "is_true": false,
+            "explanation": "Python tuples are strictly immutable once instantiated. In-place modification raises a TypeError."
+          },
+          {
+            "statement": "In JavaScript, evaluating 'typeof null' returns 'object' due to a legacy implementation quirk in JS 1.0.",
+            "is_true": true,
+            "explanation": "In early JS, values were represented with type tags; the object tag was 0, and the NULL pointer was 0x00, causing typeof null to yield 'object'."
+          },
+          {
+            "statement": "In C, arguments are always passed to functions by value; reference semantics are simulated using pointers.",
+            "is_true": true,
+            "explanation": "C has no true pass-by-reference syntax; passing pointers still passes the pointer value itself by copy."
+          },
+          {
+            "statement": "In TypeScript, the 'unknown' type is type-safe because properties cannot be accessed on it without explicit narrowing.",
+            "is_true": true,
+            "explanation": "Unlike 'any', 'unknown' forces the developer to perform type guards (typeof, instanceof) before performing operations."
+          },
+          {
+            "statement": "In Dart, 'const' variables are compile-time constants, whereas 'final' variables are single-assignment runtime values.",
+            "is_true": true,
+            "explanation": "A 'const' object is created at compile time; 'final' variables can have their initial values computed dynamically at runtime."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match iconic programming language features to their primary language",
+            "pairs": {
+              "defer statement for cleanups": "Go",
+              "Borrow checker & explicit lifetimes": "Rust",
+              "Goroutines and Channels": "Go",
+              "LINQ and extension methods": "C#",
+              "Null-safe Elvis operator (?:)": "Kotlin",
+              "Pattern matching with sealed traits": "Scala"
+            }
+          },
+          {
+            "prompt": "Match compiler pipeline phases to their core transformation responsibility",
+            "pairs": {
+              "Lexical Analysis (Scanner)": "Converts source code characters into a stream of lexical tokens",
+              "Syntax Analysis (Parser)": "Constructs an Abstract Syntax Tree (AST) validating grammar rules",
+              "Semantic Analysis": "Type-checks AST nodes, resolves symbols, and enforces scope rules",
+              "Optimization Pass": "Performs dead code elimination, constant folding, and loop unrolling",
+              "Code Generation": "Translates intermediate representation into target machine code or bytecode"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the stages of a standard ahead-of-time (AOT) language compiler pipeline",
+            "ordered_sequence": [
+              "Lexical Analysis: Source characters scanned into tokens",
+              "Syntax Analysis: Tokens parsed into Abstract Syntax Tree (AST)",
+              "Semantic Analysis: Type checking and symbol table binding",
+              "Intermediate Code Generation: AST converted into three-address IR",
+              "Machine-Independent Optimization: Dead code removal and loop optimization",
+              "Machine Code Generation: Instruction selection and register allocation"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify programming languages by their primary type-checking discipline",
+            "categories": [
+              "Statically Typed",
+              "Dynamically Typed"
+            ],
+            "items": {
+              "Statically Typed": [
+                "Rust",
+                "Go",
+                "C++",
+                "Java",
+                "C#",
+                "Swift",
+                "Kotlin",
+                "Dart"
+              ],
+              "Dynamically Typed": [
+                "Python",
+                "JavaScript",
+                "Ruby",
+                "PHP",
+                "Lua",
+                "Bash"
+              ]
+            }
+          },
+          {
+            "prompt": "Classify programming languages by their primary memory management strategy",
+            "categories": [
+              "Automatic (GC / ARC)",
+              "Manual Memory Management"
+            ],
+            "items": {
+              "Automatic (GC / ARC)": [
+                "Go",
+                "Java",
+                "Python",
+                "JavaScript",
+                "C#",
+                "Swift",
+                "Dart",
+                "Kotlin"
+              ],
+              "Manual Memory Management": [
+                "C",
+                "C++",
+                "Rust (Borrow Checker / RAII)"
+              ]
+            }
+          }
+        ],
+        "Multi-Choice": [
+          {
+            "question": "Which programming language paradigm prioritizes pure functions, immutability, and avoiding side effects?",
+            "choices": [
+              "Functional Programming",
+              "Object-Oriented Programming",
+              "Imperative Programming",
+              "Procedural Programming"
+            ],
+            "correct_index": 0,
+            "explanation": "Functional programming treats computation as evaluation of mathematical functions without mutable state."
+          },
+          {
+            "question": "What is the primary advantage of Just-In-Time (JIT) compilation over pure bytecode interpretation?",
+            "choices": [
+              "Dynamically compiles hot code paths into native machine code at runtime",
+              "Guarantees zero memory allocation overhead",
+              "Allows programs to run without a CPU",
+              "Eliminates syntax errors during execution"
+            ],
+            "correct_index": 0,
+            "explanation": "JIT compilers profile running bytecode and compile frequently executed 'hot' loops into native machine instructions."
+          }
+        ]
+      }
+    },
+    "Databases & Distributed Storage": {
+      "introduction": "Core concepts and architectural fundamentals of Databases & Distributed Storage.",
+      "remediation": "Review key definitions and common misconceptions in Databases & Distributed Storage.",
+      "deep_dive": "Advanced architectural principles and formal proofs for Databases & Distributed Storage.",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "In database ACID transactions, Atomicity guarantees that either all statements in a transaction execute successfully, or all changes are rolled back.",
+            "is_true": true,
+            "explanation": "Atomicity ensures an all-or-nothing guarantee, preventing partial updates during failures."
+          },
+          {
+            "statement": "In the CAP theorem, a distributed database under network partition can simultaneously provide both strong Consistency and 100% Availability.",
+            "is_true": false,
+            "explanation": "Under network partition (P), a distributed system MUST choose between Consistency (C) or Availability (A)."
+          },
+          {
+            "statement": "A B+ Tree stores all actual table record data pointers in the leaf nodes, while internal nodes only store routing search keys.",
+            "is_true": true,
+            "explanation": "Keeping data only in leaf nodes maximizes the fanout of internal nodes, minimizing the number of disk I/O operations required per search."
+          },
+          {
+            "statement": "An SQL INNER JOIN returns rows only when there is at least one matching row in both joined tables.",
+            "is_true": true,
+            "explanation": "If a row in Table A has no match in Table B according to the ON predicate, it is omitted from the result set."
+          },
+          {
+            "statement": "Redis stores all primary dataset keys in memory, making read and write latency typically sub-millisecond.",
+            "is_true": true,
+            "explanation": "Redis is an in-memory key-value data structure store, using memory for primary reads/writes with optional asynchronous disk persistence."
+          },
+          {
+            "statement": "Database normalization to Third Normal Form (3NF) aims to eliminate transitive dependencies and minimize data redundancy.",
+            "is_true": true,
+            "explanation": "3NF requires the relation to be in 2NF and every non-prime attribute to be non-transitively dependent on the primary key."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match database systems with their core data architecture model",
+            "pairs": {
+              "PostgreSQL": "Relational SQL with ACID compliance and JSON support",
+              "MongoDB": "Document store using flexible BSON documents",
+              "Redis": "In-memory key-value data structure store",
+              "Neo4j": "Graph database modeling nodes and directed relationships",
+              "Cassandra": "Distributed wide-column NoSQL store based on Bigtable and Dynamo"
+            }
+          },
+          {
+            "prompt": "Match the ACID transaction properties with their primary guarantee",
+            "pairs": {
+              "Atomicity": "All changes in the transaction succeed together or all are aborted",
+              "Consistency": "Transactions preserve all database schema constraints and invariants",
+              "Isolation": "Concurrent transactions execute without observing uncommitted changes",
+              "Durability": "Committed updates survive crashes, power outages, and reboots"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the logical processing phases of an SQL SELECT query",
+            "ordered_sequence": [
+              "FROM & JOIN: Determine candidate tables and execute joins",
+              "WHERE: Filter individual rows against predicate conditions",
+              "GROUP BY: Partition remaining rows into aggregate groups",
+              "HAVING: Filter grouped records against aggregate conditions",
+              "SELECT: Evaluate projection expressions and column aliases",
+              "ORDER BY: Sort output rows according to specified criteria",
+              "LIMIT / OFFSET: Restrict returned rows to the requested window"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify database technologies into Relational (SQL) vs Non-Relational (NoSQL)",
+            "categories": [
+              "Relational (SQL)",
+              "Non-Relational (NoSQL)"
+            ],
+            "items": {
+              "Relational (SQL)": [
+                "PostgreSQL",
+                "MySQL",
+                "SQLite",
+                "Oracle Database",
+                "Microsoft SQL Server"
+              ],
+              "Non-Relational (NoSQL)": [
+                "MongoDB",
+                "Redis",
+                "Apache Cassandra",
+                "Neo4j",
+                "Amazon DynamoDB"
+              ]
+            }
+          }
+        ],
+        "Multi-Choice": [
+          {
+            "question": "Which SQL isolation level prevents Dirty Reads, Non-Repeatable Reads, and Phantom Reads?",
+            "choices": [
+              "Serializable",
+              "Repeatable Read",
+              "Read Committed",
+              "Read Uncommitted"
+            ],
+            "correct_index": 0,
+            "explanation": "Serializable is the highest isolation level, guaranteeing execution equivalent to completely serial non-overlapping transactions."
+          },
+          {
+            "question": "What type of database index physically organizes table rows on disk in the exact sorted order of the index key?",
+            "choices": [
+              "Clustered Index",
+              "Non-Clustered Index",
+              "Bitmap Index",
+              "Full-Text Index"
+            ],
+            "correct_index": 0,
+            "explanation": "A clustered index stores the actual row data directly in the leaf pages of the index, ordered by the clustered key."
           }
         ]
       }
