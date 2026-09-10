@@ -1,4 +1,5 @@
 {
+  "version": 5,
   "Language": [
     "C",
     "Python",
@@ -17,9 +18,469 @@
     "TypeScript",
     "Lua",
     "Scala",
-    "Dart",
-    "SQL"
+    "Dart"
   ],
+  "DB": [
+    "MySQL",
+    "T-SQL",
+    "Oracle",
+    "PostgreSQL",
+    "SQLite",
+    "Pandas",
+    "Neo4j",
+    "GraphQL",
+    "MQL",
+    "MariaDB",
+    "MongoDB",
+    "Redis",
+    "HBase",
+    "DynamoDB",
+    "Cosmos DB",
+    "Firestore",
+    "Relational Algebra",
+    "DuckDB",
+    "ClickHouse",
+    "Cassandra",
+    "ScyllaDB",
+    "Pinecone",
+    "Milvus",
+    "Qdrant",
+    "ChromaDB",
+    "Weaviate",
+    "CockroachDB",
+    "TiDB",
+    "SurrealDB",
+    "Supabase",
+    "Meilisearch",
+    "Elasticsearch"
+  ],
+  "OOP": [
+    "Java",
+    "C#",
+    "Python",
+    "C++",
+    "JavaScript"
+  ],
+  "Operating System": {
+    "Names": [
+      "Desktop",
+      "Mobile"
+    ],
+    "Desktop": [
+      "Windows",
+      "Linux",
+      "Mac"
+    ],
+    "Mobile": [
+      "Android",
+      "iOS"
+    ]
+  },
+  "Language Structure": {
+    "Variables": [
+      "Declaration",
+      "Data Types",
+      "Mutability",
+      "Multiple Inline Declarations",
+      "Nullability"
+    ],
+    "Control Flow": [
+      "If-Then",
+      "If-Else",
+      "Switch",
+      "For",
+      "While",
+      "Do-While",
+      "Break",
+      "Continue",
+      "Return",
+      "Yield"
+    ],
+    "Strings": [
+      "Declare",
+      "Length",
+      "Concatenation",
+      "Slicing",
+      "Interpolation"
+    ],
+    "Arrays": [
+      "Declaration",
+      "Accessing an Element",
+      "Iterate",
+      "Sum Elements",
+      "Generators"
+    ],
+    "Operators": [
+      "Arithmetic",
+      "Logical",
+      "Precedence",
+      "Ternary"
+    ],
+    "Expressions": [
+      "When"
+    ],
+    "Comments": [
+      "Inline",
+      "Block"
+    ],
+    "Functions": [
+      "Declaration",
+      "Overriding"
+    ],
+    "File-System Interface": [
+      "Read from STDIN",
+      "Write to STDOUT",
+      "Read from a File",
+      "Write to a File",
+      "Directory Structure",
+      "JSON",
+      "XML"
+    ],
+    "Mathematics": [
+      "Exponentiation",
+      "Division",
+      "Common Mathematical Expressions",
+      "Combinatorics",
+      "Monthly Interest Rate",
+      "Accrued Value",
+      "Confidence Interval",
+      "Standard Error",
+      "Combinations",
+      "Permutations"
+    ],
+    "Date and Time Manipulation": [
+      "Date",
+      "Weekday"
+    ],
+    "Classes": [
+      "Declaration",
+      "Access Modifiers",
+      "Attributes",
+      "Methods",
+      "Encapsulation",
+      "Abstraction",
+      "Inheritance",
+      "Polymorphism",
+      "Data Hiding",
+      "Constructor",
+      "Getters and Setters"
+    ],
+    "Algorithms": [
+      "BFS",
+      "DFS",
+      "Divide and Conquer"
+    ],
+    "Data Structures": [
+      "Array",
+      "Linked List",
+      "List",
+      "Map",
+      "Heap",
+      "Stack",
+      "Graph"
+    ],
+    "Dynamic Programming": [
+      "Climbing Stairs"
+    ],
+    "Timers": [],
+    "Event Loop": [
+      "Blocking",
+      "Asynchronous",
+      "Event Queue",
+      "API pool"
+    ],
+    "Iterators": [],
+    "Processes": [],
+    "Concurrency": [],
+    "CPU Scheduling": [],
+    "Synchronization": [],
+    "Deadlocks": [],
+    "Memory Management": []
+  },
+  "TODO": {
+    "Names": [
+      "Language",
+      "DB",
+      "Operating Systems",
+      "Computer Networking",
+      "Computer Architecture",
+      "Compilers and Language Runtimes",
+      "Distributed Systems",
+      "Cybersecurity and IT Infrastructure",
+      "Algorithms and Data Structures",
+      "Testing Methods"
+    ],
+    "Language": {
+      "General": [
+        "POSIX regular expressions",
+        "GNU Grep, Awk, and sed",
+        "Difference between Globs and Regex",
+        "Types of Shell Expansion",
+        "Mac, Linux, Windows shell scripting",
+        "Socket Programming"
+      ]
+    },
+    "DB": [
+      {
+        "General": [
+          "Column-wise Operations"
+        ]
+      },
+      {
+        "SQL": [
+          "Views",
+          "Partition by",
+          "Composite Keys",
+          "Set Operators"
+        ]
+      }
+    ],
+    "Operating Systems": [
+      "Virtual Memory, Paging, Page Tables, and Translation Lookaside Buffers (TLB)",
+      "Process Lifecycle, Process Control Blocks (PCB), and Context Switching mechanics",
+      "Inter-Process Communication (IPC): Anonymous Pipes, Named Pipes (FIFOs), Shared Memory, and Unix Domain Sockets",
+      "Deadlock Prevention, Detection, Coffman Conditions, and the Banker's Algorithm",
+      "File System Internals: Inodes, Directory Trees, Superblocks, and Journaling (ext4, APFS, NTFS)",
+      "CPU Scheduling Policies: Round-Robin, Completely Fair Scheduler (CFS), Multi-Level Feedback Queues"
+    ],
+    "Computer Networking": [
+      "Transmission Control Protocol (TCP) 3-Way Handshake (SYN, SYN-ACK, ACK) and 4-Way Connection Teardown",
+      "TCP Congestion Control Algorithms (Slow Start, Congestion Avoidance, CUBIC, BBR)",
+      "User Datagram Protocol (UDP) vs TCP: Connectionless delivery, low latency, and packet loss tolerance",
+      "Domain Name System (DNS) Recursive vs Iterative Resolution and Record Types (A, AAAA, CNAME, MX, TXT)",
+      "Transport Layer Security (TLS 1.3) Handshake, Ephemeral Diffie-Hellman Key Exchange, and AEAD Ciphers",
+      "HTTP Protocol Evolution: HTTP/1.1 Head-of-Line Blocking vs HTTP/2 Binary Multiplexing vs HTTP/3 QUIC over UDP",
+      "CIDR Subnet Masking, Variable-Length Subnet Masking (VLSM), and Autonomous System BGP Routing"
+    ],
+    "Computer Architecture": [
+      "CPU Cache Hierarchy: L1 Instruction/Data Caches, L2 Cache, L3 Shared Cache, and 64-byte Cache Lines",
+      "Cache Coherence Protocols: MESI (Modified, Exclusive, Shared, Invalid) and MOESI states",
+      "Instruction Pipelining and Hazards: Structural, Data (Read-After-Write), and Control (Branch Misprediction)",
+      "SIMD (Single Instruction, Multiple Data) Vector Extensions: AVX-512, ARM NEON",
+      "Memory Barriers, Sequential Consistency, and Out-of-Order Instruction Execution",
+      "RISC vs CISC Architectural Design: ARM64 / RISC-V load-store design vs x86-64 complex instruction sets"
+    ],
+    "Compilers and Language Runtimes": [
+      "Lexical Analysis, Tokenization, Deterministic Finite Automata (DFA), and Regular Expressions",
+      "Context-Free Grammars, LL(k) vs LR(k) / LALR Parsers, and Abstract Syntax Tree (AST) Generation",
+      "Intermediate Representation (IR), Static Single Assignment (SSA) form, and LLVM Optimization Passes",
+      "Just-In-Time (JIT) Tiered Compilation vs Ahead-Of-Time (AOT) Machine Code Generation",
+      "Garbage Collection Algorithms: Tracing (Mark-Sweep, Generational, Tri-Color Marking) vs Reference Counting with Cycle Detection",
+      "Stack vs Heap Memory Layout, Call Stack Frames, and Escape Analysis"
+    ],
+    "Distributed Systems": [
+      "CAP Theorem (Consistency, Availability, Partition Tolerance) and Brewer's Trade-offs",
+      "Consensus Algorithms: Raft Leader Election, Heartbeats, and Log Replication vs Multi-Paxos",
+      "Eventual Consistency Models, Conflict-Free Replicated Data Types (CRDTs), and Strong Consistency",
+      "Logical Time in Distributed Networks: Lamport Timestamps and Vector Clocks",
+      "Atomic Commit Protocols: Two-Phase Commit (2PC), Three-Phase Commit (3PC), and the Saga Pattern",
+      "Consistent Hashing with Virtual Nodes for Distributed Caching and Partitioning",
+      "Distributed Tracing, Trace Context Propagation (W3C), and OpenTelemetry Observability"
+    ],
+    "Cybersecurity and IT Infrastructure": [
+      "Asymmetric Public-Key Cryptography: RSA, Elliptic-Curve Cryptography (ECC), and Digital Signatures",
+      "Symmetric Encryption Standards: AES-256-GCM and ChaCha20-Poly1305 Authenticated Encryption",
+      "Cryptographic Hash Functions (SHA-256/SHA-3) and Password KDFs (bcrypt, scrypt, Argon2id)",
+      "Identity and Access Management: OAuth 2.0 Authorization Code Flow with PKCE, OpenID Connect (OIDC), and JWT Verification",
+      "Common Web Application Vulnerabilities: SQL Injection, Cross-Site Scripting (XSS), CSRF, Server-Side Request Forgery (SSRF)",
+      "Memory Corruption Attacks: Stack Buffer Overflows, Heap Spraying, Return-Oriented Programming (ROP), and ASLR/DEP mitigations",
+      "Zero Trust Network Architecture, Microsegmentation, and the Principle of Least Privilege (PoLP)"
+    ],
+    "Algorithms and Data Structures": [
+      "Asymptotic Complexity Analysis: Big-O, Big-Omega, Big-Theta, and Amortized Time Complexity",
+      "Self-Balancing Binary Search Trees: AVL Tree Rotations and Red-Black Tree Invariants",
+      "Graph Shortest Path Algorithms: Dijkstra's with Priority Queue, Bellman-Ford, and A* Heuristic Search",
+      "Minimum Spanning Tree Algorithms: Kruskal's Algorithm with Union-Find and Prim's Algorithm",
+      "String Search Algorithms: Knuth-Morris-Pratt (KMP) Prefix Tables and Boyer-Moore",
+      "Dynamic Programming Strategies: Optimal Substructure, Overlapping Subproblems, Top-Down Memoization, and Bottom-Up Tabulation"
+    ],
+    "Testing Methods": {
+      "Description": "Alternative assessment modalities beyond multiple-choice to evaluate syntax mastery, operational order, and conceptual classification",
+      "Methods": [
+        "True/False",
+        "Matching",
+        "Sequencing",
+        "Sorting/Classification"
+      ],
+      "True/False": [
+        "Binary syntax validity verification (e.g., 'Is `const x := 10` valid syntax in Go? True/False')",
+        "Expression evaluation (e.g., 'In Python, does `bool([])` evaluate to True? True/False')",
+        "Language design and typing paradigm assertions (e.g., 'Rust enforces memory safety without a garbage collector. True/False')"
+      ],
+      "Matching": [
+        "Match language keywords and symbols to their semantics (e.g., `defer` in Go, `unsafe` in Rust, `yield` in Python)",
+        "Match algorithmic operations to their average and worst-case time complexities",
+        "Match database engines to their underlying storage engines (e.g., PostgreSQL -> heap/B-tree, Redis -> RAM/dict, Cassandra -> LSM-Tree)",
+        "Match network protocols to their OSI/TCP/IP layer (e.g., BGP -> Layer 3/4, TLS -> Layer 5/6, HTTP/3 -> Layer 7)"
+      ],
+      "Sequencing": [
+        "Arrange scrambled lines of code in correct syntactic and logical execution sequence (Parsons problems)",
+        "Sequence network handshake packets in correct chronological order (e.g., SYN -> SYN-ACK -> ACK)",
+        "Sequence compiler pipeline stages (Lexical Analysis -> Parsing -> Semantic Analysis -> IR Generation -> Optimization -> Code Generation)",
+        "Sequence system boot and process initialization stages (Firmware/UEFI -> Bootloader -> Kernel Init -> Init/systemd)"
+      ],
+      "Sorting/Classification": [
+        "Classify languages by type system: Statically Typed vs Dynamically Typed, Strongly Typed vs Weakly Typed",
+        "Classify languages by memory management: Manual Allocation (C/C++), Automatic GC (Java/Go), Borrowing/Lifetimes (Rust)",
+        "Classify databases by data model: Relational (ACID), Document, Key-Value, Wide-Column, Vector, Graph",
+        "Sort algorithmic complexities from fastest to slowest: O(1) < O(log n) < O(n) < O(n log n) < O(n^2) < O(2^n)"
+      ]
+    }
+  },
+  "Networking": [
+    "Socket Programming",
+    "Data-Flow through a Network Stack",
+    "OSI Model",
+    "Application",
+    "Network",
+    "Link",
+    "Session",
+    "Presentation",
+    "Transport",
+    "Data",
+    "Physical",
+    "Common Protocols",
+    "TCP",
+    "UDP",
+    "IP",
+    "HTTP",
+    "Ethernet",
+    "Bluetooth",
+    "DNS",
+    "Network Services",
+    "IP Addressing",
+    "Subnetting"
+  ],
+  "Artificial Intelligence": {
+    "Names": [
+      "Machine Learning"
+    ],
+    "Machine Learning": {
+      "Names": [
+        "Missing Values",
+        "Categorical Variables",
+        "Frameworks"
+      ],
+      "Frameworks": [
+        "sklearn",
+        "Tensorflow",
+        "PyTorch"
+      ],
+      "Missing Values": [
+        "Drop Column",
+        "Drop Row",
+        "Imputation"
+      ],
+      "Categorical Variables": [
+        "Cardinality",
+        "Ordinal Encoding",
+        "One-Hot Encoding"
+      ]
+    }
+  },
+  "General Language Notes": [
+    "Always declare and initialize all your variables at the beginning of your scope.",
+    "Statically typed programming languages are those in which variables need to be defined before they are used."
+  ],
+  "General DB Notes": [
+    "A database system is self-describing because it not only contains the database itself, but also the meta-data which defines and describes the data and relationships between tables in the database.",
+    "Insulation between the programs and data is also called program-data independence.",
+    "A view is a subset of the database, which is defined and dedicated for particular users of the system. ",
+    "Instead of using joins, NoSQL databases often use techniques such as embedding and referencing to combine data from multiple documents or collections.",
+    "The simplest form of a NoSQL database is called a Key-Value database and it's designed kind of like a dictionary.",
+    "A Document database is a type of NoSQL database that can store multiple key values in a structure called a document. Documents roughly parallel rows in a table. Keys are scalars. And values may be complex data structures such as arrays or lists.",
+    "A Wide Column database is a type of NoSQL database where the columns are not fixed and the data is denormalized. The values can be complex structures such as arrays or lists.",
+    "A Graph database is a type of NoSQL database that represents a network of connected entities. Entities are liked by edges. Entities and edges each have their own properties that can be queried."
+  ],
+  "Language Specific Notes": {
+    "C": [
+      "C is optimal for many processing-based applications like operating systems, embedded systems, device drivers, compilers, interpreters, micro processors, and micro controllers."
+    ],
+    "C#": [
+      ".NET supports structs and classes.",
+      "Structs are passed by copy, since they are value types.",
+      "Objects are passed by reference, since they are reference types",
+      "The .NET platform manages and reclaims blocks of memory",
+      "The Garbage Collector object GC is part of the system namespace.",
+      "Reference GC.GetTotalMemory(false); to see how much memory an application is using",
+      "Every object derives from the base Object class, inheriting it's methods like ToString().",
+      "C# supports the \"is\" operator",
+      "Protected members can be accessed by the defining class or any subclass",
+      "Private members can only be accessed by the defining class.",
+      "The \"virtual\" keyword indicates that the method can be overridden by subclasses.\n",
+      "If you don't provide a constructor for a class, the compiler will create a default one.",
+      "Testing frameworks such as NUnit make C# amenable to test-driven development and thus a good language for use with Extreme Programming."
+    ],
+    "PowerShell": [
+      "Cmdlets are in the form of Verb-Noun. For example, the command Get-ChildItem can be used to list our current directory."
+    ],
+    "Dart": [
+      "Type inference allows us to declare a variable without explicitly mentioning the data type.",
+      "In Dart, we can insert the var keyword in place of the data type.",
+      "If you want a variable to hold objects of many types, you can declare a variable using the dynamic keyword.",
+      "The type num is generic enough to hold both int and double."
+    ],
+    "Scala": [
+      "While Scala is a pure object-oriented programming language, it is also fully functional.",
+      "In Scala variables are immutable by default.",
+      "Scala follows a Lazy Computation model where expressions are only evaluated when required. This increases performance by reducing compile time."
+    ]
+  },
+  "DB Specific Notes": {
+    "MongoDB": [
+      "A collection in MongoDB is the same as a table in a relational databases.",
+      "A document in MongoDB is the same as a row in a relational databases.",
+      "A single entry in a collection is called a document.",
+      "A filter query fetches documents from a collection.",
+      "Operators are used to perform different filters or operations on a collection or a document.",
+      "Aggregation pipelines are used to perform aggregations or join operations on multiple collections.",
+      "Projection is used to select specific fields from a collection, reduce array data, and select specific fields from embedded documents.",
+      "GridFS is used to store large files."
+    ],
+    "PostgreSQL": [
+      "PostgreSQL is an advanced, enterprise-class open-source object-relational database supporting full ACID compliance.",
+      "Multi-Version Concurrency Control (MVCC) enables non-blocking reads and concurrent writes with snapshot isolation.",
+      "PostgreSQL offers first-class support for semi-structured JSONB documents with GIN (Generalized Inverted Index) indexing.",
+      "Advanced capabilities include Common Table Expressions (WITH queries), Window Functions, and pgvector extension for AI embeddings."
+    ],
+    "Redis": [
+      "Redis is an ultra-fast in-memory key-value data structure store used as a primary database, cache, message broker, and streaming engine.",
+      "Rich native data structures include Strings, Hashes, Lists, Sets, Sorted Sets (ZSETs), Bitmaps, and HyperLogLogs.",
+      "Persistence is provided via point-in-time RDB snapshots and append-only file (AOF) operation logging.",
+      "In-memory execution allows sub-millisecond read and write latency across millions of operations per second."
+    ],
+    "SQLite": [
+      "SQLite is a serverless, self-contained, zero-configuration, transactional SQL database engine compiled directly into the application process.",
+      "Transactions are fully ACID-compliant even across operating system crashes or power interruptions.",
+      "Write-Ahead Logging (WAL) mode enables concurrent readers while a single writer is committing changes.",
+      "SQLite powers mobile applications on iOS and Android and client-side web databases via WebAssembly."
+    ],
+    "DuckDB": [
+      "DuckDB is an in-process columnar SQL OLAP database management system built for high-performance analytical queries.",
+      "It features a vectorized query execution engine and processes queries directly on Apache Parquet, Arrow, and CSV files without data duplication.",
+      "Like SQLite for OLTP, DuckDB is serverless and embeds with zero external dependencies."
+    ],
+    "ClickHouse": [
+      "ClickHouse is a column-oriented distributed database designed for real-time analytical reporting at petabyte scale.",
+      "Data in ClickHouse is physically stored sorted by primary key in MergeTree family engines with LZ4 and ZSTD compression.",
+      "Vectorized query execution processes billions of rows per second per server node."
+    ],
+    "Neo4j": [
+      "Neo4j is a native graph database implementing the Property Graph Model with nodes, directional edges/relationships, and key-value properties.",
+      "It uses the Cypher declarative graph query language to traverse complex relationships with index-free adjacency in constant O(1) time per hop.",
+      "Graph databases are optimal for social networks, fraud detection, recommendation engines, and knowledge graphs."
+    ],
+    "DynamoDB": [
+      "Amazon DynamoDB is a fully managed, serverless, key-value NoSQL database engineered for single-digit millisecond latency at any scale.",
+      "Tables are partitioned across storage nodes using a Partition Key (hash key) and an optional Sort Key (range key).",
+      "Global Secondary Indexes (GSIs) and Local Secondary Indexes (LSIs) provide flexible query projections."
+    ],
+    "Vector Databases": [
+      "Vector databases (Pinecone, Qdrant, Milvus, Chroma) index high-dimensional mathematical embeddings generated by machine learning models.",
+      "Semantic similarity between concepts is calculated using distance metrics: Cosine Similarity, Euclidean Distance (L2), and Dot Product.",
+      "Approximate Nearest Neighbor (ANN) indexing structures such as HNSW (Hierarchical Navigable Small World) and IVFFlat provide sub-linear search speed."
+    ]
+  },
   "Variables": {
     "Rust Int Variable Types": [
       "i8",
@@ -47,27 +508,53 @@
       "rate",
       "limit"
     ],
+    "Integer Small Variable Sets": [
+      "x",
+      "y",
+      "n",
+      "i",
+      "j"
+    ],
     "Random Variables": [
+      "[extensible whitespace]",
+      "[optional semicolon]",
       "[random int variable]",
       "[random integer]",
-      "[random rust data type]"
+      "[random rust data type]",
+      "[random string variable]",
+      "[random string]",
+      "[random bool variable]",
+      "[random bool]",
+      "[random float variable]",
+      "[random float]"
     ],
     "Variable Permutations": [
-      "[$|@|None]",
-      "[var|val|int|Int|let|None]",
-      "[local|var|val|int|Int|let|None]",
+      "[auto|var|val|int|Int|let|None]",
+      "[local|auto|var|val|int|Int|let|None]",
+      "[Object|object|Integer|declare -i|export]",
       "[: Integer|: Int|: number| int|None]",
       "[:=|=]",
       "[;|None]",
+      "[$|@|None|[int]|_]",
       "[mut |None]",
-      "[DECLARE |None]",
-      "[ INT|None]",
-      "[SET |None]"
+      "[String|str|string|None]",
+      "[$|@|None]",
+      "[auto|var|val|float|Float|let|None]",
+      "[local|auto|var|val|float|Float|let|None]",
+      "[: Float|: number| float|None]",
+      "[Object|object|Float|declare -f|export]",
+      "[$|@|None|[float]|_]"
     ],
     "Declaration": {
-      "Multi-Choice": {
+      "Notes": {
+        "C#": [
+          "C# provides an implicit type conversion using some data types char + int = int.",
+          "You can initialize an integer using the default keyword, int num = default; default will be 0."
+        ]
+      },
+      "Integer Assignment": {
         "Type": "Primitive Types",
-        "Sub-Type": "Integer Assignment",
+        "Sub-Type": "Multi-Choice",
         "Question": [
           "How do you declare and assign an Integer variable in [language]?",
           "Which of the following is a correct way to assign an Integer value to a variable in [language]?",
@@ -78,139 +565,1758 @@
         ],
         "True-False": [
           "Is this a Correct way to declare and assign an Integer variable in [language]?",
-          "The following is a Correct assignment and declaration of an Integer varaible in [language].",
+          "The following is a Correct assignment and declaration of an Integer variable in [language].",
           "(T/F) An assignment and declaration of an Integer variable in [language]:",
           "In [language], the Correct way to assign and declare an Integer variable is"
         ],
         "Answers": {
+          "Preferred": {
+            "C": "int [random int variable] = [random integer];",
+            "Python": "[random int variable] = [random integer]",
+            "Go": "var [random int variable] int = [random integer]",
+            "C++": "int [random int variable] = [random integer];",
+            "PowerShell": "$[random int variable] = [random integer]",
+            "PHP": "$[random int variable] = [random integer];",
+            "C#": "int [random int variable] = [random integer];",
+            "Bash": "[random int variable]=[random integer]",
+            "Rust": "let mut [random int variable] = [random integer];",
+            "Java": "int [random int variable] = [random integer];",
+            "JavaScript": "var [random int variable] = [random integer];",
+            "Ruby": "[random int variable] = [random integer]",
+            "Kotlin": "var [random int variable] = [random integer]",
+            "Swift": "var [random int variable] = [random integer]",
+            "TypeScript": "var [random int variable] = [random integer];",
+            "Lua": "local [random int variable] = [random integer]",
+            "Scala": "var [random int variable] = [random integer]",
+            "Dart": "int [random int variable] = [random integer];"
+          },
           "Correct": {
-            "C": ["int [random int variable] = [random integer];"],
+            "C": [
+              "int [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+            ],
             "Python": [
-              "[random int variable] = [random integer]",
-              "[random int variable]=[random integer]"
+              "[random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "[random int variable]: int[extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
             ],
             "Go": [
-              "[random int variable] := [random integer]",
-              "var [random int variable] = [random integer]",
-              "var [random int variable] int = [random integer]"
+              "[random int variable][extensible whitespace]:=[extensible whitespace][random integer][optional semicolon]",
+              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "var [random int variable] int[extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
             ],
-            "C++": ["int [random int variable] = [random integer];"],
-            "PowerShell": ["$[random int variable] = [random integer]"],
+            "C++": [
+              "int [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
+              "auto [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+            ],
+            "PowerShell": [
+              "$[random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "[int][extensible whitespace]$[random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+            ],
             "PHP": [
-              "$[random int variable] = [random integer];",
-              "$[random int variable]=[random integer];"
+              "$[random int variable][extensible whitespace]=[extensible whitespace][random integer];"
             ],
-            "C#": ["int [random int variable] = [random integer];"],
-            "Bash": ["[random int variable]=[random integer]"],
+            "C#": [
+              "int [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
+              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
+              "object [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+            ],
+            "Bash": [
+              "[random int variable]=[random integer][optional semicolon]",
+              "declare -i [random int variable]=[random integer][optional semicolon]",
+              "export [random int variable]=[random integer][optional semicolon]",
+              "let [random int variable]=[random integer][optional semicolon]"
+            ],
             "Rust": [
-              "let mut [random int variable]: [random rust data type] = [random integer];",
-              "let [random int variable]: [random rust data type] = [random integer];",
-              "let mut [random int variable] = [random integer];",
-              "let [random int variable] = [random integer];"
+              "let mut [random int variable]: [random rust data type][extensible whitespace]=[extensible whitespace][random integer];",
+              "let [random int variable]: [random rust data type][extensible whitespace]=[extensible whitespace][random integer];",
+              "let mut [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
+              "let [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
             ],
-            "Java": ["int [random int variable] = [random integer];"],
+            "Java": [
+              "int [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
+              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
+              "Integer [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
+              "Object [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+            ],
             "JavaScript": [
-              "var [random int variable] = [random integer];",
-              "let [random int variable] = [random integer];",
-              "$[random int variable] = [random integer];",
-              "[random int variable] = [random integer];",
-              "[random int variable]=[random integer];",
-              "$[random int variable]=[random integer];"
+              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "let [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "[random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
             ],
             "Ruby": [
-              "[random int variable] = [random integer]",
-              "[random int variable]=[random integer]",
-              "@[random int variable] = [random integer]",
-              "@[random int variable]=[random integer]"
+              "[random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "@[random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
             ],
             "Kotlin": [
-              "var [random int variable] = [random integer]",
-              "val [random int variable] = [random integer]",
-              "var [random int variable]: Int = [random integer]",
-              "val [random int variable]: Int = [random integer]"
+              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "val [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
             ],
             "Swift": [
-              "var [random int variable] = [random integer]",
-              "let [random int variable] = [random integer]",
-              "var [random int variable]: Int = [random integer]",
-              "let [random int variable]: Int = [random integer]"
+              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "let [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "var [random int variable]: Int[extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "let [random int variable]: Int[extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
             ],
             "TypeScript": [
-              "var [random int variable] = [random integer];",
-              "let [random int variable] = [random integer];",
-              "var [random int variable]: number = [random integer];",
-              "let [random int variable]: number = [random integer];"
+              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
+              "let [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
+              "var [random int variable]: number[extensible whitespace]=[extensible whitespace][random integer];",
+              "let [random int variable]: number[extensible whitespace]=[extensible whitespace][random integer];"
             ],
             "Lua": [
-              "[random int variable] = [random integer]",
-              "local [random int variable] = [random integer]"
+              "[random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "local [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
             ],
             "Scala": [
-              "var [random int variable] = [random integer]",
-              "val [random int variable] = [random integer]",
-              "var [random int variable]: Int = [random integer]",
-              "val [random int variable]: Int = [random integer]"
+              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "val [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "var [random int variable]: Int[extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "val [random int variable]: Int[extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
             ],
             "Dart": [
-              "int [random int variable] = [random integer];",
-              "var [random int variable] = [random integer];"
-            ],
-            "SQL": [
-              "DECLARE @[random int variable] INT SET @[random int variable] = [random integer]"
+              "int [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
+              "var [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
             ]
           },
           "Incorrect": [
             {
               "Name": "Group1",
-              "Pattern": "[var|val|int|Int|let|None] [random int variable] = [random integer][;|None]",
+              "Pattern": "[auto|var|val|int|Int|let|None] [random int variable] = [random integer][;|None]",
               "Priority": 12
             },
             {
               "Name": "Group2",
-              "Pattern": "[local|var|val|int|Int|let|None] [random int variable][: Integer|: Int|: number| int|None] = [random integer][;|None]",
+              "Pattern": "[local|auto|var|val|int|Int|let|None] [random int variable][: Integer|: Int|: number| int|None] = [random integer][;|None]",
               "Priority": 7
             },
             {
               "Name": "Group3",
-              "Pattern": "[random int variable] [:=|=] [random integer][;|None]",
+              "Pattern": "[Object|object|Integer|declare -i|export] [random int variable] = [random integer][;|None]",
               "Priority": 5
             },
             {
               "Name": "Group4",
-              "Pattern": "[$|@|None][random int variable] = [random integer][;|None]",
-              "Priority": 4
+              "Pattern": "[random int variable] [:=|=] [random integer][;|None]",
+              "Priority": 5
             },
             {
               "Name": "Group5",
-              "Pattern": "[$|@|None][random int variable]=[random integer][;|None]",
-              "Priority": 3
+              "Pattern": "[$|@|None|[int]|_][random int variable] = [random integer][;|None]",
+              "Priority": 4
             },
             {
               "Name": "Group6",
+              "Pattern": "[$|@|None|[int]|_][random int variable]=[random integer][;|None]",
+              "Priority": 3
+            },
+            {
+              "Name": "Group7",
               "Pattern": "let [mut |None][random int variable]: [random rust data type] = [random integer][;|None]",
               "Priority": 2
             },
             {
-              "Name": "Group7",
+              "Name": "Group8",
               "Pattern": "let [mut |None][random int variable] = [random integer][;|None]",
               "Priority": 2
             },
             {
-              "Name": "Group8",
-              "Pattern": "[$|@|None][random int variable] = [random integer][;|None]",
-              "Priority": 2
-            },
-            {
               "Name": "Group9",
-              "Pattern": "[DECLARE |None][$|@|None][random int variable][ INT|None] [SET |None][$|@|None][random int variable] = [random integer]",
-              "Priority": 1
+              "Pattern": "[$|@|None|[int]|_][random int variable] = [random integer][;|None]",
+              "Priority": 2
             }
           ]
         }
       },
-      "Mutability": [],
-      "Multiple Declaration": []
+      "Floating-Point Assignment": {
+        "Type": "Primitive Types",
+        "Sub-Type": "Multi-Choice",
+        "Question": [
+          "How do you declare and assign a Floating-Point variable in [language]?"
+        ],
+        "True-False": [
+          "Is this a Correct way to declare and assign an Floating-Point variable in [language]?"
+        ],
+        "Answers": {
+          "Preferred": {
+            "C": "int [random float variable] = [random float];",
+            "Python": "[random float variable] = [random float]",
+            "Go": "var [random float variable] int = [random float]",
+            "C++": "int [random float variable] = [random float];",
+            "PowerShell": "$[random float variable] = [random float]",
+            "PHP": "$[random float variable] = [random float];",
+            "C#": "int [random float variable] = [random float];",
+            "Bash": "[random float variable]=[random float]",
+            "Rust": "let mut [random float variable] = [random float];",
+            "Java": "int [random float variable] = [random float];",
+            "JavaScript": "var [random float variable] = [random float];",
+            "Ruby": "[random float variable] = [random float]",
+            "Kotlin": "var [random float variable] = [random float]",
+            "Swift": "var [random float variable] = [random float]",
+            "TypeScript": "var [random float variable] = [random float];",
+            "Lua": "local [random float variable] = [random float]",
+            "Scala": "var [random float variable] = [random float]",
+            "Dart": "int [random float variable] = [random float];"
+          },
+          "Correct": {
+            "C": [
+              "int [random float variable][extensible whitespace]=[extensible whitespace][random float];"
+            ],
+            "Python": [
+              "[random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]",
+              "[random float variable]: float[extensible whitespace]=[extensible whitespace][random float][optional semicolon]"
+            ],
+            "Go": [
+              "[random float variable][extensible whitespace]:=[extensible whitespace][random float][optional semicolon]",
+              "var [random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]",
+              "var [random float variable] float[extensible whitespace]=[extensible whitespace][random float][optional semicolon]"
+            ],
+            "C++": [
+              "float [random float variable][extensible whitespace]=[extensible whitespace][random float];",
+              "auto [random float variable][extensible whitespace]=[extensible whitespace][random float];"
+            ],
+            "PowerShell": [
+              "$[random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]",
+              "[float][extensible whitespace]$[random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]"
+            ],
+            "PHP": [
+              "$[random float variable][extensible whitespace]=[extensible whitespace][random float];"
+            ],
+            "C#": [
+              "int [random float variable][extensible whitespace]=[extensible whitespace][random float];",
+              "var [random float variable][extensible whitespace]=[extensible whitespace][random float];",
+              "object [random float variable][extensible whitespace]=[extensible whitespace][random float];"
+            ],
+            "Bash": [
+              "[random float variable]=[random float][optional semicolon]",
+              "declare -f [random float variable]=[random float][optional semicolon]",
+              "export [random float variable]=[random float][optional semicolon]",
+              "let [random float variable]=[random float][optional semicolon]"
+            ],
+            "Rust": [
+              "let mut [random float variable]: [random rust float data type][extensible whitespace]=[extensible whitespace][random float];",
+              "let [random float variable]: [random rust float data type][extensible whitespace]=[extensible whitespace][random float];",
+              "let mut [random float variable][extensible whitespace]=[extensible whitespace][random float];",
+              "let [random float variable][extensible whitespace]=[extensible whitespace][random float];"
+            ],
+            "Java": [
+              "float [random float variable][extensible whitespace]=[extensible whitespace][random float];",
+              "var [random float variable][extensible whitespace]=[extensible whitespace][random float];",
+              "Float [random float variable][extensible whitespace]=[extensible whitespace][random float];",
+              "Object [random float variable][extensible whitespace]=[extensible whitespace][random float];"
+            ],
+            "JavaScript": [
+              "var [random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]",
+              "let [random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]",
+              "[random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]"
+            ],
+            "Ruby": [
+              "[random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]",
+              "@[random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]"
+            ],
+            "Kotlin": [
+              "var [random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]",
+              "val [random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]"
+            ],
+            "Swift": [
+              "var [random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]",
+              "let [random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]",
+              "var [random float variable]: Int[extensible whitespace]=[extensible whitespace][random float][optional semicolon]",
+              "let [random float variable]: Int[extensible whitespace]=[extensible whitespace][random float][optional semicolon]"
+            ],
+            "TypeScript": [
+              "var [random float variable][extensible whitespace]=[extensible whitespace][random float];",
+              "let [random float variable][extensible whitespace]=[extensible whitespace][random float];",
+              "var [random float variable]: number[extensible whitespace]=[extensible whitespace][random float];",
+              "let [random float variable]: number[extensible whitespace]=[extensible whitespace][random float];"
+            ],
+            "Lua": [
+              "[random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]",
+              "local [random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]"
+            ],
+            "Scala": [
+              "var [random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]",
+              "val [random float variable][extensible whitespace]=[extensible whitespace][random float][optional semicolon]",
+              "var [random float variable]: Int[extensible whitespace]=[extensible whitespace][random float][optional semicolon]",
+              "val [random float variable]: Int[extensible whitespace]=[extensible whitespace][random float][optional semicolon]"
+            ],
+            "Dart": [
+              "float [random float variable][extensible whitespace]=[extensible whitespace][random float];",
+              "var [random float variable][extensible whitespace]=[extensible whitespace][random float];"
+            ]
+          },
+          "Incorrect": [
+            {
+              "Name": "Group1",
+              "Pattern": "[auto|var|val|float|Float|let|None] [random float variable] = [random float][;|None]",
+              "Priority": 12
+            },
+            {
+              "Name": "Group2",
+              "Pattern": "[local|auto|var|val|float|Float|let|None] [random float variable][: Float|: number| float|None] = [random float][;|None]",
+              "Priority": 7
+            },
+            {
+              "Name": "Group3",
+              "Pattern": "[Object|object|Float|declare -f|export] [random float variable] = [random float][;|None]",
+              "Priority": 5
+            },
+            {
+              "Name": "Group4",
+              "Pattern": "[random float variable] [:=|=] [random float][;|None]",
+              "Priority": 5
+            },
+            {
+              "Name": "Group5",
+              "Pattern": "[$|@|None|[float]|_][random float variable] = [random float][;|None]",
+              "Priority": 4
+            },
+            {
+              "Name": "Group6",
+              "Pattern": "[$|@|None|[float]|_][random float variable]=[random float][;|None]",
+              "Priority": 3
+            },
+            {
+              "Name": "Group7",
+              "Pattern": "let [mut |None][random float variable]: [random rust float data type] = [random float][;|None]",
+              "Priority": 2
+            },
+            {
+              "Name": "Group8",
+              "Pattern": "let [mut |None][random float variable] = [random float][;|None]",
+              "Priority": 2
+            },
+            {
+              "Name": "Group9",
+              "Pattern": "[$|@|None|[float]|_][random float variable] = [random float][;|None]",
+              "Priority": 2
+            }
+          ]
+        }
+      },
+      "Data Types": {
+        "Notes": {
+          "General": []
+        },
+        "Multi-Choice": {
+          "Type": "Primitive Types",
+          "Sub-Type": "Floating Point Assignment",
+          "Question": [
+            "How do you declare and assign an Integer variable in [language]?",
+            "Which of the following is a correct way to assign an Integer value to a variable in [language]?",
+            "Declare and assign an Integer variable in [language] using:",
+            "Assignment and declaration of an Integer variable in [language] looks like,",
+            "In [language], assigning and declaring an Integer variable is done by",
+            "A Correct way of assigning and declaring an Integer variable using [language] is"
+          ],
+          "True-False": [
+            "Is this a Correct way to declare and assign an Integer variable in [language]?",
+            "The following is a Correct assignment and declaration of an Integer variable in [language].",
+            "(T/F) An assignment and declaration of an Integer variable in [language]:",
+            "In [language], the Correct way to assign and declare an Integer variable is"
+          ],
+          "Answers": {},
+          "Mutability": [],
+          "Multiple Declaration": []
+        }
+      },
+      "String Assignment": {
+        "Type": "Primitive Types",
+        "Sub-Type": "Multi-Choice",
+        "Question": [
+          "How do you declare and assign a String variable in [language]?",
+          "Which of the following is a correct way to assign a String value to a variable in [language]?",
+          "Declare and assign a String variable in [language] using:",
+          "Assignment and declaration of a String variable in [language] looks like:"
+        ],
+        "Answers": {
+          "Preferred": {
+            "C": "char [random string variable][] = \"[random string]\";",
+            "Python": "[random string variable] = \"[random string]\"",
+            "Go": "var [random string variable] string = \"[random string]\"",
+            "C++": "std::string [random string variable] = \"[random string]\";",
+            "PowerShell": "$[random string variable] = \"[random string]\"",
+            "PHP": "$[random string variable] = \"[random string]\";",
+            "C#": "string [random string variable] = \"[random string]\";",
+            "Bash": "[random string variable]=\"[random string]\"",
+            "Rust": "let [random string variable] = \"[random string]\";",
+            "Java": "String [random string variable] = \"[random string]\";",
+            "JavaScript": "const [random string variable] = \"[random string]\";",
+            "Ruby": "[random string variable] = \"[random string]\"",
+            "Kotlin": "val [random string variable] = \"[random string]\"",
+            "Swift": "var [random string variable] = \"[random string]\"",
+            "TypeScript": "const [random string variable]: string = \"[random string]\";",
+            "Lua": "local [random string variable] = \"[random string]\"",
+            "Scala": "val [random string variable]: String = \"[random string]\"",
+            "Dart": "String [random string variable] = \"[random string]\";"
+          },
+          "Correct": {
+            "C": [
+              "char [random string variable][][extensible whitespace]=[extensible whitespace]\"[random string]\";",
+              "const char* [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\";"
+            ],
+            "Python": [
+              "[random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]",
+              "[random string variable]: str[extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]"
+            ],
+            "Go": [
+              "[random string variable][extensible whitespace]:=[extensible whitespace]\"[random string]\"[optional semicolon]",
+              "var [random string variable] string[extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]"
+            ],
+            "C++": [
+              "std::string [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\";",
+              "string [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\";",
+              "auto [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\";"
+            ],
+            "PowerShell": [
+              "$[random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]",
+              "[string]$[random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]"
+            ],
+            "PHP": [
+              "$[random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\";"
+            ],
+            "C#": [
+              "string [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\";",
+              "var [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\";"
+            ],
+            "Bash": [
+              "[random string variable]=\"[random string]\"[optional semicolon]",
+              "declare [random string variable]=\"[random string]\"[optional semicolon]",
+              "export [random string variable]=\"[random string]\"[optional semicolon]"
+            ],
+            "Rust": [
+              "let [random string variable] = \"[random string]\";",
+              "let [random string variable]: &str = \"[random string]\";",
+              "let mut [random string variable] = \"[random string]\";"
+            ],
+            "Java": [
+              "String [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\";",
+              "var [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\";"
+            ],
+            "JavaScript": [
+              "const [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]",
+              "let [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]",
+              "var [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]"
+            ],
+            "Ruby": [
+              "[random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]"
+            ],
+            "Kotlin": [
+              "val [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]",
+              "var [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]"
+            ],
+            "Swift": [
+              "var [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]",
+              "let [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]"
+            ],
+            "TypeScript": [
+              "const [random string variable]: string[extensible whitespace]=[extensible whitespace]\"[random string]\";",
+              "let [random string variable]: string[extensible whitespace]=[extensible whitespace]\"[random string]\";",
+              "let [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\";"
+            ],
+            "Lua": [
+              "local [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]",
+              "[random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]"
+            ],
+            "Scala": [
+              "val [random string variable]: String[extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]",
+              "var [random string variable]: String[extensible whitespace]=[extensible whitespace]\"[random string]\"[optional semicolon]"
+            ],
+            "Dart": [
+              "String [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\";",
+              "var [random string variable][extensible whitespace]=[extensible whitespace]\"[random string]\";"
+            ]
+          },
+          "Incorrect": [
+            {
+              "Name": "Group1",
+              "Pattern": "[String|str|string|None] [random string variable] := \"[random string]\"[;|None]",
+              "Priority": 10
+            },
+            {
+              "Name": "Group2",
+              "Pattern": "let [random string variable] -> \"[random string]\"[;|None]",
+              "Priority": 8
+            },
+            {
+              "Name": "Group3",
+              "Pattern": "[$|@|None][random string variable] == \"[random string]\"[;|None]",
+              "Priority": 6
+            },
+            {
+              "Name": "Group4",
+              "Pattern": "char [random string variable] = \"[random string]\";",
+              "Priority": 5
+            }
+          ]
+        }
+      },
+      "Boolean Assignment": {
+        "Type": "Primitive Types",
+        "Sub-Type": "Multi-Choice",
+        "Question": [
+          "How do you declare and assign a Boolean variable in [language]?",
+          "Which of the following is a correct Boolean assignment in [language]?",
+          "Declare and assign a boolean value to a variable in [language] using:",
+          "A valid Boolean assignment in [language] is:"
+        ],
+        "Answers": {
+          "Preferred": {
+            "C": "bool [random bool variable] = true;",
+            "Python": "[random bool variable] = True",
+            "Go": "var [random bool variable] bool = true",
+            "C++": "bool [random bool variable] = true;",
+            "PowerShell": "$[random bool variable] = $true",
+            "PHP": "$[random bool variable] = true;",
+            "C#": "bool [random bool variable] = true;",
+            "Bash": "[random bool variable]=true",
+            "Rust": "let [random bool variable]: bool = true;",
+            "Java": "boolean [random bool variable] = true;",
+            "JavaScript": "let [random bool variable] = true;",
+            "Ruby": "[random bool variable] = true",
+            "Kotlin": "val [random bool variable]: Boolean = true",
+            "Swift": "var [random bool variable]: Bool = true",
+            "TypeScript": "const [random bool variable]: boolean = true;",
+            "Lua": "local [random bool variable] = true",
+            "Scala": "val [random bool variable]: Boolean = true",
+            "Dart": "bool [random bool variable] = true;"
+          },
+          "Correct": {
+            "C": [
+              "bool [random bool variable][extensible whitespace]=[extensible whitespace]true;",
+              "int [random bool variable][extensible whitespace]=[extensible whitespace]1;"
+            ],
+            "Python": [
+              "[random bool variable][extensible whitespace]=[extensible whitespace]True[optional semicolon]",
+              "[random bool variable]: bool[extensible whitespace]=[extensible whitespace]True[optional semicolon]"
+            ],
+            "Go": [
+              "var [random bool variable] bool[extensible whitespace]=[extensible whitespace]true[optional semicolon]",
+              "[random bool variable][extensible whitespace]:=[extensible whitespace]true[optional semicolon]"
+            ],
+            "C++": [
+              "bool [random bool variable][extensible whitespace]=[extensible whitespace]true;",
+              "auto [random bool variable][extensible whitespace]=[extensible whitespace]true;"
+            ],
+            "PowerShell": [
+              "$[random bool variable][extensible whitespace]=[extensible whitespace]$true[optional semicolon]",
+              "[bool]$[random bool variable][extensible whitespace]=[extensible whitespace]$true[optional semicolon]"
+            ],
+            "PHP": [
+              "$[random bool variable][extensible whitespace]=[extensible whitespace]true;"
+            ],
+            "C#": [
+              "bool [random bool variable][extensible whitespace]=[extensible whitespace]true;",
+              "var [random bool variable][extensible whitespace]=[extensible whitespace]true;"
+            ],
+            "Bash": [
+              "[random bool variable]=true[optional semicolon]",
+              "[random bool variable]=1[optional semicolon]"
+            ],
+            "Rust": [
+              "let [random bool variable]: bool = true;",
+              "let [random bool variable] = true;",
+              "let mut [random bool variable] = true;"
+            ],
+            "Java": [
+              "boolean [random bool variable][extensible whitespace]=[extensible whitespace]true;",
+              "Boolean [random bool variable][extensible whitespace]=[extensible whitespace]Boolean.TRUE;"
+            ],
+            "JavaScript": [
+              "let [random bool variable][extensible whitespace]=[extensible whitespace]true[optional semicolon]",
+              "const [random bool variable][extensible whitespace]=[extensible whitespace]true[optional semicolon]",
+              "var [random bool variable][extensible whitespace]=[extensible whitespace]true[optional semicolon]"
+            ],
+            "Ruby": [
+              "[random bool variable][extensible whitespace]=[extensible whitespace]true[optional semicolon]"
+            ],
+            "Kotlin": [
+              "val [random bool variable]: Boolean[extensible whitespace]=[extensible whitespace]true[optional semicolon]",
+              "var [random bool variable][extensible whitespace]=[extensible whitespace]true[optional semicolon]"
+            ],
+            "Swift": [
+              "var [random bool variable]: Bool[extensible whitespace]=[extensible whitespace]true[optional semicolon]",
+              "let [random bool variable][extensible whitespace]=[extensible whitespace]true[optional semicolon]"
+            ],
+            "TypeScript": [
+              "const [random bool variable]: boolean[extensible whitespace]=[extensible whitespace]true;",
+              "let [random bool variable]: boolean[extensible whitespace]=[extensible whitespace]true;",
+              "let [random bool variable][extensible whitespace]=[extensible whitespace]true;"
+            ],
+            "Lua": [
+              "local [random bool variable][extensible whitespace]=[extensible whitespace]true[optional semicolon]",
+              "[random bool variable][extensible whitespace]=[extensible whitespace]true[optional semicolon]"
+            ],
+            "Scala": [
+              "val [random bool variable]: Boolean[extensible whitespace]=[extensible whitespace]true[optional semicolon]",
+              "var [random bool variable]: Boolean[extensible whitespace]=[extensible whitespace]true[optional semicolon]"
+            ],
+            "Dart": [
+              "bool [random bool variable][extensible whitespace]=[extensible whitespace]true;",
+              "var [random bool variable][extensible whitespace]=[extensible whitespace]true;"
+            ]
+          },
+          "Incorrect": [
+            {
+              "Name": "Group1",
+              "Pattern": "boolean [random bool variable] = 1[;|None]",
+              "Priority": 10
+            },
+            {
+              "Name": "Group2",
+              "Pattern": "bool [random bool variable] := TRUE[;|None]",
+              "Priority": 8
+            },
+            {
+              "Name": "Group3",
+              "Pattern": "[$|@|None][random bool variable] == True[;|None]",
+              "Priority": 6
+            },
+            {
+              "Name": "Group4",
+              "Pattern": "var [random bool variable] = YES[;|None]",
+              "Priority": 5
+            }
+          ]
+        }
+      },
+      "Constant Declaration": {
+        "Type": "Variables",
+        "Sub-Type": "Multi-Choice",
+        "Question": [
+          "How do you declare an immutable Constant in [language]?",
+          "Which statement correctly declares a Constant variable in [language]?",
+          "Declare an unchangeable constant value in [language] using:"
+        ],
+        "Answers": {
+          "Preferred": {
+            "C": "const int [random int variable] = [random integer];",
+            "Python": "[random int variable]: Final = [random integer]",
+            "Go": "const [random int variable] = [random integer]",
+            "C++": "const int [random int variable] = [random integer];",
+            "PowerShell": "Set-Variable -Name [random int variable] -Value [random integer] -Option Constant",
+            "PHP": "const [random int variable] = [random integer];",
+            "C#": "const int [random int variable] = [random integer];",
+            "Bash": "readonly [random int variable]=[random integer]",
+            "Rust": "const [random int variable]: i32 = [random integer];",
+            "Java": "final int [random int variable] = [random integer];",
+            "JavaScript": "const [random int variable] = [random integer];",
+            "Ruby": "[random int variable] = [random integer]",
+            "Kotlin": "val [random int variable] = [random integer]",
+            "Swift": "let [random int variable] = [random integer]",
+            "TypeScript": "const [random int variable]: number = [random integer];",
+            "Lua": "local [random int variable] <const> = [random integer]",
+            "Scala": "val [random int variable] = [random integer]",
+            "Dart": "const int [random int variable] = [random integer];"
+          },
+          "Correct": {
+            "C": [
+              "const int [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+            ],
+            "Python": [
+              "[random int variable]: Final = [random integer][optional semicolon]"
+            ],
+            "Go": [
+              "const [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]",
+              "const [random int variable] int[extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+            ],
+            "C++": [
+              "const int [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
+              "constexpr int [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+            ],
+            "PowerShell": [
+              "Set-Variable -Name [random int variable] -Value [random integer] -Option Constant"
+            ],
+            "PHP": [
+              "const [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+            ],
+            "C#": [
+              "const int [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+            ],
+            "Bash": [
+              "readonly [random int variable]=[random integer][optional semicolon]",
+              "declare -r [random int variable]=[random integer][optional semicolon]"
+            ],
+            "Rust": [
+              "const [random int variable]: i32 = [random integer];"
+            ],
+            "Java": [
+              "final int [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+            ],
+            "JavaScript": [
+              "const [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+            ],
+            "Ruby": [
+              "[random int variable] = [random integer][optional semicolon]"
+            ],
+            "Kotlin": [
+              "val [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+            ],
+            "Swift": [
+              "let [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+            ],
+            "TypeScript": [
+              "const [random int variable]: number[extensible whitespace]=[extensible whitespace][random integer];",
+              "const [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+            ],
+            "Lua": [
+              "local [random int variable] <const>[extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+            ],
+            "Scala": [
+              "val [random int variable][extensible whitespace]=[extensible whitespace][random integer][optional semicolon]"
+            ],
+            "Dart": [
+              "const int [random int variable][extensible whitespace]=[extensible whitespace][random integer];",
+              "final int [random int variable][extensible whitespace]=[extensible whitespace][random integer];"
+            ]
+          },
+          "Incorrect": [
+            {
+              "Name": "Group1",
+              "Pattern": "immutable [random int variable] = [random integer][;|None]",
+              "Priority": 10
+            },
+            {
+              "Name": "Group2",
+              "Pattern": "let static [random int variable] = [random integer][;|None]",
+              "Priority": 8
+            },
+            {
+              "Name": "Group3",
+              "Pattern": "var const [random int variable] = [random integer][;|None]",
+              "Priority": 6
+            },
+            {
+              "Name": "Group4",
+              "Pattern": "fixed [random int variable] = [random integer][;|None]",
+              "Priority": 5
+            }
+          ]
+        }
+      }
+    },
+    "String Variable Names": [
+      "message",
+      "title",
+      "greeting",
+      "username",
+      "path",
+      "filename",
+      "email",
+      "description"
+    ],
+    "String Values": [
+      "Hello, World!",
+      "HardCode",
+      "Production",
+      "developer",
+      "main",
+      "success",
+      "data"
+    ],
+    "Bool Variable Names": [
+      "isActive",
+      "isValid",
+      "isReady",
+      "hasPermission",
+      "isComplete",
+      "enabled",
+      "running"
+    ],
+    "Bool Values": [
+      "true",
+      "false",
+      "True",
+      "False"
+    ]
+  },
+  "Control Flow": {
+    "Notes": {
+      "C": [],
+      "Python": [],
+      "Go": [],
+      "C++": [],
+      "PowerShell": [],
+      "PHP": [],
+      "C#": [],
+      "Bash": [],
+      "Rust": [],
+      "Java": [],
+      "JavaScript": [],
+      "Ruby": [],
+      "Kotlin": [],
+      "Swift": [],
+      "TypeScript": [],
+      "Lua": [],
+      "Scala": [],
+      "Dart": []
+    },
+    "If-Then": {
+      "If-Then": {
+        "Type": "Conditional Logic",
+        "Sub-Type": "Multi-Choice",
+        "Question": [
+          "How do you write an If statement in [language]?"
+        ],
+        "True-False": [
+          "Is this the correct way to write an If statement in [language]?"
+        ],
+        "Answers": {
+          "Preferred": {
+            "C": "if ([expression]) {[code block]}",
+            "Python": "if [expression]:[code block]",
+            "Go": "if [expression] {[code block]}",
+            "C++": "if ([expression]) {[code block]}",
+            "PowerShell": "if ([expression]) {[code block]}",
+            "PHP": "if ([expression]) {[code block]}",
+            "C#": "if ([expression]) {[code block]}",
+            "Bash": "if [ [expression] ]; then [code block] fi",
+            "Rust": "if [expression] {[code block]}",
+            "Java": "if ([expression]) {[code block]}",
+            "JavaScript": "if ([expression]) {[code block]}",
+            "Ruby": "if [expression] [code block] end",
+            "Kotlin": "if ([expression]) {[code block]}",
+            "Swift": "if ([expression]) {[code block]}",
+            "TypeScript": "if ([expression]) {[code block]}",
+            "Lua": "if [expression] then [code block] end",
+            "Scala": "if ([expression]) {[code block]}",
+            "Dart": "if ([expression]) {[code block]}"
+          },
+          "Correct": {
+            "C": [],
+            "Python": [],
+            "Go": [],
+            "C++": [],
+            "PowerShell": [],
+            "PHP": [],
+            "C#": [],
+            "Bash": [],
+            "Rust": [],
+            "Java": [],
+            "JavaScript": [],
+            "Ruby": [],
+            "Kotlin": [],
+            "Swift": [],
+            "TypeScript": [],
+            "Lua": [],
+            "Scala": [],
+            "Dart": []
+          },
+          "Incorrect": [
+            {
+              "Name": "Group1",
+              "Pattern": "",
+              "Priority": 0
+            }
+          ]
+        }
+      }
     }
   },
-  "Control Flow": []
+  "Arrays": {
+    "Notes": {
+      "C": [
+        "C arrays must be declared with a size."
+      ],
+      "Python": [],
+      "Go": [],
+      "C++": [],
+      "PowerShell": [],
+      "PHP": [],
+      "C#": [],
+      "Bash": [
+        "Unlike numerically indexed, the associative arrays must be declared before they can be used.",
+        "Numeric arrays are declared using a Lowercase a (declare -a arr_name)",
+        "Associative arrays are declared using an Uppercase A (declare -A arr_name)"
+      ],
+      "Rust": [],
+      "Java": [],
+      "JavaScript": [],
+      "Ruby": [],
+      "Kotlin": [],
+      "Swift": [],
+      "TypeScript": [],
+      "Lua": [],
+      "Scala": [],
+      "Dart": []
+    },
+    "Declaration": {
+      "Multi-Choice": {
+        "Type": "Array Declaration",
+        "Sub-Type": "Integer Array",
+        "Question": [
+          "How do you declare an array of Integers in [language]?"
+        ],
+        "True-False": [],
+        "Answers": {
+          "Preferred": {
+            "C": "int [random array name][[random integer]];",
+            "Python": "[random array name] = []",
+            "Go": "var [random array name] [[random integer]]int",
+            "C++": "int [random array name][[random integer]];",
+            "PowerShell": "$[random array name] = @()",
+            "PHP": "$[random array name] = array();",
+            "C#": "int[] [random array name];",
+            "Bash": "declare -a [random array name]",
+            "Rust": "let mut [random array name]: [[rust int data type]; [random small int]] = [0; [random small int]];",
+            "Java": "int [random array name][];",
+            "JavaScript": "let [random array name] = [];",
+            "Ruby": "[random array name] = Array.new",
+            "Kotlin": "val [random array name] = arrayOf([random sequence])",
+            "Swift": "var [random array name]: [Integer] = []",
+            "TypeScript": "let [random array name]: number[] = [];",
+            "Lua": "[random array name] = {}",
+            "Scala": "val [random array name]: Array[Int] = Array()",
+            "Dart": "var [random array name] = new List([random integer]);"
+          },
+          "Correct": {
+            "C": [],
+            "Python": [],
+            "Go": [],
+            "C++": [],
+            "PowerShell": [],
+            "PHP": [],
+            "C#": [],
+            "Bash": [],
+            "Rust": [
+              "let variable_name = [value1,value2,value3];",
+              "let variable_name:[dataType;size] = [value1,value2,value3];",
+              "let variable_name:[dataType;size] = [default_value_for_elements,size];"
+            ],
+            "Java": [
+              "int [random array name][];",
+              "int[] [random array name];"
+            ],
+            "JavaScript": [
+              "let [random array name] = [];",
+              "var [random array name] = [];",
+              "[random array name] = [];"
+            ],
+            "Ruby": [
+              "[random array name] = Array.new([random integer])",
+              "[random array name] = Array.new([random integer], [random string])",
+              "[random array name] = Array.[]([random sequence])",
+              "[random array name] = Array.[[random sequence]]",
+              "[random array name] = Array([random .. sequence])"
+            ],
+            "Kotlin": [
+              "val [random array name] = IntArray([random integer])"
+            ],
+            "Swift": [
+              "var [random array name]: Array<Integer> = Array()"
+            ],
+            "TypeScript": [
+              "let [random array name]: number[] = new Array();",
+              "let [random array name]: number[] = Array();",
+              "let [random array name]: Array<number> = [];",
+              "let [random array name]: Array<number> = new Array();",
+              "let [random array name]: Array<number> = Array();",
+              "let [random array name] = [] as number[];",
+              "let [random array name] = new Array() as Array<number>;",
+              "let [random array name] = Array() as number[];",
+              "let [random array name] = <number[]>[];",
+              "let [random array name] = <Array<number>> new Array();",
+              "let [random array name] = <number[]> Array();",
+              "let [random array name] = new Array<number>();",
+              "let [random array name] = Array<number>();"
+            ],
+            "Lua": [],
+            "Scala": [],
+            "Dart": []
+          },
+          "Incorrect": [
+            {
+              "Name": "Group1",
+              "Pattern": "",
+              "Priority": 0
+            }
+          ]
+        }
+      }
+    },
+    "Iterate Array": {
+      "Multi-Choice": {
+        "Type": "",
+        "Sub-Type": "Multi-Choice",
+        "Question": [
+          ""
+        ],
+        "True-False": [
+          ""
+        ],
+        "Answers": {
+          "Preferred": {
+            "C": "for (int [random int variable] = [random integer]; [random integer] < [size variable]; [random int variable][for loop increment]) {[code block]}",
+            "Python": "",
+            "Go": "",
+            "C++": "",
+            "PowerShell": "",
+            "PHP": "",
+            "C#": "",
+            "Bash": "",
+            "Rust": "",
+            "Java": "",
+            "JavaScript": "",
+            "Ruby": "",
+            "Kotlin": "",
+            "Swift": "",
+            "TypeScript": "",
+            "Lua": "",
+            "Scala": "",
+            "Dart": ""
+          },
+          "Correct": {
+            "C": [],
+            "Python": [],
+            "Go": [],
+            "C++": [],
+            "PowerShell": [],
+            "PHP": [],
+            "C#": [],
+            "Bash": [],
+            "Rust": [],
+            "Java": [],
+            "JavaScript": [],
+            "Ruby": [],
+            "Kotlin": [],
+            "Swift": [],
+            "TypeScript": [],
+            "Lua": [],
+            "Scala": [],
+            "Dart": []
+          },
+          "Incorrect": [
+            {
+              "Name": "Group1",
+              "Pattern": "",
+              "Priority": 0
+            }
+          ]
+        }
+      }
+    },
+    "Sum Elements": {
+      "Notes": {
+        "JavaScript": [
+          "var sum = arr => arr.reduce((a,b) => a + b);"
+        ]
+      }
+    }
+  },
+  "Algorithms": {
+    "Notes": {
+      "C": [],
+      "Python": [],
+      "Go": [],
+      "C++": [],
+      "PowerShell": [],
+      "PHP": [],
+      "C#": [],
+      "Bash": [],
+      "Rust": [],
+      "Java": [],
+      "JavaScript": [],
+      "Ruby": [],
+      "Kotlin": [],
+      "Swift": [],
+      "TypeScript": [],
+      "Lua": [],
+      "Scala": [],
+      "Dart": []
+    },
+    "Depth First Search": {
+      "Multi-Choice": {
+        "Type": "",
+        "Sub-Type": "",
+        "Question": [
+          ""
+        ],
+        "True-False": [
+          ""
+        ],
+        "Answers": {
+          "Preferred": {
+            "C": "",
+            "Python": "",
+            "Go": "",
+            "C++": "",
+            "PowerShell": "",
+            "PHP": "",
+            "C#": "",
+            "Bash": "",
+            "Rust": "",
+            "Java": "",
+            "JavaScript": "",
+            "Ruby": "",
+            "Kotlin": "",
+            "Swift": ""
+          },
+          "Correct": {
+            "C": [],
+            "Python": [],
+            "Go": [],
+            "C++": [],
+            "PowerShell": [],
+            "PHP": [],
+            "C#": [],
+            "Bash": [],
+            "Rust": [],
+            "Java": [],
+            "JavaScript": [],
+            "Ruby": [],
+            "Kotlin": [],
+            "Swift": [],
+            "TypeScript": [],
+            "Lua": [],
+            "Scala": [],
+            "Dart": []
+          },
+          "Incorrect": [
+            {
+              "Name": "Group1",
+              "Pattern": "",
+              "Priority": 0
+            }
+          ]
+        }
+      }
+    }
+  },
+  "Data Structures": {
+    "Notes": {
+      "C": [],
+      "Python": [],
+      "Go": [],
+      "C++": [],
+      "PowerShell": [],
+      "PHP": [],
+      "C#": [],
+      "Bash": [],
+      "Rust": [],
+      "Java": [],
+      "JavaScript": [],
+      "Ruby": [],
+      "Kotlin": [],
+      "Swift": [],
+      "TypeScript": [],
+      "Lua": [],
+      "Scala": [],
+      "Dart": []
+    },
+    "Linked List": {
+      "Multi-Choice": {
+        "Type": "",
+        "Sub-Type": "",
+        "Question": [
+          ""
+        ],
+        "True-False": [
+          ""
+        ],
+        "Answers": {
+          "Preferred": {
+            "C": "",
+            "Python": "",
+            "Go": "",
+            "C++": "",
+            "PowerShell": "",
+            "PHP": "",
+            "C#": "",
+            "Bash": "",
+            "Rust": "",
+            "Java": "",
+            "JavaScript": "",
+            "Ruby": "",
+            "Kotlin": "",
+            "Swift": "",
+            "TypeScript": "",
+            "Lua": "",
+            "Scala": "",
+            "Dart": ""
+          },
+          "Correct": {
+            "C": [],
+            "Python": [],
+            "Go": [],
+            "C++": [],
+            "PowerShell": [],
+            "PHP": [],
+            "C#": [],
+            "Bash": [],
+            "Rust": [],
+            "Java": [],
+            "JavaScript": [],
+            "Ruby": [],
+            "Kotlin": [],
+            "Swift": [],
+            "TypeScript": [],
+            "Lua": [],
+            "Scala": [],
+            "Dart": []
+          },
+          "Incorrect": [
+            {
+              "Name": "Group1",
+              "Pattern": "",
+              "Priority": 0
+            }
+          ]
+        }
+      }
+    }
+  },
+  "Question Types": {
+    "Multi-Choice": {
+      "description": "Standard multiple choice with 1 correct answer and 3-4 distractors",
+      "format": {
+        "question": "str",
+        "choices": "list",
+        "correct_index": "int"
+      }
+    },
+    "True-False": {
+      "description": "Binary assertion evaluating whether a statement about syntax or concepts is correct",
+      "format": {
+        "statement": "str",
+        "is_true": "bool",
+        "explanation": "str"
+      }
+    },
+    "Matching": {
+      "description": "Associates key concepts with their definitions, syntax tokens, or time complexities",
+      "format": {
+        "prompt": "str",
+        "pairs": "dict[str, str]"
+      }
+    },
+    "Sequencing": {
+      "description": "Orders a sequence of computational steps, pipeline stages, or lifecycle states",
+      "format": {
+        "prompt": "str",
+        "ordered_sequence": "list[str]"
+      }
+    },
+    "Sorting-Classification": {
+      "description": "Categorizes items into two or more logical buckets or domains",
+      "format": {
+        "prompt": "str",
+        "categories": "list[str]",
+        "items": "dict[str, list[str]]"
+      }
+    }
+  },
+  "Pedagogy": {
+    "explanation_policy": {
+      "first_encounter": {
+        "trigger": "topic_seen_count == 0",
+        "action": "display_introduction",
+        "description": "When learner encounters a topic for the first time, present concise formal definition."
+      },
+      "repeated_miss": {
+        "trigger": "consecutive_misses >= 2",
+        "action": "display_remediation",
+        "description": "When learner gets a question wrong twice, present targeted remediation hint."
+      },
+      "outright_failure": {
+        "trigger": "consecutive_misses >= 3",
+        "action": "display_deep_dive",
+        "description": "When learner completely fails a question, present comprehensive architectural deep dive."
+      },
+      "throttling": {
+        "enabled": true,
+        "rule": "Explanations decay exponentially in frequency if the learner repeatedly fails the same topic.",
+        "min_interval_questions": 3,
+        "decay_multiplier": 2.0
+      }
+    }
+  },
+  "Curriculum": {
+    "System Architecture": {
+      "introduction": "Computer Architecture investigates hardware abstraction layers, CPU microarchitecture, and memory hierarchies that execute machine instructions.",
+      "remediation": "Focus on latency numbers (CPU cache vs RAM vs Disk) and instruction pipelining hazards (data, structural, control).",
+      "deep_dive": "Modern CPUs utilize Von Neumann architecture with separate caches (Harvard architecture in L1). Execution stages include Fetch, Decode, Execute, Memory Access, and Writeback. Out-of-order execution, speculative execution, branch prediction, and multi-level caching (L1 1ns, L2 4ns, L3 10ns, DRAM 100ns) mitigate the von Neumann memory wall.",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "L1 cache access latency is typically faster than main memory (DRAM) access by more than an order of magnitude.",
+            "is_true": true,
+            "explanation": "L1 cache takes ~1 nanosecond (a few CPU cycles), whereas DRAM takes ~100 nanoseconds (~200 CPU cycles)."
+          },
+          {
+            "statement": "In a pure Von Neumann architecture, instructions and data are stored in completely separate physical memory address spaces.",
+            "is_true": false,
+            "explanation": "In Von Neumann architecture, data and instructions share the same memory space. The Harvard architecture separates instruction and data memory."
+          },
+          {
+            "statement": "A Translation Lookaside Buffer (TLB) caches recent virtual-to-physical address translations to accelerate memory lookups.",
+            "is_true": true,
+            "explanation": "The TLB is a hardware MMU cache specifically designed to avoid costly page table walks in RAM."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match each CPU architecture component with its primary function",
+            "pairs": {
+              "Program Counter (PC)": "Holds memory address of next instruction to be executed",
+              "Arithmetic Logic Unit (ALU)": "Performs integer arithmetic and bitwise logic operations",
+              "Instruction Register (IR)": "Holds instruction currently being decoded or executed",
+              "Control Unit (CU)": "Directs flow of data and sequence of CPU operations",
+              "Translation Lookaside Buffer (TLB)": "High-speed MMU cache for virtual memory address translations"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the standard 5-stage RISC instruction execution pipeline",
+            "ordered_sequence": [
+              "Instruction Fetch (IF)",
+              "Instruction Decode / Register Read (ID)",
+              "Execution / Effective Address Calculation (EX)",
+              "Memory Access (MEM)",
+              "Writeback (WB)"
+            ]
+          },
+          {
+            "prompt": "Order the memory hierarchy from fastest access latency to slowest",
+            "ordered_sequence": [
+              "CPU Registers",
+              "L1 CPU Cache",
+              "L2 CPU Cache",
+              "L3 Shared Cache",
+              "Main Memory (DRAM)",
+              "Non-Volatile SSD (NVMe)",
+              "Rotational Hard Disk Drive (HDD)"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify the following architectures into RISC (Reduced Instruction Set) or CISC (Complex Instruction Set)",
+            "categories": [
+              "RISC",
+              "CISC"
+            ],
+            "items": {
+              "RISC": [
+                "ARM64 (Apple Silicon, Cortex)",
+                "RISC-V",
+                "MIPS"
+              ],
+              "CISC": [
+                "x86 (Intel IA-32)",
+                "x86-64 (AMD64)"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "Artificial Intelligence": {
+      "introduction": "Artificial Intelligence and Machine Learning encompass computational models that learn representations, patterns, and decision functions from data.",
+      "remediation": "Review linear transformations, non-linear activation functions, backpropagation gradients, and attention weighting mechanisms.",
+      "deep_dive": "Deep learning builds layered parameterized representations: z = W*x + b, followed by non-linear activations (ReLU, GELU, Sigmoid). Training computes loss L(y_hat, y) and uses the chain rule (Backpropagation) to calculate dL/dW, updated via Stochastic Gradient Descent (SGD) or Adam. Transformers replace recurrence with Multi-Head Self-Attention: Attention(Q, K, V) = softmax(Q*K^T / sqrt(d_k)) * V.",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "Without non-linear activation functions, a multi-layer neural network collapses into an equivalent single-layer linear model.",
+            "is_true": true,
+            "explanation": "A composition of linear functions (W2 * W1 * x) is mathematically identical to a single linear function (W_combined * x)."
+          },
+          {
+            "statement": "The Scaled Dot-Product Attention in Transformers divides by sqrt(d_k) to prevent dot products from growing excessively large and driving softmax into regions with vanishingly small gradients.",
+            "is_true": true,
+            "explanation": "For large projection dimensions d_k, dot products grow large in magnitude, causing softmax gradients to vanish unless scaled by sqrt(d_k)."
+          },
+          {
+            "statement": "Backpropagation computes the Hessian matrix of second-order derivatives to update weights.",
+            "is_true": false,
+            "explanation": "Standard backpropagation computes first-order partial derivatives (gradient vector), not the expensive second-order Hessian matrix."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match the machine learning concept to its foundational mathematical role",
+            "pairs": {
+              "Self-Attention": "Computes contextual relevance weights between all tokens in a sequence",
+              "Backpropagation": "Calculates partial derivatives of loss with respect to weights via chain rule",
+              "Adam Optimizer": "Adaptive moment estimation combining momentum and RMSprop",
+              "ReLU (Rectified Linear Unit)": "f(x) = max(0, x), preventing vanishing gradients for positive inputs",
+              "Token Embedding": "Maps discrete vocabulary token IDs to continuous high-dimensional vectors"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the steps of a standard supervised deep learning training iteration",
+            "ordered_sequence": [
+              "Mini-batch data loading and tokenization",
+              "Forward pass to compute model predictions (logits)",
+              "Loss computation comparing predictions against ground truth labels",
+              "Backward pass (backpropagation) to compute gradients",
+              "Optimizer step to update model parameters",
+              "Zeroing gradients for the next iteration"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify machine learning paradigms",
+            "categories": [
+              "Supervised Learning",
+              "Unsupervised Learning",
+              "Reinforcement Learning"
+            ],
+            "items": {
+              "Supervised Learning": [
+                "Image classification with labeled images",
+                "Sentiment analysis on labeled text",
+                "Linear regression price forecasting"
+              ],
+              "Unsupervised Learning": [
+                "K-Means customer clustering",
+                "Principal Component Analysis (PCA)",
+                "Autoencoders for dimensionality reduction"
+              ],
+              "Reinforcement Learning": [
+                "Q-Learning for game playing",
+                "Proximal Policy Optimization (PPO)",
+                "Robotics joint control with reward feedback"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "Operating Systems": {
+      "introduction": "An Operating System manages hardware resources, provides abstraction interfaces, and schedules concurrent process and thread executions.",
+      "remediation": "Focus on memory management (pages, frames, page faults), process states, and synchronization primitives (mutex, semaphore, spinlock).",
+      "deep_dive": "The OS kernel operates in privileged ring 0. Processes possess isolated virtual address spaces mapped via page tables to physical frames; threads share memory within a parent process. Context switching saves register state and flushes/updates TLB. Deadlock occurs when four Coffman conditions hold simultaneously: Mutual Exclusion, Hold and Wait, No Preemption, and Circular Wait.",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "Threads belonging to the same process share the same heap memory and open file descriptors, but each maintains its own call stack and program counter.",
+            "is_true": true,
+            "explanation": "Threads share process resources (heap, data, file handles) for low-overhead concurrency, while retaining independent execution stacks and registers."
+          },
+          {
+            "statement": "A spinlock is more CPU-efficient than a mutex when the critical section is expected to take milliseconds to complete.",
+            "is_true": false,
+            "explanation": "Spinlocks busy-wait (burning CPU cycles); for operations longer than context-switch overhead, blocking mutexes that put the thread to sleep are vastly more efficient."
+          },
+          {
+            "statement": "Breaking any single one of the four Coffman conditions prevents system deadlock from occurring.",
+            "is_true": true,
+            "explanation": "All four conditions must hold simultaneously for a deadlock to exist; breaking any one guarantees deadlock freedom."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match the operating system synchronization mechanism with its operational behavior",
+            "pairs": {
+              "Mutex": "Binary mutual exclusion lock with ownership semantics",
+              "Counting Semaphore": "Maintains an integer counter permitting up to N concurrent accessors",
+              "Spinlock": "Busy-waits in a CPU loop until lock becomes available",
+              "Condition Variable": "Allows threads to sleep until notified of a specific state predicate change",
+              "Memory Barrier (Fence)": "Prevents CPU/compiler reordering of memory reads and writes across boundary"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the lifecycle states of an operating system process",
+            "ordered_sequence": [
+              "New (Created)",
+              "Ready (In run queue waiting for CPU allocation)",
+              "Running (Executing instructions on CPU core)",
+              "Waiting / Blocked (Awaiting I/O or event completion)",
+              "Terminated (Exited and awaiting cleanup)"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify OS operations into User Space (Ring 3) vs Kernel Space (Ring 0)",
+            "categories": [
+              "User Space",
+              "Kernel Space"
+            ],
+            "items": {
+              "User Space": [
+                "Parsing JSON string in user application",
+                "Computing MD5 hash in user memory",
+                "Rendering UI buttons in desktop app"
+              ],
+              "Kernel Space": [
+                "Allocating physical RAM page frames",
+                "Handling hardware keyboard interrupt",
+                "Directly programming disk DMA controller"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "Computer Networking": {
+      "introduction": "Computer Networking provides packet transmission protocols, routing topologies, and reliable socket communications across distributed endpoints.",
+      "remediation": "Study the OSI 7 layers, TCP flow/congestion control, 3-way handshakes, and UDP versus TCP trade-offs.",
+      "deep_dive": "Data travels down the OSI stack by encapsulation: Application (HTTP/DNS) -> Transport (TCP/UDP segments) -> Network (IP packets) -> Data Link (Ethernet frames) -> Physical (bits). TCP provides reliable, ordered, error-checked streams using SYN, SYN-ACK, ACK 3-way handshake, sliding window flow control, and AIMD congestion control. UDP provides connectionless, lightweight, low-latency datagrams without retransmission guarantees.",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "TCP uses a 3-way handshake (SYN, SYN-ACK, ACK) to establish sequence numbers before transmitting payload data.",
+            "is_true": true,
+            "explanation": "The 3-way handshake synchronizes sequence numbers (ISN) in both directions and confirms bidirectional reachability."
+          },
+          {
+            "statement": "HTTP/3 runs over TCP with TLS 1.3 encryption.",
+            "is_true": false,
+            "explanation": "HTTP/3 runs over QUIC, which is built on top of UDP to eliminate Head-of-Line (HoL) blocking."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match each network protocol to its primary OSI layer",
+            "pairs": {
+              "HTTP/HTTPS": "Application Layer (Layer 7)",
+              "TCP": "Transport Layer (Layer 4)",
+              "IP (IPv4 / IPv6)": "Network Layer (Layer 3)",
+              "Ethernet / Wi-Fi (802.11)": "Data Link Layer (Layer 2)",
+              "DNS": "Application Layer (Layer 7)"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the TCP connection establishment 3-way handshake",
+            "ordered_sequence": [
+              "Client sends SYN packet with Initial Sequence Number (ISN_c)",
+              "Server responds with SYN-ACK packet (ISN_s and ACK=ISN_c + 1)",
+              "Client sends ACK packet (ACK=ISN_s + 1)",
+              "Connection is ESTABLISHED and data transfer begins"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify application use cases as optimal for TCP or UDP",
+            "categories": [
+              "TCP",
+              "UDP"
+            ],
+            "items": {
+              "TCP": [
+                "Financial bank transactions",
+                "SSH remote terminal",
+                "Email delivery (SMTP)",
+                "File transfer (SFTP)"
+              ],
+              "UDP": [
+                "Live competitive video gaming player positions",
+                "Real-time VoIP voice streaming",
+                "DNS queries",
+                "Video conferencing video feed"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "Algorithms & Asymptotic Complexity": {
+      "introduction": "Algorithm analysis examines the computational resources (time and space) required to solve a problem as a function of input size N.",
+      "remediation": "Review Big-O upper bounds, logarithmic vs linear vs polynomial growth rates, and Divide-and-Conquer recurrence relations.",
+      "deep_dive": "Asymptotic analysis classifies algorithm scalability: Big-O (f(n) <= c*g(n)) gives asymptotic upper bound; Big-Omega gives lower bound; Big-Theta gives tight bound. Divide and conquer algorithms follow T(n) = a*T(n/b) + f(n), evaluated via the Master Theorem. Comparison-based sorting algorithms have a mathematical lower bound of Omega(N log N).",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "No comparison-based sorting algorithm can achieve an average-case time complexity faster than O(N log N).",
+            "is_true": true,
+            "explanation": "Any comparison sort corresponds to a decision tree with N! leaves, requiring height >= log2(N!) = Omega(N log N)."
+          },
+          {
+            "statement": "Binary search on a sorted array of size N takes O(N) time in the worst case.",
+            "is_true": false,
+            "explanation": "Binary search halves the search space each iteration, achieving O(log N) worst-case time complexity."
+          },
+          {
+            "statement": "QuickSort worst-case time complexity is O(N^2) when poor pivot selection causes maximally unbalanced partitions.",
+            "is_true": true,
+            "explanation": "If the pivot is always the minimum or maximum element (e.g. sorted array with first element as pivot), QuickSort degrades to O(N^2)."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match each sorting algorithm with its average-case time complexity",
+            "pairs": {
+              "MergeSort": "O(N log N) - Guaranteed",
+              "QuickSort": "O(N log N) - Average",
+              "BubbleSort": "O(N^2)",
+              "Counting Sort": "O(N + K) - Non-comparison based",
+              "HeapSort": "O(N log N) - In-place guaranteed"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the time complexity classes from fastest growing to slowest growing (as N -> infinity)",
+            "ordered_sequence": [
+              "O(N!) - Factorial",
+              "O(2^N) - Exponential",
+              "O(N^3) - Cubic",
+              "O(N^2) - Quadratic",
+              "O(N log N) - Linearithmic",
+              "O(N) - Linear",
+              "O(log N) - Logarithmic",
+              "O(1) - Constant"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify graph traversal and shortest-path algorithms",
+            "categories": [
+              "Traversal Only",
+              "Shortest Path / Optimization"
+            ],
+            "items": {
+              "Traversal Only": [
+                "Breadth-First Search (BFS) for reachability",
+                "Depth-First Search (DFS) for cycle detection",
+                "Topological Sort on DAG"
+              ],
+              "Shortest Path / Optimization": [
+                "Dijkstra's Algorithm (non-negative edge weights)",
+                "Bellman-Ford Algorithm (handles negative edge weights)",
+                "A* Heuristic Search",
+                "Floyd-Warshall (All-Pairs Shortest Path)"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "Data Structures": {
+      "introduction": "Data Structures organize and store data to enable efficient access, modification, and traversal algorithms.",
+      "remediation": "Contrast contiguous array memory (O(1) indexing, cache friendly) with node-based pointer structures (dynamic sizing, pointer overhead).",
+      "deep_dive": "Arrays provide O(1) random access but O(N) insertion/deletion. Linked lists allow O(1) insertions at known nodes but require O(N) traversal and suffer poor cache locality. Hash tables provide O(1) average lookup via hash functions with collision resolution (separate chaining vs open addressing). Self-balancing binary search trees (AVL, Red-Black) guarantee O(log N) lookups, insertions, and deletions.",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "Hash table lookups are guaranteed to be O(1) in the worst case regardless of hash collisions.",
+            "is_true": false,
+            "explanation": "If all keys hash to the same bucket (worst-case collision), lookup degrades to O(N) unless balanced trees are used (which gives O(log N))."
+          },
+          {
+            "statement": "A Min-Heap guarantees that the root element is always the minimum element in the entire data structure.",
+            "is_true": true,
+            "explanation": "By heap property, parent <= children everywhere, ensuring the root holds the global minimum in O(1) access time."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match each data structure with its primary access property",
+            "pairs": {
+              "Stack": "Last-In, First-Out (LIFO)",
+              "Queue": "First-In, First-Out (FIFO)",
+              "Hash Table": "Average O(1) key-value lookup",
+              "Binary Search Tree": "Maintains sorted order with O(log N) average search",
+              "Trie (Prefix Tree)": "Efficient retrieval of keys with shared prefixes (O(M) string length)"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the steps to insert an element into a Binary Max-Heap",
+            "ordered_sequence": [
+              "Insert new element at the next available position at the bottom level",
+              "Compare new element with its parent node",
+              "If new element > parent, swap them (heapify-up / sift-up)",
+              "Repeat parent comparison until heap property is restored or root is reached"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify data structures by linear vs non-linear layout",
+            "categories": [
+              "Linear Data Structures",
+              "Non-Linear Data Structures"
+            ],
+            "items": {
+              "Linear Data Structures": [
+                "Array",
+                "Singly Linked List",
+                "Stack",
+                "Doubly-Ended Queue (Deque)"
+              ],
+              "Non-Linear Data Structures": [
+                "Binary Search Tree",
+                "Min-Heap",
+                "Trie",
+                "Adjacency List Directed Graph"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "Automata & Discrete Mathematics": {
+      "introduction": "Automata theory and Discrete Mathematics provide formal models of computation, state machines, logic, and discrete structures.",
+      "remediation": "Focus on the Chomsky hierarchy (Regular, Context-Free, Turing-recognizable) and propositional logic equivalences.",
+      "deep_dive": "Deterministic Finite Automata (DFA) recognize Regular Languages and lack memory beyond finite states. Pushdown Automata (PDA) add a single stack, recognizing Context-Free Languages. Turing Machines possess an infinite tape and define Turing-computability; the Halting Problem proves undecidability for general program termination.",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "A Deterministic Finite Automaton (DFA) can recognize the language L = {a^n b^n | n >= 0}.",
+            "is_true": false,
+            "explanation": "By the Pumping Lemma for Regular Languages, a DFA cannot count arbitrary numbers of symbols because it has finite memory. This language requires a Pushdown Automaton (PDA)."
+          },
+          {
+            "statement": "The Halting Problem is undecidable: no general algorithm can determine whether an arbitrary program will eventually halt.",
+            "is_true": true,
+            "explanation": "Proven by Alan Turing in 1936 using a diagonalization argument."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match the language class in the Chomsky Hierarchy with its recognizing computational machine",
+            "pairs": {
+              "Regular Languages": "Deterministic / Nondeterministic Finite Automata (DFA / NFA)",
+              "Context-Free Languages": "Pushdown Automata (PDA with Stack)",
+              "Context-Sensitive Languages": "Linear Bounded Automata (LBA)",
+              "Recursively Enumerable Languages": "Turing Machine"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the Chomsky hierarchy language classes from least expressive to most expressive",
+            "ordered_sequence": [
+              "Type 3: Regular Languages",
+              "Type 2: Context-Free Languages",
+              "Type 1: Context-Sensitive Languages",
+              "Type 0: Recursively Enumerable Languages (Turing-recognizable)"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify logical statements into Tautologies, Contradictions, or Contingencies",
+            "categories": [
+              "Tautology (Always True)",
+              "Contradiction (Always False)"
+            ],
+            "items": {
+              "Tautology (Always True)": [
+                "P OR (NOT P) - Law of Excluded Middle",
+                "P -> P - Identity",
+                "(P AND Q) -> P - Conjunction Elimination"
+              ],
+              "Contradiction (Always False)": [
+                "P AND (NOT P) - Non-contradiction violation",
+                "(P OR Q) AND (NOT P) AND (NOT Q)"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
 }
