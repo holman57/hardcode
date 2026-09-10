@@ -1487,108 +1487,183 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  Widget _buildStatItem({
-    required String icon,
-    required String value,
-    required String label,
-    required double fontSize,
+  Widget _buildHeaderTimer({
+    required Color timerColor,
     required ThemeData theme,
+    double maxWidth = 300,
   }) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(icon, style: TextStyle(fontSize: fontSize + 2)),
-        const SizedBox(width: 5),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              value,
-              style: GoogleFonts.jetBrainsMono(
-                fontSize: fontSize,
-                fontWeight: FontWeight.bold,
-                color: theme.colorScheme.onSurface,
-              ),
-            ),
-            Text(
-              label,
-              style: GoogleFonts.plusJakartaSans(
-                fontSize: (fontSize * 0.75).clamp(9.0, 12.0),
-                fontWeight: FontWeight.w600,
-                color: theme.colorScheme.onSurface.withOpacity(0.65),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildStatDivider(ThemeData theme) {
     return Container(
-      width: 1,
-      height: 24,
-      color: theme.colorScheme.outline.withOpacity(0.2),
-    );
-  }
-
-  Widget _buildSparklineStatItem({
-    required Widget sparkline,
-    required String label,
-    required double fontSize,
-    required ThemeData theme,
-    required double trendDelta,
-  }) {
-    String trendIndicator = '';
-    Color trendColor = theme.colorScheme.onSurface.withOpacity(0.65);
-    if (trendDelta > 0.05) {
-      trendIndicator = '▲';
-      trendColor = Colors.greenAccent.shade700;
-    } else if (trendDelta < -0.05) {
-      trendIndicator = '▼';
-      trendColor = Colors.redAccent.shade700;
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        sparkline,
-        const SizedBox(height: 2),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (trendIndicator.isNotEmpty) ...[
+      constraints: BoxConstraints(minWidth: 170, maxWidth: maxWidth),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: timerColor.withOpacity(0.35),
+          width: 1.2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 4,
+            offset: const Offset(0, 1),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.timer_outlined,
+                    size: 15,
+                    color: timerColor,
+                  ),
+                  const SizedBox(width: 5),
+                  Text(
+                    _isTimerExpired ? "Time's up!" : 'Time Remaining',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.w700,
+                      color: timerColor,
+                    ),
+                  ),
+                  if (_showBonusBadge) ...[
+                    const SizedBox(width: 5),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 4,
+                        vertical: 0.5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.green.shade600,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        '+${_lastBonusSeconds}s',
+                        style: GoogleFonts.jetBrainsMono(
+                          fontSize: 9.5,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+              const SizedBox(width: 8),
               Text(
-                trendIndicator,
-                style: TextStyle(
-                  fontSize: (fontSize * 0.65).clamp(8.0, 11.0),
-                  color: trendColor,
+                '${_remainingSeconds}s',
+                style: GoogleFonts.jetBrainsMono(
+                  fontSize: 12.5,
                   fontWeight: FontWeight.bold,
+                  color: timerColor,
                 ),
               ),
-              const SizedBox(width: 2),
             ],
-            Text(
-              label,
-              style: GoogleFonts.plusJakartaSans(
-                fontSize: (fontSize * 0.75).clamp(9.0, 12.0),
-                fontWeight: FontWeight.w600,
-                color: trendIndicator.isNotEmpty
-                    ? trendColor
-                    : theme.colorScheme.onSurface.withOpacity(0.65),
-              ),
+          ),
+          const SizedBox(height: 3),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(2),
+            child: LinearProgressIndicator(
+              value: (_remainingSeconds / _currentTimerCap.toDouble())
+                  .clamp(0.0, 1.0),
+              minHeight: 3.5,
+              backgroundColor: timerColor.withOpacity(0.16),
+              valueColor: AlwaysStoppedAnimation<Color>(timerColor),
             ),
-          ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeaderSparkline(ThemeData theme) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: theme.colorScheme.outline.withOpacity(0.18),
+          width: 1,
         ),
-      ],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 4,
+            offset: const Offset(0, 1),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          AccuracySparkline(
+            currentData: _userStats.accuracyHistory,
+            previousData: _prevAccuracyHistory,
+            graphAnimation: _graphController,
+            pulseAnimation: _pulseAnimation,
+            isAccuracyUp: _isAccuracyUp,
+            trendDelta: _trendDelta,
+            width: 50,
+            height: 16,
+            theme: theme,
+          ),
+          const SizedBox(height: 2),
+          Text(
+            'Recent',
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 9.5,
+              fontWeight: FontWeight.w600,
+              color: theme.colorScheme.onSurface.withOpacity(0.65),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeaderLevelBadge(ThemeData theme) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primaryContainer.withOpacity(0.85),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: theme.colorScheme.outline.withOpacity(0.15),
+          width: 0.8,
+        ),
+      ),
+      child: Text(
+        'Lvl ${_userStats.level}',
+        style: GoogleFonts.plusJakartaSans(
+          fontSize: 12,
+          fontWeight: FontWeight.w800,
+          color: theme.colorScheme.onPrimaryContainer,
+        ),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    // Timer color shift
+    Color timerColor = Colors.green.shade600;
+    if (_remainingSeconds <= 5) {
+      timerColor = Colors.redAccent.shade700;
+    } else if (_remainingSeconds <= 10) {
+      timerColor = Colors.orange.shade700;
+    }
 
     if (_isLoading) {
       return Scaffold(
@@ -1607,138 +1682,157 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 64,
         backgroundColor: theme.colorScheme.inversePrimary,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu),
+            tooltip: 'Open Menu',
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
+        ),
+        titleSpacing: 0,
         title: LayoutBuilder(
           builder: (context, constraints) {
-            final isNarrow = constraints.maxWidth < 460;
-            if (isNarrow) {
-              return Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          widget.title.isNotEmpty
-                              ? widget.title
-                              : 'HardCode Academy',
-                          style: GoogleFonts.plusJakartaSans(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15.5,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        if (_language.isNotEmpty) ...[
-                          const SizedBox(height: 2),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 7,
-                              vertical: 1.5,
-                            ),
-                            decoration: BoxDecoration(
-                              color: theme.colorScheme.primaryContainer
-                                  .withOpacity(0.85),
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                color: theme.colorScheme.outline
-                                    .withOpacity(0.18),
-                                width: 0.8,
-                              ),
-                            ),
-                            child: Text(
-                              _questionSubType.isNotEmpty
-                                  ? '$_language • $_questionSubType'
-                                  : _language,
-                              style: GoogleFonts.plusJakartaSans(
-                                fontSize: 10.5,
-                                fontWeight: FontWeight.w700,
-                                color: theme.colorScheme.onPrimaryContainer,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(
-                      color:
-                          theme.colorScheme.primaryContainer.withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text(
-                      'Lvl ${_userStats.level}',
+            final double availableWidth = constraints.maxWidth;
+
+            // Compact layout for narrow mobile screens (< 560px)
+            if (availableWidth < 560) {
+              return Padding(
+                padding: const EdgeInsets.only(right: 12.0),
+                child: Row(
+                  children: [
+                    Text(
+                      'HardCode',
                       style: GoogleFonts.plusJakartaSans(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w800,
-                        color: theme.colorScheme.onPrimaryContainer,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15.5,
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: _buildHeaderTimer(
+                        timerColor: timerColor,
+                        theme: theme,
+                        maxWidth: 220,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    _buildHeaderLevelBadge(theme),
+                  ],
+                ),
               );
             }
 
-            return Row(
-              children: [
-                Text(
-                  widget.title.isNotEmpty ? widget.title : 'HardCode Academy',
-                  style: GoogleFonts.plusJakartaSans(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                ),
-                if (_language.isNotEmpty) ...[
-                  const SizedBox(width: 10),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 3.5,
-                    ),
-                    decoration: BoxDecoration(
-                      color:
-                          theme.colorScheme.primaryContainer.withOpacity(0.85),
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(
-                        color: theme.colorScheme.outline.withOpacity(0.18),
-                        width: 1,
-                      ),
-                    ),
-                    child: Text(
-                      _questionSubType.isNotEmpty
-                          ? '$_language • $_questionSubType'
-                          : _language,
+            // Medium layout for tablets / medium windows (560px - 800px)
+            if (availableWidth < 800) {
+              return Padding(
+                padding: const EdgeInsets.only(right: 14.0),
+                child: Row(
+                  children: [
+                    Text(
+                      widget.title.isNotEmpty
+                          ? widget.title
+                          : 'HardCode Academy',
                       style: GoogleFonts.plusJakartaSans(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.2,
-                        color: theme.colorScheme.onPrimaryContainer,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.5,
                       ),
                     ),
-                  ),
-                ],
-                const Spacer(),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.primaryContainer.withOpacity(0.8),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    'Lvl ${_userStats.level}',
+                    if (_language.isNotEmpty) ...[
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 2.5,
+                        ),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.primaryContainer
+                              .withOpacity(0.85),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: theme.colorScheme.outline
+                                .withOpacity(0.18),
+                            width: 1,
+                          ),
+                        ),
+                        child: Text(
+                          _language,
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: theme.colorScheme.onPrimaryContainer,
+                          ),
+                        ),
+                      ),
+                    ],
+                    const Spacer(),
+                    _buildHeaderTimer(
+                      timerColor: timerColor,
+                      theme: theme,
+                      maxWidth: 240,
+                    ),
+                    const SizedBox(width: 8),
+                    _buildHeaderLevelBadge(theme),
+                  ],
+                ),
+              );
+            }
+
+            // Full desktop layout matching the mockup screenshot
+            return Padding(
+              padding: const EdgeInsets.only(right: 16.0),
+              child: Row(
+                children: [
+                  Text(
+                    widget.title.isNotEmpty ? widget.title : 'HardCode Academy',
                     style: GoogleFonts.plusJakartaSans(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w800,
-                      color: theme.colorScheme.onPrimaryContainer,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
                     ),
                   ),
-                ),
-              ],
+                  if (_language.isNotEmpty) ...[
+                    const SizedBox(width: 10),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 3.5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primaryContainer
+                            .withOpacity(0.85),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: theme.colorScheme.outline
+                              .withOpacity(0.18),
+                          width: 1,
+                        ),
+                      ),
+                      child: Text(
+                        _questionSubType.isNotEmpty
+                            ? '$_language • $_questionSubType'
+                            : _language,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.2,
+                          color: theme.colorScheme.onPrimaryContainer,
+                        ),
+                      ),
+                    ),
+                  ],
+                  const Spacer(),
+                  _buildHeaderTimer(
+                    timerColor: timerColor,
+                    theme: theme,
+                    maxWidth: 320,
+                  ),
+                  const SizedBox(width: 10),
+                  _buildHeaderSparkline(theme),
+                  const SizedBox(width: 10),
+                  _buildHeaderLevelBadge(theme),
+                ],
+              ),
             );
           },
         ),
@@ -1788,6 +1882,129 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 11,
                       color: theme.colorScheme.onPrimary.withOpacity(0.8),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Quick Stats Card (Streak, Best, Accuracy)
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceVariant.withOpacity(0.35),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: theme.colorScheme.outline.withOpacity(0.16),
+                  width: 1,
+                ),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Text('🔥', style: TextStyle(fontSize: 12)),
+                            const SizedBox(width: 3),
+                            Text(
+                              '${_userStats.currentStreak}',
+                              style: GoogleFonts.jetBrainsMono(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                                color: theme.colorScheme.onSurface,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 1),
+                        Text(
+                          'Streak',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                            color: theme.colorScheme.onSurface.withOpacity(0.6),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: 1,
+                    height: 22,
+                    color: theme.colorScheme.outline.withOpacity(0.2),
+                  ),
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Text('🏆', style: TextStyle(fontSize: 12)),
+                            const SizedBox(width: 3),
+                            Text(
+                              '${_userStats.bestStreak}',
+                              style: GoogleFonts.jetBrainsMono(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                                color: theme.colorScheme.onSurface,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 1),
+                        Text(
+                          'Best',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                            color: theme.colorScheme.onSurface.withOpacity(0.6),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: 1,
+                    height: 22,
+                    color: theme.colorScheme.outline.withOpacity(0.2),
+                  ),
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Text('🎯', style: TextStyle(fontSize: 12)),
+                            const SizedBox(width: 3),
+                            Text(
+                              '${_userStats.accuracy.toStringAsFixed(0)}%',
+                              style: GoogleFonts.jetBrainsMono(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                                color: theme.colorScheme.onSurface,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 1),
+                        Text(
+                          'Accuracy',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                            color: theme.colorScheme.onSurface.withOpacity(0.6),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -1921,14 +2138,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               (20.0 * scale).clamp(10.0, 26.0);
           final double statFontSize = (13.0 * scale).clamp(10.0, 15.0);
 
-          // Timer color shift
-          Color timerColor = Colors.green.shade600;
-          if (_remainingSeconds <= 5) {
-            timerColor = Colors.redAccent.shade700;
-          } else if (_remainingSeconds <= 10) {
-            timerColor = Colors.orange.shade700;
-          }
-
           return Stack(
             children: [
               Positioned.fill(
@@ -1936,7 +2145,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   child: SingleChildScrollView(
                     padding: EdgeInsets.symmetric(
                       horizontal: (20.0 * scale).clamp(10.0, 24.0),
-                      vertical: (20.0 * scale).clamp(10.0, 28.0),
+                      vertical: (24.0 * scale).clamp(16.0, 36.0),
                     ),
                     child: Center(
                 child: SizedBox(
@@ -1945,211 +2154,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      // Gamification Header (Rank, Level, XP)
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: (14.0 * scale).clamp(10.0, 16.0),
-                          vertical: (8.0 * scale).clamp(6.0, 10.0),
-                        ),
-                        margin: EdgeInsets.only(
-                          bottom: (10.0 * scale).clamp(6.0, 14.0),
-                        ),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              theme.colorScheme.primaryContainer.withOpacity(0.5),
-                              theme.colorScheme.surfaceVariant.withOpacity(0.4),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: theme.colorScheme.outline.withOpacity(0.2),
-                          ),
-                        ),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  '⚡ Level ${_userStats.level} • ${_userStats.rankTitle}',
-                                  style: GoogleFonts.plusJakartaSans(
-                                    fontSize: (statFontSize * 0.95).clamp(10.0, 14.0),
-                                    fontWeight: FontWeight.w700,
-                                    color: theme.colorScheme.onSurface,
-                                  ),
-                                ),
-                                Text(
-                                  '${_userStats.currentLevelXp} / 150 XP',
-                                  style: GoogleFonts.jetBrainsMono(
-                                    fontSize: (statFontSize * 0.9).clamp(10.0, 13.0),
-                                    fontWeight: FontWeight.bold,
-                                    color: theme.colorScheme.primary,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: (6.0 * scale).clamp(4.0, 8.0)),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(4),
-                              child: LinearProgressIndicator(
-                                value: _userStats.levelProgress,
-                                minHeight: (5.0 * scale).clamp(4.0, 7.0),
-                                backgroundColor: theme.colorScheme.outline.withOpacity(0.15),
-                                valueColor: AlwaysStoppedAnimation<Color>(theme.colorScheme.primary),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      // Persistent Stats Banner
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: (14.0 * scale).clamp(8.0, 18.0),
-                          vertical: (8.0 * scale).clamp(5.0, 10.0),
-                        ),
-                        margin: EdgeInsets.only(
-                          bottom: (12.0 * scale).clamp(8.0, 16.0),
-                        ),
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.surfaceVariant.withOpacity(0.4),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: theme.colorScheme.outline.withOpacity(0.2),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            _buildStatItem(
-                              icon: '🔥',
-                              value: '${_userStats.currentStreak}',
-                              label: 'Streak',
-                              fontSize: statFontSize,
-                              theme: theme,
-                            ),
-                            _buildStatDivider(theme),
-                            _buildStatItem(
-                              icon: '🏆',
-                              value: '${_userStats.bestStreak}',
-                              label: 'Best',
-                              fontSize: statFontSize,
-                              theme: theme,
-                            ),
-                            _buildStatDivider(theme),
-                            _buildStatItem(
-                              icon: '🎯',
-                              value: '${_userStats.accuracy.toStringAsFixed(0)}%',
-                              label: 'Accuracy',
-                              fontSize: statFontSize,
-                              theme: theme,
-                            ),
-                            _buildStatDivider(theme),
-                            _buildSparklineStatItem(
-                              sparkline: AccuracySparkline(
-                                currentData: _userStats.accuracyHistory,
-                                previousData: _prevAccuracyHistory,
-                                graphAnimation: _graphController,
-                                pulseAnimation: _pulseAnimation,
-                                isAccuracyUp: _isAccuracyUp,
-                                trendDelta: _trendDelta,
-                                width: (60.0 * scale).clamp(46.0, 76.0),
-                                height: (18.0 * scale).clamp(15.0, 22.0),
-                                theme: theme,
-                              ),
-                              label: 'Recent',
-                              fontSize: statFontSize,
-                              theme: theme,
-                              trendDelta: _trendDelta,
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      // Countdown Timer Bar
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: (12.0 * scale).clamp(8.0, 16.0),
-                          vertical: (6.0 * scale).clamp(4.0, 8.0),
-                        ),
-                        margin: EdgeInsets.only(
-                          bottom: (14.0 * scale).clamp(8.0, 18.0),
-                        ),
-                        decoration: BoxDecoration(
-                          color: timerColor.withOpacity(0.08),
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: timerColor.withOpacity(0.3),
-                            width: 1.2,
-                          ),
-                        ),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.timer_outlined,
-                                      size: (16.0 * scale).clamp(13.0, 18.0),
-                                      color: timerColor,
-                                    ),
-                                    const SizedBox(width: 6),
-                                    Text(
-                                      _isTimerExpired ? "Time's up!" : 'Time Remaining',
-                                      style: GoogleFonts.plusJakartaSans(
-                                        fontSize: (statFontSize * 0.9).clamp(10.0, 13.0),
-                                        fontWeight: FontWeight.w600,
-                                        color: timerColor,
-                                      ),
-                                    ),
-                                    if (_showBonusBadge) ...[
-                                      const SizedBox(width: 6),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 5, vertical: 1),
-                                        decoration: BoxDecoration(
-                                          color: Colors.green.shade600,
-                                          borderRadius: BorderRadius.circular(6),
-                                        ),
-                                        child: Text(
-                                          '+${_lastBonusSeconds}s',
-                                          style: GoogleFonts.jetBrainsMono(
-                                            fontSize: (statFontSize * 0.78).clamp(9.0, 11.0),
-                                            fontWeight: FontWeight.w800,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ],
-                                ),
-                                Text(
-                                  '${_remainingSeconds}s',
-                                  style: GoogleFonts.jetBrainsMono(
-                                    fontSize: (statFontSize * 1.05).clamp(11.0, 15.0),
-                                    fontWeight: FontWeight.bold,
-                                    color: timerColor,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: (4.0 * scale).clamp(3.0, 6.0)),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(3),
-                              child: LinearProgressIndicator(
-                                value: (_remainingSeconds / _currentTimerCap.toDouble()).clamp(0.0, 1.0),
-                                minHeight: (4.0 * scale).clamp(3.0, 6.0),
-                                backgroundColor: timerColor.withOpacity(0.15),
-                                valueColor: AlwaysStoppedAnimation<Color>(timerColor),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
                       // Dynamic Question Type UI Rendering
                       if (_currentQuestionType == HardCodeQuestionType.multiChoiceSyntax ||
                           _currentQuestionType == HardCodeQuestionType.multiChoiceConceptual) ...[
