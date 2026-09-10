@@ -174,7 +174,13 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   Timer? _questionTimer;
   int _remainingSeconds = 20;
   static const int _totalSeconds = 20;
+  static const int _maxTimerCap = 30;
+  static const int _bonusSeconds = 3;
+  int _currentTimerCap = 20;
   bool _isTimerExpired = false;
+
+  bool _showBonusBadge = false;
+  Timer? _bonusBadgeTimer;
 
   String? _topAlertMessage;
   IconData _topAlertIcon = Icons.cancel;
@@ -202,9 +208,31 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     });
   }
 
+  void _addBonusTime([int seconds = _bonusSeconds]) {
+    if (_isTimerExpired || _questionTimer == null) return;
+    setState(() {
+      _remainingSeconds = min(_remainingSeconds + seconds, _maxTimerCap);
+      if (_remainingSeconds > _currentTimerCap) {
+        _currentTimerCap = _remainingSeconds;
+      }
+      _showBonusBadge = true;
+    });
+    _bonusBadgeTimer?.cancel();
+    _bonusBadgeTimer = Timer(const Duration(milliseconds: 1200), () {
+      if (mounted) {
+        setState(() {
+          _showBonusBadge = false;
+        });
+      }
+    });
+  }
+
   void _startTimer() {
     _questionTimer?.cancel();
+    _bonusBadgeTimer?.cancel();
+    _showBonusBadge = false;
     _remainingSeconds = _totalSeconds;
+    _currentTimerCap = _totalSeconds;
     _isTimerExpired = false;
     _questionTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!mounted) return;
@@ -221,6 +249,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   void _cancelTimer() {
     _questionTimer?.cancel();
     _questionTimer = null;
+    _bonusBadgeTimer?.cancel();
+    _bonusBadgeTimer = null;
   }
 
   void _handleTimeout() async {
@@ -1230,6 +1260,20 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     }
   }
 
+  void _pairTermWithDef(String term, String def) {
+    if (_matchingSubmitted || _isTimerExpired) return;
+    final bool isChanged = (_userPairs[term] != def);
+    setState(() {
+      _userPairs.removeWhere((k, v) => v == def);
+      _userPairs[term] = def;
+      _selectedLeftTerm = null;
+      _selectedRightDef = null;
+    });
+    if (isChanged) {
+      _addBonusTime(3);
+    }
+  }
+
   void _handleMatchingSubmit() async {
     final bool allPairsMapped = _userPairs.length == _matchingPairs.length;
     bool allCorrect = allPairsMapped;
@@ -1996,6 +2040,25 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                         color: timerColor,
                                       ),
                                     ),
+                                    if (_showBonusBadge) ...[
+                                      const SizedBox(width: 6),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 5, vertical: 1),
+                                        decoration: BoxDecoration(
+                                          color: Colors.green.shade600,
+                                          borderRadius: BorderRadius.circular(6),
+                                        ),
+                                        child: Text(
+                                          '+${_bonusSeconds}s',
+                                          style: GoogleFonts.jetBrainsMono(
+                                            fontSize: (statFontSize * 0.78).clamp(9.0, 11.0),
+                                            fontWeight: FontWeight.w800,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ],
                                 ),
                                 Text(
@@ -2012,7 +2075,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                             ClipRRect(
                               borderRadius: BorderRadius.circular(3),
                               child: LinearProgressIndicator(
-                                value: _remainingSeconds / _totalSeconds.toDouble(),
+                                value: (_remainingSeconds / _currentTimerCap.toDouble()).clamp(0.0, 1.0),
                                 minHeight: (4.0 * scale).clamp(3.0, 6.0),
                                 backgroundColor: timerColor.withOpacity(0.15),
                                 valueColor: AlwaysStoppedAnimation<Color>(timerColor),
@@ -2167,9 +2230,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                       ] else if (_currentQuestionType == HardCodeQuestionType.trueFalse) ...[
                         _buildTrueFalseUI(scale, theme, buttonFontSize, statFontSize),
                       ] else if (_currentQuestionType == HardCodeQuestionType.matching) ...[
-                        _buildMatchingUI(scale, theme, buttonFontSize, statFontSize),
+                        _buildMatchingUI(scale, theme, buttonFontSize, statFontSize, cardWidth),
                       ] else if (_currentQuestionType == HardCodeQuestionType.sequencing) ...[
-                        _buildSequencingUI(scale, theme, buttonFontSize, statFontSize),
+                        _buildSequencingUI(scale, theme, buttonFontSize, statFontSize, cardWidth),
                       ] else if (_currentQuestionType == HardCodeQuestionType.sorting) ...[
                         _buildSortingUI(scale, theme, buttonFontSize, statFontSize),
                       ],
@@ -2518,6 +2581,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     ThemeData theme,
     double buttonFontSize,
     double statFontSize,
+    double cardWidth,
   ) {
     final bool isCompleted = _matchingSubmitted || _isTimerExpired;
     final int matchedCount = _userPairs.length;
@@ -2552,7 +2616,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               Text(
                 isCompleted
                     ? 'Review matches below'
-                    : 'Tap a concept on the left, then tap its matching definition on the right ($matchedCount of $totalCount paired)',
+                    : 'Click or drag definitions onto concepts to pair them ($matchedCount of $totalCount paired • +3s per match)',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: (statFontSize * 0.85).clamp(10.0, 12.5),
@@ -2573,137 +2637,224 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             final bool? isPairCorrect =
                 isCompleted ? (_matchingPairResults[term]) : null;
 
-            Color borderColor = theme.colorScheme.outline.withOpacity(0.3);
-            Color bgColor = theme.colorScheme.surface;
-            if (isCompleted) {
-              if (isPairCorrect == true) {
-                borderColor = Colors.green.shade600;
-                bgColor = Colors.green.withOpacity(0.08);
-              } else {
-                borderColor = Colors.red.shade400;
-                bgColor = Colors.red.withOpacity(0.08);
-              }
-            } else if (isSelected) {
-              borderColor = theme.colorScheme.primary;
-              bgColor = theme.colorScheme.primary.withOpacity(0.08);
-            } else if (currentMatch != null) {
-              borderColor = theme.colorScheme.secondary.withOpacity(0.7);
-              bgColor = theme.colorScheme.secondaryContainer.withOpacity(0.3);
-            }
+            return DragTarget<String>(
+              onWillAcceptWithDetails: (details) =>
+                  !isCompleted && _matchingRightDefs.contains(details.data),
+              onAcceptWithDetails: (details) {
+                _pairTermWithDef(term, details.data);
+              },
+              builder: (context, candidateData, rejectedData) {
+                final bool isHovered =
+                    candidateData.isNotEmpty && !isCompleted;
 
-            return Container(
-              margin: const EdgeInsets.only(bottom: 10),
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: bgColor,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: borderColor, width: isSelected ? 2.0 : 1.2),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+                Color borderColor = theme.colorScheme.outline.withOpacity(0.3);
+                Color bgColor = theme.colorScheme.surface;
+                if (isCompleted) {
+                  if (isPairCorrect == true) {
+                    borderColor = Colors.green.shade600;
+                    bgColor = Colors.green.withOpacity(0.08);
+                  } else {
+                    borderColor = Colors.red.shade400;
+                    bgColor = Colors.red.withOpacity(0.08);
+                  }
+                } else if (isHovered) {
+                  borderColor = theme.colorScheme.primary;
+                  bgColor = theme.colorScheme.primary.withOpacity(0.18);
+                } else if (isSelected) {
+                  borderColor = theme.colorScheme.primary;
+                  bgColor = theme.colorScheme.primary.withOpacity(0.08);
+                } else if (currentMatch != null) {
+                  borderColor = theme.colorScheme.secondary.withOpacity(0.7);
+                  bgColor =
+                      theme.colorScheme.secondaryContainer.withOpacity(0.3);
+                }
+
+                final Widget termCardContent = Container(
+                  margin: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: bgColor,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: borderColor,
+                      width: (isSelected || isHovered) ? 2.2 : 1.2,
+                    ),
+                    boxShadow: isHovered
+                        ? [
+                            BoxShadow(
+                              color: theme.colorScheme.primary.withOpacity(0.25),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ]
+                        : null,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: InkWell(
-                          onTap: isCompleted
-                              ? null
-                              : () {
-                                  setState(() {
-                                    if (_selectedRightDef != null) {
-                                      _userPairs.removeWhere((k, v) => v == _selectedRightDef);
-                                      _userPairs[term] = _selectedRightDef!;
-                                      _selectedLeftTerm = null;
-                                      _selectedRightDef = null;
-                                    } else {
-                                      _selectedLeftTerm = (_selectedLeftTerm == term) ? null : term;
-                                    }
-                                  });
-                                },
-                          child: Row(
-                            children: [
-                              Icon(
-                                isCompleted
-                                    ? (isPairCorrect == true
-                                        ? Icons.check_circle_outline
-                                        : Icons.cancel_outlined)
-                                    : (currentMatch != null
-                                        ? Icons.link
-                                        : Icons.radio_button_unchecked),
-                                size: 18,
-                                color: isCompleted
-                                    ? (isPairCorrect == true
-                                        ? Colors.green.shade700
-                                        : Colors.red.shade700)
-                                    : (isSelected
-                                        ? theme.colorScheme.primary
-                                        : theme.colorScheme.onSurface.withOpacity(0.7)),
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Text(
-                                  term,
-                                  style: GoogleFonts.plusJakartaSans(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: (statFontSize * 1.05).clamp(12.0, 15.0),
-                                    color: theme.colorScheme.onSurface,
+                      Row(
+                        children: [
+                          Expanded(
+                            child: InkWell(
+                              onTap: isCompleted
+                                  ? null
+                                  : () {
+                                      if (_selectedRightDef != null) {
+                                        _pairTermWithDef(term, _selectedRightDef!);
+                                      } else {
+                                        setState(() {
+                                          _selectedLeftTerm =
+                                              (_selectedLeftTerm == term)
+                                                  ? null
+                                                  : term;
+                                        });
+                                      }
+                                    },
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    isCompleted
+                                        ? (isPairCorrect == true
+                                            ? Icons.check_circle_outline
+                                            : Icons.cancel_outlined)
+                                        : (isHovered
+                                            ? Icons.add_circle_outline
+                                            : (currentMatch != null
+                                                ? Icons.link
+                                                : Icons.radio_button_unchecked)),
+                                    size: 18,
+                                    color: isCompleted
+                                        ? (isPairCorrect == true
+                                            ? Colors.green.shade700
+                                            : Colors.red.shade700)
+                                        : (isHovered
+                                            ? theme.colorScheme.primary
+                                            : (isSelected
+                                                ? theme.colorScheme.primary
+                                                : theme.colorScheme.onSurface
+                                                    .withOpacity(0.7))),
                                   ),
-                                ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      term,
+                                      style: GoogleFonts.plusJakartaSans(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: (statFontSize * 1.05)
+                                            .clamp(12.0, 15.0),
+                                        color: theme.colorScheme.onSurface,
+                                      ),
+                                    ),
+                                  ),
+                                  if (!isCompleted) ...[
+                                    Icon(
+                                      Icons.drag_indicator,
+                                      size: 16,
+                                      color: theme.colorScheme.onSurface
+                                          .withOpacity(0.35),
+                                    ),
+                                  ],
+                                ],
                               ),
-                            ],
+                            ),
+                          ),
+                          if (currentMatch != null && !isCompleted) ...[
+                            IconButton(
+                              icon: const Icon(Icons.close, size: 16),
+                              tooltip: 'Unpair',
+                              onPressed: () => _pairTermWithDef(term, ''),
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
+                            ),
+                          ],
+                        ],
+                      ),
+                      if (currentMatch != null) ...[
+                        const SizedBox(height: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.surfaceVariant
+                                .withOpacity(0.4),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            '→ $currentMatch',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize:
+                                  (statFontSize * 0.88).clamp(11.0, 13.0),
+                              fontStyle: FontStyle.italic,
+                              color: isCompleted
+                                  ? (isPairCorrect == true
+                                      ? Colors.green.shade800
+                                      : Colors.red.shade800)
+                                  : theme.colorScheme.onSurfaceVariant,
+                            ),
                           ),
                         ),
-                      ),
-                      if (currentMatch != null && !isCompleted) ...[
-                        IconButton(
-                          icon: const Icon(Icons.close, size: 16),
-                          tooltip: 'Unpair',
-                          onPressed: () {
-                            setState(() {
-                              _userPairs.remove(term);
-                            });
-                          },
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
+                      ],
+                      if (isCompleted && isPairCorrect != true) ...[
+                        const SizedBox(height: 4),
+                        Text(
+                          'Correct: $canonicalDef',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize:
+                                (statFontSize * 0.85).clamp(10.0, 12.5),
+                            fontWeight: FontWeight.w600,
+                            color: Colors.green.shade800,
+                          ),
                         ),
                       ],
                     ],
                   ),
-                  if (currentMatch != null) ...[
-                    const SizedBox(height: 6),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.surfaceVariant.withOpacity(0.4),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        '→ $currentMatch',
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: (statFontSize * 0.88).clamp(11.0, 13.0),
-                          fontStyle: FontStyle.italic,
-                          color: isCompleted
-                              ? (isPairCorrect == true
-                                  ? Colors.green.shade800
-                                  : Colors.red.shade800)
-                              : theme.colorScheme.onSurfaceVariant,
-                        ),
+                );
+
+                if (isCompleted) {
+                  return termCardContent;
+                }
+
+                return Draggable<String>(
+                  data: term,
+                  feedback: Material(
+                    elevation: 8.0,
+                    borderRadius: BorderRadius.circular(10),
+                    color: theme.colorScheme.primary,
+                    child: Container(
+                      constraints:
+                          BoxConstraints(maxWidth: (cardWidth * 0.85).clamp(240.0, 500.0)),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 10),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.drag_indicator,
+                              size: 18, color: Colors.white70),
+                          const SizedBox(width: 8),
+                          Flexible(
+                            child: Text(
+                              term,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize:
+                                    (statFontSize * 1.05).clamp(12.0, 15.0),
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                  if (isCompleted && isPairCorrect != true) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      'Correct: $canonicalDef',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: (statFontSize * 0.85).clamp(10.0, 12.5),
-                        fontWeight: FontWeight.w600,
-                        color: Colors.green.shade800,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
+                  ),
+                  childWhenDragging: Opacity(
+                    opacity: 0.35,
+                    child: termCardContent,
+                  ),
+                  child: termCardContent,
+                );
+              },
             );
           }).toList(),
         ),
@@ -2711,7 +2862,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         if (!isCompleted) ...[
           SizedBox(height: (12.0 * scale).clamp(8.0, 16.0)),
           Text(
-            'Definitions Pool (Tap to select & pair with highlighted concept):',
+            'Definitions Pool (Tap to select or drag onto concept above):',
             style: GoogleFonts.plusJakartaSans(
               fontSize: (statFontSize * 0.88).clamp(11.0, 13.0),
               fontWeight: FontWeight.w700,
@@ -2724,54 +2875,141 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               final bool isPaired = _userPairs.values.contains(def);
               final bool isDefSelected = (_selectedRightDef == def);
 
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 6.0),
-                child: OutlinedButton(
-                  onPressed: () {
-                    setState(() {
-                      if (_selectedLeftTerm != null) {
-                        _userPairs.removeWhere((k, v) => v == def);
-                        _userPairs[_selectedLeftTerm!] = def;
-                        _selectedLeftTerm = null;
-                        _selectedRightDef = null;
-                      } else {
-                        _selectedRightDef = (isDefSelected ? null : def);
-                      }
-                    });
-                  },
-                  style: OutlinedButton.styleFrom(
-                    alignment: Alignment.centerLeft,
-                    backgroundColor: isDefSelected
-                        ? theme.colorScheme.primary.withOpacity(0.12)
-                        : (isPaired
-                            ? theme.colorScheme.surfaceVariant.withOpacity(0.3)
-                            : theme.colorScheme.surface),
-                    side: BorderSide(
-                      color: isDefSelected
-                          ? theme.colorScheme.primary
+              return DragTarget<String>(
+                onWillAcceptWithDetails: (details) =>
+                    !isCompleted && _matchingLeftTerms.contains(details.data),
+                onAcceptWithDetails: (details) {
+                  _pairTermWithDef(details.data, def);
+                },
+                builder: (context, candidateData, rejectedData) {
+                  final bool isHovered =
+                      candidateData.isNotEmpty && !isCompleted;
+
+                  Color itemBg = isDefSelected
+                      ? theme.colorScheme.primary.withOpacity(0.12)
+                      : (isHovered
+                          ? theme.colorScheme.primary.withOpacity(0.18)
                           : (isPaired
-                              ? theme.colorScheme.outline.withOpacity(0.2)
-                              : theme.colorScheme.outline.withOpacity(0.4)),
-                      width: isDefSelected ? 1.8 : 1.0,
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                    shape: RoundedRectangleBorder(
+                              ? theme.colorScheme.surfaceVariant
+                                  .withOpacity(0.3)
+                              : theme.colorScheme.surface));
+
+                  Color itemBorder = isDefSelected || isHovered
+                      ? theme.colorScheme.primary
+                      : (isPaired
+                          ? theme.colorScheme.outline.withOpacity(0.2)
+                          : theme.colorScheme.outline.withOpacity(0.4));
+
+                  final Widget defCardContent = Container(
+                    margin: const EdgeInsets.only(bottom: 6.0),
+                    decoration: BoxDecoration(
+                      color: itemBg,
                       borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: itemBorder,
+                        width: (isDefSelected || isHovered) ? 1.8 : 1.0,
+                      ),
+                      boxShadow: isHovered
+                          ? [
+                              BoxShadow(
+                                color: theme.colorScheme.primary
+                                    .withOpacity(0.2),
+                                blurRadius: 6,
+                                offset: const Offset(0, 2),
+                              ),
+                            ]
+                          : null,
                     ),
-                  ),
-                  child: Text(
-                    def,
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: (statFontSize * 0.9).clamp(11.0, 13.5),
-                      color: isDefSelected
-                          ? theme.colorScheme.primary
-                          : (isPaired
-                              ? theme.colorScheme.onSurface.withOpacity(0.5)
-                              : theme.colorScheme.onSurface),
-                      decoration: isPaired ? TextDecoration.lineThrough : null,
+                    child: InkWell(
+                      onTap: () {
+                        if (_selectedLeftTerm != null) {
+                          _pairTermWithDef(_selectedLeftTerm!, def);
+                        } else {
+                          setState(() {
+                            _selectedRightDef =
+                                (isDefSelected ? null : def);
+                          });
+                        }
+                      },
+                      borderRadius: BorderRadius.circular(10),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 10),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.drag_indicator,
+                              size: 16,
+                              color: isDefSelected
+                                  ? theme.colorScheme.primary
+                                  : theme.colorScheme.onSurface
+                                      .withOpacity(0.4),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                def,
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize:
+                                      (statFontSize * 0.9).clamp(11.0, 13.5),
+                                  color: isDefSelected
+                                      ? theme.colorScheme.primary
+                                      : (isPaired
+                                          ? theme.colorScheme.onSurface
+                                              .withOpacity(0.5)
+                                          : theme.colorScheme.onSurface),
+                                  decoration:
+                                      isPaired ? TextDecoration.lineThrough : null,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
-                ),
+                  );
+
+                  return Draggable<String>(
+                    data: def,
+                    feedback: Material(
+                      elevation: 8.0,
+                      borderRadius: BorderRadius.circular(10),
+                      color: theme.colorScheme.secondary,
+                      child: Container(
+                        constraints:
+                            BoxConstraints(maxWidth: (cardWidth * 0.85).clamp(240.0, 500.0)),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 10),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.drag_indicator,
+                                size: 18, color: Colors.white70),
+                            const SizedBox(width: 8),
+                            Flexible(
+                              child: Text(
+                                def,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize:
+                                      (statFontSize * 0.9).clamp(11.0, 13.5),
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    childWhenDragging: Opacity(
+                      opacity: 0.35,
+                      child: defCardContent,
+                    ),
+                    child: defCardContent,
+                  );
+                },
               );
             }).toList(),
           ),
@@ -2833,6 +3071,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     ThemeData theme,
     double buttonFontSize,
     double statFontSize,
+    double cardWidth,
   ) {
     final bool isCompleted = _sequencingSubmitted || _isTimerExpired;
 
@@ -2865,7 +3104,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               Text(
                 isCompleted
                     ? 'Review execution order below'
-                    : 'Use the ▲ and ▼ buttons to arrange items from first to last',
+                    : 'Use ▲ / ▼ or drag steps to arrange from first to last (+3s per move)',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: (statFontSize * 0.85).clamp(10.0, 12.5),
@@ -2886,99 +3125,187 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 index < _sequenceStepResults.length &&
                 _sequenceStepResults[index]);
 
-            Color borderColor = theme.colorScheme.outline.withOpacity(0.3);
-            Color bgColor = theme.colorScheme.surface;
-            if (isCompleted) {
-              if (isStepCorrect) {
-                borderColor = Colors.green.shade600;
-                bgColor = Colors.green.withOpacity(0.08);
-              } else {
-                borderColor = Colors.red.shade400;
-                bgColor = Colors.red.withOpacity(0.08);
-              }
-            }
+            return DragTarget<int>(
+              onWillAcceptWithDetails: (details) =>
+                  !isCompleted && details.data != index,
+              onAcceptWithDetails: (details) {
+                final int fromIndex = details.data;
+                setState(() {
+                  final movedItem = _currentSequence.removeAt(fromIndex);
+                  _currentSequence.insert(index, movedItem);
+                });
+                _addBonusTime(3);
+              },
+              builder: (context, candidateData, rejectedData) {
+                final bool isHovered =
+                    candidateData.isNotEmpty && !isCompleted;
 
-            return Container(
-              margin: const EdgeInsets.only(bottom: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              decoration: BoxDecoration(
-                color: bgColor,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: borderColor, width: 1.2),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 28,
-                    height: 28,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: isCompleted
-                          ? (isStepCorrect
-                              ? Colors.green.shade600
-                              : Colors.red.shade600)
-                          : theme.colorScheme.primaryContainer,
-                      shape: BoxShape.circle,
+                Color borderColor = theme.colorScheme.outline.withOpacity(0.3);
+                Color bgColor = theme.colorScheme.surface;
+                if (isCompleted) {
+                  if (isStepCorrect) {
+                    borderColor = Colors.green.shade600;
+                    bgColor = Colors.green.withOpacity(0.08);
+                  } else {
+                    borderColor = Colors.red.shade400;
+                    bgColor = Colors.red.withOpacity(0.08);
+                  }
+                } else if (isHovered) {
+                  borderColor = theme.colorScheme.primary;
+                  bgColor = theme.colorScheme.primary.withOpacity(0.18);
+                }
+
+                final Widget stepCardContent = Container(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: bgColor,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: borderColor,
+                      width: isHovered ? 2.0 : 1.2,
                     ),
-                    child: Text(
-                      '${index + 1}',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 13,
-                        color: isCompleted
-                            ? Colors.white
-                            : theme.colorScheme.onPrimaryContainer,
+                    boxShadow: isHovered
+                        ? [
+                            BoxShadow(
+                              color: theme.colorScheme.primary.withOpacity(0.2),
+                              blurRadius: 6,
+                              offset: const Offset(0, 2),
+                            ),
+                          ]
+                        : null,
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 28,
+                        height: 28,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: isCompleted
+                              ? (isStepCorrect
+                                  ? Colors.green.shade600
+                                  : Colors.red.shade600)
+                              : theme.colorScheme.primaryContainer,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Text(
+                          '${index + 1}',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                            color: isCompleted
+                                ? Colors.white
+                                : theme.colorScheme.onPrimaryContainer,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          item,
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize:
+                                (statFontSize * 0.95).clamp(11.5, 14.0),
+                            fontWeight: FontWeight.w600,
+                            color: theme.colorScheme.onSurface,
+                          ),
+                        ),
+                      ),
+                      if (!isCompleted) ...[
+                        IconButton(
+                          icon: const Icon(Icons.arrow_upward, size: 18),
+                          tooltip: 'Move Up',
+                          onPressed: index > 0
+                              ? () {
+                                  setState(() {
+                                    final temp = _currentSequence[index];
+                                    _currentSequence[index] =
+                                        _currentSequence[index - 1];
+                                    _currentSequence[index - 1] = temp;
+                                  });
+                                  _addBonusTime(3);
+                                }
+                              : null,
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                        ),
+                        const SizedBox(width: 8),
+                        IconButton(
+                          icon: const Icon(Icons.arrow_downward, size: 18),
+                          tooltip: 'Move Down',
+                          onPressed: index < _currentSequence.length - 1
+                              ? () {
+                                  setState(() {
+                                    final temp = _currentSequence[index];
+                                    _currentSequence[index] =
+                                        _currentSequence[index + 1];
+                                    _currentSequence[index + 1] = temp;
+                                  });
+                                  _addBonusTime(3);
+                                }
+                              : null,
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                        ),
+                        const SizedBox(width: 6),
+                        Icon(
+                          Icons.drag_indicator,
+                          size: 18,
+                          color:
+                              theme.colorScheme.onSurface.withOpacity(0.35),
+                        ),
+                      ],
+                    ],
+                  ),
+                );
+
+                if (isCompleted) {
+                  return stepCardContent;
+                }
+
+                return Draggable<int>(
+                  data: index,
+                  feedback: Material(
+                    elevation: 8.0,
+                    borderRadius: BorderRadius.circular(12),
+                    color: theme.colorScheme.primary,
+                    child: Container(
+                      constraints:
+                          BoxConstraints(maxWidth: (cardWidth * 0.85).clamp(240.0, 500.0)),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 10),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.drag_indicator,
+                              size: 18, color: Colors.white70),
+                          const SizedBox(width: 8),
+                          Flexible(
+                            child: Text(
+                              '${index + 1}. $item',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize:
+                                    (statFontSize * 0.95).clamp(11.5, 14.0),
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      item,
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: (statFontSize * 0.95).clamp(11.5, 14.0),
-                        fontWeight: FontWeight.w600,
-                        color: theme.colorScheme.onSurface,
-                      ),
-                    ),
+                  childWhenDragging: Opacity(
+                    opacity: 0.35,
+                    child: stepCardContent,
                   ),
-                  if (!isCompleted) ...[
-                    IconButton(
-                      icon: const Icon(Icons.arrow_upward, size: 18),
-                      tooltip: 'Move Up',
-                      onPressed: index > 0
-                          ? () {
-                              setState(() {
-                                final temp = _currentSequence[index];
-                                _currentSequence[index] =
-                                    _currentSequence[index - 1];
-                                _currentSequence[index - 1] = temp;
-                              });
-                            }
-                          : null,
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                    ),
-                    const SizedBox(width: 8),
-                    IconButton(
-                      icon: const Icon(Icons.arrow_downward, size: 18),
-                      tooltip: 'Move Down',
-                      onPressed: index < _currentSequence.length - 1
-                          ? () {
-                              setState(() {
-                                final temp = _currentSequence[index];
-                                _currentSequence[index] =
-                                    _currentSequence[index + 1];
-                                _currentSequence[index + 1] = temp;
-                              });
-                            }
-                          : null,
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                    ),
-                  ],
-                ],
-              ),
+                  child: stepCardContent,
+                );
+              },
             );
           }).toList(),
         ),
@@ -3116,7 +3443,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               Text(
                 isCompleted
                     ? 'Review classification results below'
-                    : 'Select a category for each item ($classifiedCount of $totalCount classified)',
+                    : 'Select a category for each item ($classifiedCount of $totalCount classified • +3s per classification)',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: (statFontSize * 0.85).clamp(10.0, 12.5),
@@ -3226,9 +3553,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                         onTap: isCompleted
                             ? null
                             : () {
+                                final bool isChange =
+                                    (_userClassification[item] != category);
                                 setState(() {
                                   _userClassification[item] = category;
                                 });
+                                if (isChange) {
+                                  _addBonusTime(3);
+                                }
                               },
                         borderRadius: BorderRadius.circular(20),
                         child: Container(
