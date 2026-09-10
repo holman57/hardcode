@@ -3362,9 +3362,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   !isCompleted && details.data != index,
               onAcceptWithDetails: (details) {
                 final int fromIndex = details.data;
-                late final String movedItem;
+                final movedItem = _currentSequence[fromIndex];
                 setState(() {
-                  movedItem = _currentSequence.removeAt(fromIndex);
+                  _currentSequence.removeAt(fromIndex);
                   _currentSequence.insert(index, movedItem);
                 });
                 _addBonusTimeForOption(movedItem);
@@ -3452,8 +3452,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                           tooltip: 'Move Up',
                           onPressed: index > 0
                               ? () {
+                                  final temp = _currentSequence[index];
                                   setState(() {
-                                    final temp = _currentSequence[index];
                                     _currentSequence[index] =
                                         _currentSequence[index - 1];
                                     _currentSequence[index - 1] = temp;
@@ -3470,8 +3470,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                           tooltip: 'Move Down',
                           onPressed: index < _currentSequence.length - 1
                               ? () {
+                                  final temp = _currentSequence[index];
                                   setState(() {
-                                    final temp = _currentSequence[index];
                                     _currentSequence[index] =
                                         _currentSequence[index + 1];
                                     _currentSequence[index + 1] = temp;
