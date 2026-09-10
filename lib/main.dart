@@ -180,6 +180,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   bool _isTimerExpired = false;
 
   bool _showBonusBadge = false;
+  int _lastBonusSeconds = 3;
+  final Map<String, int> _optionMoveCounts = {};
   Timer? _bonusBadgeTimer;
 
   String? _topAlertMessage;
@@ -213,6 +215,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     setState(() {
       _remainingSeconds = min(_remainingSeconds + seconds, _maxTimerCap);
       _currentTimerCap = _totalSeconds;
+      _lastBonusSeconds = seconds;
       _showBonusBadge = true;
     });
     _bonusBadgeTimer?.cancel();
@@ -223,6 +226,40 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         });
       }
     });
+  }
+
+  void _addBonusTimeForOption(String optionKey) {
+    if (_isTimerExpired || _questionTimer == null) return;
+    final int count = _optionMoveCounts[optionKey] ?? 0;
+    _optionMoveCounts[optionKey] = count + 1;
+
+    int bonus = 0;
+    if (count == 0) {
+      bonus = 3;
+    } else if (count == 1) {
+      bonus = 2;
+    } else if (count == 2) {
+      bonus = 1;
+    } else {
+      bonus = 0;
+    }
+
+    if (bonus > 0) {
+      setState(() {
+        _remainingSeconds = min(_remainingSeconds + bonus, _maxTimerCap);
+        _currentTimerCap = _totalSeconds;
+        _lastBonusSeconds = bonus;
+        _showBonusBadge = true;
+      });
+      _bonusBadgeTimer?.cancel();
+      _bonusBadgeTimer = Timer(const Duration(milliseconds: 1200), () {
+        if (mounted) {
+          setState(() {
+            _showBonusBadge = false;
+          });
+        }
+      });
+    }
   }
 
   void _startTimer() {
@@ -520,6 +557,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     _sortingCategories.clear();
     _sortingExpected.clear();
     _sortingItems.clear();
+    _optionMoveCounts.clear();
 
     final Random random = Random.secure();
 
@@ -1298,7 +1336,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       _selectedRightDef = null;
     });
 
-    _addBonusTime(3);
+    _addBonusTimeForOption(def);
   }
 
   void _handleMatchingSubmit() async {
@@ -2077,7 +2115,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                           borderRadius: BorderRadius.circular(6),
                                         ),
                                         child: Text(
-                                          '+${_bonusSeconds}s',
+                                          '+${_lastBonusSeconds}s',
                                           style: GoogleFonts.jetBrainsMono(
                                             fontSize: (statFontSize * 0.78).clamp(9.0, 11.0),
                                             fontWeight: FontWeight.w800,
@@ -2643,7 +2681,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               Text(
                 isCompleted
                     ? 'Review matches below'
-                    : 'Click or drag definitions onto concepts to pair them ($matchedCount of $totalCount paired • +3s per match)',
+                    : 'Click or drag definitions onto concepts to pair them ($matchedCount of $totalCount paired • +3s, +2s, +1s per option, max 20s)',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: (statFontSize * 0.85).clamp(10.0, 12.5),
@@ -3298,7 +3336,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               Text(
                 isCompleted
                     ? 'Review execution order below'
-                    : 'Use ▲ / ▼ or drag steps to arrange from first to last (+3s per move)',
+                    : 'Use ▲ / ▼ or drag steps to arrange from first to last (+3s, +2s, +1s per option, max 20s)',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: (statFontSize * 0.85).clamp(10.0, 12.5),
@@ -3324,11 +3362,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   !isCompleted && details.data != index,
               onAcceptWithDetails: (details) {
                 final int fromIndex = details.data;
+                late final String movedItem;
                 setState(() {
-                  final movedItem = _currentSequence.removeAt(fromIndex);
+                  movedItem = _currentSequence.removeAt(fromIndex);
                   _currentSequence.insert(index, movedItem);
                 });
-                _addBonusTime(3);
+                _addBonusTimeForOption(movedItem);
               },
               builder: (context, candidateData, rejectedData) {
                 final bool isHovered =
@@ -3419,7 +3458,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                         _currentSequence[index - 1];
                                     _currentSequence[index - 1] = temp;
                                   });
-                                  _addBonusTime(3);
+                                  _addBonusTimeForOption(temp);
                                 }
                               : null,
                           padding: EdgeInsets.zero,
@@ -3437,7 +3476,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                         _currentSequence[index + 1];
                                     _currentSequence[index + 1] = temp;
                                   });
-                                  _addBonusTime(3);
+                                  _addBonusTimeForOption(temp);
                                 }
                               : null,
                           padding: EdgeInsets.zero,
@@ -3637,7 +3676,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               Text(
                 isCompleted
                     ? 'Review classification results below'
-                    : 'Select a category for each item ($classifiedCount of $totalCount classified • +3s per classification)',
+                    : 'Select a category for each item ($classifiedCount of $totalCount classified • +3s, +2s, +1s per option, max 20s)',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: (statFontSize * 0.85).clamp(10.0, 12.5),
@@ -3753,7 +3792,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                   _userClassification[item] = category;
                                 });
                                 if (isChange) {
-                                  _addBonusTime(3);
+                                  _addBonusTimeForOption(item);
                                 }
                               },
                         borderRadius: BorderRadius.circular(20),
