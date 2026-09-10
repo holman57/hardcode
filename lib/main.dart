@@ -79,6 +79,15 @@ Random _rnd = Random();
 String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
     length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
+enum HardCodeQuestionType {
+  multiChoiceSyntax,
+  multiChoiceConceptual,
+  trueFalse,
+  matching,
+  sequencing,
+  sorting,
+}
+
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
@@ -116,6 +125,47 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   List _boolVarNames = [];
   List _boolValues = [];
   final List<String> _answerGroup = [];
+
+  // Active question type tracking
+  HardCodeQuestionType _currentQuestionType = HardCodeQuestionType.multiChoiceSyntax;
+  HardCodeQuestionType? _lastQuestionType;
+
+  // Conceptual Multi-Choice
+  String? _conceptualExplanation;
+
+  // True-False State
+  String _tfStatement = "";
+  bool _tfExpected = true;
+  String _tfExplanation = "";
+  bool? _tfUserAnswer;
+  bool _tfAnswered = false;
+
+  // Matching State
+  String _matchingPrompt = "";
+  Map<String, String> _matchingPairs = {};
+  List<String> _matchingLeftTerms = [];
+  List<String> _matchingRightDefs = [];
+  String? _selectedLeftTerm;
+  String? _selectedRightDef;
+  final Map<String, String> _userPairs = {};
+  bool _matchingSubmitted = false;
+  Map<String, bool> _matchingPairResults = {};
+
+  // Sequencing State
+  String _sequencingPrompt = "";
+  List<String> _expectedSequence = [];
+  List<String> _currentSequence = [];
+  bool _sequencingSubmitted = false;
+  List<bool> _sequenceStepResults = [];
+
+  // Sorting-Classification State
+  String _sortingPrompt = "";
+  List<String> _sortingCategories = [];
+  Map<String, List<String>> _sortingExpected = {};
+  List<String> _sortingItems = [];
+  final Map<String, String> _userClassification = {};
+  bool _sortingSubmitted = false;
+  Map<String, bool> _sortingResults = {};
 
   UserStats _userStats = DatabaseService.instance.getUserStats();
   bool _isLoading = true;
@@ -177,6 +227,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     setState(() {
       _remainingSeconds = 0;
       _isTimerExpired = true;
+      if (_currentQuestionType == HardCodeQuestionType.trueFalse) {
+        _tfAnswered = true;
+      } else if (_currentQuestionType == HardCodeQuestionType.matching) {
+        _matchingSubmitted = true;
+      } else if (_currentQuestionType == HardCodeQuestionType.sequencing) {
+        _sequencingSubmitted = true;
+      } else if (_currentQuestionType == HardCodeQuestionType.sorting) {
+        _sortingSubmitted = true;
+      }
     });
 
     final updatedStats = await DatabaseService.instance.recordAnswer(
@@ -199,10 +258,58 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     _graphController.forward(from: 0.0);
 
     _showTopAlert(
-      message: "Time's up! Correct answer is indicated below.",
+      message: "Time's up! Correct solution revealed below.",
       icon: Icons.timer_off_outlined,
       backgroundColor: Colors.red.shade800,
     );
+  }
+
+  Future<void> _recordAnswerResult({
+    required bool isCorrect,
+    String? successMsg,
+    String? errorMsg,
+  }) async {
+    _cancelTimer();
+    _topAlertTimer?.cancel();
+
+    final updatedStats = await DatabaseService.instance.recordAnswer(
+      language: _language,
+      isCorrect: isCorrect,
+      timeRemainingSeconds: _remainingSeconds,
+    );
+
+    if (!mounted) return;
+    final double delta = (updatedStats.accuracyHistory.length >= 2)
+        ? updatedStats.accuracyHistory.last -
+            updatedStats.accuracyHistory[updatedStats.accuracyHistory.length - 2]
+        : (updatedStats.recentAccuracy - _userStats.recentAccuracy);
+    final bool accuracyWentUp = (delta >= -0.001);
+
+    setState(() {
+      _prevAccuracyHistory = List<double>.from(_userStats.accuracyHistory);
+      _userStats = updatedStats;
+      _isAccuracyUp = accuracyWentUp;
+      _trendDelta = delta;
+    });
+
+    _graphController.forward(from: 0.0);
+    if (accuracyWentUp) {
+      _pulseController.forward(from: 0.0);
+    }
+
+    if (isCorrect) {
+      _showTopAlert(
+        message: successMsg ?? 'Correct! +15 XP',
+        icon: Icons.check_circle_outline,
+        backgroundColor: Colors.green.shade800,
+      );
+    } else {
+      _showTopAlert(
+        message: errorMsg ?? 'Incorrect choice. Review the feedback below!',
+        icon: Icons.cancel,
+        backgroundColor: Colors.redAccent.shade700,
+      );
+    }
   }
 
   Future<void> _loadData() async {
@@ -349,6 +456,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     _cancelTimer();
     _topAlertTimer?.cancel();
     _topAlertMessage = null;
+    _isTimerExpired = false;
+
+    // Reset all question-specific states
     _answerGroup.clear();
     _choices.clear();
     _incorrectPatternGroups.clear();
@@ -356,15 +466,242 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     _choiceSelections.clear();
     _incorrectSelections.clear();
     _correctAnswerSelected = null;
-    _isTimerExpired = false;
+    _conceptualExplanation = null;
 
-    // 1. Adaptive Skill-Level: Pick Category based on user Level
+    _tfUserAnswer = null;
+    _tfAnswered = false;
+
+    _selectedLeftTerm = null;
+    _selectedRightDef = null;
+    _userPairs.clear();
+    _matchingSubmitted = false;
+    _matchingPairs.clear();
+    _matchingLeftTerms.clear();
+    _matchingRightDefs.clear();
+    _matchingPairResults.clear();
+
+    _sequencingSubmitted = false;
+    _sequenceStepResults.clear();
+    _expectedSequence.clear();
+    _currentSequence.clear();
+
+    _sortingSubmitted = false;
+    _sortingResults.clear();
+    _userClassification.clear();
+    _sortingCategories.clear();
+    _sortingExpected.clear();
+    _sortingItems.clear();
+
+    final Random random = Random.secure();
+
+    final List<HardCodeQuestionType> availableTypes = [
+      HardCodeQuestionType.trueFalse,
+      HardCodeQuestionType.matching,
+      HardCodeQuestionType.sequencing,
+      HardCodeQuestionType.sorting,
+      HardCodeQuestionType.multiChoiceSyntax,
+      HardCodeQuestionType.multiChoiceConceptual,
+    ];
+
+    List<HardCodeQuestionType> candidates =
+        availableTypes.where((t) => t != _lastQuestionType).toList();
+    _currentQuestionType = candidates[random.nextInt(candidates.length)];
+    _lastQuestionType = _currentQuestionType;
+
+    final curriculum = (_data["Curriculum"] as Map?) ?? {};
+    final List<String> domains = curriculum.keys.cast<String>().toList();
+
+    switch (_currentQuestionType) {
+      case HardCodeQuestionType.trueFalse:
+        _generateTrueFalseQuestion(curriculum, domains, random);
+        break;
+      case HardCodeQuestionType.matching:
+        _generateMatchingQuestion(curriculum, domains, random);
+        break;
+      case HardCodeQuestionType.sequencing:
+        _generateSequencingQuestion(curriculum, domains, random);
+        break;
+      case HardCodeQuestionType.sorting:
+        _generateSortingQuestion(curriculum, domains, random);
+        break;
+      case HardCodeQuestionType.multiChoiceConceptual:
+        _generateConceptualMultiChoiceQuestion(curriculum, domains, random);
+        break;
+      case HardCodeQuestionType.multiChoiceSyntax:
+        _generateSyntaxMultiChoiceQuestion(random);
+        break;
+    }
+
+    _startTimer();
+  }
+
+  void _generateTrueFalseQuestion(Map curriculum, List<String> domains, Random random) {
+    final validDomains = domains.where((d) {
+      final qs = (curriculum[d] as Map?)?["questions"] as Map?;
+      return (qs?["True-False"] as List?)?.isNotEmpty ?? false;
+    }).toList();
+
+    if (validDomains.isEmpty) {
+      _generateSyntaxMultiChoiceQuestion(random);
+      return;
+    }
+
+    final domain = validDomains[random.nextInt(validDomains.length)];
+    final tfList = curriculum[domain]["questions"]["True-False"] as List;
+    final item = tfList[random.nextInt(tfList.length)] as Map;
+
+    _language = domain;
+    _questionSubType = "True / False";
+    _tfStatement = (item["statement"] as String?) ?? "";
+    _tfExpected = (item["is_true"] as bool?) ?? true;
+    _tfExplanation = (item["explanation"] as String?) ?? "";
+    _question = _tfStatement;
+  }
+
+  void _generateMatchingQuestion(Map curriculum, List<String> domains, Random random) {
+    final validDomains = domains.where((d) {
+      final qs = (curriculum[d] as Map?)?["questions"] as Map?;
+      return (qs?["Matching"] as List?)?.isNotEmpty ?? false;
+    }).toList();
+
+    if (validDomains.isEmpty) {
+      _generateSyntaxMultiChoiceQuestion(random);
+      return;
+    }
+
+    final domain = validDomains[random.nextInt(validDomains.length)];
+    final mList = curriculum[domain]["questions"]["Matching"] as List;
+    final item = mList[random.nextInt(mList.length)] as Map;
+
+    _language = domain;
+    _questionSubType = "Matching";
+    _matchingPrompt = (item["prompt"] as String?) ?? "Match corresponding pairs:";
+    _question = _matchingPrompt;
+
+    final rawPairs = (item["pairs"] as Map?) ?? {};
+    rawPairs.forEach((k, v) {
+      _matchingPairs[k.toString()] = v.toString();
+    });
+
+    _matchingLeftTerms = _matchingPairs.keys.toList()..shuffle(random);
+    _matchingRightDefs = _matchingPairs.values.toList()..shuffle(random);
+  }
+
+  void _generateSequencingQuestion(Map curriculum, List<String> domains, Random random) {
+    final validDomains = domains.where((d) {
+      final qs = (curriculum[d] as Map?)?["questions"] as Map?;
+      return (qs?["Sequencing"] as List?)?.isNotEmpty ?? false;
+    }).toList();
+
+    if (validDomains.isEmpty) {
+      _generateSyntaxMultiChoiceQuestion(random);
+      return;
+    }
+
+    final domain = validDomains[random.nextInt(validDomains.length)];
+    final sList = curriculum[domain]["questions"]["Sequencing"] as List;
+    final item = sList[random.nextInt(sList.length)] as Map;
+
+    _language = domain;
+    _questionSubType = "Sequencing";
+    _sequencingPrompt = (item["prompt"] as String?) ?? "Arrange in correct order:";
+    _question = _sequencingPrompt;
+
+    final rawSeq = (item["ordered_sequence"] as List?) ?? [];
+    _expectedSequence = rawSeq.map((e) => e.toString()).toList();
+    _currentSequence = List<String>.from(_expectedSequence);
+
+    int attempts = 0;
+    while (_expectedSequence.length > 1 &&
+        _currentSequence.join(';;') == _expectedSequence.join(';;') &&
+        attempts < 20) {
+      _currentSequence.shuffle(random);
+      attempts++;
+    }
+  }
+
+  void _generateSortingQuestion(Map curriculum, List<String> domains, Random random) {
+    final validDomains = domains.where((d) {
+      final qs = (curriculum[d] as Map?)?["questions"] as Map?;
+      return (qs?["Sorting-Classification"] as List?)?.isNotEmpty ?? false;
+    }).toList();
+
+    if (validDomains.isEmpty) {
+      _generateSyntaxMultiChoiceQuestion(random);
+      return;
+    }
+
+    final domain = validDomains[random.nextInt(validDomains.length)];
+    final scList = curriculum[domain]["questions"]["Sorting-Classification"] as List;
+    final item = scList[random.nextInt(scList.length)] as Map;
+
+    _language = domain;
+    _questionSubType = "Classification";
+    _sortingPrompt = (item["prompt"] as String?) ?? "Classify the items:";
+    _question = _sortingPrompt;
+
+    _sortingCategories = ((item["categories"] as List?) ?? [])
+        .map((e) => e.toString())
+        .toList();
+
+    _sortingExpected.clear();
+    final rawItems = (item["items"] as Map?) ?? {};
+    rawItems.forEach((k, v) {
+      _sortingExpected[k.toString()] =
+          ((v as List?) ?? []).map((e) => e.toString()).toList();
+    });
+
+    _sortingItems.clear();
+    for (var list in _sortingExpected.values) {
+      _sortingItems.addAll(list);
+    }
+    _sortingItems.shuffle(random);
+  }
+
+  void _generateConceptualMultiChoiceQuestion(Map curriculum, List<String> domains, Random random) {
+    final validDomains = domains.where((d) {
+      final qs = (curriculum[d] as Map?)?["questions"] as Map?;
+      return (qs?["Multi-Choice"] as List?)?.isNotEmpty ?? false;
+    }).toList();
+
+    if (validDomains.isEmpty) {
+      _generateSyntaxMultiChoiceQuestion(random);
+      return;
+    }
+
+    final domain = validDomains[random.nextInt(validDomains.length)];
+    final mcList = curriculum[domain]["questions"]["Multi-Choice"] as List;
+    final item = mcList[random.nextInt(mcList.length)] as Map;
+
+    _language = domain;
+    _questionSubType = "Multi-Choice";
+    _question = (item["question"] as String?) ?? "";
+    _conceptualExplanation = (item["explanation"] as String?) ?? "";
+
+    final rawChoices = ((item["choices"] as List?) ?? []).map((e) => e.toString()).toList();
+    final int correctIdx = (item["correct_index"] as int?) ?? 0;
+    final String correctChoice = (correctIdx >= 0 && correctIdx < rawChoices.length)
+        ? rawChoices[correctIdx]
+        : (rawChoices.isNotEmpty ? rawChoices.first : "");
+    _correctAnswer = correctChoice;
+
+    _choices.clear();
+    for (final ch in rawChoices) {
+      _choices.add([ch, ch == correctChoice ? 1 : 0]);
+    }
+    _choices.shuffle(random);
+
+    _answerGroup.clear();
+    for (final c in _choices) {
+      _answerGroup.add(c[0] as String);
+    }
+  }
+
+  void _generateSyntaxMultiChoiceQuestion(Random random) {
     final categories = DatabaseService.instance
         .getAvailableCategoriesForLevel(_userStats.level);
-    Random random = Random.secure();
     _currentCategory = categories[random.nextInt(categories.length)];
 
-    // 2. Adaptive Spaced Repetition: Sample language based on weak areas
     final adaptivePriorities = DatabaseService.instance
         .getAdaptiveLanguagePriorities(_langList.cast<String>());
     PriorityRandomGenerator prgLanguage =
@@ -443,8 +780,142 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     for (var e in _choices) {
       _answerGroup.add(e[0]);
     }
+  }
 
-    _startTimer();
+  void _handleTrueFalseAnswer(bool answer) async {
+    setState(() {
+      _tfUserAnswer = answer;
+      _tfAnswered = true;
+    });
+
+    final bool isCorrect = (answer == _tfExpected);
+    await _recordAnswerResult(
+      isCorrect: isCorrect,
+      successMsg: 'Correct statement evaluation! +15 XP',
+      errorMsg: 'Incorrect statement evaluation. Review explanation below!',
+    );
+
+    if (isCorrect) {
+      Future.delayed(const Duration(milliseconds: 1400), () {
+        if (!mounted) return;
+        setState(() {
+          generateQuestion();
+        });
+      });
+    }
+  }
+
+  void _handleMatchingSubmit() async {
+    final bool allPairsMapped = _userPairs.length == _matchingPairs.length;
+    bool allCorrect = allPairsMapped;
+    final Map<String, bool> results = {};
+
+    for (final entry in _matchingPairs.entries) {
+      final userMatch = _userPairs[entry.key];
+      final bool isMatch = (userMatch != null && userMatch == entry.value);
+      results[entry.key] = isMatch;
+      if (!isMatch) {
+        allCorrect = false;
+      }
+    }
+
+    setState(() {
+      _matchingSubmitted = true;
+      _matchingPairResults = results;
+    });
+
+    await _recordAnswerResult(
+      isCorrect: allCorrect,
+      successMsg: 'All concepts matched correctly! +20 XP',
+      errorMsg: 'Some pairings were incorrect. Review canonical pairs below.',
+    );
+
+    if (allCorrect) {
+      Future.delayed(const Duration(milliseconds: 1600), () {
+        if (!mounted) return;
+        setState(() {
+          generateQuestion();
+        });
+      });
+    }
+  }
+
+  void _handleSequencingSubmit() async {
+    bool allCorrect = true;
+    final List<bool> results = [];
+
+    for (int i = 0; i < _currentSequence.length; i++) {
+      final bool isStepCorrect = (i < _expectedSequence.length &&
+          _currentSequence[i] == _expectedSequence[i]);
+      results.add(isStepCorrect);
+      if (!isStepCorrect) {
+        allCorrect = false;
+      }
+    }
+
+    setState(() {
+      _sequencingSubmitted = true;
+      _sequenceStepResults = results;
+    });
+
+    await _recordAnswerResult(
+      isCorrect: allCorrect,
+      successMsg: 'Sequence verified in correct order! +20 XP',
+      errorMsg: 'Sequence was out of order. See canonical order below.',
+    );
+
+    if (allCorrect) {
+      Future.delayed(const Duration(milliseconds: 1600), () {
+        if (!mounted) return;
+        setState(() {
+          generateQuestion();
+        });
+      });
+    }
+  }
+
+  void _handleSortingSubmit() async {
+    bool allCorrect = true;
+    final Map<String, bool> results = {};
+
+    for (final item in _sortingItems) {
+      final assigned = _userClassification[item];
+      final bool isMatch = (assigned != null &&
+          (_sortingExpected[assigned]?.contains(item) ?? false));
+      results[item] = isMatch;
+      if (!isMatch) {
+        allCorrect = false;
+      }
+    }
+
+    setState(() {
+      _sortingSubmitted = true;
+      _sortingResults = results;
+    });
+
+    await _recordAnswerResult(
+      isCorrect: allCorrect,
+      successMsg: 'All items classified correctly! +20 XP',
+      errorMsg: 'Some classifications were incorrect. Review below.',
+    );
+
+    if (allCorrect) {
+      Future.delayed(const Duration(milliseconds: 1600), () {
+        if (!mounted) return;
+        setState(() {
+          generateQuestion();
+        });
+      });
+    }
+  }
+
+  String _getExpectedCategoryForItem(String item) {
+    for (final entry in _sortingExpected.entries) {
+      if (entry.value.contains(item)) {
+        return entry.key;
+      }
+    }
+    return '';
   }
 
   @override
@@ -1126,158 +1597,156 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                         ),
                       ),
 
-                      if (_language.isNotEmpty) ...[
-                        Text(
-                          _question,
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.plusJakartaSans(
-                            fontSize: questionFontSize,
-                            fontWeight: FontWeight.w700,
-                            height: 1.3,
-                            color: theme.colorScheme.onSurface,
+                      // Dynamic Question Type UI Rendering
+                      if (_currentQuestionType == HardCodeQuestionType.multiChoiceSyntax ||
+                          _currentQuestionType == HardCodeQuestionType.multiChoiceConceptual) ...[
+                        if (_language.isNotEmpty) ...[
+                          Text(
+                            _question,
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: questionFontSize,
+                              fontWeight: FontWeight.w700,
+                              height: 1.3,
+                              color: theme.colorScheme.onSurface,
+                            ),
                           ),
+                          SizedBox(height: contentSpacing),
+                        ],
+                        Column(
+                          children: _answerGroup.asMap().entries.map((entry) {
+                            final int idx = entry.key;
+                            final String answerButton = entry.value;
+                            final bool isActualCorrectChoice =
+                                (idx < _choices.length && _choices[idx][1] == 1);
+                            final isWrong = _incorrectSelections.contains(answerButton);
+                            final isCorrectAnswer = (_correctAnswerSelected == answerButton) ||
+                                (_isTimerExpired && isActualCorrectChoice);
+                            final isTimeoutReveal = _isTimerExpired && isActualCorrectChoice;
+                            final isDisabled = _isTimerExpired ||
+                                (_correctAnswerSelected != null) ||
+                                isWrong;
+
+                            return AnswerButton(
+                              key: ValueKey(
+                                  '${_questionNumber}_${answerButton}_${isWrong}_${isCorrectAnswer}_${isTimeoutReveal}_$_isTimerExpired'),
+                              text: answerButton,
+                              fontSize: buttonFontSize,
+                              verticalPadding: buttonVerticalPadding,
+                              horizontalPadding: buttonHorizontalPadding,
+                              verticalMargin: buttonVerticalMargin,
+                              isIncorrect: isWrong,
+                              isCorrect: isCorrectAnswer,
+                              isDisabled: isDisabled,
+                              isTimeoutReveal: isTimeoutReveal,
+                              onPressed: isDisabled
+                                  ? (isTimeoutReveal
+                                      ? () {
+                                          setState(() {
+                                            generateQuestion();
+                                          });
+                                        }
+                                      : null)
+                                  : () async {
+                                      int answer = _choices[
+                                          _answerGroup.indexOf(answerButton)][1];
+                                      final isCorrect = (answer == 1);
+
+                                      if (isCorrect) {
+                                        await _recordAnswerResult(
+                                          isCorrect: true,
+                                          successMsg: 'Correct choice! +15 XP',
+                                        );
+                                        setState(() {
+                                          _correctAnswerSelected = answerButton;
+                                        });
+
+                                        Future.delayed(
+                                            const Duration(milliseconds: 700), () {
+                                          if (!mounted) return;
+                                          setState(() {
+                                            generateQuestion();
+                                          });
+                                        });
+                                      } else {
+                                        await _recordAnswerResult(
+                                          isCorrect: false,
+                                          errorMsg: 'Incorrect choice. Try another option!',
+                                        );
+                                        setState(() {
+                                          _incorrectSelections.add(answerButton);
+                                        });
+                                      }
+                                    },
+                            );
+                          }).toList(),
                         ),
-                        SizedBox(height: contentSpacing),
-                      ],
-
-                      Column(
-                        children: _answerGroup.asMap().entries.map((entry) {
-                          final int idx = entry.key;
-                          final String answerButton = entry.value;
-                          final bool isActualCorrectChoice =
-                              (idx < _choices.length && _choices[idx][1] == 1);
-                          final isWrong = _incorrectSelections.contains(answerButton);
-                          final isCorrectAnswer = (_correctAnswerSelected == answerButton) ||
-                              (_isTimerExpired && isActualCorrectChoice);
-                          final isTimeoutReveal = _isTimerExpired && isActualCorrectChoice;
-                          final isDisabled = _isTimerExpired ||
-                              (_correctAnswerSelected != null) ||
-                              isWrong;
-
-                          return AnswerButton(
-                            key: ValueKey(
-                                '${_questionNumber}_${answerButton}_${isWrong}_${isCorrectAnswer}_${isTimeoutReveal}_$_isTimerExpired'),
-                            text: answerButton,
-                            fontSize: buttonFontSize,
-                            verticalPadding: buttonVerticalPadding,
-                            horizontalPadding: buttonHorizontalPadding,
-                            verticalMargin: buttonVerticalMargin,
-                            isIncorrect: isWrong,
-                            isCorrect: isCorrectAnswer,
-                            isDisabled: isDisabled,
-                            isTimeoutReveal: isTimeoutReveal,
-                            onPressed: isDisabled
-                                ? (isTimeoutReveal
-                                    ? () {
-                                        setState(() {
-                                          generateQuestion();
-                                        });
-                                      }
-                                    : null)
-                                : () async {
-                                    int answer = _choices[
-                                        _answerGroup.indexOf(answerButton)][1];
-                                    final isCorrect = (answer == 1);
-
-                                    if (isCorrect) {
-                                      _cancelTimer();
-                                      _topAlertTimer?.cancel();
-                                      final updatedStats =
-                                          await DatabaseService.instance.recordAnswer(
-                                        language: _language,
-                                        isCorrect: true,
-                                        timeRemainingSeconds: _remainingSeconds,
-                                      );
-                                      if (!mounted) return;
-                                      final double delta = (updatedStats.accuracyHistory.length >= 2)
-                                          ? updatedStats.accuracyHistory.last -
-                                              updatedStats.accuracyHistory[updatedStats.accuracyHistory.length - 2]
-                                          : (updatedStats.recentAccuracy - _userStats.recentAccuracy);
-                                      final bool accuracyWentUp = (delta >= -0.001);
-                                      setState(() {
-                                        _prevAccuracyHistory = List<double>.from(
-                                            _userStats.accuracyHistory);
-                                        _topAlertMessage = null;
-                                        _correctAnswerSelected = answerButton;
-                                        _userStats = updatedStats;
-                                        _isAccuracyUp = accuracyWentUp;
-                                        _trendDelta = delta;
-                                      });
-                                      _graphController.forward(from: 0.0);
-                                      if (accuracyWentUp) {
-                                        _pulseController.forward(from: 0.0);
-                                      }
-
-                                      // Brief celebratory delay before advancing
-                                      Future.delayed(
-                                          const Duration(milliseconds: 700), () {
-                                        if (!mounted) return;
-                                        setState(() {
-                                          generateQuestion();
-                                        });
-                                      });
-                                    } else {
-                                      final updatedStats =
-                                          await DatabaseService.instance.recordAnswer(
-                                        language: _language,
-                                        isCorrect: false,
-                                        timeRemainingSeconds: _remainingSeconds,
-                                      );
-                                      if (!mounted) return;
-                                      final double delta = (updatedStats.accuracyHistory.length >= 2)
-                                          ? updatedStats.accuracyHistory.last -
-                                              updatedStats.accuracyHistory[updatedStats.accuracyHistory.length - 2]
-                                          : (updatedStats.recentAccuracy - _userStats.recentAccuracy);
-                                      setState(() {
-                                        _prevAccuracyHistory = List<double>.from(
-                                            _userStats.accuracyHistory);
-                                        _incorrectSelections.add(answerButton);
-                                        _userStats = updatedStats;
-                                        _isAccuracyUp = false;
-                                        _trendDelta = delta;
-                                      });
-                                      _graphController.forward(from: 0.0);
-
-                                      _showTopAlert(
-                                        message:
-                                            'Incorrect choice. Try another option!',
-                                        icon: Icons.cancel,
-                                        backgroundColor:
-                                            Colors.redAccent.shade700,
-                                      );
-                                    }
-                                  },
-                          );
-                        }).toList(),
-                      ),
-                      if (_isTimerExpired) ...[
-                        SizedBox(height: (16.0 * scale).clamp(12.0, 20.0)),
-                        Center(
-                          child: FilledButton.icon(
-                            onPressed: () {
-                              setState(() {
-                                generateQuestion();
-                              });
-                            },
-                            icon: const Icon(Icons.arrow_forward_rounded, size: 18),
-                            label: const Text('Next Question'),
-                            style: FilledButton.styleFrom(
-                              backgroundColor: theme.colorScheme.primary,
-                              foregroundColor: theme.colorScheme.onPrimary,
-                              padding: EdgeInsets.symmetric(
-                                horizontal: (24.0 * scale).clamp(18.0, 32.0),
-                                vertical: (12.0 * scale).clamp(10.0, 16.0),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              textStyle: GoogleFonts.plusJakartaSans(
-                                fontSize: (15.0 * scale).clamp(13.0, 17.0),
-                                fontWeight: FontWeight.bold,
+                        if (_conceptualExplanation != null &&
+                            (_correctAnswerSelected != null || _isTimerExpired)) ...[
+                          SizedBox(height: (16.0 * scale).clamp(10.0, 20.0)),
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.green.withOpacity(0.08),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.green.withOpacity(0.3)),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Icon(Icons.lightbulb_outline_rounded,
+                                    size: 18, color: Colors.green),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    _conceptualExplanation!,
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontSize: (statFontSize * 0.9).clamp(11.0, 13.5),
+                                      color: theme.colorScheme.onSurface,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                        if (_isTimerExpired) ...[
+                          SizedBox(height: (16.0 * scale).clamp(12.0, 20.0)),
+                          Center(
+                            child: FilledButton.icon(
+                              onPressed: () {
+                                setState(() {
+                                  generateQuestion();
+                                });
+                              },
+                              icon: const Icon(Icons.arrow_forward_rounded, size: 18),
+                              label: const Text('Next Question'),
+                              style: FilledButton.styleFrom(
+                                backgroundColor: theme.colorScheme.primary,
+                                foregroundColor: theme.colorScheme.onPrimary,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: (24.0 * scale).clamp(18.0, 32.0),
+                                  vertical: (12.0 * scale).clamp(10.0, 16.0),
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                textStyle: GoogleFonts.plusJakartaSans(
+                                  fontSize: (15.0 * scale).clamp(13.0, 17.0),
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ),
-                        ),
+                        ],
+                      ] else if (_currentQuestionType == HardCodeQuestionType.trueFalse) ...[
+                        _buildTrueFalseUI(scale, theme, buttonFontSize, statFontSize),
+                      ] else if (_currentQuestionType == HardCodeQuestionType.matching) ...[
+                        _buildMatchingUI(scale, theme, buttonFontSize, statFontSize),
+                      ] else if (_currentQuestionType == HardCodeQuestionType.sequencing) ...[
+                        _buildSequencingUI(scale, theme, buttonFontSize, statFontSize),
+                      ] else if (_currentQuestionType == HardCodeQuestionType.sorting) ...[
+                        _buildSortingUI(scale, theme, buttonFontSize, statFontSize),
                       ],
                     ],
                   ),
@@ -1370,6 +1839,1064 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         tooltip: 'Next Question',
         child: const Icon(Icons.skip_next),
       ),
+    );
+  }
+
+  Widget _buildTrueFalseUI(
+    double scale,
+    ThemeData theme,
+    double buttonFontSize,
+    double statFontSize,
+  ) {
+    final bool isCompleted = _tfAnswered || _isTimerExpired;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          padding: EdgeInsets.all((16.0 * scale).clamp(12.0, 20.0)),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surfaceVariant.withOpacity(0.35),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: theme.colorScheme.outline.withOpacity(0.18),
+            ),
+          ),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.help_outline_rounded,
+                    size: (18.0 * scale).clamp(14.0, 20.0),
+                    color: theme.colorScheme.primary,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Is the following statement True or False?',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: (statFontSize * 0.95).clamp(11.0, 14.0),
+                      fontWeight: FontWeight.w700,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: (12.0 * scale).clamp(8.0, 16.0)),
+              Text(
+                _tfStatement,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: (20.0 * scale).clamp(14.0, 23.0),
+                  fontWeight: FontWeight.w700,
+                  height: 1.35,
+                  color: theme.colorScheme.onSurface,
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: (20.0 * scale).clamp(14.0, 24.0)),
+        Row(
+          children: [
+            Expanded(
+              child: _buildTrueFalseOptionButton(
+                isTrueOption: true,
+                scale: scale,
+                theme: theme,
+                fontSize: buttonFontSize,
+              ),
+            ),
+            SizedBox(width: (12.0 * scale).clamp(8.0, 16.0)),
+            Expanded(
+              child: _buildTrueFalseOptionButton(
+                isTrueOption: false,
+                scale: scale,
+                theme: theme,
+                fontSize: buttonFontSize,
+              ),
+            ),
+          ],
+        ),
+        if (isCompleted && _tfExplanation.isNotEmpty) ...[
+          SizedBox(height: (18.0 * scale).clamp(12.0, 22.0)),
+          Container(
+            padding: EdgeInsets.all((14.0 * scale).clamp(10.0, 16.0)),
+            decoration: BoxDecoration(
+              color: (_tfUserAnswer == _tfExpected)
+                  ? Colors.green.withOpacity(0.08)
+                  : Colors.red.withOpacity(0.08),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: (_tfUserAnswer == _tfExpected)
+                    ? Colors.green.withOpacity(0.35)
+                    : Colors.red.withOpacity(0.35),
+                width: 1.2,
+              ),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  (_tfUserAnswer == _tfExpected)
+                      ? Icons.check_circle_outline_rounded
+                      : Icons.info_outline_rounded,
+                  size: 20,
+                  color: (_tfUserAnswer == _tfExpected)
+                      ? Colors.green.shade700
+                      : Colors.red.shade700,
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Statement is ${_tfExpected ? "TRUE" : "FALSE"}',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: (statFontSize * 0.95).clamp(11.0, 14.0),
+                          fontWeight: FontWeight.w800,
+                          color: (_tfUserAnswer == _tfExpected)
+                              ? Colors.green.shade800
+                              : Colors.red.shade800,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        _tfExplanation,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: (statFontSize * 0.9).clamp(11.0, 13.5),
+                          height: 1.35,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+        if (isCompleted && (_isTimerExpired || _tfUserAnswer != _tfExpected)) ...[
+          SizedBox(height: (16.0 * scale).clamp(12.0, 20.0)),
+          Center(
+            child: FilledButton.icon(
+              onPressed: () {
+                setState(() {
+                  generateQuestion();
+                });
+              },
+              icon: const Icon(Icons.arrow_forward_rounded, size: 18),
+              label: const Text('Next Question'),
+              style: FilledButton.styleFrom(
+                backgroundColor: theme.colorScheme.primary,
+                foregroundColor: theme.colorScheme.onPrimary,
+                padding: EdgeInsets.symmetric(
+                  horizontal: (24.0 * scale).clamp(18.0, 32.0),
+                  vertical: (12.0 * scale).clamp(10.0, 16.0),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                textStyle: GoogleFonts.plusJakartaSans(
+                  fontSize: (15.0 * scale).clamp(13.0, 17.0),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildTrueFalseOptionButton({
+    required bool isTrueOption,
+    required double scale,
+    required ThemeData theme,
+    required double fontSize,
+  }) {
+    final bool isSelected = (_tfUserAnswer == isTrueOption);
+    final bool isTargetCorrect = (_tfExpected == isTrueOption);
+    final bool isRevealed = _isTimerExpired && isTargetCorrect;
+    final bool isCompleted = _tfAnswered || _isTimerExpired;
+
+    Color bgColor = theme.colorScheme.surface;
+    Color borderColor = theme.colorScheme.outline.withOpacity(0.35);
+    Color textColor = theme.colorScheme.onSurface;
+    double borderWidth = 1.4;
+
+    if (isSelected) {
+      if (isTargetCorrect) {
+        bgColor = Colors.green.withOpacity(0.12);
+        borderColor = Colors.green.shade600;
+        textColor = Colors.green.shade800;
+        borderWidth = 2.4;
+      } else {
+        bgColor = Colors.red.withOpacity(0.10);
+        borderColor = Colors.red.shade500;
+        textColor = Colors.red.shade800;
+        borderWidth = 2.4;
+      }
+    } else if (isRevealed) {
+      bgColor = Colors.green.withOpacity(0.12);
+      borderColor = Colors.green.shade600;
+      textColor = Colors.green.shade800;
+      borderWidth = 2.4;
+    } else if (isCompleted) {
+      bgColor = theme.colorScheme.surface.withOpacity(0.5);
+      borderColor = theme.colorScheme.outline.withOpacity(0.15);
+      textColor = theme.colorScheme.onSurface.withOpacity(0.35);
+    }
+
+    final String label = isTrueOption ? 'TRUE' : 'FALSE';
+    final IconData icon =
+        isTrueOption ? Icons.check_circle_outline : Icons.cancel_outlined;
+
+    return OutlinedButton(
+      onPressed: isCompleted
+          ? null
+          : () => _handleTrueFalseAnswer(isTrueOption),
+      style: OutlinedButton.styleFrom(
+        backgroundColor: bgColor,
+        foregroundColor: textColor,
+        side: BorderSide(color: borderColor, width: borderWidth),
+        padding: EdgeInsets.symmetric(
+          vertical: (16.0 * scale).clamp(12.0, 20.0),
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: (20.0 * scale).clamp(16.0, 24.0), color: textColor),
+          SizedBox(width: (8.0 * scale).clamp(6.0, 10.0)),
+          Text(
+            label,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: fontSize,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.8,
+              color: textColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMatchingUI(
+    double scale,
+    ThemeData theme,
+    double buttonFontSize,
+    double statFontSize,
+  ) {
+    final bool isCompleted = _matchingSubmitted || _isTimerExpired;
+    final int matchedCount = _userPairs.length;
+    final int totalCount = _matchingPairs.length;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          padding: EdgeInsets.all((14.0 * scale).clamp(10.0, 18.0)),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surfaceVariant.withOpacity(0.35),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: theme.colorScheme.outline.withOpacity(0.18),
+            ),
+          ),
+          child: Column(
+            children: [
+              Text(
+                _matchingPrompt.isNotEmpty
+                    ? _matchingPrompt
+                    : 'Match each concept on the left with its definition on the right:',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: (17.0 * scale).clamp(13.0, 20.0),
+                  fontWeight: FontWeight.w700,
+                  color: theme.colorScheme.onSurface,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                isCompleted
+                    ? 'Review matches below'
+                    : 'Tap a concept on the left, then tap its matching definition on the right ($matchedCount of $totalCount paired)',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: (statFontSize * 0.85).clamp(10.0, 12.5),
+                  fontWeight: FontWeight.w500,
+                  color: theme.colorScheme.onSurface.withOpacity(0.65),
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: (16.0 * scale).clamp(12.0, 20.0)),
+
+        Column(
+          children: _matchingLeftTerms.map((term) {
+            final String? currentMatch = _userPairs[term];
+            final String canonicalDef = _matchingPairs[term] ?? '';
+            final bool isSelected = (_selectedLeftTerm == term);
+            final bool? isPairCorrect =
+                isCompleted ? (_matchingPairResults[term]) : null;
+
+            Color borderColor = theme.colorScheme.outline.withOpacity(0.3);
+            Color bgColor = theme.colorScheme.surface;
+            if (isCompleted) {
+              if (isPairCorrect == true) {
+                borderColor = Colors.green.shade600;
+                bgColor = Colors.green.withOpacity(0.08);
+              } else {
+                borderColor = Colors.red.shade400;
+                bgColor = Colors.red.withOpacity(0.08);
+              }
+            } else if (isSelected) {
+              borderColor = theme.colorScheme.primary;
+              bgColor = theme.colorScheme.primary.withOpacity(0.08);
+            } else if (currentMatch != null) {
+              borderColor = theme.colorScheme.secondary.withOpacity(0.7);
+              bgColor = theme.colorScheme.secondaryContainer.withOpacity(0.3);
+            }
+
+            return Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: bgColor,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: borderColor, width: isSelected ? 2.0 : 1.2),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: InkWell(
+                          onTap: isCompleted
+                              ? null
+                              : () {
+                                  setState(() {
+                                    if (_selectedRightDef != null) {
+                                      _userPairs.removeWhere((k, v) => v == _selectedRightDef);
+                                      _userPairs[term] = _selectedRightDef!;
+                                      _selectedLeftTerm = null;
+                                      _selectedRightDef = null;
+                                    } else {
+                                      _selectedLeftTerm = (_selectedLeftTerm == term) ? null : term;
+                                    }
+                                  });
+                                },
+                          child: Row(
+                            children: [
+                              Icon(
+                                isCompleted
+                                    ? (isPairCorrect == true
+                                        ? Icons.check_circle_outline
+                                        : Icons.cancel_outlined)
+                                    : (currentMatch != null
+                                        ? Icons.link
+                                        : Icons.radio_button_unchecked),
+                                size: 18,
+                                color: isCompleted
+                                    ? (isPairCorrect == true
+                                        ? Colors.green.shade700
+                                        : Colors.red.shade700)
+                                    : (isSelected
+                                        ? theme.colorScheme.primary
+                                        : theme.colorScheme.onSurface.withOpacity(0.7)),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  term,
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: (statFontSize * 1.05).clamp(12.0, 15.0),
+                                    color: theme.colorScheme.onSurface,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      if (currentMatch != null && !isCompleted) ...[
+                        IconButton(
+                          icon: const Icon(Icons.close, size: 16),
+                          tooltip: 'Unpair',
+                          onPressed: () {
+                            setState(() {
+                              _userPairs.remove(term);
+                            });
+                          },
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                        ),
+                      ],
+                    ],
+                  ),
+                  if (currentMatch != null) ...[
+                    const SizedBox(height: 6),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surfaceVariant.withOpacity(0.4),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        '→ $currentMatch',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: (statFontSize * 0.88).clamp(11.0, 13.0),
+                          fontStyle: FontStyle.italic,
+                          color: isCompleted
+                              ? (isPairCorrect == true
+                                  ? Colors.green.shade800
+                                  : Colors.red.shade800)
+                              : theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                  ],
+                  if (isCompleted && isPairCorrect != true) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      'Correct: $canonicalDef',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: (statFontSize * 0.85).clamp(10.0, 12.5),
+                        fontWeight: FontWeight.w600,
+                        color: Colors.green.shade800,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            );
+          }).toList(),
+        ),
+
+        if (!isCompleted) ...[
+          SizedBox(height: (12.0 * scale).clamp(8.0, 16.0)),
+          Text(
+            'Definitions Pool (Tap to select & pair with highlighted concept):',
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: (statFontSize * 0.88).clamp(11.0, 13.0),
+              fontWeight: FontWeight.w700,
+              color: theme.colorScheme.onSurface.withOpacity(0.8),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Column(
+            children: _matchingRightDefs.map((def) {
+              final bool isPaired = _userPairs.values.contains(def);
+              final bool isDefSelected = (_selectedRightDef == def);
+
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 6.0),
+                child: OutlinedButton(
+                  onPressed: () {
+                    setState(() {
+                      if (_selectedLeftTerm != null) {
+                        _userPairs.removeWhere((k, v) => v == def);
+                        _userPairs[_selectedLeftTerm!] = def;
+                        _selectedLeftTerm = null;
+                        _selectedRightDef = null;
+                      } else {
+                        _selectedRightDef = (isDefSelected ? null : def);
+                      }
+                    });
+                  },
+                  style: OutlinedButton.styleFrom(
+                    alignment: Alignment.centerLeft,
+                    backgroundColor: isDefSelected
+                        ? theme.colorScheme.primary.withOpacity(0.12)
+                        : (isPaired
+                            ? theme.colorScheme.surfaceVariant.withOpacity(0.3)
+                            : theme.colorScheme.surface),
+                    side: BorderSide(
+                      color: isDefSelected
+                          ? theme.colorScheme.primary
+                          : (isPaired
+                              ? theme.colorScheme.outline.withOpacity(0.2)
+                              : theme.colorScheme.outline.withOpacity(0.4)),
+                      width: isDefSelected ? 1.8 : 1.0,
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: Text(
+                    def,
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: (statFontSize * 0.9).clamp(11.0, 13.5),
+                      color: isDefSelected
+                          ? theme.colorScheme.primary
+                          : (isPaired
+                              ? theme.colorScheme.onSurface.withOpacity(0.5)
+                              : theme.colorScheme.onSurface),
+                      decoration: isPaired ? TextDecoration.lineThrough : null,
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+          SizedBox(height: (16.0 * scale).clamp(12.0, 20.0)),
+          FilledButton.icon(
+            onPressed: (_userPairs.isNotEmpty) ? _handleMatchingSubmit : null,
+            icon: const Icon(Icons.check_circle_outline, size: 18),
+            label: Text('Submit Matches (${_userPairs.length}/$totalCount)'),
+            style: FilledButton.styleFrom(
+              padding: EdgeInsets.symmetric(
+                vertical: (13.0 * scale).clamp(10.0, 16.0),
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              textStyle: GoogleFonts.plusJakartaSans(
+                fontWeight: FontWeight.bold,
+                fontSize: (15.0 * scale).clamp(13.0, 16.5),
+              ),
+            ),
+          ),
+        ],
+
+        if (isCompleted) ...[
+          SizedBox(height: (16.0 * scale).clamp(12.0, 20.0)),
+          Center(
+            child: FilledButton.icon(
+              onPressed: () {
+                setState(() {
+                  generateQuestion();
+                });
+              },
+              icon: const Icon(Icons.arrow_forward_rounded, size: 18),
+              label: const Text('Next Question'),
+              style: FilledButton.styleFrom(
+                backgroundColor: theme.colorScheme.primary,
+                foregroundColor: theme.colorScheme.onPrimary,
+                padding: EdgeInsets.symmetric(
+                  horizontal: (24.0 * scale).clamp(18.0, 32.0),
+                  vertical: (12.0 * scale).clamp(10.0, 16.0),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                textStyle: GoogleFonts.plusJakartaSans(
+                  fontSize: (15.0 * scale).clamp(13.0, 17.0),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildSequencingUI(
+    double scale,
+    ThemeData theme,
+    double buttonFontSize,
+    double statFontSize,
+  ) {
+    final bool isCompleted = _sequencingSubmitted || _isTimerExpired;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          padding: EdgeInsets.all((14.0 * scale).clamp(10.0, 18.0)),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surfaceVariant.withOpacity(0.35),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: theme.colorScheme.outline.withOpacity(0.18),
+            ),
+          ),
+          child: Column(
+            children: [
+              Text(
+                _sequencingPrompt.isNotEmpty
+                    ? _sequencingPrompt
+                    : 'Arrange the following steps in the correct order:',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: (17.0 * scale).clamp(13.0, 20.0),
+                  fontWeight: FontWeight.w700,
+                  color: theme.colorScheme.onSurface,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                isCompleted
+                    ? 'Review execution order below'
+                    : 'Use the ▲ and ▼ buttons to arrange items from first to last',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: (statFontSize * 0.85).clamp(10.0, 12.5),
+                  fontWeight: FontWeight.w500,
+                  color: theme.colorScheme.onSurface.withOpacity(0.65),
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: (16.0 * scale).clamp(12.0, 20.0)),
+
+        Column(
+          children: _currentSequence.asMap().entries.map((entry) {
+            final int index = entry.key;
+            final String item = entry.value;
+            final bool isStepCorrect = (isCompleted &&
+                index < _sequenceStepResults.length &&
+                _sequenceStepResults[index]);
+
+            Color borderColor = theme.colorScheme.outline.withOpacity(0.3);
+            Color bgColor = theme.colorScheme.surface;
+            if (isCompleted) {
+              if (isStepCorrect) {
+                borderColor = Colors.green.shade600;
+                bgColor = Colors.green.withOpacity(0.08);
+              } else {
+                borderColor = Colors.red.shade400;
+                bgColor = Colors.red.withOpacity(0.08);
+              }
+            }
+
+            return Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              decoration: BoxDecoration(
+                color: bgColor,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: borderColor, width: 1.2),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 28,
+                    height: 28,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: isCompleted
+                          ? (isStepCorrect
+                              ? Colors.green.shade600
+                              : Colors.red.shade600)
+                          : theme.colorScheme.primaryContainer,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Text(
+                      '${index + 1}',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                        color: isCompleted
+                            ? Colors.white
+                            : theme.colorScheme.onPrimaryContainer,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      item,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: (statFontSize * 0.95).clamp(11.5, 14.0),
+                        fontWeight: FontWeight.w600,
+                        color: theme.colorScheme.onSurface,
+                      ),
+                    ),
+                  ),
+                  if (!isCompleted) ...[
+                    IconButton(
+                      icon: const Icon(Icons.arrow_upward, size: 18),
+                      tooltip: 'Move Up',
+                      onPressed: index > 0
+                          ? () {
+                              setState(() {
+                                final temp = _currentSequence[index];
+                                _currentSequence[index] =
+                                    _currentSequence[index - 1];
+                                _currentSequence[index - 1] = temp;
+                              });
+                            }
+                          : null,
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                    const SizedBox(width: 8),
+                    IconButton(
+                      icon: const Icon(Icons.arrow_downward, size: 18),
+                      tooltip: 'Move Down',
+                      onPressed: index < _currentSequence.length - 1
+                          ? () {
+                              setState(() {
+                                final temp = _currentSequence[index];
+                                _currentSequence[index] =
+                                    _currentSequence[index + 1];
+                                _currentSequence[index + 1] = temp;
+                              });
+                            }
+                          : null,
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                  ],
+                ],
+              ),
+            );
+          }).toList(),
+        ),
+
+        if (isCompleted) ...[
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.green.withOpacity(0.08),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.green.withOpacity(0.3)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.check_circle_rounded,
+                        size: 16, color: Colors.green),
+                    const SizedBox(width: 6),
+                    Text(
+                      'Canonical Execution Order:',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontWeight: FontWeight.w700,
+                        fontSize: (statFontSize * 0.9).clamp(11.0, 13.5),
+                        color: Colors.green.shade800,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                ..._expectedSequence.asMap().entries.map((e) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 2.0),
+                      child: Text(
+                        '${e.key + 1}. ${e.value}',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: (statFontSize * 0.85).clamp(10.5, 13.0),
+                          color: theme.colorScheme.onSurface,
+                        ),
+                      ),
+                    )),
+              ],
+            ),
+          ),
+        ],
+
+        SizedBox(height: (16.0 * scale).clamp(12.0, 20.0)),
+        if (!isCompleted) ...[
+          FilledButton.icon(
+            onPressed: _handleSequencingSubmit,
+            icon: const Icon(Icons.done_all_rounded, size: 18),
+            label: const Text('Submit Sequence Order'),
+            style: FilledButton.styleFrom(
+              padding: EdgeInsets.symmetric(
+                vertical: (13.0 * scale).clamp(10.0, 16.0),
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              textStyle: GoogleFonts.plusJakartaSans(
+                fontWeight: FontWeight.bold,
+                fontSize: (15.0 * scale).clamp(13.0, 16.5),
+              ),
+            ),
+          ),
+        ] else ...[
+          Center(
+            child: FilledButton.icon(
+              onPressed: () {
+                setState(() {
+                  generateQuestion();
+                });
+              },
+              icon: const Icon(Icons.arrow_forward_rounded, size: 18),
+              label: const Text('Next Question'),
+              style: FilledButton.styleFrom(
+                backgroundColor: theme.colorScheme.primary,
+                foregroundColor: theme.colorScheme.onPrimary,
+                padding: EdgeInsets.symmetric(
+                  horizontal: (24.0 * scale).clamp(18.0, 32.0),
+                  vertical: (12.0 * scale).clamp(10.0, 16.0),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                textStyle: GoogleFonts.plusJakartaSans(
+                  fontSize: (15.0 * scale).clamp(13.0, 17.0),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildSortingUI(
+    double scale,
+    ThemeData theme,
+    double buttonFontSize,
+    double statFontSize,
+  ) {
+    final bool isCompleted = _sortingSubmitted || _isTimerExpired;
+    final int classifiedCount = _userClassification.length;
+    final int totalCount = _sortingItems.length;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          padding: EdgeInsets.all((14.0 * scale).clamp(10.0, 18.0)),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surfaceVariant.withOpacity(0.35),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: theme.colorScheme.outline.withOpacity(0.18),
+            ),
+          ),
+          child: Column(
+            children: [
+              Text(
+                _sortingPrompt.isNotEmpty
+                    ? _sortingPrompt
+                    : 'Classify each item into the correct category:',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: (17.0 * scale).clamp(13.0, 20.0),
+                  fontWeight: FontWeight.w700,
+                  color: theme.colorScheme.onSurface,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                isCompleted
+                    ? 'Review classification results below'
+                    : 'Select a category for each item ($classifiedCount of $totalCount classified)',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: (statFontSize * 0.85).clamp(10.0, 12.5),
+                  fontWeight: FontWeight.w500,
+                  color: theme.colorScheme.onSurface.withOpacity(0.65),
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: (16.0 * scale).clamp(12.0, 20.0)),
+
+        Column(
+          children: _sortingItems.map((item) {
+            final String? selectedCategory = _userClassification[item];
+            final String expectedCat = _getExpectedCategoryForItem(item);
+            final bool? isItemCorrect = isCompleted
+                ? (_sortingResults[item] ?? (selectedCategory == expectedCat))
+                : null;
+
+            Color borderColor = theme.colorScheme.outline.withOpacity(0.3);
+            Color bgColor = theme.colorScheme.surface;
+            if (isCompleted) {
+              if (isItemCorrect == true) {
+                borderColor = Colors.green.shade600;
+                bgColor = Colors.green.withOpacity(0.08);
+              } else {
+                borderColor = Colors.red.shade400;
+                bgColor = Colors.red.withOpacity(0.08);
+              }
+            }
+
+            return Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: bgColor,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: borderColor, width: 1.2),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      if (isCompleted) ...[
+                        Icon(
+                          isItemCorrect == true
+                              ? Icons.check_circle_outline
+                              : Icons.cancel_outlined,
+                          size: 18,
+                          color: isItemCorrect == true
+                              ? Colors.green.shade700
+                              : Colors.red.shade700,
+                        ),
+                        const SizedBox(width: 8),
+                      ],
+                      Expanded(
+                        child: Text(
+                          item,
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: (statFontSize * 1.05).clamp(12.0, 15.0),
+                            fontWeight: FontWeight.w700,
+                            color: theme.colorScheme.onSurface,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 6,
+                    children: _sortingCategories.map((category) {
+                      final bool isChipSelected = (selectedCategory == category);
+                      final bool isTargetCategory = (expectedCat == category);
+
+                      Color chipBg = theme.colorScheme.surface;
+                      Color chipBorder = theme.colorScheme.outline.withOpacity(0.4);
+                      Color chipText = theme.colorScheme.onSurface;
+
+                      if (isCompleted) {
+                        if (isChipSelected && isItemCorrect == true) {
+                          chipBg = Colors.green.shade600;
+                          chipBorder = Colors.green.shade700;
+                          chipText = Colors.white;
+                        } else if (isChipSelected && isItemCorrect == false) {
+                          chipBg = Colors.red.shade600;
+                          chipBorder = Colors.red.shade700;
+                          chipText = Colors.white;
+                        } else if (isTargetCategory) {
+                          chipBg = Colors.green.withOpacity(0.15);
+                          chipBorder = Colors.green.shade600;
+                          chipText = Colors.green.shade900;
+                        } else {
+                          chipBg = theme.colorScheme.surface.withOpacity(0.4);
+                          chipBorder = theme.colorScheme.outline.withOpacity(0.15);
+                          chipText = theme.colorScheme.onSurface.withOpacity(0.35);
+                        }
+                      } else if (isChipSelected) {
+                        chipBg = theme.colorScheme.primary;
+                        chipBorder = theme.colorScheme.primary;
+                        chipText = theme.colorScheme.onPrimary;
+                      }
+
+                      return InkWell(
+                        onTap: isCompleted
+                            ? null
+                            : () {
+                                setState(() {
+                                  _userClassification[item] = category;
+                                });
+                              },
+                        borderRadius: BorderRadius.circular(20),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: chipBg,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: chipBorder, width: 1.2),
+                          ),
+                          child: Text(
+                            category,
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: (statFontSize * 0.85).clamp(10.5, 12.5),
+                              fontWeight: isChipSelected
+                                  ? FontWeight.w700
+                                  : FontWeight.w500,
+                              color: chipText,
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                  if (isCompleted && isItemCorrect != true) ...[
+                    const SizedBox(height: 6),
+                    Text(
+                      'Correct category: $expectedCat',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: (statFontSize * 0.85).clamp(10.0, 12.5),
+                        fontWeight: FontWeight.w600,
+                        color: Colors.green.shade800,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            );
+          }).toList(),
+        ),
+
+        SizedBox(height: (16.0 * scale).clamp(12.0, 20.0)),
+        if (!isCompleted) ...[
+          FilledButton.icon(
+            onPressed: (_userClassification.length == _sortingItems.length)
+                ? _handleSortingSubmit
+                : null,
+            icon: const Icon(Icons.done_all_rounded, size: 18),
+            label: Text('Submit Classification ($classifiedCount/$totalCount)'),
+            style: FilledButton.styleFrom(
+              padding: EdgeInsets.symmetric(
+                vertical: (13.0 * scale).clamp(10.0, 16.0),
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              textStyle: GoogleFonts.plusJakartaSans(
+                fontWeight: FontWeight.bold,
+                fontSize: (15.0 * scale).clamp(13.0, 16.5),
+              ),
+            ),
+          ),
+        ] else ...[
+          Center(
+            child: FilledButton.icon(
+              onPressed: () {
+                setState(() {
+                  generateQuestion();
+                });
+              },
+              icon: const Icon(Icons.arrow_forward_rounded, size: 18),
+              label: const Text('Next Question'),
+              style: FilledButton.styleFrom(
+                backgroundColor: theme.colorScheme.primary,
+                foregroundColor: theme.colorScheme.onPrimary,
+                padding: EdgeInsets.symmetric(
+                  horizontal: (24.0 * scale).clamp(18.0, 32.0),
+                  vertical: (12.0 * scale).clamp(10.0, 16.0),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                textStyle: GoogleFonts.plusJakartaSans(
+                  fontSize: (15.0 * scale).clamp(13.0, 17.0),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ],
     );
   }
 }

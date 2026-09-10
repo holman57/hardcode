@@ -13,6 +13,7 @@ from python_driver import (
     evaluate_matching_question,
     evaluate_sequencing_question,
     evaluate_sorting_question,
+    evaluate_multi_choice_question,
     run_automated_validation,
 )
 
@@ -102,6 +103,20 @@ class TestHardCodeSuite(unittest.TestCase):
         }
         self.assertTrue(evaluate_sorting_question(q, {"LIFO": ["Stack"], "FIFO": ["Queue"]})[0])
         self.assertFalse(evaluate_sorting_question(q, {"LIFO": ["Queue"], "FIFO": ["Stack"]})[0])
+
+    def test_multi_choice_evaluator(self):
+        q = {
+            "question": "Which layer is TCP?",
+            "choices": ["Application", "Transport", "Network", "Physical"],
+            "correct_index": 1,
+            "explanation": "TCP is Layer 4 Transport."
+        }
+        corr, exp = evaluate_multi_choice_question(q, 1)
+        self.assertTrue(corr)
+        self.assertIn("Transport", exp)
+
+        wrong, _ = evaluate_multi_choice_question(q, 0)
+        self.assertFalse(wrong)
 
     def test_pedagogical_throttling(self):
         tracker = LearnerTracker()

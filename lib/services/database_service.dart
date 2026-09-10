@@ -152,7 +152,7 @@ class DatabaseService {
     final String? cachedJson = _catalogBox!.get('catalog_json') as String?;
 
     // If cached version is up to date and valid, use cached catalog
-    if (cachedVersion >= 4 && cachedJson != null && cachedJson.isNotEmpty) {
+    if (cachedVersion >= 6 && cachedJson != null && cachedJson.isNotEmpty) {
       try {
         final Map<String, dynamic> decoded =
             jsonDecode(cachedJson) as Map<String, dynamic>;

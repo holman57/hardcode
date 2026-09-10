@@ -223,6 +223,12 @@ def evaluate_sorting_question(q: Dict[str, Any], user_groups: Dict[str, List[str
     return all_match, expected
 
 
+def evaluate_multi_choice_question(q: Dict[str, Any], user_choice: int) -> Tuple[bool, str]:
+    """Evaluates Multi-Choice question. user_choice is 0-indexed integer."""
+    is_correct = (user_choice == q["correct_index"])
+    return is_correct, q.get("explanation", "")
+
+
 def run_automated_validation() -> bool:
     """Non-interactive test routine for CI/CD and System Alpha verification."""
     print("=== HardCode Automated Validation Suite ===")
@@ -277,6 +283,13 @@ def run_automated_validation() -> bool:
         for sc in q_dict.get("Sorting-Classification", []):
             corr, exp = evaluate_sorting_question(sc, sc["items"])
             assert corr, f"Sorting question failed: {sc['prompt']}"
+        # Multi-Choice
+        for mc in q_dict.get("Multi-Choice", []):
+            corr, exp = evaluate_multi_choice_question(mc, mc["correct_index"])
+            assert corr, f"MC question failed correct evaluation: {mc['question']}"
+            wrong_idx = (mc["correct_index"] + 1) % len(mc["choices"])
+            wrong, _ = evaluate_multi_choice_question(mc, wrong_idx)
+            assert not wrong, f"MC question failed incorrect evaluation: {mc['question']}"
     print("[OK] Verified mathematical correctness of all question evaluators")
 
     # 4. Validate Pedagogical Throttling Logic
@@ -320,6 +333,178 @@ def run_automated_validation() -> bool:
     return True
 
 
+def run_interactive_quiz(db: Dict[str, Any], tracker: LearnerTracker, domain_filter: str = "all"):
+    """Interactive quiz loop that loops through all 5 question types across domains."""
+    print("=" * 60)
+    print("        HARDCODE ACADEMY - INTERACTIVE KNOWLEDGE DRILL")
+    print("=" * 60)
+    print("Question Types: Multi-Choice | True-False | Matching | Sequencing | Sorting")
+    print("Type 'q' or 'quit' at any prompt to exit.\n")
+
+    curriculum = db.get("Curriculum", {})
+    available_domains = list(curriculum.keys())
+    if not available_domains:
+        print("No curriculum questions available in catalog.")
+        return
+
+    score = 0
+    total = 0
+    streak = 0
+    best_streak = 0
+
+    question_types = ["True-False", "Matching", "Sequencing", "Sorting-Classification", "Multi-Choice"]
+    last_q_type = None
+
+    while True:
+        tracker.record_turn()
+        dom = random.choice(available_domains)
+        dom_data = curriculum[dom]
+        q_dict = dom_data.get("questions", {})
+
+        intro = tracker.observe_topic(dom)
+        if intro:
+            print(f"\n[{intro[0]}] {intro[1]}")
+            if dom_data.get("introduction"):
+                print(f"-> {dom_data['introduction']}")
+
+        valid_types = [t for t in question_types if t in q_dict and len(q_dict[t]) > 0]
+        if not valid_types:
+            continue
+        candidates = [t for t in valid_types if t != last_q_type] or valid_types
+        q_type = random.choice(candidates)
+        last_q_type = q_type
+        q_item = random.choice(q_dict[q_type])
+
+        print(f"\n--- [ {dom} • {q_type} ] (Score: {score}/{total} | Streak: {streak}) ---")
+        is_correct = False
+        explanation = ""
+
+        if q_type == "True-False":
+            print(f"Statement: {q_item['statement']}")
+            ans = input("Your answer ([T]rue / [F]alse): ").strip()
+            if ans.lower() in ("q", "quit", "exit"):
+                break
+            is_correct, explanation = evaluate_true_false_question(q_item, ans)
+
+        elif q_type == "Multi-Choice":
+            print(f"Question: {q_item['question']}")
+            for idx, choice in enumerate(q_item["choices"], start=1):
+                print(f"  [{idx}] {choice}")
+            ans = input("Select [1-4]: ").strip()
+            if ans.lower() in ("q", "quit", "exit"):
+                break
+            try:
+                choice_idx = int(ans) - 1
+                is_correct, explanation = evaluate_multi_choice_question(q_item, choice_idx)
+            except ValueError:
+                is_correct = False
+                explanation = q_item.get("explanation", "")
+
+        elif q_type == "Matching":
+            print(f"Prompt: {q_item['prompt']}")
+            pairs = q_item["pairs"]
+            terms = list(pairs.keys())
+            defs = list(pairs.values())
+            random.shuffle(defs)
+            letters = [chr(ord('A') + i) for i in range(len(defs))]
+            def_map = dict(zip(letters, defs))
+
+            print("Terms to match:")
+            for idx, t in enumerate(terms, start=1):
+                print(f"  [{idx}] {t}")
+            print("Definitions:")
+            for ltr, d in def_map.items():
+                print(f"  [{ltr}] {d}")
+
+            print("\nEnter pairing for each term (e.g. 1=A, 2=B) or 'all' to auto-check:")
+            ans = input("Pairings (comma separated): ").strip()
+            if ans.lower() in ("q", "quit", "exit"):
+                break
+            user_pairs = {}
+            if ans.lower() == "all":
+                user_pairs = pairs
+            else:
+                for chunk in ans.split(","):
+                    if "=" in chunk:
+                        parts = chunk.strip().split("=")
+                        try:
+                            t_idx = int(parts[0].strip()) - 1
+                            ltr = parts[1].strip().upper()
+                            if 0 <= t_idx < len(terms) and ltr in def_map:
+                                user_pairs[terms[t_idx]] = def_map[ltr]
+                        except Exception:
+                            pass
+            is_correct, match_c, tot = evaluate_matching_question(q_item, user_pairs)
+            explanation = f"Matched {match_c} of {tot} correctly. Correct pairs:\n" + "\n".join(f"  * {k} -> {v}" for k, v in pairs.items())
+
+        elif q_type == "Sequencing":
+            print(f"Prompt: {q_item['prompt']}")
+            expected = q_item["ordered_sequence"]
+            shuffled = list(expected)
+            random.shuffle(shuffled)
+            for idx, step in enumerate(shuffled, start=1):
+                print(f"  [{idx}] {step}")
+            ans = input(f"Enter correct order (comma separated numbers 1-{len(shuffled)}): ").strip()
+            if ans.lower() in ("q", "quit", "exit"):
+                break
+            try:
+                order_indices = [int(x.strip()) - 1 for x in ans.split(",")]
+                user_sequence = [shuffled[i] for i in order_indices if 0 <= i < len(shuffled)]
+            except Exception:
+                user_sequence = []
+            is_correct, exp_seq = evaluate_sequencing_question(q_item, user_sequence)
+            explanation = "Correct Sequence:\n" + "\n".join(f"  {i+1}. {s}" for i, s in enumerate(exp_seq))
+
+        elif q_type == "Sorting-Classification":
+            print(f"Prompt: {q_item['prompt']}")
+            cats = q_item["categories"]
+            cat_map = {str(i + 1): cat for i, cat in enumerate(cats)}
+            print(f"Categories: " + " | ".join(f"[{k}] {v}" for k, v in cat_map.items()))
+            items = []
+            for c, it_list in q_item["items"].items():
+                items.extend(it_list)
+            random.shuffle(items)
+            user_groups = {c: [] for c in cats}
+            ans = ""
+            for it in items:
+                ans = input(f"Classify '{it}' (1-{len(cats)}): ").strip()
+                if ans.lower() in ("q", "quit", "exit"):
+                    break
+                if ans in cat_map:
+                    user_groups[cat_map[ans]].append(it)
+            if ans.lower() in ("q", "quit", "exit"):
+                break
+            is_correct, exp_groups = evaluate_sorting_question(q_item, user_groups)
+            explanation = "Correct Classifications:\n" + "\n".join(f"  * {c}: {', '.join(its)}" for c, its in exp_groups.items())
+
+        total += 1
+        if is_correct:
+            score += 1
+            streak += 1
+            if streak > best_streak:
+                best_streak = streak
+            print(">>> [CORRECT!] Excellent work! +15 XP")
+            if explanation:
+                print(f"Note: {explanation}")
+        else:
+            streak = 0
+            print(">>> [INCORRECT]")
+            if explanation:
+                print(f"Explanation:\n{explanation}")
+
+        ped = tracker.record_result(dom, is_correct, dom_data)
+        if ped:
+            print(f"\n[{ped[0]}]")
+            print(f"-> {ped[1]}")
+
+    print("\n" + "=" * 60)
+    print("SESSION COMPLETE")
+    print(f"Total Questions: {total} | Correct: {score}")
+    acc = (score / total * 100) if total > 0 else 0
+    print(f"Accuracy: {acc:.1f}% | Best Streak: {best_streak}")
+    print("=" * 60)
+
+
 def main():
     parser = argparse.ArgumentParser(description="HardCode Flashcard & CS Learning CLI Driver")
     parser.add_argument("--test", action="store_true", help="Run automated validation suite non-interactively")
@@ -333,9 +518,9 @@ def main():
     # Interactive Quiz Mode
     db = load_database()
     tracker = LearnerTracker()
-    print("Welcome to HardCode Academy (Interactive Mode). Press ESC to quit.")
-    run_automated_validation()
+    run_interactive_quiz(db, tracker, domain_filter=args.domain)
 
 
 if __name__ == "__main__":
     main()
+
