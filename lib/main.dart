@@ -174,7 +174,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   Timer? _questionTimer;
   int _remainingSeconds = 20;
   static const int _totalSeconds = 20;
-  static const int _maxTimerCap = 30;
+  static const int _maxTimerCap = 20;
   static const int _bonusSeconds = 3;
   int _currentTimerCap = 20;
   bool _isTimerExpired = false;
@@ -212,9 +212,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     if (_isTimerExpired || _questionTimer == null) return;
     setState(() {
       _remainingSeconds = min(_remainingSeconds + seconds, _maxTimerCap);
-      if (_remainingSeconds > _currentTimerCap) {
-        _currentTimerCap = _remainingSeconds;
-      }
+      _currentTimerCap = _totalSeconds;
       _showBonusBadge = true;
     });
     _bonusBadgeTimer?.cancel();
@@ -1260,18 +1258,47 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     }
   }
 
-  void _pairTermWithDef(String term, String def) {
+  void _pairTermWithDef(String targetTerm, String def) {
     if (_matchingSubmitted || _isTimerExpired) return;
-    final bool isChanged = (_userPairs[term] != def);
+    if (def.isEmpty) {
+      setState(() {
+        _userPairs.remove(targetTerm);
+        _selectedLeftTerm = null;
+        _selectedRightDef = null;
+      });
+      return;
+    }
+
+    final String? previousTargetDef = _userPairs[targetTerm];
+    if (previousTargetDef == def) return;
+
+    // Check if `def` was currently assigned to another term
+    String? sourceTerm;
+    for (final entry in _userPairs.entries) {
+      if (entry.value == def && entry.key != targetTerm) {
+        sourceTerm = entry.key;
+        break;
+      }
+    }
+
     setState(() {
-      _userPairs.removeWhere((k, v) => v == def);
-      _userPairs[term] = def;
+      if (sourceTerm != null) {
+        // def was dragged from another answer!
+        if (previousTargetDef != null) {
+          // SWAP: sourceTerm gets targetTerm's previous definition
+          _userPairs[sourceTerm] = previousTargetDef;
+        } else {
+          // sourceTerm loses def and becomes unassigned
+          _userPairs.remove(sourceTerm);
+        }
+      }
+
+      _userPairs[targetTerm] = def;
       _selectedLeftTerm = null;
       _selectedRightDef = null;
     });
-    if (isChanged) {
-      _addBonusTime(3);
-    }
+
+    _addBonusTime(3);
   }
 
   void _handleMatchingSubmit() async {
@@ -2746,7 +2773,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                       ),
                                     ),
                                   ),
-                                  if (!isCompleted) ...[
+                                  if (!isCompleted && currentMatch == null) ...[
                                     Icon(
                                       Icons.drag_indicator,
                                       size: 16,
@@ -2758,41 +2785,149 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                               ),
                             ),
                           ),
-                          if (currentMatch != null && !isCompleted) ...[
-                            IconButton(
-                              icon: const Icon(Icons.close, size: 16),
-                              tooltip: 'Unpair',
-                              onPressed: () => _pairTermWithDef(term, ''),
-                              padding: EdgeInsets.zero,
-                              constraints: const BoxConstraints(),
-                            ),
-                          ],
                         ],
                       ),
                       if (currentMatch != null) ...[
-                        const SizedBox(height: 6),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.surfaceVariant
-                                .withOpacity(0.4),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            '→ $currentMatch',
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize:
-                                  (statFontSize * 0.88).clamp(11.0, 13.0),
-                              fontStyle: FontStyle.italic,
-                              color: isCompleted
-                                  ? (isPairCorrect == true
-                                      ? Colors.green.shade800
-                                      : Colors.red.shade800)
-                                  : theme.colorScheme.onSurfaceVariant,
+                        const SizedBox(height: 8),
+                        if (!isCompleted)
+                          Draggable<String>(
+                            data: currentMatch,
+                            feedback: Material(
+                              elevation: 8.0,
+                              borderRadius: BorderRadius.circular(10),
+                              color: theme.colorScheme.secondary,
+                              shadowColor: Colors.black45,
+                              child: Container(
+                                constraints: BoxConstraints(
+                                  maxWidth: (cardWidth * 0.85).clamp(240.0, 500.0),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 14, vertical: 10),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.drag_indicator,
+                                        size: 18, color: Colors.white70),
+                                    const SizedBox(width: 8),
+                                    Flexible(
+                                      child: Text(
+                                        currentMatch,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: GoogleFonts.plusJakartaSans(
+                                          fontSize: (statFontSize * 0.9)
+                                              .clamp(11.0, 13.5),
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            childWhenDragging: Opacity(
+                              opacity: 0.25,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 7),
+                                decoration: BoxDecoration(
+                                  color: theme.colorScheme.surfaceVariant
+                                      .withOpacity(0.3),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: theme.colorScheme.outline
+                                        .withOpacity(0.3),
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.drag_indicator,
+                                        size: 16, color: Colors.grey),
+                                    const SizedBox(width: 6),
+                                    Expanded(
+                                      child: Text(
+                                        'Moving: $currentMatch',
+                                        style: GoogleFonts.plusJakartaSans(
+                                          fontSize: (statFontSize * 0.88)
+                                              .clamp(11.0, 13.0),
+                                          fontStyle: FontStyle.italic,
+                                          color: theme
+                                              .colorScheme.onSurfaceVariant
+                                              .withOpacity(0.6),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 7),
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.secondaryContainer
+                                    .withOpacity(0.45),
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: theme.colorScheme.secondary
+                                      .withOpacity(0.5),
+                                  width: 1.2,
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.drag_indicator,
+                                    size: 16,
+                                    color: theme.colorScheme.secondary,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Expanded(
+                                    child: Text(
+                                      currentMatch,
+                                      style: GoogleFonts.plusJakartaSans(
+                                        fontSize: (statFontSize * 0.88)
+                                            .clamp(11.0, 13.0),
+                                        fontWeight: FontWeight.w600,
+                                        color: theme.colorScheme
+                                            .onSecondaryContainer,
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.close, size: 16),
+                                    tooltip: 'Unpair (returns to pool)',
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                    onPressed: () =>
+                                        _pairTermWithDef(term, ''),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        else
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.surfaceVariant
+                                  .withOpacity(0.4),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              '→ $currentMatch',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize:
+                                    (statFontSize * 0.88).clamp(11.0, 13.0),
+                                fontStyle: FontStyle.italic,
+                                color: (isPairCorrect == true
+                                    ? Colors.green.shade800
+                                    : Colors.red.shade800),
+                              ),
                             ),
                           ),
-                        ),
                       ],
                       if (isCompleted && isPairCorrect != true) ...[
                         const SizedBox(height: 4),
@@ -2810,7 +2945,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   ),
                 );
 
-                if (isCompleted) {
+                if (isCompleted || currentMatch != null) {
                   return termCardContent;
                 }
 
@@ -2861,157 +2996,216 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
         if (!isCompleted) ...[
           SizedBox(height: (12.0 * scale).clamp(8.0, 16.0)),
-          Text(
-            'Definitions Pool (Tap to select or drag onto concept above):',
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: (statFontSize * 0.88).clamp(11.0, 13.0),
-              fontWeight: FontWeight.w700,
-              color: theme.colorScheme.onSurface.withOpacity(0.8),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Column(
-            children: _matchingRightDefs.map((def) {
-              final bool isPaired = _userPairs.values.contains(def);
-              final bool isDefSelected = (_selectedRightDef == def);
+          DragTarget<String>(
+            onWillAcceptWithDetails: (details) =>
+                !isCompleted && _userPairs.values.contains(details.data),
+            onAcceptWithDetails: (details) {
+              setState(() {
+                _userPairs.removeWhere((k, v) => v == details.data);
+              });
+            },
+            builder: (context, poolCandidateData, poolRejectedData) {
+              final bool isPoolHovered =
+                  poolCandidateData.isNotEmpty && !isCompleted;
+              final unassignedDefs = _matchingRightDefs
+                  .where((def) => !_userPairs.values.contains(def))
+                  .toList();
 
-              return DragTarget<String>(
-                onWillAcceptWithDetails: (details) =>
-                    !isCompleted && _matchingLeftTerms.contains(details.data),
-                onAcceptWithDetails: (details) {
-                  _pairTermWithDef(details.data, def);
-                },
-                builder: (context, candidateData, rejectedData) {
-                  final bool isHovered =
-                      candidateData.isNotEmpty && !isCompleted;
-
-                  Color itemBg = isDefSelected
-                      ? theme.colorScheme.primary.withOpacity(0.12)
-                      : (isHovered
-                          ? theme.colorScheme.primary.withOpacity(0.18)
-                          : (isPaired
-                              ? theme.colorScheme.surfaceVariant
-                                  .withOpacity(0.3)
-                              : theme.colorScheme.surface));
-
-                  Color itemBorder = isDefSelected || isHovered
-                      ? theme.colorScheme.primary
-                      : (isPaired
-                          ? theme.colorScheme.outline.withOpacity(0.2)
-                          : theme.colorScheme.outline.withOpacity(0.4));
-
-                  final Widget defCardContent = Container(
-                    margin: const EdgeInsets.only(bottom: 6.0),
-                    decoration: BoxDecoration(
-                      color: itemBg,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: itemBorder,
-                        width: (isDefSelected || isHovered) ? 1.8 : 1.0,
+              return Container(
+                padding: isPoolHovered ? const EdgeInsets.all(8) : EdgeInsets.zero,
+                decoration: isPoolHovered
+                    ? BoxDecoration(
+                        color: theme.colorScheme.primary.withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: theme.colorScheme.primary,
+                          width: 1.8,
+                        ),
+                      )
+                    : null,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      unassignedDefs.isNotEmpty
+                          ? 'Definitions Pool (Drag onto concepts or tap to pair):'
+                          : 'Definitions Pool (All paired! Drag definitions to reorder or drop here to unpair):',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: (statFontSize * 0.88).clamp(11.0, 13.0),
+                        fontWeight: FontWeight.w700,
+                        color: theme.colorScheme.onSurface.withOpacity(0.8),
                       ),
-                      boxShadow: isHovered
-                          ? [
-                              BoxShadow(
-                                color: theme.colorScheme.primary
-                                    .withOpacity(0.2),
-                                blurRadius: 6,
-                                offset: const Offset(0, 2),
-                              ),
-                            ]
-                          : null,
                     ),
-                    child: InkWell(
-                      onTap: () {
-                        if (_selectedLeftTerm != null) {
-                          _pairTermWithDef(_selectedLeftTerm!, def);
-                        } else {
-                          setState(() {
-                            _selectedRightDef =
-                                (isDefSelected ? null : def);
-                          });
-                        }
-                      },
-                      borderRadius: BorderRadius.circular(10),
-                      child: Padding(
+                    const SizedBox(height: 8),
+                    if (unassignedDefs.isEmpty) ...[
+                      Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 10),
+                            horizontal: 14, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: Colors.green.withOpacity(0.08),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.green.withOpacity(0.25)),
+                        ),
                         child: Row(
                           children: [
-                            Icon(
-                              Icons.drag_indicator,
-                              size: 16,
-                              color: isDefSelected
-                                  ? theme.colorScheme.primary
-                                  : theme.colorScheme.onSurface
-                                      .withOpacity(0.4),
-                            ),
+                            const Icon(Icons.check_circle_outline,
+                                size: 18, color: Colors.green),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
-                                def,
+                                'All definitions paired! You can drag definitions between answers to adjust them, or tap Submit.',
                                 style: GoogleFonts.plusJakartaSans(
                                   fontSize:
-                                      (statFontSize * 0.9).clamp(11.0, 13.5),
-                                  color: isDefSelected
-                                      ? theme.colorScheme.primary
-                                      : (isPaired
-                                          ? theme.colorScheme.onSurface
-                                              .withOpacity(0.5)
-                                          : theme.colorScheme.onSurface),
-                                  decoration:
-                                      isPaired ? TextDecoration.lineThrough : null,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-
-                  return Draggable<String>(
-                    data: def,
-                    feedback: Material(
-                      elevation: 8.0,
-                      borderRadius: BorderRadius.circular(10),
-                      color: theme.colorScheme.secondary,
-                      child: Container(
-                        constraints:
-                            BoxConstraints(maxWidth: (cardWidth * 0.85).clamp(240.0, 500.0)),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 10),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(Icons.drag_indicator,
-                                size: 18, color: Colors.white70),
-                            const SizedBox(width: 8),
-                            Flexible(
-                              child: Text(
-                                def,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize:
-                                      (statFontSize * 0.9).clamp(11.0, 13.5),
+                                      (statFontSize * 0.85).clamp(10.5, 13.0),
                                   fontWeight: FontWeight.w600,
-                                  color: Colors.white,
+                                  color: Colors.green.shade800,
                                 ),
                               ),
                             ),
                           ],
                         ),
                       ),
-                    ),
-                    childWhenDragging: Opacity(
-                      opacity: 0.35,
-                      child: defCardContent,
-                    ),
-                    child: defCardContent,
-                  );
-                },
+                    ] else ...[
+                      Column(
+                        children: unassignedDefs.map((def) {
+                          final bool isDefSelected = (_selectedRightDef == def);
+
+                          return DragTarget<String>(
+                            onWillAcceptWithDetails: (details) =>
+                                !isCompleted &&
+                                _matchingLeftTerms.contains(details.data),
+                            onAcceptWithDetails: (details) {
+                              _pairTermWithDef(details.data, def);
+                            },
+                            builder: (context, candidateData, rejectedData) {
+                              final bool isHovered =
+                                  candidateData.isNotEmpty && !isCompleted;
+
+                              Color itemBg = isDefSelected
+                                  ? theme.colorScheme.primary.withOpacity(0.12)
+                                  : (isHovered
+                                      ? theme.colorScheme.primary.withOpacity(0.18)
+                                      : theme.colorScheme.surface);
+
+                              Color itemBorder = isDefSelected || isHovered
+                                  ? theme.colorScheme.primary
+                                  : theme.colorScheme.outline.withOpacity(0.4);
+
+                              final Widget defCardContent = Container(
+                                margin: const EdgeInsets.only(bottom: 6.0),
+                                decoration: BoxDecoration(
+                                  color: itemBg,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: itemBorder,
+                                    width:
+                                        (isDefSelected || isHovered) ? 1.8 : 1.0,
+                                  ),
+                                  boxShadow: isHovered
+                                      ? [
+                                          BoxShadow(
+                                            color: theme.colorScheme.primary
+                                                .withOpacity(0.2),
+                                            blurRadius: 6,
+                                            offset: const Offset(0, 2),
+                                          ),
+                                        ]
+                                      : null,
+                                ),
+                                child: InkWell(
+                                  onTap: () {
+                                    if (_selectedLeftTerm != null) {
+                                      _pairTermWithDef(_selectedLeftTerm!, def);
+                                    } else {
+                                      setState(() {
+                                        _selectedRightDef =
+                                            (isDefSelected ? null : def);
+                                      });
+                                    }
+                                  },
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 10),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.drag_indicator,
+                                          size: 16,
+                                          color: isDefSelected
+                                              ? theme.colorScheme.primary
+                                              : theme.colorScheme.onSurface
+                                                  .withOpacity(0.4),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Expanded(
+                                          child: Text(
+                                            def,
+                                            style: GoogleFonts.plusJakartaSans(
+                                              fontSize: (statFontSize * 0.9)
+                                                  .clamp(11.0, 13.5),
+                                              color: isDefSelected
+                                                  ? theme.colorScheme.primary
+                                                  : theme.colorScheme.onSurface,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+
+                              return Draggable<String>(
+                                data: def,
+                                feedback: Material(
+                                  elevation: 8.0,
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: theme.colorScheme.secondary,
+                                  child: Container(
+                                    constraints: BoxConstraints(
+                                        maxWidth: (cardWidth * 0.85)
+                                            .clamp(240.0, 500.0)),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 14, vertical: 10),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Icon(Icons.drag_indicator,
+                                            size: 18, color: Colors.white70),
+                                        const SizedBox(width: 8),
+                                        Flexible(
+                                          child: Text(
+                                            def,
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.plusJakartaSans(
+                                              fontSize: (statFontSize * 0.9)
+                                                  .clamp(11.0, 13.5),
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                childWhenDragging: Opacity(
+                                  opacity: 0.35,
+                                  child: defCardContent,
+                                ),
+                                child: defCardContent,
+                              );
+                            },
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  ],
+                ),
               );
-            }).toList(),
+            },
           ),
           SizedBox(height: (16.0 * scale).clamp(12.0, 20.0)),
           FilledButton.icon(
