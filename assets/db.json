@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "Language": [
     "C",
     "Python",
@@ -1763,5 +1763,560 @@
       }
     }
   },
-  "version": 3
+  "Question Types": {
+    "Multi-Choice": {
+      "description": "Standard multiple choice with 1 correct answer and 3-4 distractors",
+      "format": {
+        "question": "str",
+        "choices": "list",
+        "correct_index": "int"
+      }
+    },
+    "True-False": {
+      "description": "Binary assertion evaluating whether a statement about syntax or concepts is correct",
+      "format": {
+        "statement": "str",
+        "is_true": "bool",
+        "explanation": "str"
+      }
+    },
+    "Matching": {
+      "description": "Associates key concepts with their definitions, syntax tokens, or time complexities",
+      "format": {
+        "prompt": "str",
+        "pairs": "dict[str, str]"
+      }
+    },
+    "Sequencing": {
+      "description": "Orders a sequence of computational steps, pipeline stages, or lifecycle states",
+      "format": {
+        "prompt": "str",
+        "ordered_sequence": "list[str]"
+      }
+    },
+    "Sorting-Classification": {
+      "description": "Categorizes items into two or more logical buckets or domains",
+      "format": {
+        "prompt": "str",
+        "categories": "list[str]",
+        "items": "dict[str, list[str]]"
+      }
+    }
+  },
+  "Pedagogy": {
+    "explanation_policy": {
+      "first_encounter": {
+        "trigger": "topic_seen_count == 0",
+        "action": "display_introduction",
+        "description": "When learner encounters a topic for the first time, present concise formal definition."
+      },
+      "repeated_miss": {
+        "trigger": "consecutive_misses >= 2",
+        "action": "display_remediation",
+        "description": "When learner gets a question wrong twice, present targeted remediation hint."
+      },
+      "outright_failure": {
+        "trigger": "consecutive_misses >= 3",
+        "action": "display_deep_dive",
+        "description": "When learner completely fails a question, present comprehensive architectural deep dive."
+      },
+      "throttling": {
+        "enabled": true,
+        "rule": "Explanations decay exponentially in frequency if the learner repeatedly fails the same topic.",
+        "min_interval_questions": 3,
+        "decay_multiplier": 2.0
+      }
+    }
+  },
+  "Curriculum": {
+    "System Architecture": {
+      "introduction": "Computer Architecture investigates hardware abstraction layers, CPU microarchitecture, and memory hierarchies that execute machine instructions.",
+      "remediation": "Focus on latency numbers (CPU cache vs RAM vs Disk) and instruction pipelining hazards (data, structural, control).",
+      "deep_dive": "Modern CPUs utilize Von Neumann architecture with separate caches (Harvard architecture in L1). Execution stages include Fetch, Decode, Execute, Memory Access, and Writeback. Out-of-order execution, speculative execution, branch prediction, and multi-level caching (L1 1ns, L2 4ns, L3 10ns, DRAM 100ns) mitigate the von Neumann memory wall.",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "L1 cache access latency is typically faster than main memory (DRAM) access by more than an order of magnitude.",
+            "is_true": true,
+            "explanation": "L1 cache takes ~1 nanosecond (a few CPU cycles), whereas DRAM takes ~100 nanoseconds (~200 CPU cycles)."
+          },
+          {
+            "statement": "In a pure Von Neumann architecture, instructions and data are stored in completely separate physical memory address spaces.",
+            "is_true": false,
+            "explanation": "In Von Neumann architecture, data and instructions share the same memory space. The Harvard architecture separates instruction and data memory."
+          },
+          {
+            "statement": "A Translation Lookaside Buffer (TLB) caches recent virtual-to-physical address translations to accelerate memory lookups.",
+            "is_true": true,
+            "explanation": "The TLB is a hardware MMU cache specifically designed to avoid costly page table walks in RAM."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match each CPU architecture component with its primary function",
+            "pairs": {
+              "Program Counter (PC)": "Holds memory address of next instruction to be executed",
+              "Arithmetic Logic Unit (ALU)": "Performs integer arithmetic and bitwise logic operations",
+              "Instruction Register (IR)": "Holds instruction currently being decoded or executed",
+              "Control Unit (CU)": "Directs flow of data and sequence of CPU operations",
+              "Translation Lookaside Buffer (TLB)": "High-speed MMU cache for virtual memory address translations"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the standard 5-stage RISC instruction execution pipeline",
+            "ordered_sequence": [
+              "Instruction Fetch (IF)",
+              "Instruction Decode / Register Read (ID)",
+              "Execution / Effective Address Calculation (EX)",
+              "Memory Access (MEM)",
+              "Writeback (WB)"
+            ]
+          },
+          {
+            "prompt": "Order the memory hierarchy from fastest access latency to slowest",
+            "ordered_sequence": [
+              "CPU Registers",
+              "L1 CPU Cache",
+              "L2 CPU Cache",
+              "L3 Shared Cache",
+              "Main Memory (DRAM)",
+              "Non-Volatile SSD (NVMe)",
+              "Rotational Hard Disk Drive (HDD)"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify the following architectures into RISC (Reduced Instruction Set) or CISC (Complex Instruction Set)",
+            "categories": [
+              "RISC",
+              "CISC"
+            ],
+            "items": {
+              "RISC": [
+                "ARM64 (Apple Silicon, Cortex)",
+                "RISC-V",
+                "MIPS"
+              ],
+              "CISC": [
+                "x86 (Intel IA-32)",
+                "x86-64 (AMD64)"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "Artificial Intelligence": {
+      "introduction": "Artificial Intelligence and Machine Learning encompass computational models that learn representations, patterns, and decision functions from data.",
+      "remediation": "Review linear transformations, non-linear activation functions, backpropagation gradients, and attention weighting mechanisms.",
+      "deep_dive": "Deep learning builds layered parameterized representations: z = W*x + b, followed by non-linear activations (ReLU, GELU, Sigmoid). Training computes loss L(y_hat, y) and uses the chain rule (Backpropagation) to calculate dL/dW, updated via Stochastic Gradient Descent (SGD) or Adam. Transformers replace recurrence with Multi-Head Self-Attention: Attention(Q, K, V) = softmax(Q*K^T / sqrt(d_k)) * V.",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "Without non-linear activation functions, a multi-layer neural network collapses into an equivalent single-layer linear model.",
+            "is_true": true,
+            "explanation": "A composition of linear functions (W2 * W1 * x) is mathematically identical to a single linear function (W_combined * x)."
+          },
+          {
+            "statement": "The Scaled Dot-Product Attention in Transformers divides by sqrt(d_k) to prevent dot products from growing excessively large and driving softmax into regions with vanishingly small gradients.",
+            "is_true": true,
+            "explanation": "For large projection dimensions d_k, dot products grow large in magnitude, causing softmax gradients to vanish unless scaled by sqrt(d_k)."
+          },
+          {
+            "statement": "Backpropagation computes the Hessian matrix of second-order derivatives to update weights.",
+            "is_true": false,
+            "explanation": "Standard backpropagation computes first-order partial derivatives (gradient vector), not the expensive second-order Hessian matrix."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match the machine learning concept to its foundational mathematical role",
+            "pairs": {
+              "Self-Attention": "Computes contextual relevance weights between all tokens in a sequence",
+              "Backpropagation": "Calculates partial derivatives of loss with respect to weights via chain rule",
+              "Adam Optimizer": "Adaptive moment estimation combining momentum and RMSprop",
+              "ReLU (Rectified Linear Unit)": "f(x) = max(0, x), preventing vanishing gradients for positive inputs",
+              "Token Embedding": "Maps discrete vocabulary token IDs to continuous high-dimensional vectors"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the steps of a standard supervised deep learning training iteration",
+            "ordered_sequence": [
+              "Mini-batch data loading and tokenization",
+              "Forward pass to compute model predictions (logits)",
+              "Loss computation comparing predictions against ground truth labels",
+              "Backward pass (backpropagation) to compute gradients",
+              "Optimizer step to update model parameters",
+              "Zeroing gradients for the next iteration"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify machine learning paradigms",
+            "categories": [
+              "Supervised Learning",
+              "Unsupervised Learning",
+              "Reinforcement Learning"
+            ],
+            "items": {
+              "Supervised Learning": [
+                "Image classification with labeled images",
+                "Sentiment analysis on labeled text",
+                "Linear regression price forecasting"
+              ],
+              "Unsupervised Learning": [
+                "K-Means customer clustering",
+                "Principal Component Analysis (PCA)",
+                "Autoencoders for dimensionality reduction"
+              ],
+              "Reinforcement Learning": [
+                "Q-Learning for game playing",
+                "Proximal Policy Optimization (PPO)",
+                "Robotics joint control with reward feedback"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "Operating Systems": {
+      "introduction": "An Operating System manages hardware resources, provides abstraction interfaces, and schedules concurrent process and thread executions.",
+      "remediation": "Focus on memory management (pages, frames, page faults), process states, and synchronization primitives (mutex, semaphore, spinlock).",
+      "deep_dive": "The OS kernel operates in privileged ring 0. Processes possess isolated virtual address spaces mapped via page tables to physical frames; threads share memory within a parent process. Context switching saves register state and flushes/updates TLB. Deadlock occurs when four Coffman conditions hold simultaneously: Mutual Exclusion, Hold and Wait, No Preemption, and Circular Wait.",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "Threads belonging to the same process share the same heap memory and open file descriptors, but each maintains its own call stack and program counter.",
+            "is_true": true,
+            "explanation": "Threads share process resources (heap, data, file handles) for low-overhead concurrency, while retaining independent execution stacks and registers."
+          },
+          {
+            "statement": "A spinlock is more CPU-efficient than a mutex when the critical section is expected to take milliseconds to complete.",
+            "is_true": false,
+            "explanation": "Spinlocks busy-wait (burning CPU cycles); for operations longer than context-switch overhead, blocking mutexes that put the thread to sleep are vastly more efficient."
+          },
+          {
+            "statement": "Breaking any single one of the four Coffman conditions prevents system deadlock from occurring.",
+            "is_true": true,
+            "explanation": "All four conditions must hold simultaneously for a deadlock to exist; breaking any one guarantees deadlock freedom."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match the operating system synchronization mechanism with its operational behavior",
+            "pairs": {
+              "Mutex": "Binary mutual exclusion lock with ownership semantics",
+              "Counting Semaphore": "Maintains an integer counter permitting up to N concurrent accessors",
+              "Spinlock": "Busy-waits in a CPU loop until lock becomes available",
+              "Condition Variable": "Allows threads to sleep until notified of a specific state predicate change",
+              "Memory Barrier (Fence)": "Prevents CPU/compiler reordering of memory reads and writes across boundary"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the lifecycle states of an operating system process",
+            "ordered_sequence": [
+              "New (Created)",
+              "Ready (In run queue waiting for CPU allocation)",
+              "Running (Executing instructions on CPU core)",
+              "Waiting / Blocked (Awaiting I/O or event completion)",
+              "Terminated (Exited and awaiting cleanup)"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify OS operations into User Space (Ring 3) vs Kernel Space (Ring 0)",
+            "categories": [
+              "User Space",
+              "Kernel Space"
+            ],
+            "items": {
+              "User Space": [
+                "Parsing JSON string in user application",
+                "Computing MD5 hash in user memory",
+                "Rendering UI buttons in desktop app"
+              ],
+              "Kernel Space": [
+                "Allocating physical RAM page frames",
+                "Handling hardware keyboard interrupt",
+                "Directly programming disk DMA controller"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "Computer Networking": {
+      "introduction": "Computer Networking provides packet transmission protocols, routing topologies, and reliable socket communications across distributed endpoints.",
+      "remediation": "Study the OSI 7 layers, TCP flow/congestion control, 3-way handshakes, and UDP versus TCP trade-offs.",
+      "deep_dive": "Data travels down the OSI stack by encapsulation: Application (HTTP/DNS) -> Transport (TCP/UDP segments) -> Network (IP packets) -> Data Link (Ethernet frames) -> Physical (bits). TCP provides reliable, ordered, error-checked streams using SYN, SYN-ACK, ACK 3-way handshake, sliding window flow control, and AIMD congestion control. UDP provides connectionless, lightweight, low-latency datagrams without retransmission guarantees.",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "TCP uses a 3-way handshake (SYN, SYN-ACK, ACK) to establish sequence numbers before transmitting payload data.",
+            "is_true": true,
+            "explanation": "The 3-way handshake synchronizes sequence numbers (ISN) in both directions and confirms bidirectional reachability."
+          },
+          {
+            "statement": "HTTP/3 runs over TCP with TLS 1.3 encryption.",
+            "is_true": false,
+            "explanation": "HTTP/3 runs over QUIC, which is built on top of UDP to eliminate Head-of-Line (HoL) blocking."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match each network protocol to its primary OSI layer",
+            "pairs": {
+              "HTTP/HTTPS": "Application Layer (Layer 7)",
+              "TCP": "Transport Layer (Layer 4)",
+              "IP (IPv4 / IPv6)": "Network Layer (Layer 3)",
+              "Ethernet / Wi-Fi (802.11)": "Data Link Layer (Layer 2)",
+              "DNS": "Application Layer (Layer 7)"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the TCP connection establishment 3-way handshake",
+            "ordered_sequence": [
+              "Client sends SYN packet with Initial Sequence Number (ISN_c)",
+              "Server responds with SYN-ACK packet (ISN_s and ACK=ISN_c + 1)",
+              "Client sends ACK packet (ACK=ISN_s + 1)",
+              "Connection is ESTABLISHED and data transfer begins"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify application use cases as optimal for TCP or UDP",
+            "categories": [
+              "TCP",
+              "UDP"
+            ],
+            "items": {
+              "TCP": [
+                "Financial bank transactions",
+                "SSH remote terminal",
+                "Email delivery (SMTP)",
+                "File transfer (SFTP)"
+              ],
+              "UDP": [
+                "Live competitive video gaming player positions",
+                "Real-time VoIP voice streaming",
+                "DNS queries",
+                "Video conferencing video feed"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "Algorithms & Asymptotic Complexity": {
+      "introduction": "Algorithm analysis examines the computational resources (time and space) required to solve a problem as a function of input size N.",
+      "remediation": "Review Big-O upper bounds, logarithmic vs linear vs polynomial growth rates, and Divide-and-Conquer recurrence relations.",
+      "deep_dive": "Asymptotic analysis classifies algorithm scalability: Big-O (f(n) <= c*g(n)) gives asymptotic upper bound; Big-Omega gives lower bound; Big-Theta gives tight bound. Divide and conquer algorithms follow T(n) = a*T(n/b) + f(n), evaluated via the Master Theorem. Comparison-based sorting algorithms have a mathematical lower bound of Omega(N log N).",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "No comparison-based sorting algorithm can achieve an average-case time complexity faster than O(N log N).",
+            "is_true": true,
+            "explanation": "Any comparison sort corresponds to a decision tree with N! leaves, requiring height >= log2(N!) = Omega(N log N)."
+          },
+          {
+            "statement": "Binary search on a sorted array of size N takes O(N) time in the worst case.",
+            "is_true": false,
+            "explanation": "Binary search halves the search space each iteration, achieving O(log N) worst-case time complexity."
+          },
+          {
+            "statement": "QuickSort worst-case time complexity is O(N^2) when poor pivot selection causes maximally unbalanced partitions.",
+            "is_true": true,
+            "explanation": "If the pivot is always the minimum or maximum element (e.g. sorted array with first element as pivot), QuickSort degrades to O(N^2)."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match each sorting algorithm with its average-case time complexity",
+            "pairs": {
+              "MergeSort": "O(N log N) - Guaranteed",
+              "QuickSort": "O(N log N) - Average",
+              "BubbleSort": "O(N^2)",
+              "Counting Sort": "O(N + K) - Non-comparison based",
+              "HeapSort": "O(N log N) - In-place guaranteed"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the time complexity classes from fastest growing to slowest growing (as N -> infinity)",
+            "ordered_sequence": [
+              "O(N!) - Factorial",
+              "O(2^N) - Exponential",
+              "O(N^3) - Cubic",
+              "O(N^2) - Quadratic",
+              "O(N log N) - Linearithmic",
+              "O(N) - Linear",
+              "O(log N) - Logarithmic",
+              "O(1) - Constant"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify graph traversal and shortest-path algorithms",
+            "categories": [
+              "Traversal Only",
+              "Shortest Path / Optimization"
+            ],
+            "items": {
+              "Traversal Only": [
+                "Breadth-First Search (BFS) for reachability",
+                "Depth-First Search (DFS) for cycle detection",
+                "Topological Sort on DAG"
+              ],
+              "Shortest Path / Optimization": [
+                "Dijkstra's Algorithm (non-negative edge weights)",
+                "Bellman-Ford Algorithm (handles negative edge weights)",
+                "A* Heuristic Search",
+                "Floyd-Warshall (All-Pairs Shortest Path)"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "Data Structures": {
+      "introduction": "Data Structures organize and store data to enable efficient access, modification, and traversal algorithms.",
+      "remediation": "Contrast contiguous array memory (O(1) indexing, cache friendly) with node-based pointer structures (dynamic sizing, pointer overhead).",
+      "deep_dive": "Arrays provide O(1) random access but O(N) insertion/deletion. Linked lists allow O(1) insertions at known nodes but require O(N) traversal and suffer poor cache locality. Hash tables provide O(1) average lookup via hash functions with collision resolution (separate chaining vs open addressing). Self-balancing binary search trees (AVL, Red-Black) guarantee O(log N) lookups, insertions, and deletions.",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "Hash table lookups are guaranteed to be O(1) in the worst case regardless of hash collisions.",
+            "is_true": false,
+            "explanation": "If all keys hash to the same bucket (worst-case collision), lookup degrades to O(N) unless balanced trees are used (which gives O(log N))."
+          },
+          {
+            "statement": "A Min-Heap guarantees that the root element is always the minimum element in the entire data structure.",
+            "is_true": true,
+            "explanation": "By heap property, parent <= children everywhere, ensuring the root holds the global minimum in O(1) access time."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match each data structure with its primary access property",
+            "pairs": {
+              "Stack": "Last-In, First-Out (LIFO)",
+              "Queue": "First-In, First-Out (FIFO)",
+              "Hash Table": "Average O(1) key-value lookup",
+              "Binary Search Tree": "Maintains sorted order with O(log N) average search",
+              "Trie (Prefix Tree)": "Efficient retrieval of keys with shared prefixes (O(M) string length)"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the steps to insert an element into a Binary Max-Heap",
+            "ordered_sequence": [
+              "Insert new element at the next available position at the bottom level",
+              "Compare new element with its parent node",
+              "If new element > parent, swap them (heapify-up / sift-up)",
+              "Repeat parent comparison until heap property is restored or root is reached"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify data structures by linear vs non-linear layout",
+            "categories": [
+              "Linear Data Structures",
+              "Non-Linear Data Structures"
+            ],
+            "items": {
+              "Linear Data Structures": [
+                "Array",
+                "Singly Linked List",
+                "Stack",
+                "Doubly-Ended Queue (Deque)"
+              ],
+              "Non-Linear Data Structures": [
+                "Binary Search Tree",
+                "Min-Heap",
+                "Trie",
+                "Adjacency List Directed Graph"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "Automata & Discrete Mathematics": {
+      "introduction": "Automata theory and Discrete Mathematics provide formal models of computation, state machines, logic, and discrete structures.",
+      "remediation": "Focus on the Chomsky hierarchy (Regular, Context-Free, Turing-recognizable) and propositional logic equivalences.",
+      "deep_dive": "Deterministic Finite Automata (DFA) recognize Regular Languages and lack memory beyond finite states. Pushdown Automata (PDA) add a single stack, recognizing Context-Free Languages. Turing Machines possess an infinite tape and define Turing-computability; the Halting Problem proves undecidability for general program termination.",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "A Deterministic Finite Automaton (DFA) can recognize the language L = {a^n b^n | n >= 0}.",
+            "is_true": false,
+            "explanation": "By the Pumping Lemma for Regular Languages, a DFA cannot count arbitrary numbers of symbols because it has finite memory. This language requires a Pushdown Automaton (PDA)."
+          },
+          {
+            "statement": "The Halting Problem is undecidable: no general algorithm can determine whether an arbitrary program will eventually halt.",
+            "is_true": true,
+            "explanation": "Proven by Alan Turing in 1936 using a diagonalization argument."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match the language class in the Chomsky Hierarchy with its recognizing computational machine",
+            "pairs": {
+              "Regular Languages": "Deterministic / Nondeterministic Finite Automata (DFA / NFA)",
+              "Context-Free Languages": "Pushdown Automata (PDA with Stack)",
+              "Context-Sensitive Languages": "Linear Bounded Automata (LBA)",
+              "Recursively Enumerable Languages": "Turing Machine"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the Chomsky hierarchy language classes from least expressive to most expressive",
+            "ordered_sequence": [
+              "Type 3: Regular Languages",
+              "Type 2: Context-Free Languages",
+              "Type 1: Context-Sensitive Languages",
+              "Type 0: Recursively Enumerable Languages (Turing-recognizable)"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify logical statements into Tautologies, Contradictions, or Contingencies",
+            "categories": [
+              "Tautology (Always True)",
+              "Contradiction (Always False)"
+            ],
+            "items": {
+              "Tautology (Always True)": [
+                "P OR (NOT P) - Law of Excluded Middle",
+                "P -> P - Identity",
+                "(P AND Q) -> P - Conjunction Elimination"
+              ],
+              "Contradiction (Always False)": [
+                "P AND (NOT P) - Non-contradiction violation",
+                "(P OR Q) AND (NOT P) AND (NOT Q)"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
 }

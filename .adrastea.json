@@ -1,0 +1,43 @@
+{
+  "name": "hardcode",
+  "version": "1.1.0",
+  "owner": "holman57",
+  "description": "Flashcard syntax memorization and Computer Science learning system for humans.",
+  "tech_stack": {
+    "frontend": "Flutter / Dart (lib/main.dart, pubspec.yaml)",
+    "cli_driver": "Python (python_driver.py)",
+    "catalog_database": "assets/db.json"
+  },
+  "test_command": "python -m unittest test.test_python_driver",
+  "question_types": [
+    "Multi-Choice",
+    "True-False",
+    "Matching",
+    "Sequencing",
+    "Sorting-Classification"
+  ],
+  "curriculum_domains": [
+    "Computer Science",
+    "System Architecture",
+    "Artificial Intelligence",
+    "Operating Systems",
+    "Computer Networking",
+    "Algorithms",
+    "Data Structures",
+    "Automata & Formal Languages",
+    "Discrete Mathematics",
+    "Asymptotic Complexity Analysis",
+    "Software Engineering",
+    "Cloud & Distributed Computing"
+  ],
+  "pedagogical_rules": {
+    "first_time_explanation": true,
+    "multi_miss_remediation": true,
+    "outright_failure_deep_explanation": true,
+    "explanation_throttling": {
+      "enabled": true,
+      "decay_strategy": "exponential_frequency_reduction"
+    }
+  },
+  "active_issues": [2, 4]
+}
