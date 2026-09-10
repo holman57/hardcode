@@ -341,38 +341,49 @@ def run_interactive_quiz(db: Dict[str, Any], tracker: LearnerTracker, domain_fil
     print("Question Types: Multi-Choice | True-False | Matching | Sequencing | Sorting")
     print("Type 'q' or 'quit' at any prompt to exit.\n")
 
-    curriculum = db.get("Curriculum", {})
-    available_domains = list(curriculum.keys())
+    # Filter domains based on domain_filter argument
+    syntax_keywords = ["Control Flow", "Functions", "Object-Oriented", "Error", "Async", "Loops", "Collections", "Strings", "Memory"]
+    if domain_filter == "syntax":
+        available_domains = [d for d in curriculum.keys() if any(kw in d for kw in syntax_keywords)]
+    elif domain_filter == "cs":
+        available_domains = [d for d in curriculum.keys() if not any(kw in d for kw in syntax_keywords)]
+    else:
+        available_domains = list(curriculum.keys())
+
     if not available_domains:
-        print("No curriculum questions available in catalog.")
-        return
+        available_domains = list(curriculum.keys())
 
     score = 0
     total = 0
     streak = 0
     best_streak = 0
 
-    question_types = ["True-False", "Matching", "Sequencing", "Sorting-Classification", "Multi-Choice"]
-    last_q_type = None
+    question_types = ["Multi-Choice", "True-False", "Matching", "Sequencing", "Sorting-Classification"]
+    turn = 0
 
     while True:
         tracker.record_turn()
-        dom = random.choice(available_domains)
+        target_q_type = question_types[turn % len(question_types)]
+        turn += 1
+
+        # Pick domain that has the target question type
+        domains_with_target = [
+            d for d in available_domains
+            if target_q_type in curriculum[d].get("questions", {}) and len(curriculum[d]["questions"][target_q_type]) > 0
+        ]
+        if domains_with_target:
+            dom = random.choice(domains_with_target)
+            q_type = target_q_type
+        else:
+            dom = random.choice(available_domains)
+            q_dict = curriculum[dom].get("questions", {})
+            valid_types = [t for t in question_types if t in q_dict and len(q_dict[t]) > 0]
+            if not valid_types:
+                continue
+            q_type = random.choice(valid_types)
+
         dom_data = curriculum[dom]
         q_dict = dom_data.get("questions", {})
-
-        intro = tracker.observe_topic(dom)
-        if intro:
-            print(f"\n[{intro[0]}] {intro[1]}")
-            if dom_data.get("introduction"):
-                print(f"-> {dom_data['introduction']}")
-
-        valid_types = [t for t in question_types if t in q_dict and len(q_dict[t]) > 0]
-        if not valid_types:
-            continue
-        candidates = [t for t in valid_types if t != last_q_type] or valid_types
-        q_type = random.choice(candidates)
-        last_q_type = q_type
         q_item = random.choice(q_dict[q_type])
 
         print(f"\n--- [ {dom} • {q_type} ] (Score: {score}/{total} | Streak: {streak}) ---")

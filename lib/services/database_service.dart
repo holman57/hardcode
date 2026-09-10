@@ -151,12 +151,16 @@ class DatabaseService {
         _catalogBox!.get('catalog_version', defaultValue: 0) as int;
     final String? cachedJson = _catalogBox!.get('catalog_json') as String?;
 
-    // If cached version is up to date and valid, use cached catalog
-    if (cachedVersion >= 6 && cachedJson != null && cachedJson.isNotEmpty) {
+    // If cached version is up to date, valid, and contains Curriculum, use cached catalog
+    if (cachedVersion >= 7 && cachedJson != null && cachedJson.isNotEmpty) {
       try {
         final Map<String, dynamic> decoded =
             jsonDecode(cachedJson) as Map<String, dynamic>;
-        return decoded;
+        if (decoded.containsKey('Curriculum') &&
+            decoded['Curriculum'] is Map &&
+            (decoded['Curriculum'] as Map).isNotEmpty) {
+          return decoded;
+        }
       } catch (_) {
         // Fallback to re-seed if parsing fails
       }

@@ -129,6 +129,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   // Active question type tracking
   HardCodeQuestionType _currentQuestionType = HardCodeQuestionType.multiChoiceSyntax;
   HardCodeQuestionType? _lastQuestionType;
+  int _questionTypeRotationIndex = 0;
 
   // Conceptual Multi-Choice
   String? _conceptualExplanation;
@@ -494,18 +495,24 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
     final Random random = Random.secure();
 
-    final List<HardCodeQuestionType> availableTypes = [
+    // Guaranteed round-robin rotation across all question types:
+    // 0: Multi-Choice Syntax (covering 9 programming subjects)
+    // 1: True-False (covering 25 curriculum & programming domains)
+    // 2: Matching (covering 25 curriculum & programming domains)
+    // 3: Sequencing (covering 25 curriculum & programming domains)
+    // 4: Sorting-Classification (covering 25 curriculum & programming domains)
+    // 5: Multi-Choice Conceptual (covering 25 curriculum & programming domains)
+    final List<HardCodeQuestionType> rotation = [
+      HardCodeQuestionType.multiChoiceSyntax,
       HardCodeQuestionType.trueFalse,
       HardCodeQuestionType.matching,
       HardCodeQuestionType.sequencing,
       HardCodeQuestionType.sorting,
-      HardCodeQuestionType.multiChoiceSyntax,
       HardCodeQuestionType.multiChoiceConceptual,
     ];
 
-    List<HardCodeQuestionType> candidates =
-        availableTypes.where((t) => t != _lastQuestionType).toList();
-    _currentQuestionType = candidates[random.nextInt(candidates.length)];
+    _currentQuestionType = rotation[_questionTypeRotationIndex % rotation.length];
+    _questionTypeRotationIndex++;
     _lastQuestionType = _currentQuestionType;
 
     final curriculum = (_data["Curriculum"] as Map?) ?? {};
@@ -542,7 +549,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     }).toList();
 
     if (validDomains.isEmpty) {
-      _generateSyntaxMultiChoiceQuestion(random);
+      _language = "Computer Science";
+      _questionSubType = "True / False";
+      _tfStatement =
+          "A pure function will always return the exact same result given the same arguments without observable side effects.";
+      _tfExpected = true;
+      _tfExplanation =
+          "Pure functions have referential transparency, making them deterministic and thread-safe.";
+      _question = _tfStatement;
       return;
     }
 
@@ -565,7 +579,18 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     }).toList();
 
     if (validDomains.isEmpty) {
-      _generateSyntaxMultiChoiceQuestion(random);
+      _language = "Data Structures";
+      _questionSubType = "Matching";
+      _matchingPrompt = "Match each data structure with its defining operational behavior:";
+      _question = _matchingPrompt;
+      _matchingPairs = {
+        "Stack": "LIFO (Last-In First-Out) with push and pop at top",
+        "Queue": "FIFO (First-In First-Out) with enqueue back, dequeue front",
+        "HashMap": "O(1) average key-value lookup via hashing",
+        "Set": "Collection of unique elements preventing duplicate values",
+      };
+      _matchingLeftTerms = _matchingPairs.keys.toList()..shuffle(random);
+      _matchingRightDefs = _matchingPairs.values.toList()..shuffle(random);
       return;
     }
 
@@ -594,7 +619,18 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     }).toList();
 
     if (validDomains.isEmpty) {
-      _generateSyntaxMultiChoiceQuestion(random);
+      _language = "Compilers";
+      _questionSubType = "Sequencing";
+      _sequencingPrompt = "Order the standard phases of code compilation from source to machine binary:";
+      _question = _sequencingPrompt;
+      _expectedSequence = [
+        "Lexical Analysis (Tokenization)",
+        "Syntactic Analysis (Parsing into AST)",
+        "Semantic Analysis (Type Checking)",
+        "Intermediate Code Generation (IR)",
+        "Target Machine Code Generation",
+      ];
+      _currentSequence = List<String>.from(_expectedSequence)..shuffle(random);
       return;
     }
 
@@ -627,7 +663,24 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     }).toList();
 
     if (validDomains.isEmpty) {
-      _generateSyntaxMultiChoiceQuestion(random);
+      _language = "Algorithms";
+      _questionSubType = "Classification";
+      _sortingPrompt = "Classify each algorithm by its average-case time complexity:";
+      _question = _sortingPrompt;
+      _sortingCategories = ["O(N log N)", "O(N^2)", "O(N)"];
+      _sortingExpected = {
+        "O(N log N)": ["Merge Sort", "Quick Sort", "Heap Sort"],
+        "O(N^2)": ["Bubble Sort", "Insertion Sort"],
+        "O(N)": ["Counting Sort"],
+      };
+      _sortingItems = [
+        "Merge Sort",
+        "Quick Sort",
+        "Heap Sort",
+        "Bubble Sort",
+        "Insertion Sort",
+        "Counting Sort",
+      ]..shuffle(random);
       return;
     }
 
@@ -665,7 +718,23 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     }).toList();
 
     if (validDomains.isEmpty) {
-      _generateSyntaxMultiChoiceQuestion(random);
+      _language = "Computer Science";
+      _questionSubType = "Multi-Choice";
+      _question =
+          "Which computational complexity class contains decision problems solvable by a deterministic Turing machine in polynomial time?";
+      _conceptualExplanation =
+          "Class P represents problems solvable in O(N^k) polynomial time on a deterministic machine.";
+      _correctAnswer = "P";
+      _choices.clear();
+      _choices.add(["P", 1]);
+      _choices.add(["NP", 0]);
+      _choices.add(["NP-Complete", 0]);
+      _choices.add(["PSPACE", 0]);
+      _choices.shuffle(random);
+      _answerGroup.clear();
+      for (final c in _choices) {
+        _answerGroup.add(c[0] as String);
+      }
       return;
     }
 
@@ -697,7 +766,349 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     }
   }
 
-  void _generateSyntaxMultiChoiceQuestion(Random random) {
+  static final List<Map<String, dynamic>> _diverseSyntaxQuestions = [
+    // Functions
+    {
+      "language": "Python",
+      "subType": "Function Definition",
+      "question": "How do you define a function 'compute' with parameters x and y in Python?",
+      "correct": "def compute(x, y):",
+      "distractors": [
+        "func compute(x int, y int) int {",
+        "function compute(x, y) {",
+        "fn compute(x: i32, y: i32) -> i32 {",
+        "int compute(int x, int y) {",
+      ],
+    },
+    {
+      "language": "Go",
+      "subType": "Function Definition",
+      "question": "How do you declare a function returning (int, error) in Go?",
+      "correct": "func calculate(val int) (int, error) {",
+      "distractors": [
+        "def calculate(val: int) -> (int, Exception):",
+        "function calculate(val: number): [number, Error] {",
+        "fn calculate(val: i32) -> Result<i32, Error> {",
+        "int calculate(int val) throws Exception {",
+      ],
+    },
+    {
+      "language": "Rust",
+      "subType": "Function Definition",
+      "question": "How do you declare a public function taking an i32 and returning a bool in Rust?",
+      "correct": "pub fn is_valid(num: i32) -> bool {",
+      "distractors": [
+        "public boolean isValid(int num) {",
+        "def is_valid(num: int) -> bool:",
+        "func isValid(num int) bool {",
+        "export function isValid(num: number): boolean {",
+      ],
+    },
+    {
+      "language": "TypeScript",
+      "subType": "Arrow Function",
+      "question": "How do you declare an arrow function with typed parameters in TypeScript?",
+      "correct": "const add = (a: number, b: number): number => a + b;",
+      "distractors": [
+        "def add = lambda a: int, b: int: a + b",
+        "func add = (a int, b int) int => a + b",
+        "fn add = (a: i32, b: i32) => a + b;",
+        "int add = (int a, int b) -> a + b;",
+      ],
+    },
+
+    // Loops & Iteration
+    {
+      "language": "Python",
+      "subType": "For Loop",
+      "question": "How do you write a for loop iterating through numbers 0 to 9 in Python?",
+      "correct": "for i in range(10):",
+      "distractors": [
+        "for (let i = 0; i < 10; i++) {",
+        "for i := 0; i < 10; i++ {",
+        "for i in 0..10 {",
+        "10.times do |i|",
+      ],
+    },
+    {
+      "language": "Go",
+      "subType": "Iteration",
+      "question": "How do you iterate over index and value of a slice in Go?",
+      "correct": "for idx, val := range items {",
+      "distractors": [
+        "for (const [idx, val] of items.entries()) {",
+        "for idx, val in enumerate(items):",
+        "for (int idx = 0; idx < items.length; idx++) {",
+        "items.forEach((val, idx) => {",
+      ],
+    },
+    {
+      "language": "Rust",
+      "subType": "Loop",
+      "question": "How do you write an infinite loop in Rust?",
+      "correct": "loop { ... }",
+      "distractors": [
+        "while true { ... }",
+        "for (;;) { ... }",
+        "while (1) { ... }",
+        "repeat { ... } until false",
+      ],
+    },
+
+    // Control Flow
+    {
+      "language": "Python",
+      "subType": "Conditionals",
+      "question": "How do you write an If-Else conditional ladder in Python?",
+      "correct": "if score >= 90:\n    grade = 'A'\nelif score >= 80:\n    grade = 'B'\nelse:\n    grade = 'C'",
+      "distractors": [
+        "if (score >= 90) { grade = 'A'; } else if (score >= 80) { grade = 'B'; } else { grade = 'C'; }",
+        "if score >= 90 then grade = 'A' elsif score >= 80 grade = 'B' else grade = 'C' end",
+        "if [ \$score -ge 90 ]; then grade='A'; elif [ \$score -ge 80 ]; then grade='B'; else grade='C'; fi",
+        "switch (score) { case >= 90: grade = 'A'; break; }",
+      ],
+    },
+    {
+      "language": "Rust",
+      "subType": "Pattern Matching",
+      "question": "How do you match an Option<T> enum variant in Rust?",
+      "correct": "match opt {\n    Some(val) => println!(\"{}\", val),\n    None => println!(\"empty\"),\n}",
+      "distractors": [
+        "switch (opt) { case Some(val): ...; case None: ...; }",
+        "if opt != null { println(opt.val); } else { ... }",
+        "select { case val := <-opt: ... }",
+        "guard let val = opt else { ... }",
+      ],
+    },
+    {
+      "language": "Dart",
+      "subType": "Null Coalescing",
+      "question": "How do you provide a fallback default value for a nullable variable in Dart?",
+      "correct": "final name = inputName ?? 'Guest';",
+      "distractors": [
+        "final name = inputName || 'Guest';",
+        "final name = inputName ?: 'Guest';",
+        "final name = if inputName != null then inputName else 'Guest';",
+        "final name = inputName.unwrap_or('Guest');",
+      ],
+    },
+
+    // Classes & OOP
+    {
+      "language": "Java",
+      "subType": "Class Inheritance",
+      "question": "How do you declare class 'Student' inheriting from 'Person' and implementing 'Learner' in Java?",
+      "correct": "public class Student extends Person implements Learner {",
+      "distractors": [
+        "public class Student : Person, Learner {",
+        "class Student(Person, Learner):",
+        "class Student < Person; include Learner; end",
+        "struct Student : public Person, public Learner {",
+      ],
+    },
+    {
+      "language": "Python",
+      "subType": "Constructor",
+      "question": "How do you define the constructor initializer in a Python class?",
+      "correct": "def __init__(self, name: str, age: int):",
+      "distractors": [
+        "def constructor(name, age):",
+        "def Person(self, name, age):",
+        "def new(cls, name, age):",
+        "init(name: String, age: Int)",
+      ],
+    },
+    {
+      "language": "TypeScript",
+      "subType": "Class Declaration",
+      "question": "How do you declare a class with a private property in modern TypeScript?",
+      "correct": "class Account {\n  private balance: number;\n}",
+      "distractors": [
+        "class Account {\n  var balance: number = private;\n}",
+        "class Account {\n  def __init__(self): self.__balance = 0\n}",
+        "class Account {\n  private: int balance;\n}",
+        "type Account struct {\n  balance int\n}",
+      ],
+    },
+
+    // Collections
+    {
+      "language": "Python",
+      "subType": "List Comprehension",
+      "question": "How do you filter and square odd numbers from a list in Python?",
+      "correct": "[x**2 for x in nums if x % 2 != 0]",
+      "distractors": [
+        "nums.filter(x => x % 2 !== 0).map(x => x ** 2)",
+        "nums.select { |x| x**2 if x.odd? }",
+        "from x in nums where x % 2 != 0 select x * x",
+        "filter(lambda x: x % 2 != 0, nums).map(x**2)",
+      ],
+    },
+    {
+      "language": "Go",
+      "subType": "Map Creation",
+      "question": "How do you initialize a map with string keys and int values in Go?",
+      "correct": "scores := make(map[string]int)",
+      "distractors": [
+        "scores = new Map<string, int>()",
+        "scores = dict()",
+        "var scores: Map[String, Int] = Map()",
+        "let scores: HashMap<String, i32> = HashMap::new();",
+      ],
+    },
+    {
+      "language": "Rust",
+      "subType": "Vectors",
+      "question": "How do you create a mutable vector with initial elements in Rust?",
+      "correct": "let mut items: Vec<i32> = vec![10, 20, 30];",
+      "distractors": [
+        "let items = new Vector<i32>(10, 20, 30);",
+        "var items = [10, 20, 30];",
+        "let mut items: [i32; 3] = [10, 20, 30];",
+        "items := []int{10, 20, 30}",
+      ],
+    },
+
+    // Error Handling
+    {
+      "language": "Python",
+      "subType": "Exception Handling",
+      "question": "How do you handle a ValueError and ensure cleanup in Python?",
+      "correct": "try:\n    parse(data)\nexcept ValueError as e:\n    handle(e)\nfinally:\n    cleanup()",
+      "distractors": [
+        "try { parse(data); } catch (ValueError e) { handle(e); } finally { cleanup(); }",
+        "try { parse(data); } catch (e) { handle(e); } ensure { cleanup(); }",
+        "begin parse(data) rescue ValueError => e handle(e) ensure cleanup() end",
+        "parse(data).catch(e => handle(e)).finally(() => cleanup());",
+      ],
+    },
+    {
+      "language": "Go",
+      "subType": "Error Handling",
+      "question": "How do you return a custom formatted error in Go?",
+      "correct": "return fmt.Errorf(\"operation failed for id %d: %w\", id, err)",
+      "distractors": [
+        "throw new Error(`operation failed for id \${id}`)",
+        "raise Exception(f\"operation failed for id {id}\")",
+        "return Err(format!(\"operation failed for id {}\", id))",
+        "panic(\"operation failed\")",
+      ],
+    },
+    {
+      "language": "Rust",
+      "subType": "Error Propagation",
+      "question": "How do you propagate a Result error using the standard operator in Rust?",
+      "correct": "let bytes = file.read_to_end(&mut buffer)?;",
+      "distractors": [
+        "let bytes = try!(file.read_to_end(&mut buffer));",
+        "let bytes = file.read_to_end(&mut buffer).unwrap();",
+        "let bytes = file.read_to_end(&mut buffer).throw();",
+        "let bytes = await file.read_to_end(&mut buffer);",
+      ],
+    },
+
+    // Async / Concurrency
+    {
+      "language": "JavaScript",
+      "subType": "Async / Await",
+      "question": "How do you declare an async function and await an API call in JavaScript?",
+      "correct": "async function getData() {\n  const res = await fetch(url);\n  return res.json();\n}",
+      "distractors": [
+        "function async getData() {\n  const res = wait fetch(url);\n  return res.json();\n}",
+        "def async getData():\n  res = await fetch(url)\n  return res.json()",
+        "task getData() {\n  const res = await fetch(url);\n  return res.json();\n}",
+        "function getData() async {\n  const res = await fetch(url);\n  return res.json();\n}",
+      ],
+    },
+    {
+      "language": "Go",
+      "subType": "Goroutines",
+      "question": "How do you spawn an anonymous function concurrently in Go?",
+      "correct": "go func() {\n    processItem(item)\n}()",
+      "distractors": [
+        "spawn async () => {\n    processItem(item)\n}",
+        "new Thread(() -> processItem(item)).start();",
+        "asyncio.create_task(processItem(item))",
+        "thread::spawn(move || processItem(item));",
+      ],
+    },
+    {
+      "language": "Dart",
+      "subType": "Async Functions",
+      "question": "How do you declare a function returning a Future in Dart?",
+      "correct": "Future<String> fetchUser() async {\n  return await api.getUser();\n}",
+      "distractors": [
+        "async String fetchUser() {\n  return await api.getUser();\n}",
+        "Promise<String> fetchUser() async {\n  return await api.getUser();\n}",
+        "async Task<string> fetchUser() {\n  return await api.getUser();\n}",
+        "String async fetchUser() {\n  return await api.getUser();\n}",
+      ],
+    },
+
+    // Strings
+    {
+      "language": "Python",
+      "subType": "String Formatting",
+      "question": "How do you format an f-string expression with uppercase conversion in Python?",
+      "correct": "f\"Welcome, {username.upper()}!\"",
+      "distractors": [
+        "`Welcome, \${username.upper()}!`",
+        "\"Welcome, %{username.upper()}!\"",
+        "\$\"Welcome, {username.ToUpper()}!\"",
+        "'Welcome, \${username.upper()}!'",
+      ],
+    },
+    {
+      "language": "C#",
+      "subType": "String Interpolation",
+      "question": "How do you format an interpolated string with date formatting in C#?",
+      "correct": "\$\"Current Date: {DateTime.Now:yyyy-MM-dd}\"",
+      "distractors": [
+        "@\"Current Date: {DateTime.Now:yyyy-MM-dd}\"",
+        "f\"Current Date: {DateTime.Now:yyyy-MM-dd}\"",
+        "`Current Date: \${DateTime.Now:yyyy-MM-dd}`",
+        "\"Current Date: \" + DateTime.Now.Format(\"yyyy-MM-dd\")",
+      ],
+    },
+    {
+      "language": "Dart",
+      "subType": "String Interpolation",
+      "question": "How do you evaluate an expression inside a string literal in Dart?",
+      "correct": "'Total items: \${items.length}'",
+      "distractors": [
+        "'Total items: \$items.length'",
+        "'Total items: {items.length}'",
+        "'Total items: #{items.length}'",
+        "'Total items: %items.length%'",
+      ],
+    },
+  ];
+
+  void _generateDiverseSyntaxQuestion(Random random) {
+    final item = _diverseSyntaxQuestions[random.nextInt(_diverseSyntaxQuestions.length)];
+    _language = item["language"] as String;
+    _questionSubType = item["subType"] as String;
+    _question = item["question"] as String;
+    _correctAnswer = item["correct"] as String;
+    _conceptualExplanation = null;
+
+    _choices.clear();
+    _choices.add([_correctAnswer, 1]);
+
+    final List<String> distractors = List<String>.from(item["distractors"] as List);
+    distractors.shuffle(random);
+    for (final d in distractors.take(3)) {
+      _choices.add([d, 0]);
+    }
+    _choices.shuffle(random);
+
+    _answerGroup.clear();
+    for (final c in _choices) {
+      _answerGroup.add(c[0] as String);
+    }
+  }
+
+  void _generateVariableSyntaxQuestion(Random random) {
     final categories = DatabaseService.instance
         .getAvailableCategoriesForLevel(_userStats.level);
     _currentCategory = categories[random.nextInt(categories.length)];
@@ -755,7 +1166,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       PriorityRandomGenerator prgChoice = PriorityRandomGenerator(
           _incorrectPatternGroups.length, _incorrectPatternPriorities);
       int attempts = 0;
-      while (_choices.length < 5 && attempts < 50) {
+      while (_choices.length < 4 && attempts < 50) {
         attempts++;
         String incorrectAnswer = renderPatternOptions(
             _incorrectPatternGroups[prgChoice.pickIndex()][0],
@@ -779,6 +1190,20 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
     for (var e in _choices) {
       _answerGroup.add(e[0]);
+    }
+  }
+
+  void _generateSyntaxMultiChoiceQuestion(Random random) {
+    final bool hasVarData = _data.containsKey("Variables") &&
+        _data["Variables"] is Map &&
+        _data["Variables"]["Declaration"] is Map &&
+        _langList.isNotEmpty;
+
+    // 25% chance for variable assignment pattern engine if available, 75% for diverse programming subjects
+    if (hasVarData && random.nextInt(4) == 0) {
+      _generateVariableSyntaxQuestion(random);
+    } else {
+      _generateDiverseSyntaxQuestion(random);
     }
   }
 

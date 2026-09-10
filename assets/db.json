@@ -1,5 +1,5 @@
 {
-  "version": 6,
+  "version": 7,
   "Language": [
     "C",
     "Python",
@@ -3786,6 +3786,1473 @@
             ],
             "correct_index": 0,
             "explanation": "A clustered index stores the actual row data directly in the leaf pages of the index, ordered by the clustered key."
+          }
+        ]
+      }
+    },
+    "Computer Science": {
+      "introduction": "Computer Science is the systematic study of computation, information theory, algorithmic processes, software design, and computer system architectures.",
+      "remediation": "Focus on the relationship between mathematical abstraction, formal language grammars, algorithmic efficiency, and concrete physical hardware execution.",
+      "deep_dive": "Computer Science bridges foundational computability theory (Turing machines, Church-Turing thesis) with applied systems engineering (distributed consensus, compiler optimization, virtualization).",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "The Halting Problem is proven to be undecidable for general Turing machines.",
+            "is_true": true,
+            "explanation": "Alan Turing proved in 1936 that no general algorithm can determine if an arbitrary program halts on an arbitrary input."
+          },
+          {
+            "statement": "Moore's Law is a fundamental law of physics dictating quantum transistor tunneling limits.",
+            "is_true": false,
+            "explanation": "Moore's Law was an empirical observation by Gordon Moore regarding transistor density doubling, not a law of physics."
+          },
+          {
+            "statement": "A Turing machine with a two-way infinite tape can compute strictly more functions than a standard one-way infinite tape Turing machine.",
+            "is_true": false,
+            "explanation": "Both models are computationally equivalent in terms of computability and recognize the exact same class of languages (RE)."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match each pioneering computer scientist with their seminal contribution:",
+            "pairs": {
+              "Alan Turing": "Formalized computation with the Turing Machine and Halting Problem",
+              "Claude Shannon": "Founded Information Theory and digital circuit design theory",
+              "Donald Knuth": "Authored 'The Art of Computer Programming' and created TeX",
+              "Edsger Dijkstra": "Developed shortest path algorithm, semaphores, and structured programming"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the standard levels of the Computer Abstraction Hierarchy from lowest to highest:",
+            "ordered_sequence": [
+              "Silicon physics and semiconductor materials",
+              "Digital logic gates (AND, OR, NOT, NAND)",
+              "Microarchitecture (ALU, registers, pipelining)",
+              "Instruction Set Architecture (ISA - x86, ARM, RISC-V)",
+              "Operating System kernel and system calls",
+              "High-level programming languages and applications"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify each language into its primary programming paradigm:",
+            "categories": [
+              "Pure Functional",
+              "Object-Oriented / Imperative",
+              "Systems / Low-level"
+            ],
+            "items": {
+              "Pure Functional": [
+                "Haskell",
+                "Clojure",
+                "Erlang"
+              ],
+              "Object-Oriented / Imperative": [
+                "Java",
+                "C#",
+                "Python",
+                "Ruby"
+              ],
+              "Systems / Low-level": [
+                "C",
+                "C++",
+                "Rust",
+                "Assembly"
+              ]
+            }
+          }
+        ],
+        "Multi-Choice": [
+          {
+            "question": "Which computational complexity class contains decision problems solvable by a deterministic Turing machine in polynomial time?",
+            "choices": [
+              "P",
+              "NP",
+              "NP-Complete",
+              "PSPACE"
+            ],
+            "correct_index": 0,
+            "explanation": "Class P represents problems solvable in O(N^k) polynomial time on a deterministic machine."
+          }
+        ]
+      }
+    },
+    "Software Engineering": {
+      "introduction": "Software Engineering applies systematic, disciplined, and quantifiable engineering methodologies to the design, development, verification, and maintenance of complex software systems.",
+      "remediation": "Review design patterns, SOLID principles, testing pyramids, CI/CD deployment pipelines, and architectural patterns (microservices, event-driven, hexagonal).",
+      "deep_dive": "Software architecture demands balancing non-functional requirements including maintainability, fault tolerance, horizontal scalability, latency SLAs, and evolutionary architecture.",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "The Single Responsibility Principle (SRP) states a class should have one, and only one, reason to change.",
+            "is_true": true,
+            "explanation": "SRP (the S in SOLID) enforces high cohesion by giving each module responsibility over a single actor or concern."
+          },
+          {
+            "statement": "Integration tests are executed faster and with fewer external dependencies than unit tests.",
+            "is_true": false,
+            "explanation": "Unit tests run fastest in isolation without external dependencies; integration tests verify communication across modules/databases and run slower."
+          },
+          {
+            "statement": "In Continuous Integration (CI), developers merge code into a shared mainline branch multiple times a day with automated builds and tests.",
+            "is_true": true,
+            "explanation": "CI minimizes integration debt through frequent merges and automated regression verification."
+          },
+          {
+            "statement": "The Open-Closed Principle means software entities should be open for modification and closed for extension.",
+            "is_true": false,
+            "explanation": "Open-Closed states software should be open for EXTENSION but closed for MODIFICATION."
+          },
+          {
+            "statement": "Dependency Injection decouples object creation from object usage, improving modularity and testability.",
+            "is_true": true,
+            "explanation": "Injecting dependencies allows swapping real services with mocks/stubs during automated testing."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match each SOLID principle with its core definition:",
+            "pairs": {
+              "Single Responsibility": "A class should have only one reason to change",
+              "Open/Closed": "Software entities should be open for extension, but closed for modification",
+              "Liskov Substitution": "Subtypes must be substitutable for their base types without altering correctness",
+              "Interface Segregation": "Clients should not be forced to depend upon interfaces they do not use",
+              "Dependency Inversion": "High-level modules should depend on abstractions, not on concrete implementations"
+            }
+          },
+          {
+            "prompt": "Match each Design Pattern with its gang-of-four classification:",
+            "pairs": {
+              "Factory Method": "Creational Pattern creating objects without specifying exact class",
+              "Adapter": "Structural Pattern allowing incompatible interfaces to work together",
+              "Observer": "Behavioral Pattern notifying dependents automatically of state changes",
+              "Singleton": "Creational Pattern restricting a class to a single global instance"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the phases of standard Test-Driven Development (TDD) cycle:",
+            "ordered_sequence": [
+              "Write a failing automated unit test (Red)",
+              "Run the test suite and verify test fails",
+              "Write minimal code required to make test pass (Green)",
+              "Run test suite and verify all tests pass",
+              "Refactor code while keeping tests green"
+            ]
+          },
+          {
+            "prompt": "Order the stages of a modern automated CI/CD deployment pipeline:",
+            "ordered_sequence": [
+              "Source commit push to version control",
+              "Automated static code analysis and linting",
+              "Unit testing and code coverage verification",
+              "Container artifact compilation and build",
+              "Integration and end-to-end testing in staging",
+              "Canary or blue-green production deployment"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify each testing type into the Testing Pyramid hierarchy:",
+            "categories": [
+              "Unit Tests",
+              "Integration Tests",
+              "End-to-End Tests"
+            ],
+            "items": {
+              "Unit Tests": [
+                "Pure function testing",
+                "Mocked collaborator test",
+                "Single method invariant test"
+              ],
+              "Integration Tests": [
+                "Database repository query test",
+                "HTTP API endpoint controller test",
+                "Message broker event consumer test"
+              ],
+              "End-to-End Tests": [
+                "Selenium browser automation",
+                "Full user registration checkout flow",
+                "Cross-system payment gateway test"
+              ]
+            }
+          }
+        ],
+        "Multi-Choice": [
+          {
+            "question": "Which design pattern is best suited for providing a unified interface to a set of interfaces in a subsystem to simplify usage?",
+            "choices": [
+              "Facade Pattern",
+              "Decorator Pattern",
+              "Singleton Pattern",
+              "Observer Pattern"
+            ],
+            "correct_index": 0,
+            "explanation": "The Facade pattern defines a higher-level interface that makes the subsystem easier to use by hiding its internal complexity."
+          },
+          {
+            "question": "What is the primary risk of using circular dependencies between software packages?",
+            "choices": [
+              "Tightly couples modules preventing independent deployment and testing",
+              "Guarantees runtime stack overflow in all compilers",
+              "Increases garbage collection memory allocation tenfold",
+              "Breaks JSON schema serialization automatically"
+            ],
+            "correct_index": 0,
+            "explanation": "Circular dependencies couple packages into monolithic cycles, making independent comprehension, testing, and compilation impossible."
+          }
+        ]
+      }
+    },
+    "Cloud & Distributed Computing": {
+      "introduction": "Cloud & Distributed Computing studies networked computers coordinating actions via message passing to present a unified, high-availability computing system.",
+      "remediation": "Understand the CAP theorem, fallacies of distributed computing, consensus algorithms (Paxos, Raft), vector clocks, and horizontal vs vertical scaling.",
+      "deep_dive": "Distributed systems must manage partial failures, network partitions, split-brain conditions, eventual consistency models, and multi-region replication protocols.",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "According to the CAP theorem, a distributed data store can simultaneously guarantee Consistency, Availability, and Partition Tolerance.",
+            "is_true": false,
+            "explanation": "In the presence of a network partition (P), a distributed system must choose between Consistency (C) and Availability (A)."
+          },
+          {
+            "statement": "Horizontal scaling involves adding more memory or CPU cores to a single existing server instance.",
+            "is_true": false,
+            "explanation": "Horizontal scaling (scale-out) adds more server nodes; vertical scaling (scale-up) adds resources to a single node."
+          },
+          {
+            "statement": "An idempotent operation can be applied multiple times without changing the result beyond the initial application.",
+            "is_true": true,
+            "explanation": "Idempotency (e.g. HTTP PUT or DELETE) ensures network retries do not produce unintended duplicate side effects."
+          },
+          {
+            "statement": "In an eventually consistent database, all replicas will return the latest write immediately without any latency delay.",
+            "is_true": false,
+            "explanation": "Eventual consistency allows replicas to return stale data temporarily until synchronization messages propagate across the network."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match each distributed systems concept with its primary function:",
+            "pairs": {
+              "Load Balancer": "Distributes network traffic evenly across backend instances",
+              "Circuit Breaker": "Prevents cascading failure by failing fast when downstream is degraded",
+              "Consistent Hashing": "Minimizes key remapping when cache nodes are added or removed",
+              "Heartbeat Protocol": "Periodically signals node liveness to detect cluster node failures"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the steps of a 2-Phase Commit (2PC) distributed transaction protocol:",
+            "ordered_sequence": [
+              "Coordinator sends PREPARE message to all participant nodes",
+              "Participants execute local transaction and vote YES (prepared) or NO",
+              "Coordinator collects all votes from participant nodes",
+              "If all voted YES, coordinator sends COMMIT (else ABORT)",
+              "Participants apply commit/abort and acknowledge coordinator"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify each technology into its cloud architecture paradigm:",
+            "categories": [
+              "Object Storage",
+              "Message Queue",
+              "Container Orchestration"
+            ],
+            "items": {
+              "Object Storage": [
+                "Amazon S3",
+                "Google Cloud Storage",
+                "Azure Blob Storage"
+              ],
+              "Message Queue": [
+                "Apache Kafka",
+                "RabbitMQ",
+                "AWS SQS"
+              ],
+              "Container Orchestration": [
+                "Kubernetes",
+                "Docker Swarm",
+                "AWS ECS"
+              ]
+            }
+          }
+        ],
+        "Multi-Choice": [
+          {
+            "question": "Which consensus algorithm uses term elections, heartbeats, and leader log replication designed specifically for understandability?",
+            "choices": [
+              "Raft",
+              "Paxos",
+              "Two-Phase Commit",
+              "Byzantine Fault Tolerance"
+            ],
+            "correct_index": 0,
+            "explanation": "Raft decomposes consensus into leader election, log replication, and safety to make distributed consensus intuitive and robust."
+          }
+        ]
+      }
+    },
+    "Discrete Mathematics": {
+      "introduction": "Discrete Mathematics studies distinct, non-continuous mathematical structures fundamental to theoretical computer science, cryptography, and algorithm analysis.",
+      "remediation": "Focus on set theory, propositional logic, graph theory, combinatorics, modular arithmetic, recurrence relations, and mathematical induction proofs.",
+      "deep_dive": "Discrete math provides the formal proof techniques (pigeonhole principle, proof by contradiction) and structural models (posets, lattices, Markov chains) underpinning computing.",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "A set with N elements has exactly 2^N subsets in its power set.",
+            "is_true": true,
+            "explanation": "Each element has 2 choices (included or excluded), giving 2 * 2 * ... * 2 = 2^N subsets."
+          },
+          {
+            "statement": "The Pigeonhole Principle states that if N items are placed into K containers with N > K, at least one container must contain more than one item.",
+            "is_true": true,
+            "explanation": "This fundamental counting principle is widely used in hash table collision proofs and compression limits."
+          },
+          {
+            "statement": "In propositional logic, p -> q (implication) is logically equivalent to (NOT p) OR q.",
+            "is_true": true,
+            "explanation": "An implication is only false when p is true and q is false; otherwise it evaluates to true."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match each relation property with its formal mathematical definition:",
+            "pairs": {
+              "Reflexive": "For all x in set S, (x, x) is in relation R",
+              "Symmetric": "If (a, b) is in R, then (b, a) is in R",
+              "Transitive": "If (a, b) is in R and (b, c) is in R, then (a, c) is in R",
+              "Equivalence Relation": "A relation that is simultaneously reflexive, symmetric, and transitive"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the steps of a mathematical induction proof:",
+            "ordered_sequence": [
+              "State the proposition P(n) clearly for all n >= base",
+              "Prove the Base Step: show P(base) is strictly true",
+              "State the Inductive Hypothesis: assume P(k) holds for arbitrary k",
+              "Inductive Step: prove P(k+1) follows necessarily from P(k)",
+              "Conclude proposition P(n) holds for all integers n >= base"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify each statement into its logical category:",
+            "categories": [
+              "Tautology (Always True)",
+              "Contradiction (Always False)",
+              "Contingency (Sometimes True)"
+            ],
+            "items": {
+              "Tautology (Always True)": [
+                "p OR (NOT p)",
+                "p -> p",
+                "(p AND q) -> p"
+              ],
+              "Contradiction (Always False)": [
+                "p AND (NOT p)",
+                "(p -> q) AND p AND (NOT q)"
+              ],
+              "Contingency (Sometimes True)": [
+                "p AND q",
+                "p OR q",
+                "p -> q"
+              ]
+            }
+          }
+        ],
+        "Multi-Choice": [
+          {
+            "question": "How many distinct edges are present in a complete undirected graph with N vertices (K_n)?",
+            "choices": [
+              "N * (N - 1) / 2",
+              "N * (N - 1)",
+              "2^N",
+              "N^2"
+            ],
+            "correct_index": 0,
+            "explanation": "In a complete graph K_n, every pair of vertices has an edge, giving C(n, 2) = n*(n-1)/2 distinct edges."
+          }
+        ]
+      }
+    },
+    "Automata & Formal Languages": {
+      "introduction": "Automata theory studies abstract mathematical machines and the computational problem classes they can solve across the Chomsky hierarchy.",
+      "remediation": "Focus on Regular Languages (DFA/NFA), Context-Free Languages (PDA), Context-Sensitive Languages, and Recursively Enumerable Languages (Turing Machines).",
+      "deep_dive": "Pumping lemmas prove non-regularity and non-context-freeness by contradiction; Rice's theorem states any non-trivial semantic property of Turing machines is undecidable.",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "Every Non-deterministic Finite Automaton (NFA) can be converted into an equivalent Deterministic Finite Automaton (DFA) that recognizes the exact same language.",
+            "is_true": true,
+            "explanation": "The powerset construction algorithm converts any N-state NFA into an equivalent DFA with at most 2^N states."
+          },
+          {
+            "statement": "Regular languages can count arbitrary nested structures like matching parentheses to infinite depth.",
+            "is_true": false,
+            "explanation": "Regular languages have finite memory; recognizing balanced parentheses of arbitrary depth requires a Context-Free Grammar with a stack."
+          },
+          {
+            "statement": "The Halting Problem is decidable for Turing machines that are restricted to run on inputs of length less than 100.",
+            "is_true": true,
+            "explanation": "For any bounded input size and finite memory configuration, the state space is finite, making halting decidable by cycle detection."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match each language class in the Chomsky hierarchy with its recognizing computational model:",
+            "pairs": {
+              "Regular Language (Type 3)": "Deterministic / Non-deterministic Finite Automaton (DFA/NFA)",
+              "Context-Free Language (Type 2)": "Pushdown Automaton with a LIFO Stack (PDA)",
+              "Context-Sensitive Language (Type 1)": "Linear Bounded Automaton (LBA)",
+              "Recursively Enumerable (Type 0)": "General Turing Machine"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the language classes in the Chomsky Hierarchy from most restrictive to most expressive:",
+            "ordered_sequence": [
+              "Regular Languages (Type 3 - Finite Automata)",
+              "Deterministic Context-Free Languages (LR parsers)",
+              "Context-Free Languages (Type 2 - Pushdown Automata)",
+              "Context-Sensitive Languages (Type 1 - Linear Bounded Automata)",
+              "Decidable / Recursive Languages",
+              "Recursively Enumerable Languages (Type 0 - Turing Machines)"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify each formal language into its lowest containing Chomsky class:",
+            "categories": [
+              "Regular Language",
+              "Context-Free (Non-Regular)",
+              "Recursively Enumerable (Undecidable)"
+            ],
+            "items": {
+              "Regular Language": [
+                "Strings with an even number of zeros",
+                "Valid email address pattern",
+                "Identifiers starting with a letter"
+              ],
+              "Context-Free (Non-Regular)": [
+                "Balanced parentheses (Dyck language)",
+                "Palindromes: w w^R",
+                "Language { a^n b^n | n >= 0 }"
+              ],
+              "Recursively Enumerable (Undecidable)": [
+                "Encoding of Turing machines that halt on empty input",
+                "Post Correspondence Problem solutions",
+                "Valid First-Order Logic tautologies"
+              ]
+            }
+          }
+        ],
+        "Multi-Choice": [
+          {
+            "question": "Which tool or lemma is standardly used to formally prove that a language is NOT regular?",
+            "choices": [
+              "Pumping Lemma for Regular Languages",
+              "Cook-Levin Theorem",
+              "Master Theorem",
+              "Halting Theorem"
+            ],
+            "correct_index": 0,
+            "explanation": "The Pumping Lemma states all sufficiently long words in a regular language can be 'pumped' while remaining in the language; failure of this property proves non-regularity."
+          }
+        ]
+      }
+    },
+    "Asymptotic Complexity Analysis": {
+      "introduction": "Asymptotic complexity mathematically classifies algorithm resource utilization (time and memory) as input scale N approaches infinity.",
+      "remediation": "Big-O denotes asymptotic upper bound f(N) <= c*g(N); Big-Omega denotes lower bound; Big-Theta denotes tight bound.",
+      "deep_dive": "Amortized complexity uses aggregate analysis, accounting credits, or potential functions to prove guaranteed average time per operation across worst-case sequences.",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "If an algorithm runs in O(N) time, it is also mathematically correct to say it runs in O(N^2) time.",
+            "is_true": true,
+            "explanation": "Big-O represents an upper bound; anything bounded above by N is strictly bounded above by N^2."
+          },
+          {
+            "statement": "Big-Theta notation indicates a tight asymptotic bound where upper bound Big-O and lower bound Big-Omega coincide.",
+            "is_true": true,
+            "explanation": "f(n) is Theta(g(n)) if and only if f(n) is O(g(n)) and f(n) is Omega(g(n))."
+          },
+          {
+            "statement": "An algorithm with time complexity O(2^N) executes faster for large N than an algorithm with O(N^3).",
+            "is_true": false,
+            "explanation": "Exponential complexity O(2^N) explodes exponentially and is far slower than polynomial O(N^3) as N grows."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match each asymptotic notation symbol with its formal mathematical meaning:",
+            "pairs": {
+              "Big-O (O)": "Asymptotic upper bound: f(n) <= c * g(n) for large n",
+              "Big-Omega (\u03a9)": "Asymptotic lower bound: f(n) >= c * g(n) for large n",
+              "Big-Theta (\u0398)": "Tight asymptotic bound: c1 * g(n) <= f(n) <= c2 * g(n)",
+              "Little-o (o)": "Strict non-tight upper bound: lim [f(n) / g(n)] = 0 as n -> inf"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the standard Big-O complexity classes from most efficient to least efficient (fastest to slowest):",
+            "ordered_sequence": [
+              "O(1) - Constant Time",
+              "O(log N) - Logarithmic Time",
+              "O(N) - Linear Time",
+              "O(N log N) - Linearithmic Time",
+              "O(N^2) - Quadratic Time",
+              "O(2^N) - Exponential Time",
+              "O(N!) - Factorial Time"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify each operation into its tight time complexity class:",
+            "categories": [
+              "O(1) Constant",
+              "O(log N) Logarithmic",
+              "O(N) Linear"
+            ],
+            "items": {
+              "O(1) Constant": [
+                "Array access by index",
+                "HashMap lookup (average)",
+                "Push to end of dynamic array (amortized)"
+              ],
+              "O(log N) Logarithmic": [
+                "Binary Search in sorted array",
+                "Search in balanced AVL tree",
+                "Extract-Min from Binary Heap"
+              ],
+              "O(N) Linear": [
+                "Linear scan through unsorted list",
+                "Traversing all nodes in linked list",
+                "Finding maximum in unsorted array"
+              ]
+            }
+          }
+        ],
+        "Multi-Choice": [
+          {
+            "question": "What is the amortized time complexity of appending an element to the end of a dynamic array (e.g. ArrayList or Python list)?",
+            "choices": [
+              "O(1)",
+              "O(N)",
+              "O(log N)",
+              "O(N^2)"
+            ],
+            "correct_index": 0,
+            "explanation": "Although occasional doubling resizes take O(N), they occur with exponential infrequency, yielding O(1) amortized time per append."
+          }
+        ]
+      }
+    },
+    "Algorithms": {
+      "introduction": "An algorithm is a finite, unambiguous sequence of instructions solving a specific computational problem efficiently.",
+      "remediation": "Study fundamental paradigms: Greedy algorithms, Divide and Conquer, Dynamic Programming, Backtracking, Branch and Bound, and Randomized algorithms.",
+      "deep_dive": "Advanced algorithmic design tackles NP-complete problems via approximation algorithms, parameterized complexity, heuristic pruning, and linear programming relaxations.",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "Dijkstra's algorithm correctly computes shortest paths in graphs with negative weight edge cycles.",
+            "is_true": false,
+            "explanation": "Dijkstra fails on negative edge cycles; the Bellman-Ford algorithm or SPFA must be used instead."
+          },
+          {
+            "statement": "Dynamic programming is applicable when a problem exhibits optimal substructure and overlapping subproblems.",
+            "is_true": true,
+            "explanation": "Optimal substructure allows building solutions from subproblems; overlapping subproblems allows memoization/tabulation."
+          },
+          {
+            "statement": "Binary Search requires the underlying array or collection to be strictly sorted prior to searching.",
+            "is_true": true,
+            "explanation": "Binary search divides the search space in half at each step based on ordered comparisons in O(log N)."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match each algorithm with its primary algorithmic paradigm:",
+            "pairs": {
+              "Merge Sort": "Divide and Conquer dividing list into halves and merging",
+              "Kruskal's MST": "Greedy algorithm selecting minimum weight non-cyclic edges",
+              "0/1 Knapsack": "Dynamic Programming storing subproblem states in a table",
+              "N-Queens Puzzle": "Backtracking exploring and pruning invalid state trees"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the steps of Breadth-First Search (BFS) on a graph from start node S:",
+            "ordered_sequence": [
+              "Create an empty FIFO queue and a visited set",
+              "Enqueue start node S and mark S as visited",
+              "While queue is not empty, dequeue front node U",
+              "For each unvisited neighbor V of U, mark V visited and enqueue V",
+              "Terminate when queue is empty and all reachable nodes processed"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify each sorting algorithm by its average-case time complexity:",
+            "categories": [
+              "O(N log N)",
+              "O(N^2)",
+              "O(N + K) (Linear)"
+            ],
+            "items": {
+              "O(N log N)": [
+                "Merge Sort",
+                "Heap Sort",
+                "Quick Sort"
+              ],
+              "O(N^2)": [
+                "Bubble Sort",
+                "Insertion Sort",
+                "Selection Sort"
+              ],
+              "O(N + K) (Linear)": [
+                "Counting Sort",
+                "Radix Sort"
+              ]
+            }
+          }
+        ],
+        "Multi-Choice": [
+          {
+            "question": "Which algorithm finds the single-source shortest paths in a weighted directed acyclic graph (DAG) in O(V + E) time?",
+            "choices": [
+              "Topological Sort relaxation",
+              "Bellman-Ford algorithm",
+              "Floyd-Warshall algorithm",
+              "Kruskal's algorithm"
+            ],
+            "correct_index": 0,
+            "explanation": "Topologically sorting a DAG allows relaxing all outgoing edges in linear topological order in O(V + E) time."
+          }
+        ]
+      }
+    },
+    "Control Flow & Logic": {
+      "introduction": "Control flow statements govern the order of instruction execution through branching (if/else), selection (switch/case), and guard clauses.",
+      "remediation": "Understand condition evaluation, short-circuit boolean logic, switch fall-through, pattern matching, and ternary expressions.",
+      "deep_dive": "Compilers translate high-level control flow into conditional jump instructions (cmp, jne, jmp) optimized via branch prediction hardware.",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "In short-circuit boolean evaluation, in expression (A && B), if A is false, B is never evaluated.",
+            "is_true": true,
+            "explanation": "Because false AND anything is always false, evaluation short-circuits to avoid redundant or error-prone work in B."
+          },
+          {
+            "statement": "In JavaScript and C++, switch statements automatically break without requiring an explicit 'break' statement.",
+            "is_true": false,
+            "explanation": "Switch statements in C/C++/Java/JavaScript fall through to subsequent cases unless an explicit 'break' statement is supplied."
+          },
+          {
+            "statement": "A ternary operator `condition ? expr1 : expr2` returns expr1 when condition is true and expr2 when false.",
+            "is_true": true,
+            "explanation": "The ternary operator is a compact inline conditional expression present in C, Java, JS, Python (`expr1 if cond else expr2`), etc."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match each control flow keyword with its purpose across programming languages:",
+            "pairs": {
+              "break": "Terminates the innermost loop or switch block immediately",
+              "continue": "Skips the rest of current loop iteration and proceeds to next",
+              "return": "Exits the current function and optionally passes a value to caller",
+              "fallthrough": "Explicit keyword in Go/Swift to execute the next switch case body"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the evaluation sequence of an if-elif-else branching ladder:",
+            "ordered_sequence": [
+              "Evaluate the primary 'if' boolean condition",
+              "If true, execute 'if' body and exit the ladder immediately",
+              "If false, evaluate subsequent 'elif' / 'else if' condition",
+              "Repeat for all elif conditions until one evaluates to true",
+              "If all prior conditions were false, execute default 'else' block"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify each control structure by its execution behavior:",
+            "categories": [
+              "Branching / Selection",
+              "Looping / Iteration",
+              "Jump / Control Transfer"
+            ],
+            "items": {
+              "Branching / Selection": [
+                "if-else statement",
+                "switch-case block",
+                "pattern match statement",
+                "ternary operator"
+              ],
+              "Looping / Iteration": [
+                "for loop",
+                "while loop",
+                "do-while loop",
+                "foreach loop"
+              ],
+              "Jump / Control Transfer": [
+                "break statement",
+                "continue statement",
+                "return statement",
+                "goto statement"
+              ]
+            }
+          }
+        ],
+        "Multi-Choice": [
+          {
+            "question": "How do you write an If statement in Python?",
+            "choices": [
+              "if condition:",
+              "if (condition) {}",
+              "if condition then end",
+              "if [ condition ]; then"
+            ],
+            "correct_index": 0,
+            "explanation": "Python uses `if condition:` followed by an indented block without parentheses or curly braces."
+          },
+          {
+            "question": "In Rust, which construct provides exhaustive compile-time pattern matching with value binding?",
+            "choices": [
+              "match expr {}",
+              "switch (expr) {}",
+              "select { case: }",
+              "guard let expr = true"
+            ],
+            "correct_index": 0,
+            "explanation": "Rust's `match` construct requires exhaustiveness across all possible enum variants or pattern values."
+          }
+        ]
+      }
+    },
+    "Functions & Methods": {
+      "introduction": "Functions encapsulate reusable units of logic with parameter bindings, local scopes, and return values.",
+      "remediation": "Master pass-by-value vs pass-by-reference, pure functions, closures, recursion base cases, and first-class functions.",
+      "deep_dive": "Function invocation pushes stack frames containing arguments, return addresses, and local registers, followed by stack frame deallocation upon return.",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "A pure function given the exact same input arguments will always return the exact same output without observable side effects.",
+            "is_true": true,
+            "explanation": "Pure functions have referential transparency, making them deterministic, thread-safe, and easily testable."
+          },
+          {
+            "statement": "In pass-by-value, modifying a parameter inside a function permanently alters the original caller's variable in memory.",
+            "is_true": false,
+            "explanation": "Pass-by-value passes a copy of the argument; mutations to the local copy do not change the caller's variable."
+          },
+          {
+            "statement": "A closure is a function that retains access to variables from its lexical enclosing scope even after that scope has closed.",
+            "is_true": true,
+            "explanation": "Closures capture their lexical environment, enabling private variables and higher-order function factories."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match each function concept with its definition:",
+            "pairs": {
+              "Higher-Order Function": "A function that takes one or more functions as arguments or returns a function",
+              "Lambda / Arrow Function": "An anonymous inline function expression often used for concise callbacks",
+              "Recursion": "A function that solves a problem by calling itself with a smaller subproblem",
+              "Variadic Function": "A function that accepts a variable number of arguments (e.g. *args, ...params)"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the lifecycle steps of a function call on the call stack:",
+            "ordered_sequence": [
+              "Caller pushes arguments and return address onto stack",
+              "CPU jumps program counter to function entry point",
+              "Callee allocates stack frame for local variables",
+              "Function body executes business logic",
+              "Return value placed in register and stack frame popped",
+              "Program counter restored to caller's return address"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify each language by its function declaration keyword:",
+            "categories": [
+              "def keyword",
+              "fn keyword",
+              "function keyword",
+              "func keyword"
+            ],
+            "items": {
+              "def keyword": [
+                "Python",
+                "Ruby"
+              ],
+              "fn keyword": [
+                "Rust",
+                "Kotlin"
+              ],
+              "function keyword": [
+                "JavaScript",
+                "TypeScript",
+                "PHP"
+              ],
+              "func keyword": [
+                "Go",
+                "Swift"
+              ]
+            }
+          }
+        ],
+        "Multi-Choice": [
+          {
+            "question": "How do you declare a function in Go that takes two integers and returns their sum as an integer?",
+            "choices": [
+              "func add(a int, b int) int { return a + b }",
+              "def add(a: int, b: int) -> int: return a + b",
+              "function int add(int a, int b) { return a + b; }",
+              "fn add(a: i32, b: i32) -> i32 { a + b }"
+            ],
+            "correct_index": 0,
+            "explanation": "Go uses the `func` keyword with parameter types placed after parameter names, followed by the return type: `func add(a int, b int) int`."
+          }
+        ]
+      }
+    },
+    "Object-Oriented Programming": {
+      "introduction": "OOP models software as interacting objects possessing encapsulated state (fields) and behaviors (methods).",
+      "remediation": "Focus on the 4 pillars of OOP: Encapsulation, Abstraction, Inheritance, and Polymorphism, plus composition over inheritance.",
+      "deep_dive": "Virtual method tables (vtables) enable dynamic dispatch at runtime by resolving overridden method pointers through an object's type metadata.",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "Encapsulation bundles data and methods operating on that data within a class while restricting direct access from outside.",
+            "is_true": true,
+            "explanation": "Encapsulation prevents external code from corrupting internal state invariants."
+          },
+          {
+            "statement": "In Java and C#, a class can directly inherit from multiple concrete base classes simultaneously.",
+            "is_true": false,
+            "explanation": "Java and C# prohibit multiple class inheritance to prevent the Diamond Problem, though they allow implementing multiple interfaces."
+          },
+          {
+            "statement": "Polymorphism allows objects of different classes derived from a common parent to respond to the same method call appropriately.",
+            "is_true": true,
+            "explanation": "Polymorphism enables uniform treatment of distinct subtypes via shared interfaces or base class contracts."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match each OOP access modifier with its visibility scope:",
+            "pairs": {
+              "public": "Accessible by any other class or package without restriction",
+              "private": "Accessible only within the declaring class itself",
+              "protected": "Accessible within declaring class, subclasses, and same package",
+              "internal / package-private": "Accessible only within the same module or package boundary"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the sequence of object instantiation and initialization:",
+            "ordered_sequence": [
+              "Memory allocated on heap for object instance fields",
+              "Default field values initialized (0, null, false)",
+              "Superclass constructor executed to initialize parent state",
+              "Explicit field initializers executed",
+              "Subclass constructor body executed",
+              "Reference to newly constructed object returned to caller"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify each concept into its OOP Pillar:",
+            "categories": [
+              "Encapsulation",
+              "Inheritance",
+              "Polymorphism",
+              "Abstraction"
+            ],
+            "items": {
+              "Encapsulation": [
+                "Private fields with getters/setters",
+                "Information hiding",
+                "Data invariant validation"
+              ],
+              "Inheritance": [
+                "Subclassing with 'extends'",
+                "Reusing base class code",
+                "IS-A relationship"
+              ],
+              "Polymorphism": [
+                "Method overriding (@Override)",
+                "Dynamic dispatch vtable",
+                "Subtype substitutability"
+              ],
+              "Abstraction": [
+                "Abstract classes",
+                "Interface contracts",
+                "Hiding implementation details"
+              ]
+            }
+          }
+        ],
+        "Multi-Choice": [
+          {
+            "question": "Which keyword is used in Java, TypeScript, and PHP to inherit from a base class?",
+            "choices": [
+              "extends",
+              "implements",
+              "inherits",
+              "derive"
+            ],
+            "correct_index": 0,
+            "explanation": "In Java, TypeScript, and PHP, `class Child extends Parent` establishes class inheritance."
+          }
+        ]
+      }
+    },
+    "Error & Exception Handling": {
+      "introduction": "Exception handling manages anomalous runtime conditions gracefully to prevent process crashes and resource leaks.",
+      "remediation": "Understand try-catch-finally blocks, throw/raise statements, checked vs unchecked exceptions, and error return types (Result/Option).",
+      "deep_dive": "Zero-cost exception handling in compiled languages uses DWARF stack unwinding tables rather than runtime setjmp/longjmp checks on every call.",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "The code inside a 'finally' block executes regardless of whether an exception was thrown or caught.",
+            "is_true": true,
+            "explanation": "The finally block is guaranteed to run to perform mandatory resource cleanup (e.g. closing files or database sockets)."
+          },
+          {
+            "statement": "Rust uses traditional try-catch exception blocks for ordinary error handling instead of Result<T, E> enum types.",
+            "is_true": false,
+            "explanation": "Rust eschews exceptions in favor of explicit `Result<T, E>` and `Option<T>` enums with pattern matching and the `?` operator."
+          },
+          {
+            "statement": "Catching a generic 'Exception' or 'Throwable' blindly without handling it (swallowing exceptions) is a dangerous anti-pattern.",
+            "is_true": true,
+            "explanation": "Swallowing exceptions masks catastrophic bugs and prevents system diagnostics and error recovery."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match each language with its error handling construct or keyword:",
+            "pairs": {
+              "Python": "try / except / finally / raise",
+              "JavaScript": "try / catch / finally / throw",
+              "Go": "if err != nil / panic / recover",
+              "Rust": "Result<T, E> with the '?' question mark operator"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the lifecycle of an exception thrown in a try block:",
+            "ordered_sequence": [
+              "An error occurs and an exception object is instantiated and thrown",
+              "Normal code execution halts immediately at throw site",
+              "Runtime inspects enclosing 'try' block for a matching 'catch' clause",
+              "If found, matching catch block executes recovery logic",
+              "Associated 'finally' block executes cleanup logic",
+              "Execution resumes after try-catch-finally block"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify each exception by its standard categorization:",
+            "categories": [
+              "Checked Exception (Must Declare/Handle)",
+              "Unchecked Runtime Exception",
+              "Fatal System Error"
+            ],
+            "items": {
+              "Checked Exception (Must Declare/Handle)": [
+                "IOException",
+                "SQLException",
+                "FileNotFoundException"
+              ],
+              "Unchecked Runtime Exception": [
+                "NullPointerException",
+                "IndexOutOfBoundsException",
+                "ArithmeticException (Divide by Zero)"
+              ],
+              "Fatal System Error": [
+                "OutOfMemoryError",
+                "StackOverflowError",
+                "VirtualMachineError"
+              ]
+            }
+          }
+        ],
+        "Multi-Choice": [
+          {
+            "question": "Which statement in Python is used to explicitly trigger an exception?",
+            "choices": [
+              "raise",
+              "throw",
+              "panic",
+              "error"
+            ],
+            "correct_index": 0,
+            "explanation": "Python uses `raise ValueError('message')` to trigger exceptions (unlike Java/JS which use `throw`)."
+          }
+        ]
+      }
+    },
+    "Asynchronous & Concurrency": {
+      "introduction": "Concurrency coordinates multiple execution paths overlapping in time, either through multi-threading or non-blocking event loops.",
+      "remediation": "Understand async/await, race conditions, deadlocks, mutexes, semaphores, promises/futures, and thread synchronization.",
+      "deep_dive": "Deadlocks require 4 simultaneous conditions (Coffman conditions): Mutual Exclusion, Hold and Wait, No Preemption, and Circular Wait.",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "A race condition occurs when multiple threads access shared memory concurrently and at least one access is a write without synchronization.",
+            "is_true": true,
+            "explanation": "Race conditions cause non-deterministic bugs where final program output depends on unpredictable thread scheduling timing."
+          },
+          {
+            "statement": "JavaScript's single-threaded event loop means asynchronous code executes in parallel across 8 CPU cores concurrently.",
+            "is_true": false,
+            "explanation": "JavaScript uses a single-threaded non-blocking event loop; async tasks queue callbacks rather than executing parallel thread code on multiple cores."
+          },
+          {
+            "statement": "A Mutex (mutual exclusion lock) allows only one thread to access a critical section of code at any given time.",
+            "is_true": true,
+            "explanation": "Mutexes enforce serialized access to shared mutable resources to prevent data corruption."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match each concurrency primitive with its description:",
+            "pairs": {
+              "Mutex": "Binary lock granting exclusive access to one thread at a time",
+              "Semaphore": "Counting synchronization construct regulating access to N resources",
+              "Channel": "Communication pipe passing messages safely between concurrent routines",
+              "Atomic Variable": "Hardware-supported variable allowing lock-free reads and writes"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the stages of JavaScript Event Loop execution on a single turn:",
+            "ordered_sequence": [
+              "Execute current synchronous task on the Call Stack until empty",
+              "Drain all pending microtasks (resolved Promise callbacks)",
+              "Check if render/reflow update is needed and perform render",
+              "De-queue and execute the next macrotask (setTimeout, I/O event)",
+              "Repeat event loop cycle indefinitely"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify each concurrency model by its mechanism:",
+            "categories": [
+              "Shared Memory Multi-threading",
+              "Message Passing Concurrency",
+              "Event-Driven Asynchronous"
+            ],
+            "items": {
+              "Shared Memory Multi-threading": [
+                "POSIX pthreads",
+                "Java java.lang.Thread",
+                "C++ std::thread with mutex"
+              ],
+              "Message Passing Concurrency": [
+                "Go Goroutines with channels",
+                "Erlang / Elixir Actor Model",
+                "Rust crossbeam channels"
+              ],
+              "Event-Driven Asynchronous": [
+                "Node.js libuv event loop",
+                "Python asyncio loop",
+                "Flutter Dart event loop"
+              ]
+            }
+          }
+        ],
+        "Multi-Choice": [
+          {
+            "question": "Which Go keyword is prefixed before a function call to execute it concurrently in a lightweight thread?",
+            "choices": [
+              "go",
+              "async",
+              "thread",
+              "spawn"
+            ],
+            "correct_index": 0,
+            "explanation": "In Go, `go myFunction()` spawns an ultra-lightweight green thread called a goroutine."
+          }
+        ]
+      }
+    },
+    "Loops & Iteration": {
+      "introduction": "Loops repeat a block of code while a boolean predicate holds true or over elements of an iterable sequence.",
+      "remediation": "Contrast pre-test loops (for, while) with post-test loops (do-while). Avoid off-by-one errors in boundary conditions.",
+      "deep_dive": "Compilers apply loop unrolling, loop fusion, invariant code motion, and SIMD auto-vectorization to maximize memory throughput.",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "A do-while loop is guaranteed to execute its body at least once, even if the condition is false initially.",
+            "is_true": true,
+            "explanation": "Because the condition is evaluated at the bottom (post-test), the first iteration executes unconditionally."
+          },
+          {
+            "statement": "A 'continue' statement inside a loop immediately terminates the loop entirely.",
+            "is_true": false,
+            "explanation": "Continue skips the remainder of the current iteration and jumps to the loop header/increment; 'break' terminates the loop."
+          },
+          {
+            "statement": "An infinite loop without an exit condition or yield can cause 100% CPU utilization on a single core.",
+            "is_true": true,
+            "explanation": "Tight non-blocking CPU loops continuously execute instructions without yielding CPU cycles back to the OS scheduler."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match each loop construct with its primary iteration characteristic:",
+            "pairs": {
+              "for loop": "Standard counted iteration with initialization, condition, and step increment",
+              "while loop": "Pre-test conditional iteration continuing while predicate remains true",
+              "do-while loop": "Post-test iteration guaranteeing at least one execution of loop body",
+              "for-each / for-in": "Direct iteration over elements or keys of an iterable collection"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the execution steps of a standard C-style for loop iteration `for(init; cond; step)`:",
+            "ordered_sequence": [
+              "Execute initialization statement once (init)",
+              "Evaluate loop continuation boolean condition (cond)",
+              "If condition is false, break and exit loop immediately",
+              "If condition is true, execute loop body statements",
+              "Execute step update expression (step: e.g. i++)",
+              "Return to condition evaluation step"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify each loop construct by when its condition is evaluated:",
+            "categories": [
+              "Pre-test Loop (Checked Before Body)",
+              "Post-test Loop (Checked After Body)",
+              "Collection / Iterator Loop"
+            ],
+            "items": {
+              "Pre-test Loop (Checked Before Body)": [
+                "while(cond) {}",
+                "for(int i=0; i<n; i++) {}",
+                "while True: in Python"
+              ],
+              "Post-test Loop (Checked After Body)": [
+                "do { ... } while(cond);",
+                "repeat { ... } until cond;"
+              ],
+              "Collection / Iterator Loop": [
+                "for item in list: in Python",
+                "for (const x of arr) in JS",
+                "for _, v := range slice in Go"
+              ]
+            }
+          }
+        ],
+        "Multi-Choice": [
+          {
+            "question": "How do you write a for loop in Go to iterate from 0 to 9?",
+            "choices": [
+              "for i := 0; i < 10; i++ {}",
+              "for (int i = 0; i < 10; i++) {}",
+              "for i in range(10):",
+              "for i := 0 to 9 do"
+            ],
+            "correct_index": 0,
+            "explanation": "Go uses `for i := 0; i < 10; i++ {}` without parentheses (Go has no `while` keyword; `for` handles all loops)."
+          }
+        ]
+      }
+    },
+    "Collections & Data Structures": {
+      "introduction": "Collections organize and store data in memory optimized for specific access, search, and modification patterns.",
+      "remediation": "Choose appropriate collections based on lookup frequency, ordering requirements, memory constraints, and key uniqueness.",
+      "deep_dive": "Hash tables require uniform hash functions, load factor thresholds (typically 0.75), and collision resolution (chaining vs open addressing).",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "A Set data structure allows duplicate elements and guarantees insertion-order preservation in all languages.",
+            "is_true": false,
+            "explanation": "Sets enforce element uniqueness and mathematically model mathematical sets; standard hash sets do not guarantee insertion order."
+          },
+          {
+            "statement": "Accessing an element by index in a contiguous array has O(1) constant time complexity.",
+            "is_true": true,
+            "explanation": "Memory address calculation `base + (index * element_size)` executes in constant time via CPU address arithmetic."
+          },
+          {
+            "statement": "A FIFO (First-In, First-Out) queue dequeues the element that has been in the queue for the longest time.",
+            "is_true": true,
+            "explanation": "Queues maintain FIFO ordering where enqueues append to the tail and dequeues remove from the head."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match each collection with its defining operational behavior:",
+            "pairs": {
+              "Stack": "LIFO (Last-In, First-Out) with push and pop at the top",
+              "Queue": "FIFO (First-In, First-Out) with enqueue at back and dequeue at front",
+              "HashMap / Dictionary": "Key-value mapping with O(1) average lookup via hashing",
+              "Set": "Collection of unique elements preventing duplicate values"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the sequence of resizing a dynamic array when its capacity is exhausted:",
+            "ordered_sequence": [
+              "Append request arrives when size equals capacity",
+              "Allocate new contiguous array in memory with doubled capacity (2 * C)",
+              "Copy all existing N elements from old array to new array",
+              "Insert the new element at index N",
+              "Deallocate or garbage collect the old memory array block",
+              "Update internal array pointer and capacity metadata"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify each data structure by its memory layout:",
+            "categories": [
+              "Contiguous Memory Block",
+              "Node-based Linked Memory",
+              "Associative Hash Bucket Array"
+            ],
+            "items": {
+              "Contiguous Memory Block": [
+                "Fixed Array",
+                "Dynamic Array / Vector",
+                "Ring Buffer"
+              ],
+              "Node-based Linked Memory": [
+                "Singly Linked List",
+                "Doubly Linked List",
+                "Binary Search Tree",
+                "Trie"
+              ],
+              "Associative Hash Bucket Array": [
+                "HashMap / Dict",
+                "HashSet",
+                "Hash Table with Chaining"
+              ]
+            }
+          }
+        ],
+        "Multi-Choice": [
+          {
+            "question": "Which data structure is ideal for implementing Undo/Redo or matching parentheses in an expression?",
+            "choices": [
+              "Stack (LIFO)",
+              "Queue (FIFO)",
+              "Binary Heap",
+              "Hash Set"
+            ],
+            "correct_index": 0,
+            "explanation": "A Stack's Last-In First-Out structure perfectly tracks nested operations and reverse histories for undo actions."
+          }
+        ]
+      }
+    },
+    "Strings & Text Processing": {
+      "introduction": "Strings represent sequences of characters encoded as ASCII or Unicode (UTF-8, UTF-16) with language-specific mutability rules.",
+      "remediation": "Understand string immutability in Java/Python/JS, string interpolation syntax, string builders, and regex matching.",
+      "deep_dive": "String concatenation in a loop without a StringBuilder creates O(N^2) temporary string allocations due to immutability.",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "In Java, Python, and JavaScript, strings are immutable and cannot have individual characters modified in-place.",
+            "is_true": true,
+            "explanation": "Modifying a string returns a newly allocated string instance rather than altering memory in-place."
+          },
+          {
+            "statement": "UTF-8 encodes all characters in the world using strictly 1 single byte per character.",
+            "is_true": false,
+            "explanation": "UTF-8 is a variable-width encoding using between 1 and 4 bytes per character (ASCII takes 1 byte; emojis take 4)."
+          },
+          {
+            "statement": "String interpolation allows embedding expressions directly inside string literals without manual concatenation.",
+            "is_true": true,
+            "explanation": "Interpolation (e.g. `f'Hello {name}'` in Python or `\"Hello ${name}\"` in Dart) simplifies readable text formatting."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match each language with its native string interpolation syntax:",
+            "pairs": {
+              "Python": "f'Count is {count}' with f-string prefix",
+              "JavaScript": "`Count is ${count}` with backticks and template literals",
+              "Dart": "'Count is $count' with dollar sign prefix",
+              "Rust": "format!(\"Count is {}\", count) with format macro"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the steps of a typical text-processing pipeline (e.g. word frequency count):",
+            "ordered_sequence": [
+              "Read raw string from input file or network stream",
+              "Normalize text by converting to lowercase and stripping punctuation",
+              "Split sanitized text into token words using whitespace delimiter",
+              "Filter out empty tokens and common stop-words",
+              "Tally word counts into a frequency HashMap",
+              "Sort map entries by frequency in descending order"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify each string construct by its mutability in its language:",
+            "categories": [
+              "Immutable String",
+              "Mutable Buffer / Builder"
+            ],
+            "items": {
+              "Immutable String": [
+                "Java String",
+                "Python str",
+                "JavaScript string",
+                "Rust &str (string slice)"
+              ],
+              "Mutable Buffer / Builder": [
+                "Java StringBuilder",
+                "C++ std::string",
+                "Rust String (growable vector)",
+                "Go strings.Builder"
+              ]
+            }
+          }
+        ],
+        "Multi-Choice": [
+          {
+            "question": "How do you interpolate a variable `score` into a string in JavaScript?",
+            "choices": [
+              "`Score: ${score}`",
+              "'Score: {score}'",
+              "\"Score: %score%\"",
+              "$'Score: {score}'"
+            ],
+            "correct_index": 0,
+            "explanation": "JavaScript template literals use backticks with `${variable}` for interpolation."
+          }
+        ]
+      }
+    },
+    "Memory & Pointers": {
+      "introduction": "Memory management governs allocation, lifecycle, and dereferencing of variables across CPU registers, Stack, and Heap.",
+      "remediation": "Contrast automatic stack allocation with manual/managed heap allocation. Understand pointers, references, and memory leaks.",
+      "deep_dive": "Rust eliminates dangling pointers and data races at compile time via ownership, borrowing rules, and lifetime annotations.",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "Stack memory allocation and deallocation is faster than heap allocation because it only requires moving the stack pointer register.",
+            "is_true": true,
+            "explanation": "Stack allocations modify the stack pointer register (SP); heap allocations require finding free blocks and managing fragmentation."
+          },
+          {
+            "statement": "A dangling pointer is a pointer that points to memory that has already been deallocated or freed.",
+            "is_true": true,
+            "explanation": "Dereferencing a dangling pointer leads to undefined behavior, security vulnerabilities, or segmentation faults."
+          },
+          {
+            "statement": "Garbage-collected languages like Java and Go completely eliminate the possibility of any memory leaks.",
+            "is_true": false,
+            "explanation": "Holding onto references in static collections or long-lived caches prevents the GC from reclaiming unused objects, leaking memory."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match each memory segment with its contents in a process layout:",
+            "pairs": {
+              "Stack": "Stores local variables, parameters, and function return addresses",
+              "Heap": "Stores dynamically allocated objects (malloc/new) with variable lifetimes",
+              "Data / BSS": "Stores global and static variables initialized before execution",
+              "Text / Code": "Stores read-only executable machine code instructions"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the lifecycle of dynamic heap memory in C/C++:",
+            "ordered_sequence": [
+              "Call malloc() or new requesting N bytes of memory",
+              "OS heap manager locates free block and returns memory pointer",
+              "Program writes data and reads values through the pointer",
+              "Call free() or delete to release heap block back to allocator",
+              "Set pointer variable to NULL / nullptr to avoid dangling pointer"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify each language by its memory management strategy:",
+            "categories": [
+              "Manual Memory Management",
+              "Automatic Tracing Garbage Collection",
+              "Compile-Time Ownership & Borrowing"
+            ],
+            "items": {
+              "Manual Memory Management": [
+                "C (malloc/free)",
+                "C++ (new/delete)",
+                "Zig"
+              ],
+              "Automatic Tracing Garbage Collection": [
+                "Java (JVM GC)",
+                "Go (Concurrent GC)",
+                "Python (Ref count + Cyclic GC)",
+                "JavaScript (V8 GC)"
+              ],
+              "Compile-Time Ownership & Borrowing": [
+                "Rust (RAII & Lifetimes)"
+              ]
+            }
+          }
+        ],
+        "Multi-Choice": [
+          {
+            "question": "In C and C++, which operator is used to obtain the memory address of a variable?",
+            "choices": [
+              "& (Ampersand)",
+              "* (Asterisk)",
+              "-> (Arrow)",
+              "@ (At symbol)"
+            ],
+            "correct_index": 0,
+            "explanation": "The `&` address-of operator returns a pointer to the operand's memory location."
           }
         ]
       }
