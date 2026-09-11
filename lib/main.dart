@@ -158,6 +158,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   List<String> _currentSequence = [];
   bool _sequencingSubmitted = false;
   List<bool> _sequenceStepResults = [];
+  bool _hasTriedToMoveSequence = false;
+  bool _sequenceOrderAdjusted = false;
 
   // Sorting-Classification State
   String _sortingPrompt = "";
@@ -550,6 +552,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     _sequenceStepResults.clear();
     _expectedSequence.clear();
     _currentSequence.clear();
+    _hasTriedToMoveSequence = false;
+    _sequenceOrderAdjusted = false;
 
     _sortingSubmitted = false;
     _sortingResults.clear();
@@ -697,6 +701,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         "Target Machine Code Generation",
       ];
       _currentSequence = List<String>.from(_expectedSequence)..shuffle(random);
+      _hasTriedToMoveSequence = false;
+      _sequenceOrderAdjusted = false;
       return;
     }
 
@@ -720,6 +726,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       _currentSequence.shuffle(random);
       attempts++;
     }
+    _hasTriedToMoveSequence = false;
+    _sequenceOrderAdjusted = false;
   }
 
   void _generateSortingQuestion(Map curriculum, List<String> domains, Random random) {
@@ -3334,6 +3342,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     final int totalPositionsCount = _currentSequence.length;
     final bool isEntireSequenceCorrect =
         (correctPositionsCount == totalPositionsCount && totalPositionsCount > 0);
+    final bool isFeedbackVisible = isCompleted ||
+        isEntireSequenceCorrect ||
+        _hasTriedToMoveSequence ||
+        _sequenceOrderAdjusted;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -3364,12 +3376,16 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               Text(
                 isCompleted
                     ? 'Review execution order below'
-                    : '$correctPositionsCount of $totalPositionsCount steps in correct order • Use ▲ / ▼ or drag to arrange',
+                    : (isFeedbackVisible
+                        ? (isEntireSequenceCorrect
+                            ? 'All $totalPositionsCount steps in correct order! • Ready to submit'
+                            : '$correctPositionsCount of $totalPositionsCount steps in correct order • Use ▲ / ▼ or drag to arrange')
+                        : 'Use ▲ / ▼ or drag steps to arrange from first to last (+3s, +2s, +1s per option, max 20s)'),
                 textAlign: TextAlign.center,
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: (statFontSize * 0.85).clamp(10.0, 12.5),
                   fontWeight: FontWeight.w600,
-                  color: isEntireSequenceCorrect
+                  color: (isFeedbackVisible && isEntireSequenceCorrect)
                       ? Colors.green.shade800
                       : theme.colorScheme.onSurface.withOpacity(0.65),
                 ),
@@ -3397,8 +3413,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 final int fromIndex = details.data;
                 final movedItem = _currentSequence[fromIndex];
                 setState(() {
-                  _currentSequence.removeAt(fromIndex);
-                  _currentSequence.insert(index, movedItem);
+                  _hasTriedToMoveSequence = true;
+                  if (fromIndex != index) {
+                    _sequenceOrderAdjusted = true;
+                    _currentSequence.removeAt(fromIndex);
+                    _currentSequence.insert(index, movedItem);
+                  }
                 });
                 _addBonusTimeForOption(movedItem);
               },
@@ -3406,12 +3426,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 final bool isHovered =
                     candidateData.isNotEmpty && !isCompleted;
 
-                Color borderColor = isPositionCorrect
-                    ? Colors.green.shade600
-                    : Colors.red.shade400.withOpacity(0.65);
-                Color bgColor = isPositionCorrect
-                    ? Colors.green.withOpacity(0.08)
-                    : Colors.red.withOpacity(0.04);
+                Color borderColor = theme.colorScheme.outline.withOpacity(0.3);
+                Color bgColor = theme.colorScheme.surface;
                 if (isCompleted) {
                   if (isStepCorrect) {
                     borderColor = Colors.green.shade600;
@@ -3419,6 +3435,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   } else {
                     borderColor = Colors.red.shade400;
                     bgColor = Colors.red.withOpacity(0.08);
+                  }
+                } else if (isFeedbackVisible) {
+                  if (isPositionCorrect) {
+                    borderColor = Colors.green.shade600;
+                    bgColor = Colors.green.withOpacity(0.08);
+                  } else {
+                    borderColor = Colors.red.shade400.withOpacity(0.65);
+                    bgColor = Colors.red.withOpacity(0.04);
                   }
                 } else if (isHovered) {
                   borderColor = theme.colorScheme.primary;
@@ -3453,9 +3477,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                         height: 28,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          color: (isCompleted ? isStepCorrect : isPositionCorrect)
-                              ? Colors.green.shade600
-                              : Colors.red.shade600,
+                          color: (isCompleted || isFeedbackVisible)
+                              ? ((isCompleted ? isStepCorrect : isPositionCorrect)
+                                  ? Colors.green.shade600
+                                  : Colors.red.shade600)
+                              : theme.colorScheme.primaryContainer,
                           shape: BoxShape.circle,
                         ),
                         child: Text(
@@ -3463,54 +3489,58 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                           style: GoogleFonts.plusJakartaSans(
                             fontWeight: FontWeight.bold,
                             fontSize: 13,
-                            color: Colors.white,
+                            color: (isCompleted || isFeedbackVisible)
+                                ? Colors.white
+                                : theme.colorScheme.onPrimaryContainer,
                           ),
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: (isCompleted ? isStepCorrect : isPositionCorrect)
-                              ? Colors.green.withOpacity(0.15)
-                              : Colors.red.withOpacity(0.12),
-                          borderRadius: BorderRadius.circular(6),
-                          border: Border.all(
+                      if (isCompleted || isFeedbackVisible) ...[
+                        const SizedBox(width: 10),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
                             color: (isCompleted ? isStepCorrect : isPositionCorrect)
-                                ? Colors.green.withOpacity(0.3)
-                                : Colors.red.withOpacity(0.25),
-                            width: 0.8,
+                                ? Colors.green.withOpacity(0.15)
+                                : Colors.red.withOpacity(0.12),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(
+                              color: (isCompleted ? isStepCorrect : isPositionCorrect)
+                                  ? Colors.green.withOpacity(0.3)
+                                  : Colors.red.withOpacity(0.25),
+                              width: 0.8,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                (isCompleted ? isStepCorrect : isPositionCorrect)
+                                    ? Icons.check_circle_rounded
+                                    : Icons.close_rounded,
+                                size: 13,
+                                color: (isCompleted ? isStepCorrect : isPositionCorrect)
+                                    ? Colors.green.shade700
+                                    : Colors.red.shade700,
+                              ),
+                              const SizedBox(width: 3),
+                              Text(
+                                (isCompleted ? isStepCorrect : isPositionCorrect)
+                                    ? 'Correct'
+                                    : 'Out of Order',
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w700,
+                                  color: (isCompleted ? isStepCorrect : isPositionCorrect)
+                                      ? Colors.green.shade800
+                                      : Colors.red.shade800,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              (isCompleted ? isStepCorrect : isPositionCorrect)
-                                  ? Icons.check_circle_rounded
-                                  : Icons.close_rounded,
-                              size: 13,
-                              color: (isCompleted ? isStepCorrect : isPositionCorrect)
-                                  ? Colors.green.shade700
-                                  : Colors.red.shade700,
-                            ),
-                            const SizedBox(width: 3),
-                            Text(
-                              (isCompleted ? isStepCorrect : isPositionCorrect)
-                                  ? 'Correct'
-                                  : 'Out of Order',
-                              style: GoogleFonts.plusJakartaSans(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w700,
-                                color: (isCompleted ? isStepCorrect : isPositionCorrect)
-                                    ? Colors.green.shade800
-                                    : Colors.red.shade800,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      ],
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(
@@ -3531,6 +3561,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                               ? () {
                                   final temp = _currentSequence[index];
                                   setState(() {
+                                    _hasTriedToMoveSequence = true;
+                                    _sequenceOrderAdjusted = true;
                                     _currentSequence[index] =
                                         _currentSequence[index - 1];
                                     _currentSequence[index - 1] = temp;
@@ -3549,6 +3581,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                               ? () {
                                   final temp = _currentSequence[index];
                                   setState(() {
+                                    _hasTriedToMoveSequence = true;
+                                    _sequenceOrderAdjusted = true;
                                     _currentSequence[index] =
                                         _currentSequence[index + 1];
                                     _currentSequence[index + 1] = temp;
@@ -3577,6 +3611,13 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
                 return Draggable<int>(
                   data: index,
+                  onDragStarted: () {
+                    if (!_hasTriedToMoveSequence) {
+                      setState(() {
+                        _hasTriedToMoveSequence = true;
+                      });
+                    }
+                  },
                   feedback: Material(
                     elevation: 8.0,
                     borderRadius: BorderRadius.circular(12),
@@ -3668,21 +3709,25 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           FilledButton.icon(
             onPressed: _handleSequencingSubmit,
             icon: Icon(
-              isEntireSequenceCorrect
+              (isFeedbackVisible && isEntireSequenceCorrect)
                   ? Icons.check_circle_rounded
                   : Icons.done_all_rounded,
               size: 18,
             ),
             label: Text(
-              isEntireSequenceCorrect
+              (isFeedbackVisible && isEntireSequenceCorrect)
                   ? 'Submit Sequence (All $totalPositionsCount Steps Correct!)'
-                  : 'Submit Sequence Order ($correctPositionsCount/$totalPositionsCount Correct)',
+                  : (isFeedbackVisible
+                      ? 'Submit Sequence Order ($correctPositionsCount/$totalPositionsCount Correct)'
+                      : 'Submit Sequence Order'),
             ),
             style: FilledButton.styleFrom(
-              backgroundColor:
-                  isEntireSequenceCorrect ? Colors.green.shade700 : null,
-              foregroundColor:
-                  isEntireSequenceCorrect ? Colors.white : null,
+              backgroundColor: (isFeedbackVisible && isEntireSequenceCorrect)
+                  ? Colors.green.shade700
+                  : null,
+              foregroundColor: (isFeedbackVisible && isEntireSequenceCorrect)
+                  ? Colors.white
+                  : null,
               padding: EdgeInsets.symmetric(
                 vertical: (13.0 * scale).clamp(10.0, 16.0),
               ),
