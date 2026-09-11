@@ -158,7 +158,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   List<String> _currentSequence = [];
   bool _sequencingSubmitted = false;
   List<bool> _sequenceStepResults = [];
-  bool _hasTriedToMoveSequence = false;
   bool _sequenceOrderAdjusted = false;
 
   // Sorting-Classification State
@@ -174,6 +173,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   bool _isLoading = true;
 
   Timer? _questionTimer;
+  Timer? _advanceTimer;
+  int _questionSessionId = 0;
   int _remainingSeconds = 20;
   static const int _totalSeconds = 20;
   static const int _maxTimerCap = 20;
@@ -288,6 +289,25 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     _questionTimer = null;
     _bonusBadgeTimer?.cancel();
     _bonusBadgeTimer = null;
+    _cancelAdvance();
+  }
+
+  void _scheduleAdvance(int delayMs) {
+    _cancelAdvance();
+    final int session = _questionSessionId;
+    _advanceTimer = Timer(Duration(milliseconds: delayMs), () {
+      if (!mounted) return;
+      if (session == _questionSessionId) {
+        setState(() {
+          generateQuestion();
+        });
+      }
+    });
+  }
+
+  void _cancelAdvance() {
+    _advanceTimer?.cancel();
+    _advanceTimer = null;
   }
 
   void _handleTimeout() async {
@@ -332,12 +352,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
 
     if (_currentQuestionType == HardCodeQuestionType.sorting) {
-      Future.delayed(const Duration(milliseconds: 2000), () {
-        if (!mounted) return;
-        setState(() {
-          generateQuestion();
-        });
-      });
+      _scheduleAdvance(5000);
     }
   }
 
@@ -530,6 +545,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
 
   void generateQuestion() {
+    _questionSessionId++;
+    _cancelAdvance();
     _cancelTimer();
     _topAlertTimer?.cancel();
     _topAlertMessage = null;
@@ -561,7 +578,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     _sequenceStepResults.clear();
     _expectedSequence.clear();
     _currentSequence.clear();
-    _hasTriedToMoveSequence = false;
     _sequenceOrderAdjusted = false;
 
     _sortingSubmitted = false;
@@ -710,7 +726,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         "Target Machine Code Generation",
       ];
       _currentSequence = List<String>.from(_expectedSequence)..shuffle(random);
-      _hasTriedToMoveSequence = false;
       _sequenceOrderAdjusted = false;
       return;
     }
@@ -735,7 +750,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       _currentSequence.shuffle(random);
       attempts++;
     }
-    _hasTriedToMoveSequence = false;
     _sequenceOrderAdjusted = false;
   }
 
@@ -1304,13 +1318,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
 
     if (isCorrect) {
-      final int delayMs = _tfExplanation.trim().isNotEmpty ? 5000 : 1400;
-      Future.delayed(Duration(milliseconds: delayMs), () {
-        if (!mounted) return;
-        setState(() {
-          generateQuestion();
-        });
-      });
+      _scheduleAdvance(5000);
     }
   }
 
@@ -1383,12 +1391,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
 
     if (allCorrect) {
-      Future.delayed(const Duration(milliseconds: 5000), () {
-        if (!mounted) return;
-        setState(() {
-          generateQuestion();
-        });
-      });
+      _scheduleAdvance(5000);
     }
   }
 
@@ -1417,12 +1420,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
 
     if (allCorrect) {
-      Future.delayed(const Duration(milliseconds: 5000), () {
-        if (!mounted) return;
-        setState(() {
-          generateQuestion();
-        });
-      });
+      _scheduleAdvance(5000);
     }
   }
 
@@ -1451,12 +1449,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       errorMsg: 'Some classifications were incorrect.',
     );
 
-    Future.delayed(const Duration(milliseconds: 1400), () {
-      if (!mounted) return;
-      setState(() {
-        generateQuestion();
-      });
-    });
+    _scheduleAdvance(5000);
   }
 
   String _getExpectedCategoryForItem(String item) {
@@ -2213,13 +2206,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                               isDisabled: isDisabled,
                               isTimeoutReveal: isTimeoutReveal,
                               onPressed: isDisabled
-                                  ? (isTimeoutReveal
-                                      ? () {
-                                          setState(() {
-                                            generateQuestion();
-                                          });
-                                        }
-                                      : null)
+                                  ? null
                                   : () async {
                                       int answer = _choices[
                                           _answerGroup.indexOf(answerButton)][1];
@@ -2234,21 +2221,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                           _correctAnswerSelected = answerButton;
                                         });
 
-                                        final bool hasExplanation =
-                                            (_conceptualExplanation != null &&
-                                                _conceptualExplanation!
-                                                    .trim()
-                                                    .isNotEmpty);
-                                        final int delayMs =
-                                            hasExplanation ? 5000 : 700;
-
-                                        Future.delayed(
-                                            Duration(milliseconds: delayMs), () {
-                                          if (!mounted) return;
-                                          setState(() {
-                                            generateQuestion();
-                                          });
-                                        });
+                                        _scheduleAdvance(5000);
                                       } else {
                                         await _recordAnswerResult(
                                           isCorrect: false,
@@ -3351,7 +3324,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         (correctPositionsCount == totalPositionsCount && totalPositionsCount > 0);
     final bool isFeedbackVisible = isCompleted ||
         isEntireSequenceCorrect ||
-        _hasTriedToMoveSequence ||
         _sequenceOrderAdjusted;
 
     return Column(
@@ -3418,16 +3390,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   !isCompleted && details.data != index,
               onAcceptWithDetails: (details) {
                 final int fromIndex = details.data;
-                final movedItem = _currentSequence[fromIndex];
-                setState(() {
-                  _hasTriedToMoveSequence = true;
-                  if (fromIndex != index) {
+                if (fromIndex != index) {
+                  final movedItem = _currentSequence[fromIndex];
+                  setState(() {
                     _sequenceOrderAdjusted = true;
                     _currentSequence.removeAt(fromIndex);
                     _currentSequence.insert(index, movedItem);
-                  }
-                });
-                _addBonusTimeForOption(movedItem);
+                  });
+                  _addBonusTimeForOption(movedItem);
+                }
               },
               builder: (context, candidateData, rejectedData) {
                 final bool isHovered =
@@ -3568,7 +3539,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                               ? () {
                                   final temp = _currentSequence[index];
                                   setState(() {
-                                    _hasTriedToMoveSequence = true;
                                     _sequenceOrderAdjusted = true;
                                     _currentSequence[index] =
                                         _currentSequence[index - 1];
@@ -3588,7 +3558,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                               ? () {
                                   final temp = _currentSequence[index];
                                   setState(() {
-                                    _hasTriedToMoveSequence = true;
                                     _sequenceOrderAdjusted = true;
                                     _currentSequence[index] =
                                         _currentSequence[index + 1];
@@ -3618,13 +3587,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
                 return Draggable<int>(
                   data: index,
-                  onDragStarted: () {
-                    if (!_hasTriedToMoveSequence) {
-                      setState(() {
-                        _hasTriedToMoveSequence = true;
-                      });
-                    }
-                  },
                   feedback: Material(
                     elevation: 8.0,
                     borderRadius: BorderRadius.circular(12),
