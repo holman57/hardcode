@@ -7,7 +7,11 @@ import 'services/database_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await DatabaseService.instance.init();
+  try {
+    await DatabaseService.instance.init().timeout(const Duration(seconds: 2));
+  } catch (e) {
+    debugPrint('Notice: DatabaseService.init timed out or caught error: $e');
+  }
   runApp(const MyApp());
 }
 
@@ -97,10 +101,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   double _trendDelta = 0.0;
 
   final _languages = {};
-  KnowledgeGraph? _knowledgeGraph;
-  late Map _data;
+  KnowledgeGraph? _knowledgeGraph = KnowledgeGraph.fallback();
+  Map _data = KnowledgeGraph.fallback();
   int _questionNumber = 0;
-  List _langList = [];
+  List _langList = const ["Python", "JavaScript", "C++", "Rust", "Go", "Dart", "Java", "C#", "TypeScript", "Bash"];
   String _language = "";
   final List<int> _langPriorities = [];
   List _correctPatterns = [];
@@ -171,7 +175,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   Map<String, bool> _sortingResults = {};
 
   UserStats _userStats = DatabaseService.instance.getUserStats();
-  bool _isLoading = true;
+  bool _isLoading = false;
 
   Timer? _questionTimer;
   Timer? _advanceTimer;
@@ -409,40 +413,81 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
 
   Future<void> _loadData() async {
-    final graph = await DatabaseService.instance.getOrSeedGraph();
-    final data = graph;
-    final stats = DatabaseService.instance.getUserStats();
-    double initialTrend = 0.0;
-    if (stats.accuracyHistory.length >= 2) {
-      initialTrend = stats.accuracyHistory.last -
-          stats.accuracyHistory[stats.accuracyHistory.length - 2];
-    }
-    if (!mounted) return;
-    setState(() {
-      _knowledgeGraph = graph;
-      _data = data;
-      _prevAccuracyHistory = List<double>.from(stats.accuracyHistory);
-      _userStats = stats;
-      _trendDelta = initialTrend;
-      _isAccuracyUp = initialTrend > 0.05;
-      _isLoading = false;
-      _data["Language"].forEach((item) {
-        _languages[item] = 1;
+    try {
+      final graph = await DatabaseService.instance.getOrSeedGraph();
+      final data = graph;
+      final stats = DatabaseService.instance.getUserStats();
+      double initialTrend = 0.0;
+      if (stats.accuracyHistory.length >= 2) {
+        initialTrend = stats.accuracyHistory.last -
+            stats.accuracyHistory[stats.accuracyHistory.length - 2];
+      }
+      if (!mounted) return;
+      setState(() {
+        _knowledgeGraph = graph;
+        _data = data;
+        _prevAccuracyHistory = List<double>.from(stats.accuracyHistory);
+        _userStats = stats;
+        _trendDelta = initialTrend;
+        _isAccuracyUp = initialTrend > 0.05;
+        _isLoading = false;
+
+        final rawLangs = _data["Language"];
+        if (rawLangs is List && rawLangs.isNotEmpty) {
+          for (final item in rawLangs) {
+            _languages[item] = 1;
+          }
+          _langList = rawLangs.map((item) => item as String).toList();
+          _languages.forEach((k, v) => _langPriorities.add(v));
+        } else {
+          _langList = ["Python", "JavaScript", "C++", "Rust", "Go", "Dart", "Java", "C#", "TypeScript", "Bash"];
+          for (final item in _langList) {
+            _languages[item] = 1;
+            _langPriorities.add(1);
+          }
+        }
       });
-      _langList =
-          (_data["Language"] as List).map((item) => item as String).toList();
-      _languages.forEach((k, v) => _langPriorities.add(v));
-    });
-    _graphController.forward(from: 0.0);
-    _intVarNames = (_data['Variables']['Int Variable Names'] as List? ?? ['x', 'count']);
-    _intSmallVarSet =
-        (_data['Variables']['Integer Small Variable Sets'] as List? ?? ['x', 'y']);
-    _intRustVarTypes = (_data['Variables']['Rust Int Variable Types'] as List? ?? ['i32']);
-    _stringVarNames = (_data['Variables']['String Variable Names'] as List? ?? ['message', 'title']);
-    _stringValues = (_data['Variables']['String Values'] as List? ?? ['Hello', 'World']);
-    _boolVarNames = (_data['Variables']['Bool Variable Names'] as List? ?? ['isActive', 'isValid']);
-    _boolValues = (_data['Variables']['Bool Values'] as List? ?? ['true', 'false']);
-    generateQuestion();
+      _graphController.forward(from: 0.0);
+      final rawVars = (_data['Variables'] is Map) ? _data['Variables'] : {};
+      _intVarNames = (rawVars['Int Variable Names'] as List? ?? ['x', 'count']);
+      _intSmallVarSet =
+          (rawVars['Integer Small Variable Sets'] as List? ?? ['x', 'y']);
+      _intRustVarTypes = (rawVars['Rust Int Variable Types'] as List? ?? ['i32']);
+      _stringVarNames = (rawVars['String Variable Names'] as List? ?? ['message', 'title']);
+      _stringValues = (rawVars['String Values'] as List? ?? ['Hello', 'World']);
+      _boolVarNames = (rawVars['Bool Variable Names'] as List? ?? ['isActive', 'isValid']);
+      _boolValues = (rawVars['Bool Values'] as List? ?? ['true', 'false']);
+
+      final bool hasActiveQuestion = _question.isNotEmpty ||
+          _tfStatement.isNotEmpty ||
+          _matchingPairs.isNotEmpty ||
+          _currentSequence.isNotEmpty ||
+          _sortingItems.isNotEmpty;
+      if (!hasActiveQuestion) {
+        generateQuestion();
+      }
+    } catch (e, stack) {
+      debugPrint('Error loading app data in _loadData: $e\n$stack');
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+        final bool hasActiveQuestion = _question.isNotEmpty ||
+            _tfStatement.isNotEmpty ||
+            _matchingPairs.isNotEmpty ||
+            _currentSequence.isNotEmpty ||
+            _sortingItems.isNotEmpty;
+        if (!hasActiveQuestion) {
+          generateQuestion();
+        }
+      }
+    } finally {
+      if (mounted && _isLoading) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   /// Dynamically resolves all bracketed choice patterns (e.g. `[a|b|None]`, `[$|@|None]`, `[String|str|string|None]`)
@@ -629,25 +674,31 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     final curriculum = (_data["Curriculum"] as Map?) ?? {};
     final List<String> domains = curriculum.keys.cast<String>().toList();
 
-    switch (_currentQuestionType) {
-      case HardCodeQuestionType.trueFalse:
-        _generateTrueFalseQuestion(curriculum, domains, random);
-        break;
-      case HardCodeQuestionType.matching:
-        _generateMatchingQuestion(curriculum, domains, random);
-        break;
-      case HardCodeQuestionType.sequencing:
-        _generateSequencingQuestion(curriculum, domains, random);
-        break;
-      case HardCodeQuestionType.sorting:
-        _generateSortingQuestion(curriculum, domains, random);
-        break;
-      case HardCodeQuestionType.multiChoiceConceptual:
-        _generateConceptualMultiChoiceQuestion(curriculum, domains, random);
-        break;
-      case HardCodeQuestionType.multiChoiceSyntax:
-        _generateSyntaxMultiChoiceQuestion(random);
-        break;
+    try {
+      switch (_currentQuestionType) {
+        case HardCodeQuestionType.trueFalse:
+          _generateTrueFalseQuestion(curriculum, domains, random);
+          break;
+        case HardCodeQuestionType.matching:
+          _generateMatchingQuestion(curriculum, domains, random);
+          break;
+        case HardCodeQuestionType.sequencing:
+          _generateSequencingQuestion(curriculum, domains, random);
+          break;
+        case HardCodeQuestionType.sorting:
+          _generateSortingQuestion(curriculum, domains, random);
+          break;
+        case HardCodeQuestionType.multiChoiceConceptual:
+          _generateConceptualMultiChoiceQuestion(curriculum, domains, random);
+          break;
+        case HardCodeQuestionType.multiChoiceSyntax:
+          _generateSyntaxMultiChoiceQuestion(random);
+          break;
+      }
+    } catch (e, stack) {
+      debugPrint('Error generating question of type $_currentQuestionType: $e\n$stack. Falling back to diverse syntax.');
+      _currentQuestionType = HardCodeQuestionType.multiChoiceSyntax;
+      _generateDiverseSyntaxQuestion(random);
     }
 
     _startTimer();
@@ -1512,6 +1563,24 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    _knowledgeGraph = KnowledgeGraph.fallback();
+    _data = _knowledgeGraph!;
+    _userStats = DatabaseService.instance.getUserStats();
+    _langList = ["Python", "JavaScript", "C++", "Rust", "Go", "Dart", "Java", "C#", "TypeScript", "Bash"];
+    for (final item in _langList) {
+      _languages[item] = 1;
+      _langPriorities.add(1);
+    }
+    final rawVars = (_data['Variables'] is Map) ? _data['Variables'] : {};
+    _intVarNames = (rawVars['Int Variable Names'] as List? ?? ['x', 'count']);
+    _intSmallVarSet =
+        (rawVars['Integer Small Variable Sets'] as List? ?? ['x', 'y']);
+    _intRustVarTypes = (rawVars['Rust Int Variable Types'] as List? ?? ['i32']);
+    _stringVarNames = (rawVars['String Variable Names'] as List? ?? ['message', 'title']);
+    _stringValues = (rawVars['String Values'] as List? ?? ['Hello', 'World']);
+    _boolVarNames = (rawVars['Bool Variable Names'] as List? ?? ['isActive', 'isValid']);
+    _boolValues = (rawVars['Bool Values'] as List? ?? ['true', 'false']);
+
     _pulseController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 650),
@@ -1532,6 +1601,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       vsync: this,
       duration: const Duration(milliseconds: 450),
     );
+
+    // Immediately generate initial question synchronously so Frame 1 renders complete interactive content
+    try {
+      generateQuestion(force: true);
+    } catch (e) {
+      debugPrint('Initial generateQuestion error: $e');
+    }
+
+    // Load persisted graph and stats asynchronously in background
     WidgetsBinding.instance.addPostFrameCallback((_) => _loadData());
   }
 
@@ -1720,21 +1798,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       timerColor = Colors.redAccent.shade700;
     } else if (_remainingSeconds <= 10) {
       timerColor = Colors.orange.shade700;
-    }
-
-    if (_isLoading) {
-      return Scaffold(
-        appBar: AppBar(
-          backgroundColor: theme.colorScheme.inversePrimary,
-          title: Text(
-            widget.title.isNotEmpty ? widget.title : 'HardCode Academy',
-            style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold),
-          ),
-        ),
-        body: const Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
     }
 
     return Scaffold(
@@ -2192,23 +2255,40 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           final availableHeight = constraints.maxHeight;
 
           // Continuous fluid scaling factors based on window width and height
-          final double hScale = (availableWidth / 680.0).clamp(0.65, 1.15);
-          final double vScale = (availableHeight / 750.0).clamp(0.65, 1.10);
+          final double hScale = (availableWidth / 720.0).clamp(0.70, 1.25);
+          final double vScale = (availableHeight / 750.0).clamp(0.70, 1.20);
           final double scale = min(hScale, vScale);
 
-          final double cardWidth =
-              (availableWidth * 0.88).clamp(280.0, 560.0);
-          final double questionFontSize = (22.0 * scale).clamp(14.0, 25.0);
-          final double buttonFontSize = (19.0 * scale).clamp(13.0, 22.0);
+          // Responsive card width calculation that smoothly scales across:
+          // - Mobile (< 600px): 94% width (280px - 540px)
+          // - Tablet / Small Desktop (600px - 960px): 540px - 760px
+          // - Standard Desktop (960px - 1600px): 760px - 1100px
+          // - Ultrawide / 4K (> 1600px): 1100px - 1250px max
+          final double cardWidth;
+          if (availableWidth < 600) {
+            cardWidth = (availableWidth * 0.94).clamp(280.0, 540.0);
+          } else if (availableWidth < 960) {
+            final double t = (availableWidth - 600) / (960 - 600);
+            cardWidth = 540.0 + t * (760.0 - 540.0);
+          } else if (availableWidth < 1600) {
+            final double t = (availableWidth - 960) / (1600 - 960);
+            cardWidth = 760.0 + t * (1100.0 - 760.0);
+          } else {
+            final double t = ((availableWidth - 1600) / 1200).clamp(0.0, 1.0);
+            cardWidth = 1100.0 + t * (1250.0 - 1100.0);
+          }
+
+          final double questionFontSize = (22.0 * scale).clamp(15.0, 26.0);
+          final double buttonFontSize = (18.5 * scale).clamp(13.5, 22.0);
           final double buttonVerticalPadding =
-              (16.0 * scale).clamp(9.0, 18.0);
+              (16.0 * scale).clamp(10.0, 20.0);
           final double buttonHorizontalPadding =
-              (20.0 * scale).clamp(12.0, 24.0);
+              (22.0 * scale).clamp(14.0, 28.0);
           final double buttonVerticalMargin =
-              (6.0 * scale).clamp(3.0, 7.0);
+              (6.0 * scale).clamp(3.0, 8.0);
           final double contentSpacing =
-              (20.0 * scale).clamp(10.0, 26.0);
-          final double statFontSize = (13.0 * scale).clamp(10.0, 15.0);
+              (20.0 * scale).clamp(12.0, 28.0);
+          final double statFontSize = (13.0 * scale).clamp(10.5, 15.5);
 
           return Stack(
             children: [
@@ -2223,8 +2303,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   child: Center(
                     child: SingleChildScrollView(
                       padding: EdgeInsets.symmetric(
-                        horizontal: (20.0 * scale).clamp(10.0, 24.0),
-                        vertical: (24.0 * scale).clamp(16.0, 36.0),
+                        horizontal: (20.0 * scale).clamp(10.0, 32.0),
+                        vertical: (24.0 * scale).clamp(16.0, 40.0),
                       ),
                       child: Center(
                         child: SizedBox(
@@ -2236,7 +2316,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                       // Dynamic Question Type UI Rendering
                       if (_currentQuestionType == HardCodeQuestionType.multiChoiceSyntax ||
                           _currentQuestionType == HardCodeQuestionType.multiChoiceConceptual) ...[
-                        if (_language.isNotEmpty) ...[
+                        if (_question.isNotEmpty) ...[
                           Text(
                             _question,
                             textAlign: TextAlign.center,
@@ -2409,7 +2489,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                       });
                     },
                     child: Container(
-                      constraints: const BoxConstraints(maxWidth: 540),
+                      constraints: BoxConstraints(
+                        maxWidth: (cardWidth * 0.85).clamp(420.0, 720.0),
+                      ),
                       padding: EdgeInsets.symmetric(
                         horizontal: (22.0 * scale).clamp(16.0, 30.0),
                         vertical: (13.0 * scale).clamp(10.0, 18.0),
@@ -2916,7 +2998,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                               shadowColor: Colors.black45,
                               child: Container(
                                 constraints: BoxConstraints(
-                                  maxWidth: (cardWidth * 0.85).clamp(240.0, 500.0),
+                                  maxWidth: (cardWidth * 0.85).clamp(240.0, 750.0),
                                 ),
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 14, vertical: 10),
@@ -3074,7 +3156,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     color: theme.colorScheme.primary,
                     child: Container(
                       constraints:
-                          BoxConstraints(maxWidth: (cardWidth * 0.85).clamp(240.0, 500.0)),
+                          BoxConstraints(maxWidth: (cardWidth * 0.85).clamp(240.0, 750.0)),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 14, vertical: 10),
                       child: Row(
@@ -3282,7 +3364,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                   child: Container(
                                     constraints: BoxConstraints(
                                         maxWidth: (cardWidth * 0.85)
-                                            .clamp(240.0, 500.0)),
+                                            .clamp(240.0, 750.0)),
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 14, vertical: 10),
                                     child: Row(
@@ -3714,7 +3796,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     color: theme.colorScheme.primary,
                     child: Container(
                       constraints:
-                          BoxConstraints(maxWidth: (cardWidth * 0.85).clamp(240.0, 500.0)),
+                          BoxConstraints(maxWidth: (cardWidth * 0.85).clamp(240.0, 750.0)),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 14, vertical: 10),
                       child: Row(
@@ -4190,7 +4272,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
               insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
               child: Container(
-                constraints: const BoxConstraints(maxWidth: 800, maxHeight: 720),
+                constraints: const BoxConstraints(maxWidth: 960, maxHeight: 780),
                 padding: const EdgeInsets.all(24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,

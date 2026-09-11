@@ -1,0 +1,14 @@
+{
+  "name": "hardcode-academy-tests",
+  "version": "1.1.0",
+  "description": "Playwright UI simulation, chaos testing, and auto-tuning suite for Hardcode Academy",
+  "private": true,
+  "scripts": {
+    "test:ui": "playwright test",
+    "test:chaos": "playwright test test/e2e/chaos_game_breaker.spec.ts",
+    "test:chaos:report": "playwright test test/e2e/chaos_game_breaker.spec.ts --reporter=html"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0"
+  }
+}

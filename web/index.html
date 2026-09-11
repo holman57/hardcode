@@ -41,6 +41,29 @@
 </head>
 <body>
   <script>
+    // HardCode Academy State & Event Telemetry Bridge for UI Simulation
+    window.__HARDCODE_EVENT_LOG__ = [];
+    window.__getHardcodeState = function() {
+      const semanticNode = document.querySelector('[aria-label*="questionType"], [aria-label*="phase"]');
+      if (semanticNode) {
+        try {
+          return JSON.parse(semanticNode.getAttribute('aria-label'));
+        } catch(e) {}
+      }
+      const buttons = Array.from(document.querySelectorAll('button, [role="button"]')).map(b => (b.innerText || b.getAttribute('aria-label') || '').trim()).filter(Boolean);
+      return {
+        phase: document.querySelector('flt-glass-pane') ? "ACTIVE" : "INITIALIZING",
+        availableButtons: buttons,
+        eventCount: window.__HARDCODE_EVENT_LOG__.length
+      };
+    };
+    window.addEventListener('error', function(e) {
+      if (e && e.message && e.message.trim() && e.message !== 'Script error.' && e.message !== 'Uncaught ') {
+        window.__HARDCODE_EVENT_LOG__.push({ type: 'UNHANDLED_ERROR', message: e.message, time: Date.now() });
+      }
+    });
+  </script>
+  <script>
     window.addEventListener('load', function(ev) {
       // Download main.dart.js
       _flutter.loader.loadEntrypoint({
