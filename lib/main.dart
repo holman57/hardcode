@@ -3694,6 +3694,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 fontSize: (15.0 * scale).clamp(13.0, 16.5),
               ),
             ),
+          ),
         ] else ...[
           Center(
             child: FilledButton.icon(
