@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -614,7 +615,7 @@ class DatabaseService {
       _userMemoryBox = await Hive.openBox(userMemoryBoxName).timeout(const Duration(seconds: 2));
       _isInitialized = true;
     } catch (e) {
-      debugPrint('Notice: Hive initialization failed or timed out ($e). Proceeding with in-memory graph.');
+      print('Notice: Hive initialization failed or timed out ($e). Proceeding with in-memory graph.');
     }
   }
 
@@ -625,7 +626,7 @@ class DatabaseService {
         await init().timeout(const Duration(seconds: 2));
       }
     } catch (e) {
-      debugPrint('Warning: Hive init failed in getOrSeedGraph: $e');
+      print('Warning: Hive init failed in getOrSeedGraph: $e');
     }
 
     if (_catalogBox != null) {
@@ -643,7 +644,7 @@ class DatabaseService {
           }
         }
       } catch (e) {
-        debugPrint('Notice: Hive cache read skipped: $e');
+        print('Notice: Hive cache read skipped: $e');
       }
     }
 
@@ -654,13 +655,13 @@ class DatabaseService {
           .loadString('assets/knowledge_graph.json')
           .timeout(const Duration(seconds: 2));
     } catch (e) {
-      debugPrint('Notice: could not load assets/knowledge_graph.json ($e), trying assets/db.json');
+      print('Notice: could not load assets/knowledge_graph.json ($e), trying assets/db.json');
       try {
         rawAsset = await rootBundle
             .loadString('assets/db.json')
             .timeout(const Duration(seconds: 2));
       } catch (e2) {
-        debugPrint('Notice: could not load assets/db.json either ($e2)');
+        print('Notice: could not load assets/db.json either ($e2)');
       }
     }
 
@@ -684,7 +685,7 @@ class DatabaseService {
           return _knowledgeGraph!;
         }
       } catch (e) {
-        debugPrint('Error parsing loaded asset: $e');
+        print('Error parsing loaded asset: $e');
       }
     }
 
