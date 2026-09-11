@@ -264,4 +264,119 @@ void main() {
           '[random int variable]');
     });
   });
+
+  group('KnowledgeGraph Data Structure Tests', () {
+    test('KnowledgeGraph parses nodes, edges, and visual styling from JSON', () {
+      final sampleJson = {
+        'version': '1.0.0-graph',
+        'metadata': {'name': 'Test Graph', 'node_count': 2, 'edge_count': 1},
+        'nodes': [
+          {
+            'id': 'lang:rust',
+            'label': 'Rust',
+            'type': 'Language',
+            'category': 'Systems',
+            'properties': {'typing': 'Static'},
+            'visualization': {
+              'group': 'language',
+              'color': '#DEA584',
+              'size': 28.0,
+              'level': 2,
+              'icon': 'code',
+            }
+          },
+          {
+            'id': 'paradigm:oop',
+            'label': 'OOP',
+            'type': 'Paradigm',
+            'category': 'Paradigm',
+            'properties': {},
+            'visualization': {
+              'group': 'paradigm',
+              'color': '#8B5CF6',
+              'size': 22.0,
+              'level': 2,
+              'icon': 'category',
+            }
+          }
+        ],
+        'edges': [
+          {
+            'id': 'e:lang:rust->SUPPORTS->paradigm:oop',
+            'source': 'lang:rust',
+            'target': 'paradigm:oop',
+            'relation': 'SUPPORTS',
+            'label': 'Supports',
+            'weight': 1.0,
+            'directed': true,
+            'properties': {},
+          }
+        ],
+        'adjacency': {
+          'outgoing': {
+            'lang:rust': ['e:lang:rust->SUPPORTS->paradigm:oop']
+          },
+          'incoming': {
+            'paradigm:oop': ['e:lang:rust->SUPPORTS->paradigm:oop']
+          }
+        },
+        'indices': {
+          'by_type': {
+            'Language': ['lang:rust'],
+            'Paradigm': ['paradigm:oop'],
+          },
+          'by_group': {
+            'language': ['lang:rust'],
+            'paradigm': ['paradigm:oop'],
+          },
+          'by_category': {
+            'Systems': ['lang:rust'],
+            'Paradigm': ['paradigm:oop'],
+          }
+        },
+        'legacy_bridge': {
+          'Language': ['Rust'],
+        }
+      };
+
+      final graph = KnowledgeGraph.fromJson(sampleJson);
+
+      expect(graph.nodes.length, 2);
+      expect(graph.edges.length, 1);
+      expect(graph.version, '1.0.0-graph');
+
+      final rustNode = graph.getNode('lang:rust');
+      expect(rustNode, isNotNull);
+      expect(rustNode!.label, 'Rust');
+      expect(rustNode.visualization.color, '#DEA584');
+      expect(rustNode.visualization.size, 28.0);
+      expect(rustNode.visualization.group, 'language');
+
+      // Traversal
+      final outgoing = graph.getOutgoingEdges('lang:rust');
+      expect(outgoing.length, 1);
+      expect(outgoing.first.target, 'paradigm:oop');
+
+      final incoming = graph.getIncomingEdges('paradigm:oop');
+      expect(incoming.length, 1);
+      expect(incoming.first.source, 'lang:rust');
+
+      final neighbors = graph.getNeighbors('lang:rust');
+      expect(neighbors.length, 1);
+      expect(neighbors.first.id, 'paradigm:oop');
+
+      // Filtered queries
+      final langNodes = graph.getNodesByType('Language');
+      expect(langNodes.length, 1);
+      expect(langNodes.first.label, 'Rust');
+
+      // Visualization Export
+      final vis = graph.exportVisualizationData(focusNodeId: 'lang:rust', depth: 1);
+      expect(vis['nodes'], isNotEmpty);
+      expect(vis['links'], isNotEmpty);
+
+      // Backward compatibility Map operator
+      expect(graph['Language'], ['Rust']);
+    });
+  });
 }

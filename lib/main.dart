@@ -97,6 +97,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   double _trendDelta = 0.0;
 
   final _languages = {};
+  KnowledgeGraph? _knowledgeGraph;
   late Map _data;
   int _questionNumber = 0;
   List _langList = [];
@@ -408,7 +409,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
 
   Future<void> _loadData() async {
-    final data = await DatabaseService.instance.getOrSeedCatalog();
+    final graph = await DatabaseService.instance.getOrSeedGraph();
+    final data = graph;
     final stats = DatabaseService.instance.getUserStats();
     double initialTrend = 0.0;
     if (stats.accuracyHistory.length >= 2) {
@@ -417,6 +419,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     }
     if (!mounted) return;
     setState(() {
+      _knowledgeGraph = graph;
       _data = data;
       _prevAccuracyHistory = List<double>.from(stats.accuracyHistory);
       _userStats = stats;
@@ -2103,6 +2106,21 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 '${_userStats.totalAnswered} (${_userStats.totalCorrect} correct)',
                 style: GoogleFonts.jetBrainsMono(fontWeight: FontWeight.bold, fontSize: 14),
               ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.hub_outlined, color: Colors.indigo),
+              title: const Text('Knowledge Graph Explorer'),
+              subtitle: Text(
+                _knowledgeGraph != null
+                    ? '${_knowledgeGraph!.nodes.length} Vertices • ${_knowledgeGraph!.edges.length} Edges'
+                    : 'Interactive Graph Data Structure',
+                style: const TextStyle(fontSize: 11),
+              ),
+              trailing: const Icon(Icons.chevron_right, size: 18),
+              onTap: () {
+                Navigator.of(context).pop();
+                _showKnowledgeGraphModal();
+              },
             ),
             const Divider(),
             Padding(
@@ -4149,6 +4167,205 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           ),
         ],
       ],
+    );
+  }
+
+  void _showKnowledgeGraphModal() {
+    if (_knowledgeGraph == null) return;
+    final graph = _knowledgeGraph!;
+    final theme = Theme.of(context);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) {
+        String selectedGroup = 'All';
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            final allNodes = graph.nodes.values.toList();
+            final filteredNodes = selectedGroup == 'All'
+                ? allNodes
+                : allNodes.where((n) => n.visualization.group == selectedGroup).toList();
+
+            return Dialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 800, maxHeight: 720),
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.indigo.withOpacity(0.12),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(Icons.hub_rounded, color: Colors.indigo, size: 28),
+                        ),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'HardCode Knowledge Graph',
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                'Visualized Node-Link Structure • ${graph.nodes.length} Vertices • ${graph.edges.length} Directed Edges',
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 12,
+                                  color: theme.colorScheme.onSurface.withOpacity(0.65),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close_rounded),
+                          onPressed: () => Navigator.of(ctx).pop(),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 18),
+                    // Summary Metrics Row
+                    Wrap(
+                      spacing: 10,
+                      runSpacing: 8,
+                      children: [
+                        _buildGraphStatBadge('Nodes', '${graph.nodes.length}', Colors.indigo),
+                        _buildGraphStatBadge('Edges', '${graph.edges.length}', Colors.purple),
+                        _buildGraphStatBadge('Languages', '18', Colors.blue),
+                        _buildGraphStatBadge('Domains', '25', Colors.deepPurple),
+                        _buildGraphStatBadge('Questions', '310', Colors.teal),
+                        _buildGraphStatBadge('Databases', '32', Colors.pink),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                    const Divider(),
+                    const SizedBox(height: 8),
+                    // Group Filter Chips
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          'All',
+                          'domain',
+                          'language',
+                          'database',
+                          'paradigm',
+                          'concept',
+                          'syntax',
+                          'question_tf',
+                          'question_matching',
+                          'question_sequencing',
+                          'question_sorting',
+                          'question_mc',
+                        ].map((grp) {
+                          final isSelected = selectedGroup == grp;
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 6),
+                            child: FilterChip(
+                              label: Text(grp == 'All' ? 'All Groups' : grp),
+                              selected: isSelected,
+                              onSelected: (_) {
+                                setModalState(() {
+                                  selectedGroup = grp;
+                                });
+                              },
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    // Node Browser List
+                    Expanded(
+                      child: ListView.separated(
+                        itemCount: filteredNodes.length,
+                        separatorBuilder: (_, __) => const Divider(height: 1),
+                        itemBuilder: (context, idx) {
+                          final node = filteredNodes[idx];
+                          final outCount = graph.getOutgoingEdges(node.id).length;
+                          final inCount = graph.getIncomingEdges(node.id).length;
+                          final colorHex = node.visualization.color;
+                          Color dotColor = Colors.grey;
+                          try {
+                            dotColor = Color(int.parse(colorHex.replaceFirst('#', '0xFF')));
+                          } catch (_) {}
+
+                          return ListTile(
+                            dense: true,
+                            leading: Container(
+                              width: 14,
+                              height: 14,
+                              decoration: BoxDecoration(
+                                color: dotColor,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            title: Text(
+                              node.label,
+                              style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w600, fontSize: 13),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            subtitle: Text(
+                              '${node.type} • ${node.category} • ID: ${node.id}',
+                              style: GoogleFonts.plusJakartaSans(fontSize: 11),
+                            ),
+                            trailing: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.surfaceVariant.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                'Out: $outCount • In: $inCount',
+                                style: GoogleFonts.jetBrainsMono(fontSize: 10, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildGraphStatBadge(String label, String value, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withOpacity(0.3)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            '$label: ',
+            style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.w600, color: color),
+          ),
+          Text(
+            value,
+            style: GoogleFonts.jetBrainsMono(fontSize: 12, fontWeight: FontWeight.bold, color: color),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -121,22 +121,66 @@ class LearnerTracker:
         return None
 
 
-def load_database() -> Dict[str, Any]:
-    """Loads database favoring assets/db.json with fallback to db_backup.json."""
+class PythonKnowledgeGraph(dict):
+    """Knowledge Graph container supporting graph queries and legacy bridge lookups."""
+    def __init__(self, raw_data: Dict[str, Any]):
+        super().__init__(raw_data)
+        self.version = raw_data.get("version", 7)
+        self.graph_version = raw_data.get("graph_version", "1.0.0-graph")
+        self.metadata = raw_data.get("metadata", {})
+        self.nodes = {n["id"]: n for n in raw_data.get("nodes", [])}
+        self.edges = {e["id"]: e for e in raw_data.get("edges", [])}
+        self.adjacency = raw_data.get("adjacency", {})
+        self.indices = raw_data.get("indices", {})
+        self._bridge = raw_data.get("legacy_bridge", {})
+
+    def __getitem__(self, key: str) -> Any:
+        if key in self._bridge:
+            return self._bridge[key]
+        return super().__getitem__(key)
+
+    def get(self, key: str, default: Any = None) -> Any:
+        if key in self._bridge:
+            return self._bridge[key]
+        return super().get(key, default)
+
+    def get_node(self, node_id: str) -> Optional[Dict[str, Any]]:
+        return self.nodes.get(node_id)
+
+    def get_outgoing(self, node_id: str) -> List[Dict[str, Any]]:
+        edge_ids = self.adjacency.get("outgoing", {}).get(node_id, [])
+        return [self.edges[eid] for eid in edge_ids if eid in self.edges]
+
+    def get_incoming(self, node_id: str) -> List[Dict[str, Any]]:
+        edge_ids = self.adjacency.get("incoming", {}).get(node_id, [])
+        return [self.edges[eid] for eid in edge_ids if eid in self.edges]
+
+    def get_nodes_by_type(self, node_type: str) -> List[Dict[str, Any]]:
+        node_ids = self.indices.get("by_type", {}).get(node_type, [])
+        return [self.nodes[nid] for nid in node_ids if nid in self.nodes]
+
+    def get_nodes_by_group(self, group: str) -> List[Dict[str, Any]]:
+        node_ids = self.indices.get("by_group", {}).get(group, [])
+        return [self.nodes[nid] for nid in node_ids if nid in self.nodes]
+
+
+def load_database() -> PythonKnowledgeGraph:
+    """Loads knowledge graph favoring assets/knowledge_graph.json with fallback."""
     candidates = [
-        Path("assets/db.json"),
-        Path(__file__).parent / "assets" / "db.json",
-        Path("db_backup.json"),
-        Path(__file__).parent / "db_backup.json",
+        Path("assets/knowledge_graph.json"),
+        Path(__file__).parent / "assets" / "knowledge_graph.json",
     ]
     for c in candidates:
         if c.exists():
             try:
                 with open(c, "r", encoding="utf-8") as f:
-                    return json.load(f)
+                    data = json.load(f)
+                    if "nodes" in data and "edges" in data:
+                        return PythonKnowledgeGraph(data)
+                    return PythonKnowledgeGraph({"legacy_bridge": data, **data})
             except Exception:
                 continue
-    raise FileNotFoundError("Could not find assets/db.json or db_backup.json")
+    raise FileNotFoundError("Could not find assets/knowledge_graph.json")
 
 
 def renderPatternBranching(answer: str, pattern: List[str], db: Dict[str, Any]) -> str:

@@ -79,7 +79,7 @@ HardCode moves beyond standard multiple-choice quizzes by incorporating diverse 
 - **Framework**: [Flutter Web](https://flutter.dev/multi-platform/web) with Material 3 styling and fluid responsive scaling.
 - **Typography**: [Google Fonts](https://pub.dev/packages/google_fonts) (`Plus Jakarta Sans`).
 - **Client-Side Persistence**: [Hive](https://pub.dev/packages/hive) & `hive_flutter` for lightweight, offline-first storage of user accuracy, streaks, and question records.
-- **Question Database**: Structured JSON engine (`assets/db.json`) containing syntax trees, question banks, and pattern match templates.
+- **Knowledge Graph Database**: Comprehensive graph structure (`assets/knowledge_graph.json`) modeling 500+ vertices and 600+ directed relations across languages, paradigms, domains, and questions with pre-computed visual styling metadata.
 - **Automated CI/CD**: Dual deployment workflow via GitHub Actions:
   - Production deployment to **Callisto VM** via SSH key authentication, Rsync synchronization, and Nginx reloads.
   - Public static deployment to **GitHub Pages**.
@@ -128,9 +128,13 @@ hardcode/
 │   └── workflows/
 │       └── deploy_flutter.yml    # Dual deployment to Callisto VM & GitHub Pages
 ├── assets/
-│   └── db.json                   # Question database & syntax templates
+│   └── knowledge_graph.json      # Knowledge Graph database & syntax relations
 ├── lib/
+│   ├── services/
+│   │   └── database_service.dart # KnowledgeGraph, GraphNode, GraphEdge & Hive storage
 │   └── main.dart                 # Primary application entry point & UI engine
+├── scripts/
+│   └── build_knowledge_graph.py  # Knowledge graph compiler and integrity validator
 ├── pubspec.yaml                  # Project configuration & package dependencies
 └── README.md                     # Documentation & project overview
 ```

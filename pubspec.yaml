@@ -26,4 +26,4 @@ flutter:
   uses-material-design: true
   assets:
     - assets/
-    - assets/db.json
+    - assets/knowledge_graph.json

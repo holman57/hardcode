@@ -148,6 +148,44 @@ class TestHardCodeSuite(unittest.TestCase):
     def test_automated_validation_routine(self):
         self.assertTrue(run_automated_validation())
 
+    def test_knowledge_graph_node_and_edge_counts(self):
+        self.assertGreaterEqual(len(self.db.nodes), 500)
+        self.assertGreaterEqual(len(self.db.edges), 550)
+        self.assertIn("metadata", self.db)
+        self.assertEqual(self.db.metadata.get("schema"), "knowledge-graph")
+
+    def test_knowledge_graph_relational_integrity(self):
+        # Assert no dangling edges
+        for eid, edge in self.db.edges.items():
+            self.assertIn(edge["source"], self.db.nodes, f"Dangling edge source in {eid}")
+            self.assertIn(edge["target"], self.db.nodes, f"Dangling edge target in {eid}")
+
+    def test_knowledge_graph_visualization_metadata(self):
+        # Verify all nodes have required visual properties (color, size, level, group, icon)
+        for nid, node in self.db.nodes.items():
+            vis = node.get("visualization")
+            self.assertIsNotNone(vis, f"Missing visualization metadata in {nid}")
+            self.assertIn("group", vis)
+            self.assertIn("color", vis)
+            self.assertTrue(vis["color"].startswith("#") and len(vis["color"]) == 7, f"Invalid hex color in {nid}")
+            self.assertIn("size", vis)
+            self.assertGreater(vis["size"], 0)
+            self.assertIn("level", vis)
+            self.assertIn("icon", vis)
+
+    def test_knowledge_graph_traversal(self):
+        # Root node outgoing connections
+        root_out = self.db.get_outgoing("root:hardcode")
+        self.assertGreater(len(root_out), 0)
+
+        # Languages present
+        langs = self.db.get_nodes_by_type("Language")
+        self.assertEqual(len(langs), 18)
+
+        # Questions present
+        questions = self.db.get_nodes_by_type("Question")
+        self.assertGreaterEqual(len(questions), 300)
+
 
 if __name__ == "__main__":
     unittest.main()
