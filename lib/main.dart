@@ -175,6 +175,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   Timer? _questionTimer;
   Timer? _advanceTimer;
   int _questionSessionId = 0;
+  bool _isAnswerSubmitted = false;
+  DateTime? _lastQuestionGenerationTime;
   int _remainingSeconds = 20;
   static const int _totalSeconds = 20;
   static const int _maxTimerCap = 20;
@@ -292,9 +294,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     _cancelAdvance();
   }
 
-  void _scheduleAdvance(int delayMs) {
+  void _scheduleAdvance(int delayMs, int session) {
+    if (session != _questionSessionId) return;
     _cancelAdvance();
-    final int session = _questionSessionId;
     _advanceTimer = Timer(Duration(milliseconds: delayMs), () {
       if (!mounted) return;
       if (session == _questionSessionId) {
@@ -312,9 +314,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   void _handleTimeout() async {
     _cancelTimer();
+    final int session = _questionSessionId;
     setState(() {
       _remainingSeconds = 0;
       _isTimerExpired = true;
+      _isAnswerSubmitted = true;
       if (_currentQuestionType == HardCodeQuestionType.trueFalse) {
         _tfAnswered = true;
       } else if (_currentQuestionType == HardCodeQuestionType.matching) {
@@ -332,7 +336,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       timeRemainingSeconds: 0,
     );
 
-    if (!mounted) return;
+    if (!mounted || session != _questionSessionId) return;
     final double delta = (updatedStats.accuracyHistory.length >= 2)
         ? updatedStats.accuracyHistory.last -
             updatedStats.accuracyHistory[updatedStats.accuracyHistory.length - 2]
@@ -352,7 +356,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
 
     if (_currentQuestionType == HardCodeQuestionType.sorting) {
-      _scheduleAdvance(5000);
+      _scheduleAdvance(5000, session);
     }
   }
 
@@ -360,6 +364,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     required bool isCorrect,
     String? successMsg,
     String? errorMsg,
+    int? session,
   }) async {
     _cancelTimer();
     _topAlertTimer?.cancel();
@@ -371,6 +376,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
 
     if (!mounted) return;
+    if (session != null && session != _questionSessionId) return;
     final double delta = (updatedStats.accuracyHistory.length >= 2)
         ? updatedStats.accuracyHistory.last -
             updatedStats.accuracyHistory[updatedStats.accuracyHistory.length - 2]
@@ -544,10 +550,19 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     return render.trim();
   }
 
-  void generateQuestion() {
+  void generateQuestion({bool force = false}) {
+    final now = DateTime.now();
+    if (!force &&
+        _lastQuestionGenerationTime != null &&
+        now.difference(_lastQuestionGenerationTime!).inMilliseconds < 450) {
+      return;
+    }
+    _lastQuestionGenerationTime = now;
+
     _questionSessionId++;
     _cancelAdvance();
     _cancelTimer();
+    _isAnswerSubmitted = false;
     _topAlertTimer?.cancel();
     _topAlertMessage = null;
     _isTimerExpired = false;
@@ -1305,20 +1320,28 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
 
   void _handleTrueFalseAnswer(bool answer) async {
+    if (_tfAnswered || _isTimerExpired || _isAnswerSubmitted) return;
+
+    final int session = _questionSessionId;
     setState(() {
       _tfUserAnswer = answer;
       _tfAnswered = true;
+      _isAnswerSubmitted = true;
     });
+    _cancelTimer();
 
     final bool isCorrect = (answer == _tfExpected);
     await _recordAnswerResult(
       isCorrect: isCorrect,
       successMsg: 'Correct statement evaluation! +15 XP',
       errorMsg: 'Incorrect statement evaluation. Review explanation below!',
+      session: session,
     );
 
+    if (!mounted || session != _questionSessionId) return;
+
     if (isCorrect) {
-      _scheduleAdvance(5000);
+      _scheduleAdvance(5000, session);
     }
   }
 
@@ -1366,6 +1389,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
 
   void _handleMatchingSubmit() async {
+    if (_matchingSubmitted || _isTimerExpired || _isAnswerSubmitted) return;
+
+    final int session = _questionSessionId;
     final bool allPairsMapped = _userPairs.length == _matchingPairs.length;
     bool allCorrect = allPairsMapped;
     final Map<String, bool> results = {};
@@ -1381,21 +1407,29 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
     setState(() {
       _matchingSubmitted = true;
+      _isAnswerSubmitted = true;
       _matchingPairResults = results;
     });
+    _cancelTimer();
 
     await _recordAnswerResult(
       isCorrect: allCorrect,
       successMsg: 'All concepts matched correctly! +20 XP',
       errorMsg: 'Some pairings were incorrect. Review canonical pairs below.',
+      session: session,
     );
 
+    if (!mounted || session != _questionSessionId) return;
+
     if (allCorrect) {
-      _scheduleAdvance(5000);
+      _scheduleAdvance(5000, session);
     }
   }
 
   void _handleSequencingSubmit() async {
+    if (_sequencingSubmitted || _isTimerExpired || _isAnswerSubmitted) return;
+
+    final int session = _questionSessionId;
     bool allCorrect = true;
     final List<bool> results = [];
 
@@ -1410,21 +1444,29 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
     setState(() {
       _sequencingSubmitted = true;
+      _isAnswerSubmitted = true;
       _sequenceStepResults = results;
     });
+    _cancelTimer();
 
     await _recordAnswerResult(
       isCorrect: allCorrect,
       successMsg: 'Sequence verified in correct order! +20 XP',
       errorMsg: 'Sequence was out of order. See canonical order below.',
+      session: session,
     );
 
+    if (!mounted || session != _questionSessionId) return;
+
     if (allCorrect) {
-      _scheduleAdvance(5000);
+      _scheduleAdvance(5000, session);
     }
   }
 
   void _handleSortingSubmit() async {
+    if (_sortingSubmitted || _isTimerExpired || _isAnswerSubmitted) return;
+
+    final int session = _questionSessionId;
     bool allCorrect = true;
     final Map<String, bool> results = {};
 
@@ -1440,16 +1482,21 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
     setState(() {
       _sortingSubmitted = true;
+      _isAnswerSubmitted = true;
       _sortingResults = results;
     });
+    _cancelTimer();
 
     await _recordAnswerResult(
       isCorrect: allCorrect,
       successMsg: 'All items classified correctly! +20 XP',
       errorMsg: 'Some classifications were incorrect.',
+      session: session,
     );
 
-    _scheduleAdvance(5000);
+    if (!mounted || session != _questionSessionId) return;
+
+    _scheduleAdvance(5000, session);
   }
 
   String _getExpectedCategoryForItem(String item) {
@@ -2205,30 +2252,37 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                               isCorrect: isCorrectAnswer,
                               isDisabled: isDisabled,
                               isTimeoutReveal: isTimeoutReveal,
-                              onPressed: isDisabled
+                              onPressed: (isDisabled || _isAnswerSubmitted)
                                   ? null
                                   : () async {
+                                      final int session = _questionSessionId;
                                       int answer = _choices[
                                           _answerGroup.indexOf(answerButton)][1];
                                       final isCorrect = (answer == 1);
 
-                                      if (isCorrect) {
-                                        await _recordAnswerResult(
-                                          isCorrect: true,
-                                          successMsg: 'Correct choice! +15 XP',
-                                        );
-                                        setState(() {
+                                      setState(() {
+                                        _isAnswerSubmitted = true;
+                                        if (isCorrect) {
                                           _correctAnswerSelected = answerButton;
-                                        });
-
-                                        _scheduleAdvance(5000);
-                                      } else {
-                                        await _recordAnswerResult(
-                                          isCorrect: false,
-                                          errorMsg: 'Incorrect choice. Try another option!',
-                                        );
-                                        setState(() {
+                                        } else {
                                           _incorrectSelections.add(answerButton);
+                                        }
+                                      });
+
+                                      await _recordAnswerResult(
+                                        isCorrect: isCorrect,
+                                        successMsg: isCorrect ? 'Correct choice! +15 XP' : null,
+                                        errorMsg: isCorrect ? null : 'Incorrect choice. Try another option!',
+                                        session: session,
+                                      );
+
+                                      if (!mounted || session != _questionSessionId) return;
+
+                                      if (isCorrect) {
+                                        _scheduleAdvance(5000, session);
+                                      } else {
+                                        setState(() {
+                                          _isAnswerSubmitted = false;
                                         });
                                       }
                                     },
@@ -2614,7 +2668,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         isTrueOption ? Icons.check_circle_outline : Icons.cancel_outlined;
 
     return OutlinedButton(
-      onPressed: isCompleted
+      onPressed: (isCompleted || _isAnswerSubmitted)
           ? null
           : () => _handleTrueFalseAnswer(isTrueOption),
       style: OutlinedButton.styleFrom(
@@ -3253,7 +3307,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           ),
           SizedBox(height: (16.0 * scale).clamp(12.0, 20.0)),
           FilledButton.icon(
-            onPressed: (_userPairs.isNotEmpty) ? _handleMatchingSubmit : null,
+            onPressed: (_userPairs.isNotEmpty && !_matchingSubmitted && !_isTimerExpired && !_isAnswerSubmitted)
+                ? _handleMatchingSubmit
+                : null,
             icon: const Icon(Icons.check_circle_outline, size: 18),
             label: Text('Submit Matches (${_userPairs.length}/$totalCount)'),
             style: FilledButton.styleFrom(
@@ -3311,7 +3367,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     double statFontSize,
     double cardWidth,
   ) {
-    final bool isCompleted = _sequencingSubmitted || _isTimerExpired;
+    final bool isCompleted =
+        _sequencingSubmitted || _isTimerExpired || _isAnswerSubmitted;
     final int correctPositionsCount = _currentSequence
         .asMap()
         .entries
@@ -3909,7 +3966,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     children: _sortingCategories.map((category) {
                       final bool isChipSelected = (selectedCategory == category);
                       final bool isTargetCategory = (expectedCat == category);
-                      final bool isLocked = (isCompleted || hasSelected);
+                      final bool isLocked = (isCompleted ||
+                          hasSelected ||
+                          _isAnswerSubmitted ||
+                          _sortingSubmitted);
 
                       Color chipBg = theme.colorScheme.surface;
                       Color chipBorder = theme.colorScheme.outline.withOpacity(0.4);
