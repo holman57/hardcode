@@ -1,0 +1,21 @@
+#!/bin/sh
+# HardCode Academy - Agent Pre-Commit Test Enforcement Hook
+# Ensures no commit can be created if tests fail.
+
+echo "======================================================="
+echo " [HardCode Academy] Pre-Commit Verification Gate"
+echo "======================================================="
+
+python scripts/agent_test_commit_loop.py --check-only
+
+EXIT_CODE=$?
+if [ $EXIT_CODE -ne 0 ]; then
+  echo ""
+  echo "❌ COMMIT BLOCKED: Test suite failed."
+  echo "Agents must iterate and resolve failures before committing."
+  echo "Inspect 'test-results/agent_last_failure.json' for failure traces."
+  exit 1
+fi
+
+echo "✅ ALL CHECKS PASSED. Proceeding with commit."
+exit 0

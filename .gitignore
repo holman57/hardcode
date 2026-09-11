@@ -223,3 +223,10 @@ flutter_project/windows/flutter/generated_plugins.cmake
 /build/native_assets/
 /build/test_cache/
 /build/unit_test_assets/
+
+# Node & Playwright Test Artifacts
+node_modules/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/

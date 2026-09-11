@@ -221,7 +221,7 @@ class KnowledgeGraph with MapMixin<String, dynamic> {
   }) : _legacyBridge = legacyBridge;
 
   factory KnowledgeGraph.fromJson(Map<String, dynamic> json) {
-    final version = json['version'] as String? ?? '1.0.0-graph';
+    final version = json['version']?.toString() ?? '1.0.0-graph';
     final metadata = Map<String, dynamic>.from(json['metadata'] as Map? ?? {});
 
     final nodesList = (json['nodes'] as List? ?? []);

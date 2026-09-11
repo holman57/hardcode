@@ -378,5 +378,21 @@ void main() {
       // Backward compatibility Map operator
       expect(graph['Language'], ['Rust']);
     });
+
+    test('KnowledgeGraph safely parses integer version from db.json without throwing TypeError', () {
+      final jsonWithIntVersion = {
+        'version': 7,
+        'metadata': {'name': 'Test Graph With Int Version'},
+        'nodes': [],
+        'edges': [],
+        'adjacency': {},
+        'indices': {},
+        'legacy_bridge': {},
+      };
+
+      final graph = KnowledgeGraph.fromJson(jsonWithIntVersion);
+      expect(graph.version, '7');
+      expect(graph.nodes, isEmpty);
+    });
   });
 }

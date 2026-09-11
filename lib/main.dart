@@ -2316,7 +2316,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                       // Dynamic Question Type UI Rendering
                       if (_currentQuestionType == HardCodeQuestionType.multiChoiceSyntax ||
                           _currentQuestionType == HardCodeQuestionType.multiChoiceConceptual) ...[
-                        if (_language.isNotEmpty) ...[
+                        if (_question.isNotEmpty) ...[
                           Text(
                             _question,
                             textAlign: TextAlign.center,
