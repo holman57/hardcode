@@ -356,7 +356,55 @@ class KnowledgeGraph with MapMixin<String, dynamic> {
         "Computer Science": {
           "Introduction": "Foundational computer science principles.",
           "Remediation": "Review core concepts.",
-          "Deep Dive": "Advanced CS theory."
+          "Deep Dive": "Advanced CS theory.",
+          "questions": {
+            "True-False": [
+              {
+                "statement": "A stack is a Last-In, First-Out (LIFO) data structure.",
+                "is_true": true,
+                "explanation": "Elements added to a stack are placed on top and popped in reverse order."
+              },
+              {
+                "statement": "Binary search has an asymptotic time complexity of O(N) in the worst case.",
+                "is_true": false,
+                "explanation": "Binary search divides the search space in half at each step, running in O(log N) time."
+              }
+            ],
+            "Matching": [
+              {
+                "prompt": "Match each data structure with its access characteristics:",
+                "pairs": {
+                  "Queue": "First-In, First-Out (FIFO)",
+                  "Stack": "Last-In, First-Out (LIFO)",
+                  "Hash Table": "Average O(1) key-value lookup"
+                }
+              }
+            ],
+            "Sequencing": [
+              {
+                "prompt": "Order the lifecycle of a web HTTP GET request:",
+                "steps": [
+                  "Client performs DNS resolution for the domain name",
+                  "TCP 3-way handshake establishes a transport connection",
+                  "TLS handshake establishes secure cryptographic session",
+                  "Browser transmits HTTP GET request headers",
+                  "Server processes request and returns HTTP response"
+                ]
+              }
+            ],
+            "Sorting": [
+              {
+                "prompt": "Classify each algorithm by its worst-case time complexity:",
+                "categories": ["O(log N)", "O(N)", "O(N log N)", "O(N^2)"],
+                "items": {
+                  "Binary Search": "O(log N)",
+                  "Linear Search": "O(N)",
+                  "Merge Sort": "O(N log N)",
+                  "Bubble Sort": "O(N^2)"
+                }
+              }
+            ]
+          }
         }
       },
       "Variables": {
@@ -560,49 +608,57 @@ class DatabaseService {
   /// Initializes Hive for Flutter and opens both the catalog and memory boxes.
   Future<void> init() async {
     if (_isInitialized) return;
-    await Hive.initFlutter();
-    _catalogBox = await Hive.openBox(catalogBoxName);
-    _userMemoryBox = await Hive.openBox(userMemoryBoxName);
-    _isInitialized = true;
+    try {
+      await Hive.initFlutter().timeout(const Duration(seconds: 2));
+      _catalogBox = await Hive.openBox(catalogBoxName).timeout(const Duration(seconds: 2));
+      _userMemoryBox = await Hive.openBox(userMemoryBoxName).timeout(const Duration(seconds: 2));
+      _isInitialized = true;
+    } catch (e) {
+      debugPrint('Notice: Hive initialization failed or timed out ($e). Proceeding with in-memory graph.');
+    }
   }
 
   /// Retrieves the complete KnowledgeGraph from the local database or seeds from assets/knowledge_graph.json or assets/db.json.
   Future<KnowledgeGraph> getOrSeedGraph() async {
     try {
       if (!_isInitialized) {
-        await init();
+        await init().timeout(const Duration(seconds: 2));
       }
     } catch (e) {
       debugPrint('Warning: Hive init failed in getOrSeedGraph: $e');
     }
 
     if (_catalogBox != null) {
-      final int cachedVersion =
-          _catalogBox!.get('graph_version', defaultValue: 0) as int;
-      final String? cachedJson = _catalogBox!.get('knowledge_graph_json') as String?;
+      try {
+        final int cachedVersion =
+            _catalogBox!.get('graph_version', defaultValue: 0) as int;
+        final String? cachedJson = _catalogBox!.get('knowledge_graph_json') as String?;
 
-      if (cachedVersion >= 1 && cachedJson != null && cachedJson.isNotEmpty) {
-        try {
+        if (cachedVersion >= 1 && cachedJson != null && cachedJson.isNotEmpty) {
           final Map<String, dynamic> decoded =
               jsonDecode(cachedJson) as Map<String, dynamic>;
           if (decoded.containsKey('nodes') && decoded.containsKey('edges')) {
             _knowledgeGraph = KnowledgeGraph.fromJson(decoded);
             return _knowledgeGraph!;
           }
-        } catch (_) {
-          // Fallback to re-seed if parsing fails
         }
+      } catch (e) {
+        debugPrint('Notice: Hive cache read skipped: $e');
       }
     }
 
     // Seed from assets: try knowledge_graph.json first, then db.json fallback
     String? rawAsset;
     try {
-      rawAsset = await rootBundle.loadString('assets/knowledge_graph.json');
+      rawAsset = await rootBundle
+          .loadString('assets/knowledge_graph.json')
+          .timeout(const Duration(seconds: 2));
     } catch (e) {
       debugPrint('Notice: could not load assets/knowledge_graph.json ($e), trying assets/db.json');
       try {
-        rawAsset = await rootBundle.loadString('assets/db.json');
+        rawAsset = await rootBundle
+            .loadString('assets/db.json')
+            .timeout(const Duration(seconds: 2));
       } catch (e2) {
         debugPrint('Notice: could not load assets/db.json either ($e2)');
       }
@@ -614,9 +670,11 @@ class DatabaseService {
             jsonDecode(rawAsset) as Map<String, dynamic>;
         if (parsed.containsKey('nodes') && parsed.containsKey('edges')) {
           if (_catalogBox != null) {
-            await _catalogBox!.put('knowledge_graph_json', rawAsset);
-            await _catalogBox!.put('graph_version', 1);
-            await _catalogBox!.put('last_updated', DateTime.now().toIso8601String());
+            try {
+              await _catalogBox!.put('knowledge_graph_json', rawAsset).timeout(const Duration(seconds: 1));
+              await _catalogBox!.put('graph_version', 1).timeout(const Duration(seconds: 1));
+              await _catalogBox!.put('last_updated', DateTime.now().toIso8601String()).timeout(const Duration(seconds: 1));
+            } catch (_) {}
           }
           _knowledgeGraph = KnowledgeGraph.fromJson(parsed);
           return _knowledgeGraph!;

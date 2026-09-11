@@ -7,7 +7,11 @@ import 'services/database_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await DatabaseService.instance.init();
+  try {
+    await DatabaseService.instance.init().timeout(const Duration(seconds: 2));
+  } catch (e) {
+    debugPrint('Notice: DatabaseService.init timed out or caught error: $e');
+  }
   runApp(const MyApp());
 }
 
@@ -97,10 +101,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   double _trendDelta = 0.0;
 
   final _languages = {};
-  KnowledgeGraph? _knowledgeGraph;
-  late Map _data;
+  KnowledgeGraph? _knowledgeGraph = KnowledgeGraph.fallback();
+  Map _data = KnowledgeGraph.fallback();
   int _questionNumber = 0;
-  List _langList = [];
+  List _langList = const ["Python", "JavaScript", "C++", "Rust", "Go", "Dart", "Java", "C#", "TypeScript", "Bash"];
   String _language = "";
   final List<int> _langPriorities = [];
   List _correctPatterns = [];
@@ -171,7 +175,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   Map<String, bool> _sortingResults = {};
 
   UserStats _userStats = DatabaseService.instance.getUserStats();
-  bool _isLoading = true;
+  bool _isLoading = false;
 
   Timer? _questionTimer;
   Timer? _advanceTimer;
@@ -453,14 +457,29 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       _stringValues = (rawVars['String Values'] as List? ?? ['Hello', 'World']);
       _boolVarNames = (rawVars['Bool Variable Names'] as List? ?? ['isActive', 'isValid']);
       _boolValues = (rawVars['Bool Values'] as List? ?? ['true', 'false']);
-      generateQuestion();
+
+      final bool hasActiveQuestion = _question.isNotEmpty ||
+          _tfStatement.isNotEmpty ||
+          _matchingPairs.isNotEmpty ||
+          _currentSequence.isNotEmpty ||
+          _sortingItems.isNotEmpty;
+      if (!hasActiveQuestion) {
+        generateQuestion();
+      }
     } catch (e, stack) {
       debugPrint('Error loading app data in _loadData: $e\n$stack');
       if (mounted) {
         setState(() {
           _isLoading = false;
         });
-        generateQuestion();
+        final bool hasActiveQuestion = _question.isNotEmpty ||
+            _tfStatement.isNotEmpty ||
+            _matchingPairs.isNotEmpty ||
+            _currentSequence.isNotEmpty ||
+            _sortingItems.isNotEmpty;
+        if (!hasActiveQuestion) {
+          generateQuestion();
+        }
       }
     } finally {
       if (mounted && _isLoading) {
@@ -1544,6 +1563,24 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    _knowledgeGraph = KnowledgeGraph.fallback();
+    _data = _knowledgeGraph!;
+    _userStats = DatabaseService.instance.getUserStats();
+    _langList = ["Python", "JavaScript", "C++", "Rust", "Go", "Dart", "Java", "C#", "TypeScript", "Bash"];
+    for (final item in _langList) {
+      _languages[item] = 1;
+      _langPriorities.add(1);
+    }
+    final rawVars = (_data['Variables'] is Map) ? _data['Variables'] : {};
+    _intVarNames = (rawVars['Int Variable Names'] as List? ?? ['x', 'count']);
+    _intSmallVarSet =
+        (rawVars['Integer Small Variable Sets'] as List? ?? ['x', 'y']);
+    _intRustVarTypes = (rawVars['Rust Int Variable Types'] as List? ?? ['i32']);
+    _stringVarNames = (rawVars['String Variable Names'] as List? ?? ['message', 'title']);
+    _stringValues = (rawVars['String Values'] as List? ?? ['Hello', 'World']);
+    _boolVarNames = (rawVars['Bool Variable Names'] as List? ?? ['isActive', 'isValid']);
+    _boolValues = (rawVars['Bool Values'] as List? ?? ['true', 'false']);
+
     _pulseController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 650),
@@ -1564,6 +1601,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       vsync: this,
       duration: const Duration(milliseconds: 450),
     );
+
+    // Immediately generate initial question synchronously so Frame 1 renders complete interactive content
+    try {
+      generateQuestion(force: true);
+    } catch (e) {
+      debugPrint('Initial generateQuestion error: $e');
+    }
+
+    // Load persisted graph and stats asynchronously in background
     WidgetsBinding.instance.addPostFrameCallback((_) => _loadData());
   }
 
@@ -1752,21 +1798,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       timerColor = Colors.redAccent.shade700;
     } else if (_remainingSeconds <= 10) {
       timerColor = Colors.orange.shade700;
-    }
-
-    if (_isLoading) {
-      return Scaffold(
-        appBar: AppBar(
-          backgroundColor: theme.colorScheme.inversePrimary,
-          title: Text(
-            widget.title.isNotEmpty ? widget.title : 'HardCode Academy',
-            style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold),
-          ),
-        ),
-        body: const Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
     }
 
     return Scaffold(
