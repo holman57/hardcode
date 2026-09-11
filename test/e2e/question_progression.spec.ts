@@ -3,9 +3,19 @@ import { test, expect } from '@playwright/test';
 test.describe('HardCode Academy - Question Progression Flow', () => {
 
   test('PROGRESS-01: User can click an answer choice and proceed to the next question', async ({ page }) => {
+    page.on('pageerror', (err) => console.error(`[BROWSER ERROR]: ${err.message}`));
+    page.on('console', (msg) => {
+      if (msg.type() === 'error') console.error(`[BROWSER CONSOLE ERROR]: ${msg.text()}`);
+    });
+
     await page.goto('/');
     await page.waitForLoadState('domcontentloaded');
-    await page.waitForTimeout(2000);
+    // Wait until Flutter web engine has finished initializing and reached ACTIVE state
+    await page.waitForFunction(() => {
+      const state = (window as any).__getHardcodeState?.();
+      return state && state.phase === 'ACTIVE';
+    }, { timeout: 15000 }).catch(() => {});
+    await page.waitForTimeout(500);
 
     // 1. Capture starting state
     const initialState = await page.evaluate(() => (window as any).__getHardcodeState?.());
@@ -55,6 +65,7 @@ test.describe('HardCode Academy - Question Progression Flow', () => {
 
     // 4. Invariant: User has interacted and app has processed the interaction
     const finalState = await page.evaluate(() => (window as any).__getHardcodeState?.());
+    console.log('FINAL STATE EVALUATION:', JSON.stringify(finalState));
     expect(finalState).toBeDefined();
 
     // Verify progression: either question number advanced, event was logged, or app is active and responsive

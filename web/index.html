@@ -51,9 +51,12 @@
         } catch(e) {}
       }
       const buttons = Array.from(document.querySelectorAll('button, [role="button"]')).map(b => (b.innerText || b.getAttribute('aria-label') || '').trim()).filter(Boolean);
+      const is3DActive = !!document.querySelector('[aria-label*="3D Knowledge Constellation"], [aria-label*="Constellation"], [aria-label*="3D Knowledge Graph"]');
+      const isMounted = document.querySelector('flt-glass-pane') !== null || document.querySelector('canvas') !== null;
       return {
-        phase: document.querySelector('flt-glass-pane') ? "ACTIVE" : "INITIALIZING",
+        phase: isMounted ? "ACTIVE" : "INITIALIZING",
         availableButtons: buttons,
+        is3DActive: is3DActive,
         eventCount: window.__HARDCODE_EVENT_LOG__.length
       };
     };
