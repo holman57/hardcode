@@ -15,6 +15,7 @@
     "chaos_suite": "npx playwright test test/e2e/chaos_game_breaker.spec.ts --reporter=json",
     "loading_recovery": "npx playwright test test/e2e/loading_recovery.spec.ts",
     "question_progression": "npx playwright test test/e2e/question_progression.spec.ts",
+    "kg_3d_human_tests": "npx playwright test test/e2e/knowledge_graph_3d.spec.ts",
     "auto_tune": "python scripts/tune_test_suite.py",
     "agent_commit_gate": "python scripts/agent_test_commit_loop.py --check-only",
     "agent_commit_loop": "python scripts/agent_test_commit_loop.py -m"

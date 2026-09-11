@@ -4,13 +4,16 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'services/database_service.dart';
+import 'services/progression_service.dart';
+import 'screens/knowledge_graph_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
     await DatabaseService.instance.init().timeout(const Duration(seconds: 2));
+    await TopicProgressionService.instance.init().timeout(const Duration(seconds: 2));
   } catch (e) {
-    debugPrint('Notice: DatabaseService.init timed out or caught error: $e');
+    debugPrint('Notice: DatabaseService/TopicProgressionService.init timed out or caught error: $e');
   }
   runApp(const MyApp());
 }
@@ -99,6 +102,30 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   List<double> _prevAccuracyHistory = [];
   bool _isAccuracyUp = false;
   double _trendDelta = 0.0;
+  TopicProgressionNode? _activeTopicGrindNode;
+
+  void _openKnowledgeGraph3DScreen() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => KnowledgeGraph3DScreen(
+          onSelectTopicForGrind: (node) {
+            setState(() {
+              _activeTopicGrindNode = node;
+              _language = node.label;
+              generateQuestion(force: true);
+            });
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('⚡ Topic Grind Active: ${node.label} (${node.points} XP)'),
+                backgroundColor: const Color(0xFF1E293B),
+                duration: const Duration(seconds: 2),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
 
   final _languages = {};
   KnowledgeGraph? _knowledgeGraph = KnowledgeGraph.fallback();
@@ -403,6 +430,35 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         icon: Icons.check_circle_outline,
         backgroundColor: Colors.green.shade800,
       );
+
+      // Award Topic Progression Mastery XP and check cascading unlocks
+      final String topicTarget = _activeTopicGrindNode?.id ?? _language;
+      TopicProgressionService.instance.addTopicPoints(topicTarget, 15).then((newlyUnlocked) {
+        if (!mounted) return;
+        if (newlyUnlocked.isNotEmpty) {
+          final unlockedNames = newlyUnlocked.map((n) => n.label).join(', ');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  const Icon(Icons.stars_rounded, color: Colors.amberAccent),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text('🎉 New Node Unlocked: $unlockedNames!'),
+                  ),
+                ],
+              ),
+              backgroundColor: const Color(0xFF1E293B),
+              action: SnackBarAction(
+                label: 'EXPLORE 3D GRAPH',
+                textColor: Colors.cyanAccent,
+                onPressed: _openKnowledgeGraph3DScreen,
+              ),
+              duration: const Duration(seconds: 4),
+            ),
+          );
+        }
+      });
     } else {
       _showTopAlert(
         message: errorMsg ?? 'Incorrect choice. Review the feedback below!',
@@ -1956,6 +2012,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             );
           },
         ),
+        actions: [
+          IconButton(
+            key: const Key('btn_open_3d_kg'),
+            icon: const Icon(Icons.hub_rounded),
+            tooltip: 'Explore 3D Knowledge Graph',
+            onPressed: _openKnowledgeGraph3DScreen,
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
       drawer: Drawer(
         child: ListView(
@@ -2171,6 +2236,20 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               ),
             ),
             ListTile(
+              key: const Key('drawer_open_3d_kg'),
+              leading: const Icon(Icons.hub_rounded, color: Colors.cyan),
+              title: const Text('3D Knowledge Constellation'),
+              subtitle: Text(
+                '${TopicProgressionService.instance.unlockedCount} / ${TopicProgressionService.instance.nodes.length} Nodes Unlocked • Progression System',
+                style: const TextStyle(fontSize: 11),
+              ),
+              trailing: const Icon(Icons.chevron_right, size: 18),
+              onTap: () {
+                Navigator.of(context).pop();
+                _openKnowledgeGraph3DScreen();
+              },
+            ),
+            ListTile(
               leading: const Icon(Icons.hub_outlined, color: Colors.indigo),
               title: const Text('Knowledge Graph Explorer'),
               subtitle: Text(
@@ -2313,6 +2392,45 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
+                      // Topic Grind / Knowledge Graph Banner
+                      if (_activeTopicGrindNode != null) ...[
+                        Container(
+                          key: const Key('topic_grind_banner'),
+                          margin: EdgeInsets.only(bottom: contentSpacing),
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF1E293B),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.cyanAccent.withOpacity(0.4), width: 1.5),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.hub_rounded, color: Colors.cyanAccent, size: 18),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  'Topic Grind: ${_activeTopicGrindNode!.label} (${_activeTopicGrindNode!.points} XP)',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              TextButton.icon(
+                                key: const Key('btn_return_to_kg'),
+                                icon: const Icon(Icons.travel_explore, size: 16, color: Colors.cyanAccent),
+                                label: const Text(
+                                  '3D Graph',
+                                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.cyanAccent),
+                                ),
+                                onPressed: _openKnowledgeGraph3DScreen,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+
                       // Dynamic Question Type UI Rendering
                       if (_currentQuestionType == HardCodeQuestionType.multiChoiceSyntax ||
                           _currentQuestionType == HardCodeQuestionType.multiChoiceConceptual) ...[
