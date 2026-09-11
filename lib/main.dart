@@ -177,6 +177,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   int _questionSessionId = 0;
   bool _isAnswerSubmitted = false;
   DateTime? _lastQuestionGenerationTime;
+  int? _activeDraggingIndex;
   int _remainingSeconds = 20;
   static const int _totalSeconds = 20;
   static const int _maxTimerCap = 20;
@@ -354,10 +355,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       icon: Icons.timer_off_outlined,
       backgroundColor: Colors.red.shade800,
     );
-
-    if (_currentQuestionType == HardCodeQuestionType.sorting) {
-      _scheduleAdvance(5000, session);
-    }
   }
 
   Future<void> _recordAnswerResult({
@@ -554,7 +551,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     final now = DateTime.now();
     if (!force &&
         _lastQuestionGenerationTime != null &&
-        now.difference(_lastQuestionGenerationTime!).inMilliseconds < 450) {
+        now.difference(_lastQuestionGenerationTime!).inMilliseconds < 500) {
       return;
     }
     _lastQuestionGenerationTime = now;
@@ -563,6 +560,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     _cancelAdvance();
     _cancelTimer();
     _isAnswerSubmitted = false;
+    _activeDraggingIndex = null;
     _topAlertTimer?.cancel();
     _topAlertMessage = null;
     _isTimerExpired = false;
@@ -2197,15 +2195,22 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           return Stack(
             children: [
               Positioned.fill(
-                child: Center(
-                  child: SingleChildScrollView(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: (20.0 * scale).clamp(10.0, 24.0),
-                      vertical: (24.0 * scale).clamp(16.0, 36.0),
-                    ),
-                    child: Center(
-                child: SizedBox(
-                  width: cardWidth,
+                child: Listener(
+                  behavior: HitTestBehavior.translucent,
+                  onPointerDown: (_) {
+                    if (_advanceTimer != null) {
+                      _cancelAdvance();
+                    }
+                  },
+                  child: Center(
+                    child: SingleChildScrollView(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: (20.0 * scale).clamp(10.0, 24.0),
+                        vertical: (24.0 * scale).clamp(16.0, 36.0),
+                      ),
+                      child: Center(
+                        child: SizedBox(
+                          width: cardWidth,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -2318,9 +2323,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                             ),
                           ),
                         ],
-                        if (_isTimerExpired ||
-                            (_correctAnswerSelected != null &&
-                                _conceptualExplanation != null)) ...[
+                        if (_isTimerExpired || _correctAnswerSelected != null) ...[
                           SizedBox(height: (16.0 * scale).clamp(12.0, 20.0)),
                           Center(
                             child: FilledButton.icon(
@@ -2365,6 +2368,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             ),
           ),
         ),
+      ),
         // Floating Notification Bubble at the Top of the Page
         AnimatedPositioned(
             duration: const Duration(milliseconds: 250),
@@ -2588,10 +2592,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             ),
           ),
         ],
-        if (isCompleted &&
-            (_isTimerExpired ||
-                _tfUserAnswer != _tfExpected ||
-                _tfExplanation.trim().isNotEmpty)) ...[
+        if (isCompleted) ...[
           SizedBox(height: (16.0 * scale).clamp(12.0, 20.0)),
           Center(
             child: FilledButton.icon(
@@ -3443,19 +3444,37 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 : isPositionCorrect;
 
             return DragTarget<int>(
-              onWillAcceptWithDetails: (details) =>
-                  !isCompleted && details.data != index,
-              onAcceptWithDetails: (details) {
-                final int fromIndex = details.data;
-                if (fromIndex != index) {
-                  final movedItem = _currentSequence[fromIndex];
+              key: ValueKey('seq_target_${item}'),
+              onWillAcceptWithDetails: (details) => !isCompleted,
+              onMove: (details) {
+                if (!isCompleted &&
+                    _activeDraggingIndex != null &&
+                    _activeDraggingIndex != index &&
+                    _activeDraggingIndex! >= 0 &&
+                    _activeDraggingIndex! < _currentSequence.length &&
+                    index >= 0 &&
+                    index < _currentSequence.length) {
+                  _cancelAdvance();
                   setState(() {
                     _sequenceOrderAdjusted = true;
-                    _currentSequence.removeAt(fromIndex);
+                    final movedItem =
+                        _currentSequence.removeAt(_activeDraggingIndex!);
                     _currentSequence.insert(index, movedItem);
+                    _activeDraggingIndex = index;
                   });
+                }
+              },
+              onAcceptWithDetails: (details) {
+                _cancelAdvance();
+                if (_activeDraggingIndex != null &&
+                    _activeDraggingIndex! >= 0 &&
+                    _activeDraggingIndex! < _currentSequence.length) {
+                  final movedItem = _currentSequence[_activeDraggingIndex!];
                   _addBonusTimeForOption(movedItem);
                 }
+                setState(() {
+                  _activeDraggingIndex = null;
+                });
               },
               builder: (context, candidateData, rejectedData) {
                 final bool isHovered =
@@ -3594,6 +3613,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                           tooltip: 'Move Up',
                           onPressed: index > 0
                               ? () {
+                                  _cancelAdvance();
                                   final temp = _currentSequence[index];
                                   setState(() {
                                     _sequenceOrderAdjusted = true;
@@ -3613,6 +3633,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                           tooltip: 'Move Down',
                           onPressed: index < _currentSequence.length - 1
                               ? () {
+                                  _cancelAdvance();
                                   final temp = _currentSequence[index];
                                   setState(() {
                                     _sequenceOrderAdjusted = true;
@@ -3643,7 +3664,32 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 }
 
                 return Draggable<int>(
+                  key: ValueKey('seq_drag_${item}'),
                   data: index,
+                  onDragStarted: () {
+                    _cancelAdvance();
+                    setState(() {
+                      _activeDraggingIndex = index;
+                    });
+                  },
+                  onDragEnd: (details) {
+                    _cancelAdvance();
+                    if (_activeDraggingIndex != null &&
+                        _activeDraggingIndex! >= 0 &&
+                        _activeDraggingIndex! < _currentSequence.length) {
+                      final movedItem = _currentSequence[_activeDraggingIndex!];
+                      _addBonusTimeForOption(movedItem);
+                    }
+                    setState(() {
+                      _activeDraggingIndex = null;
+                    });
+                  },
+                  onDraggableCanceled: (velocity, offset) {
+                    _cancelAdvance();
+                    setState(() {
+                      _activeDraggingIndex = null;
+                    });
+                  },
                   feedback: Material(
                     elevation: 8.0,
                     borderRadius: BorderRadius.circular(12),
@@ -3661,7 +3707,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                           const SizedBox(width: 8),
                           Flexible(
                             child: Text(
-                              '${index + 1}. $item',
+                              item,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: GoogleFonts.plusJakartaSans(
@@ -4007,6 +4053,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                           onTap: isLocked
                               ? null
                               : () {
+                                  _cancelAdvance();
                                   setState(() {
                                     _userClassification[item] = category;
                                   });
@@ -4072,6 +4119,35 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             );
           }).toList(),
         ),
+        if (isCompleted) ...[
+          SizedBox(height: (16.0 * scale).clamp(12.0, 20.0)),
+          Center(
+            child: FilledButton.icon(
+              onPressed: () {
+                setState(() {
+                  generateQuestion();
+                });
+              },
+              icon: const Icon(Icons.arrow_forward_rounded, size: 18),
+              label: const Text('Next Question'),
+              style: FilledButton.styleFrom(
+                backgroundColor: theme.colorScheme.primary,
+                foregroundColor: theme.colorScheme.onPrimary,
+                padding: EdgeInsets.symmetric(
+                  horizontal: (24.0 * scale).clamp(18.0, 32.0),
+                  vertical: (12.0 * scale).clamp(10.0, 16.0),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                textStyle: GoogleFonts.plusJakartaSans(
+                  fontSize: (15.0 * scale).clamp(13.0, 17.0),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
       ],
     );
   }
