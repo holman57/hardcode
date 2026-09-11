@@ -6,7 +6,7 @@
   "tech_stack": {
     "frontend": "Flutter / Dart (lib/main.dart, pubspec.yaml)",
     "cli_driver": "Python (python_driver.py)",
-    "catalog_database": "assets/db.json"
+    "catalog_database": "assets/knowledge_graph.json"
   },
   "test_command": "python -m unittest test.test_python_driver",
   "question_types": [

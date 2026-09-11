@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/services.dart';
@@ -70,6 +71,349 @@ class PatternResolver {
   }
 }
 
+/// Styling and layout metadata for graph visualization renderers
+class GraphNodeVisualization {
+  final String group;
+  final String color;
+  final double size;
+  final int level;
+  final String icon;
+
+  GraphNodeVisualization({
+    required this.group,
+    required this.color,
+    required this.size,
+    required this.level,
+    required this.icon,
+  });
+
+  factory GraphNodeVisualization.fromJson(Map<String, dynamic> json) {
+    return GraphNodeVisualization(
+      group: json['group'] as String? ?? 'default',
+      color: json['color'] as String? ?? '#64748B',
+      size: (json['size'] as num?)?.toDouble() ?? 20.0,
+      level: (json['level'] as num?)?.toInt() ?? 2,
+      icon: json['icon'] as String? ?? 'circle',
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'group': group,
+        'color': color,
+        'size': size,
+        'level': level,
+        'icon': icon,
+      };
+}
+
+/// A vertex representing an entity (Language, Domain, Question, Concept, Database) in the Knowledge Graph
+class GraphNode {
+  final String id;
+  final String label;
+  final String type;
+  final String category;
+  final Map<String, dynamic> properties;
+  final GraphNodeVisualization visualization;
+
+  GraphNode({
+    required this.id,
+    required this.label,
+    required this.type,
+    required this.category,
+    required this.properties,
+    required this.visualization,
+  });
+
+  factory GraphNode.fromJson(Map<String, dynamic> json) {
+    return GraphNode(
+      id: json['id'] as String? ?? '',
+      label: json['label'] as String? ?? '',
+      type: json['type'] as String? ?? 'Node',
+      category: json['category'] as String? ?? '',
+      properties: Map<String, dynamic>.from(json['properties'] as Map? ?? {}),
+      visualization: GraphNodeVisualization.fromJson(
+        Map<String, dynamic>.from(json['visualization'] as Map? ?? {}),
+      ),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'label': label,
+        'type': type,
+        'category': category,
+        'properties': properties,
+        'visualization': visualization.toJson(),
+      };
+}
+
+/// A directed relationship linking two nodes in the Knowledge Graph
+class GraphEdge {
+  final String id;
+  final String source;
+  final String target;
+  final String relation;
+  final String label;
+  final double weight;
+  final bool directed;
+  final Map<String, dynamic> properties;
+
+  GraphEdge({
+    required this.id,
+    required this.source,
+    required this.target,
+    required this.relation,
+    required this.label,
+    this.weight = 1.0,
+    this.directed = true,
+    this.properties = const {},
+  });
+
+  factory GraphEdge.fromJson(Map<String, dynamic> json) {
+    return GraphEdge(
+      id: json['id'] as String? ?? '',
+      source: json['source'] as String? ?? '',
+      target: json['target'] as String? ?? '',
+      relation: json['relation'] as String? ?? 'RELATED_TO',
+      label: json['label'] as String? ?? 'Related',
+      weight: (json['weight'] as num?)?.toDouble() ?? 1.0,
+      directed: json['directed'] as bool? ?? true,
+      properties: Map<String, dynamic>.from(json['properties'] as Map? ?? {}),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'source': source,
+        'target': target,
+        'relation': relation,
+        'label': label,
+        'weight': weight,
+        'directed': directed,
+        'properties': properties,
+      };
+}
+
+/// Core Knowledge Graph datastructure powering syntax navigation, graph queries, and visual layout
+class KnowledgeGraph with MapMixin<String, dynamic> {
+  final String version;
+  final Map<String, dynamic> metadata;
+  final Map<String, GraphNode> nodes;
+  final Map<String, GraphEdge> edges;
+  final Map<String, List<String>> outgoing;
+  final Map<String, List<String>> incoming;
+  final Map<String, List<String>> byType;
+  final Map<String, List<String>> byGroup;
+  final Map<String, List<String>> byCategory;
+  final Map<String, dynamic> _legacyBridge;
+
+  KnowledgeGraph({
+    required this.version,
+    required this.metadata,
+    required this.nodes,
+    required this.edges,
+    required this.outgoing,
+    required this.incoming,
+    required this.byType,
+    required this.byGroup,
+    required this.byCategory,
+    required Map<String, dynamic> legacyBridge,
+  }) : _legacyBridge = legacyBridge;
+
+  factory KnowledgeGraph.fromJson(Map<String, dynamic> json) {
+    final version = json['version'] as String? ?? '1.0.0-graph';
+    final metadata = Map<String, dynamic>.from(json['metadata'] as Map? ?? {});
+
+    final nodesList = (json['nodes'] as List? ?? []);
+    final Map<String, GraphNode> nodes = {};
+    for (final item in nodesList) {
+      if (item is Map) {
+        final node = GraphNode.fromJson(Map<String, dynamic>.from(item));
+        nodes[node.id] = node;
+      }
+    }
+
+    final edgesList = (json['edges'] as List? ?? []);
+    final Map<String, GraphEdge> edges = {};
+    for (final item in edgesList) {
+      if (item is Map) {
+        final edge = GraphEdge.fromJson(Map<String, dynamic>.from(item));
+        edges[edge.id] = edge;
+      }
+    }
+
+    final rawAdj = (json['adjacency'] as Map? ?? {});
+    final Map<String, List<String>> outgoing = {};
+    final rawOut = (rawAdj['outgoing'] as Map? ?? {});
+    rawOut.forEach((k, v) {
+      if (v is List) {
+        outgoing[k.toString()] = v.map((e) => e.toString()).toList();
+      }
+    });
+
+    final Map<String, List<String>> incoming = {};
+    final rawIn = (rawAdj['incoming'] as Map? ?? {});
+    rawIn.forEach((k, v) {
+      if (v is List) {
+        incoming[k.toString()] = v.map((e) => e.toString()).toList();
+      }
+    });
+
+    final rawIndices = (json['indices'] as Map? ?? {});
+    final Map<String, List<String>> byType = {};
+    (rawIndices['by_type'] as Map? ?? {}).forEach((k, v) {
+      if (v is List) byType[k.toString()] = v.map((e) => e.toString()).toList();
+    });
+
+    final Map<String, List<String>> byGroup = {};
+    (rawIndices['by_group'] as Map? ?? {}).forEach((k, v) {
+      if (v is List) byGroup[k.toString()] = v.map((e) => e.toString()).toList();
+    });
+
+    final Map<String, List<String>> byCategory = {};
+    (rawIndices['by_category'] as Map? ?? {}).forEach((k, v) {
+      if (v is List) byCategory[k.toString()] = v.map((e) => e.toString()).toList();
+    });
+
+    final legacyBridge = Map<String, dynamic>.from(json['legacy_bridge'] as Map? ?? {});
+
+    return KnowledgeGraph(
+      version: version,
+      metadata: metadata,
+      nodes: nodes,
+      edges: edges,
+      outgoing: outgoing,
+      incoming: incoming,
+      byType: byType,
+      byGroup: byGroup,
+      byCategory: byCategory,
+      legacyBridge: legacyBridge,
+    );
+  }
+
+  // --- Graph Traversal & Query Methods ---
+
+  GraphNode? getNode(String id) => nodes[id];
+
+  List<GraphEdge> getOutgoingEdges(String nodeId) {
+    final edgeIds = outgoing[nodeId] ?? [];
+    return edgeIds.map((id) => edges[id]).whereType<GraphEdge>().toList();
+  }
+
+  List<GraphEdge> getIncomingEdges(String nodeId) {
+    final edgeIds = incoming[nodeId] ?? [];
+    return edgeIds.map((id) => edges[id]).whereType<GraphEdge>().toList();
+  }
+
+  List<GraphNode> getNeighbors(String nodeId, {String? relation}) {
+    final outEdges = getOutgoingEdges(nodeId);
+    return outEdges
+        .where((e) => relation == null || e.relation == relation)
+        .map((e) => nodes[e.target])
+        .whereType<GraphNode>()
+        .toList();
+  }
+
+  List<GraphNode> getNodesByType(String type) {
+    final ids = byType[type] ?? [];
+    return ids.map((id) => nodes[id]).whereType<GraphNode>().toList();
+  }
+
+  List<GraphNode> getNodesByGroup(String group) {
+    final ids = byGroup[group] ?? [];
+    return ids.map((id) => nodes[id]).whereType<GraphNode>().toList();
+  }
+
+  List<GraphNode> getQuestions({String? domain, String? subType}) {
+    final questionNodes = getNodesByType('Question');
+    return questionNodes.where((q) {
+      if (domain != null && q.properties['domain'] != domain) return false;
+      if (subType != null && q.properties['sub_type'] != subType) return false;
+      return true;
+    }).toList();
+  }
+
+  List<String> getLanguages() {
+    return (_legacyBridge['Language'] as List? ?? [])
+        .map((e) => e.toString())
+        .toList();
+  }
+
+  List<String> getCurriculumDomains() {
+    return getNodesByType('CurriculumDomain').map((n) => n.label).toList();
+  }
+
+  /// Exports a filtered or focused subgraph formatted for visualization engines (e.g. D3, force-directed, canvas).
+  Map<String, dynamic> exportVisualizationData({String? focusNodeId, int depth = 2}) {
+    final Set<String> includedNodeIds = {};
+    if (focusNodeId != null && nodes.containsKey(focusNodeId)) {
+      includedNodeIds.add(focusNodeId);
+      Set<String> currentLayer = {focusNodeId};
+      for (int d = 0; d < depth; d++) {
+        final Set<String> nextLayer = {};
+        for (final nid in currentLayer) {
+          for (final edge in getOutgoingEdges(nid)) {
+            nextLayer.add(edge.target);
+          }
+          for (final edge in getIncomingEdges(nid)) {
+            nextLayer.add(edge.source);
+          }
+        }
+        includedNodeIds.addAll(nextLayer);
+        currentLayer = nextLayer;
+      }
+    } else {
+      includedNodeIds.addAll(nodes.keys);
+    }
+
+    final visNodes = includedNodeIds
+        .map((id) => nodes[id])
+        .whereType<GraphNode>()
+        .map((n) => n.toJson())
+        .toList();
+
+    final visEdges = edges.values
+        .where((e) => includedNodeIds.contains(e.source) && includedNodeIds.contains(e.target))
+        .map((e) => e.toJson())
+        .toList();
+
+    return {
+      'nodes': visNodes,
+      'links': visEdges,
+      'metadata': {
+        'focus': focusNodeId,
+        'depth': depth,
+        'node_count': visNodes.length,
+        'edge_count': visEdges.length,
+      }
+    };
+  }
+
+  // --- MapMixin Implementation for Backward Compatibility ---
+  @override
+  dynamic operator [](Object? key) {
+    if (key == 'nodes') return nodes.values.map((n) => n.toJson()).toList();
+    if (key == 'edges') return edges.values.map((e) => e.toJson()).toList();
+    if (key == 'version') return version;
+    if (key == 'metadata') return metadata;
+    return _legacyBridge[key];
+  }
+
+  @override
+  void operator []=(String key, dynamic value) {
+    _legacyBridge[key] = value;
+  }
+
+  @override
+  void clear() => _legacyBridge.clear();
+
+  @override
+  Iterable<String> get keys => {'version', 'metadata', 'nodes', 'edges', ..._legacyBridge.keys};
+
+  @override
+  dynamic remove(Object? key) => _legacyBridge.remove(key);
+}
+
 class UserStats {
   final int currentStreak;
   final int bestStreak;
@@ -122,14 +466,16 @@ class DatabaseService {
   DatabaseService._internal();
   static final DatabaseService instance = DatabaseService._internal();
 
-  static const String catalogBoxName = 'hardcode_catalog_box';
+  static const String catalogBoxName = 'hardcode_knowledge_graph_box';
   static const String userMemoryBoxName = 'hardcode_user_memory_box';
 
   Box? _catalogBox;
   Box? _userMemoryBox;
   bool _isInitialized = false;
+  KnowledgeGraph? _knowledgeGraph;
 
   bool get isInitialized => _isInitialized;
+  KnowledgeGraph? get knowledgeGraph => _knowledgeGraph;
 
   /// Initializes Hive for Flutter and opens both the catalog and memory boxes.
   Future<void> init() async {
@@ -140,43 +486,46 @@ class DatabaseService {
     _isInitialized = true;
   }
 
-  /// Retrieves the question and language catalog from the local database.
-  /// If the local database is empty or version is outdated, seeds from assets/db.json.
-  Future<Map<String, dynamic>> getOrSeedCatalog() async {
+  /// Retrieves the complete KnowledgeGraph from the local database or seeds from assets/knowledge_graph.json.
+  Future<KnowledgeGraph> getOrSeedGraph() async {
     if (!_isInitialized) {
       await init();
     }
 
     final int cachedVersion =
-        _catalogBox!.get('catalog_version', defaultValue: 0) as int;
-    final String? cachedJson = _catalogBox!.get('catalog_json') as String?;
+        _catalogBox!.get('graph_version', defaultValue: 0) as int;
+    final String? cachedJson = _catalogBox!.get('knowledge_graph_json') as String?;
 
-    // If cached version is up to date, valid, and contains Curriculum, use cached catalog
-    if (cachedVersion >= 7 && cachedJson != null && cachedJson.isNotEmpty) {
+    if (cachedVersion >= 1 && cachedJson != null && cachedJson.isNotEmpty) {
       try {
         final Map<String, dynamic> decoded =
             jsonDecode(cachedJson) as Map<String, dynamic>;
-        if (decoded.containsKey('Curriculum') &&
-            decoded['Curriculum'] is Map &&
-            (decoded['Curriculum'] as Map).isNotEmpty) {
-          return decoded;
+        if (decoded.containsKey('nodes') && decoded.containsKey('edges')) {
+          _knowledgeGraph = KnowledgeGraph.fromJson(decoded);
+          return _knowledgeGraph!;
         }
       } catch (_) {
         // Fallback to re-seed if parsing fails
       }
     }
 
-    // Seed from assets/db.json into local Hive database
-    final String rawAsset = await rootBundle.loadString('assets/db.json');
+    // Seed from assets/knowledge_graph.json into local Hive database
+    final String rawAsset =
+        await rootBundle.loadString('assets/knowledge_graph.json');
     final Map<String, dynamic> parsed =
         jsonDecode(rawAsset) as Map<String, dynamic>;
-    final int assetVersion = (parsed['version'] as int?) ?? 4;
 
-    await _catalogBox!.put('catalog_json', rawAsset);
-    await _catalogBox!.put('catalog_version', assetVersion);
+    await _catalogBox!.put('knowledge_graph_json', rawAsset);
+    await _catalogBox!.put('graph_version', 1);
     await _catalogBox!.put('last_updated', DateTime.now().toIso8601String());
 
-    return parsed;
+    _knowledgeGraph = KnowledgeGraph.fromJson(parsed);
+    return _knowledgeGraph!;
+  }
+
+  /// Retrieves the question and language catalog as a KnowledgeGraph (which also implements Map for legacy compatibility).
+  Future<Map<String, dynamic>> getOrSeedCatalog() async {
+    return await getOrSeedGraph();
   }
 
   /// Gets current user statistics and progress from local memory.
@@ -233,7 +582,6 @@ class DatabaseService {
   }
 
   /// Computes adaptive sampling priorities for languages based on user error patterns.
-  /// Weak languages or recently missed items receive higher priority.
   List<int> getAdaptiveLanguagePriorities(List<String> languages) {
     final stats = getUserStats();
     final List<int> priorities = [];
