@@ -330,6 +330,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       icon: Icons.timer_off_outlined,
       backgroundColor: Colors.red.shade800,
     );
+
+    if (_currentQuestionType == HardCodeQuestionType.sorting) {
+      Future.delayed(const Duration(milliseconds: 2000), () {
+        if (!mounted) return;
+        setState(() {
+          generateQuestion();
+        });
+      });
+    }
   }
 
   Future<void> _recordAnswerResult({
@@ -1439,17 +1448,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     await _recordAnswerResult(
       isCorrect: allCorrect,
       successMsg: 'All items classified correctly! +20 XP',
-      errorMsg: 'Some classifications were incorrect. Review below.',
+      errorMsg: 'Some classifications were incorrect.',
     );
 
-    if (allCorrect) {
-      Future.delayed(const Duration(milliseconds: 5000), () {
-        if (!mounted) return;
-        setState(() {
-          generateQuestion();
-        });
+    Future.delayed(const Duration(milliseconds: 1400), () {
+      if (!mounted) return;
+      setState(() {
+        generateQuestion();
       });
-    }
+    });
   }
 
   String _getExpectedCategoryForItem(String item) {
@@ -3816,13 +3823,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               const SizedBox(height: 6),
               Text(
                 isCompleted
-                    ? 'Review classification results below'
+                    ? (allItemsCorrect
+                        ? 'All $totalCount items classified correctly!'
+                        : '$correctCount of $totalCount items correct')
                     : 'Select a category for each item ($classifiedCount of $totalCount classified • $correctCount correct)',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: (statFontSize * 0.85).clamp(10.0, 12.5),
                   fontWeight: FontWeight.w600,
-                  color: allItemsCorrect
+                  color: (isCompleted && allItemsCorrect)
                       ? Colors.green.shade800
                       : theme.colorScheme.onSurface.withOpacity(0.65),
                 ),
@@ -3980,6 +3989,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                     _userClassification[item] = category;
                                   });
                                   _addBonusTimeForOption(item);
+                                  if (_userClassification.length == _sortingItems.length) {
+                                    _handleSortingSubmit();
+                                  }
                                 },
                           borderRadius: BorderRadius.circular(20),
                           child: Container(
@@ -4038,68 +4050,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             );
           }).toList(),
         ),
-
-        SizedBox(height: (16.0 * scale).clamp(12.0, 20.0)),
-        if (!isCompleted) ...[
-          FilledButton.icon(
-            onPressed: (_userClassification.length == _sortingItems.length)
-                ? _handleSortingSubmit
-                : null,
-            icon: Icon(
-              allItemsCorrect
-                  ? Icons.check_circle_rounded
-                  : Icons.done_all_rounded,
-              size: 18,
-            ),
-            label: Text(
-              allItemsCorrect
-                  ? 'Submit Classification (All Correct!)'
-                  : 'Submit Classification ($classifiedCount/$totalCount • $correctCount correct)',
-            ),
-            style: FilledButton.styleFrom(
-              backgroundColor:
-                  allItemsCorrect ? Colors.green.shade700 : null,
-              foregroundColor: allItemsCorrect ? Colors.white : null,
-              padding: EdgeInsets.symmetric(
-                vertical: (13.0 * scale).clamp(10.0, 16.0),
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              textStyle: GoogleFonts.plusJakartaSans(
-                fontWeight: FontWeight.bold,
-                fontSize: (15.0 * scale).clamp(13.0, 16.5),
-              ),
-            ),
-          ),
-        ] else ...[
-          Center(
-            child: FilledButton.icon(
-              onPressed: () {
-                setState(() {
-                  generateQuestion();
-                });
-              },
-              icon: const Icon(Icons.arrow_forward_rounded, size: 18),
-              label: const Text('Next Question'),
-              style: FilledButton.styleFrom(
-                backgroundColor: theme.colorScheme.primary,
-                foregroundColor: theme.colorScheme.onPrimary,
-                padding: EdgeInsets.symmetric(
-                  horizontal: (24.0 * scale).clamp(18.0, 32.0),
-                  vertical: (12.0 * scale).clamp(10.0, 16.0),
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                textStyle: GoogleFonts.plusJakartaSans(
-                  fontSize: (15.0 * scale).clamp(13.0, 17.0),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ],
       ],
     );
   }
