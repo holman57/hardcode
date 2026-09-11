@@ -1287,7 +1287,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
 
     if (isCorrect) {
-      Future.delayed(const Duration(milliseconds: 1400), () {
+      final int delayMs = _tfExplanation.trim().isNotEmpty ? 5000 : 1400;
+      Future.delayed(Duration(milliseconds: delayMs), () {
         if (!mounted) return;
         setState(() {
           generateQuestion();
@@ -1365,7 +1366,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
 
     if (allCorrect) {
-      Future.delayed(const Duration(milliseconds: 1600), () {
+      Future.delayed(const Duration(milliseconds: 5000), () {
         if (!mounted) return;
         setState(() {
           generateQuestion();
@@ -1399,7 +1400,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
 
     if (allCorrect) {
-      Future.delayed(const Duration(milliseconds: 1600), () {
+      Future.delayed(const Duration(milliseconds: 5000), () {
         if (!mounted) return;
         setState(() {
           generateQuestion();
@@ -1434,7 +1435,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
 
     if (allCorrect) {
-      Future.delayed(const Duration(milliseconds: 1600), () {
+      Future.delayed(const Duration(milliseconds: 5000), () {
         if (!mounted) return;
         setState(() {
           generateQuestion();
@@ -2218,8 +2219,16 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                           _correctAnswerSelected = answerButton;
                                         });
 
+                                        final bool hasExplanation =
+                                            (_conceptualExplanation != null &&
+                                                _conceptualExplanation!
+                                                    .trim()
+                                                    .isNotEmpty);
+                                        final int delayMs =
+                                            hasExplanation ? 5000 : 700;
+
                                         Future.delayed(
-                                            const Duration(milliseconds: 700), () {
+                                            Duration(milliseconds: delayMs), () {
                                           if (!mounted) return;
                                           setState(() {
                                             generateQuestion();
@@ -2267,7 +2276,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                             ),
                           ),
                         ],
-                        if (_isTimerExpired) ...[
+                        if (_isTimerExpired ||
+                            (_correctAnswerSelected != null &&
+                                _conceptualExplanation != null)) ...[
                           SizedBox(height: (16.0 * scale).clamp(12.0, 20.0)),
                           Center(
                             child: FilledButton.icon(
@@ -2535,7 +2546,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             ),
           ),
         ],
-        if (isCompleted && (_isTimerExpired || _tfUserAnswer != _tfExpected)) ...[
+        if (isCompleted &&
+            (_isTimerExpired ||
+                _tfUserAnswer != _tfExpected ||
+                _tfExplanation.trim().isNotEmpty)) ...[
           SizedBox(height: (16.0 * scale).clamp(12.0, 20.0)),
           Center(
             child: FilledButton.icon(
@@ -3310,6 +3324,16 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     double cardWidth,
   ) {
     final bool isCompleted = _sequencingSubmitted || _isTimerExpired;
+    final int correctPositionsCount = _currentSequence
+        .asMap()
+        .entries
+        .where((e) =>
+            e.key < _expectedSequence.length &&
+            e.value == _expectedSequence[e.key])
+        .length;
+    final int totalPositionsCount = _currentSequence.length;
+    final bool isEntireSequenceCorrect =
+        (correctPositionsCount == totalPositionsCount && totalPositionsCount > 0);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -3340,12 +3364,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               Text(
                 isCompleted
                     ? 'Review execution order below'
-                    : 'Use ▲ / ▼ or drag steps to arrange from first to last (+3s, +2s, +1s per option, max 20s)',
+                    : '$correctPositionsCount of $totalPositionsCount steps in correct order • Use ▲ / ▼ or drag to arrange',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: (statFontSize * 0.85).clamp(10.0, 12.5),
-                  fontWeight: FontWeight.w500,
-                  color: theme.colorScheme.onSurface.withOpacity(0.65),
+                  fontWeight: FontWeight.w600,
+                  color: isEntireSequenceCorrect
+                      ? Colors.green.shade800
+                      : theme.colorScheme.onSurface.withOpacity(0.65),
                 ),
               ),
             ],
@@ -3357,9 +3383,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           children: _currentSequence.asMap().entries.map((entry) {
             final int index = entry.key;
             final String item = entry.value;
-            final bool isStepCorrect = (isCompleted &&
-                index < _sequenceStepResults.length &&
-                _sequenceStepResults[index]);
+            final bool isPositionCorrect = (index < _expectedSequence.length &&
+                _currentSequence[index] == _expectedSequence[index]);
+            final bool isStepCorrect = isCompleted
+                ? (index < _sequenceStepResults.length &&
+                    _sequenceStepResults[index])
+                : isPositionCorrect;
 
             return DragTarget<int>(
               onWillAcceptWithDetails: (details) =>
@@ -3377,8 +3406,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 final bool isHovered =
                     candidateData.isNotEmpty && !isCompleted;
 
-                Color borderColor = theme.colorScheme.outline.withOpacity(0.3);
-                Color bgColor = theme.colorScheme.surface;
+                Color borderColor = isPositionCorrect
+                    ? Colors.green.shade600
+                    : Colors.red.shade400.withOpacity(0.65);
+                Color bgColor = isPositionCorrect
+                    ? Colors.green.withOpacity(0.08)
+                    : Colors.red.withOpacity(0.04);
                 if (isCompleted) {
                   if (isStepCorrect) {
                     borderColor = Colors.green.shade600;
@@ -3420,11 +3453,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                         height: 28,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          color: isCompleted
-                              ? (isStepCorrect
-                                  ? Colors.green.shade600
-                                  : Colors.red.shade600)
-                              : theme.colorScheme.primaryContainer,
+                          color: (isCompleted ? isStepCorrect : isPositionCorrect)
+                              ? Colors.green.shade600
+                              : Colors.red.shade600,
                           shape: BoxShape.circle,
                         ),
                         child: Text(
@@ -3432,13 +3463,55 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                           style: GoogleFonts.plusJakartaSans(
                             fontWeight: FontWeight.bold,
                             fontSize: 13,
-                            color: isCompleted
-                                ? Colors.white
-                                : theme.colorScheme.onPrimaryContainer,
+                            color: Colors.white,
                           ),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 10),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: (isCompleted ? isStepCorrect : isPositionCorrect)
+                              ? Colors.green.withOpacity(0.15)
+                              : Colors.red.withOpacity(0.12),
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(
+                            color: (isCompleted ? isStepCorrect : isPositionCorrect)
+                                ? Colors.green.withOpacity(0.3)
+                                : Colors.red.withOpacity(0.25),
+                            width: 0.8,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              (isCompleted ? isStepCorrect : isPositionCorrect)
+                                  ? Icons.check_circle_rounded
+                                  : Icons.close_rounded,
+                              size: 13,
+                              color: (isCompleted ? isStepCorrect : isPositionCorrect)
+                                  ? Colors.green.shade700
+                                  : Colors.red.shade700,
+                            ),
+                            const SizedBox(width: 3),
+                            Text(
+                              (isCompleted ? isStepCorrect : isPositionCorrect)
+                                  ? 'Correct'
+                                  : 'Out of Order',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700,
+                                color: (isCompleted ? isStepCorrect : isPositionCorrect)
+                                    ? Colors.green.shade800
+                                    : Colors.red.shade800,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 10),
                       Expanded(
                         child: Text(
                           item,
@@ -3594,9 +3667,22 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         if (!isCompleted) ...[
           FilledButton.icon(
             onPressed: _handleSequencingSubmit,
-            icon: const Icon(Icons.done_all_rounded, size: 18),
-            label: const Text('Submit Sequence Order'),
+            icon: Icon(
+              isEntireSequenceCorrect
+                  ? Icons.check_circle_rounded
+                  : Icons.done_all_rounded,
+              size: 18,
+            ),
+            label: Text(
+              isEntireSequenceCorrect
+                  ? 'Submit Sequence (All $totalPositionsCount Steps Correct!)'
+                  : 'Submit Sequence Order ($correctPositionsCount/$totalPositionsCount Correct)',
+            ),
             style: FilledButton.styleFrom(
+              backgroundColor:
+                  isEntireSequenceCorrect ? Colors.green.shade700 : null,
+              foregroundColor:
+                  isEntireSequenceCorrect ? Colors.white : null,
               padding: EdgeInsets.symmetric(
                 vertical: (13.0 * scale).clamp(10.0, 16.0),
               ),
@@ -3608,7 +3694,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 fontSize: (15.0 * scale).clamp(13.0, 16.5),
               ),
             ),
-          ),
         ] else ...[
           Center(
             child: FilledButton.icon(
@@ -3650,6 +3735,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     final bool isCompleted = _sortingSubmitted || _isTimerExpired;
     final int classifiedCount = _userClassification.length;
     final int totalCount = _sortingItems.length;
+    final int correctCount = _sortingItems
+        .where((item) =>
+            _userClassification[item] != null &&
+            _userClassification[item] == _getExpectedCategoryForItem(item))
+        .length;
+    final bool allItemsCorrect = (correctCount == totalCount && totalCount > 0);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -3680,12 +3771,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               Text(
                 isCompleted
                     ? 'Review classification results below'
-                    : 'Select a category for each item ($classifiedCount of $totalCount classified • +3s, +2s, +1s per option, max 20s)',
+                    : 'Select a category for each item ($classifiedCount of $totalCount classified • $correctCount correct)',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: (statFontSize * 0.85).clamp(10.0, 12.5),
-                  fontWeight: FontWeight.w500,
-                  color: theme.colorScheme.onSurface.withOpacity(0.65),
+                  fontWeight: FontWeight.w600,
+                  color: allItemsCorrect
+                      ? Colors.green.shade800
+                      : theme.colorScheme.onSurface.withOpacity(0.65),
                 ),
               ),
             ],
@@ -3697,20 +3790,21 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           children: _sortingItems.map((item) {
             final String? selectedCategory = _userClassification[item];
             final String expectedCat = _getExpectedCategoryForItem(item);
+            final bool hasSelected = (selectedCategory != null);
+            final bool isCorrectCategory =
+                hasSelected && (selectedCategory == expectedCat);
             final bool? isItemCorrect = isCompleted
-                ? (_sortingResults[item] ?? (selectedCategory == expectedCat))
-                : null;
+                ? (_sortingResults[item] ?? isCorrectCategory)
+                : (hasSelected ? isCorrectCategory : null);
 
             Color borderColor = theme.colorScheme.outline.withOpacity(0.3);
             Color bgColor = theme.colorScheme.surface;
-            if (isCompleted) {
-              if (isItemCorrect == true) {
-                borderColor = Colors.green.shade600;
-                bgColor = Colors.green.withOpacity(0.08);
-              } else {
-                borderColor = Colors.red.shade400;
-                bgColor = Colors.red.withOpacity(0.08);
-              }
+            if (isItemCorrect == true) {
+              borderColor = Colors.green.shade600;
+              bgColor = Colors.green.withOpacity(0.08);
+            } else if (isItemCorrect == false) {
+              borderColor = Colors.red.shade400;
+              bgColor = Colors.red.withOpacity(0.08);
             }
 
             return Container(
@@ -3726,12 +3820,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 children: [
                   Row(
                     children: [
-                      if (isCompleted) ...[
+                      if (isItemCorrect != null) ...[
                         Icon(
                           isItemCorrect == true
                               ? Icons.check_circle_outline
                               : Icons.cancel_outlined,
-                          size: 18,
+                          size: 20,
                           color: isItemCorrect == true
                               ? Colors.green.shade700
                               : Colors.red.shade700,
@@ -3748,6 +3842,34 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                           ),
                         ),
                       ),
+                      if (isItemCorrect != null) ...[
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 7, vertical: 2.5),
+                          decoration: BoxDecoration(
+                            color: isItemCorrect == true
+                                ? Colors.green.withOpacity(0.15)
+                                : Colors.red.withOpacity(0.12),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(
+                              color: isItemCorrect == true
+                                  ? Colors.green.withOpacity(0.3)
+                                  : Colors.red.withOpacity(0.25),
+                              width: 0.8,
+                            ),
+                          ),
+                          child: Text(
+                            isItemCorrect == true ? 'Correct' : 'Incorrect',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w700,
+                              color: isItemCorrect == true
+                                  ? Colors.green.shade800
+                                  : Colors.red.shade800,
+                            ),
+                          ),
+                        ),
+                      ],
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -3762,28 +3884,28 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                       Color chipBorder = theme.colorScheme.outline.withOpacity(0.4);
                       Color chipText = theme.colorScheme.onSurface;
 
-                      if (isCompleted) {
-                        if (isChipSelected && isItemCorrect == true) {
+                      if (isChipSelected) {
+                        if (isItemCorrect == true) {
                           chipBg = Colors.green.shade600;
                           chipBorder = Colors.green.shade700;
                           chipText = Colors.white;
-                        } else if (isChipSelected && isItemCorrect == false) {
+                        } else if (isItemCorrect == false) {
                           chipBg = Colors.red.shade600;
                           chipBorder = Colors.red.shade700;
                           chipText = Colors.white;
-                        } else if (isTargetCategory) {
-                          chipBg = Colors.green.withOpacity(0.15);
-                          chipBorder = Colors.green.shade600;
-                          chipText = Colors.green.shade900;
                         } else {
-                          chipBg = theme.colorScheme.surface.withOpacity(0.4);
-                          chipBorder = theme.colorScheme.outline.withOpacity(0.15);
-                          chipText = theme.colorScheme.onSurface.withOpacity(0.35);
+                          chipBg = theme.colorScheme.primary;
+                          chipBorder = theme.colorScheme.primary;
+                          chipText = theme.colorScheme.onPrimary;
                         }
-                      } else if (isChipSelected) {
-                        chipBg = theme.colorScheme.primary;
-                        chipBorder = theme.colorScheme.primary;
-                        chipText = theme.colorScheme.onPrimary;
+                      } else if (isCompleted && isTargetCategory) {
+                        chipBg = Colors.green.withOpacity(0.15);
+                        chipBorder = Colors.green.shade600;
+                        chipText = Colors.green.shade900;
+                      } else if (isCompleted) {
+                        chipBg = theme.colorScheme.surface.withOpacity(0.4);
+                        chipBorder = theme.colorScheme.outline.withOpacity(0.15);
+                        chipText = theme.colorScheme.onSurface.withOpacity(0.35);
                       }
 
                       return InkWell(
@@ -3847,9 +3969,21 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             onPressed: (_userClassification.length == _sortingItems.length)
                 ? _handleSortingSubmit
                 : null,
-            icon: const Icon(Icons.done_all_rounded, size: 18),
-            label: Text('Submit Classification ($classifiedCount/$totalCount)'),
+            icon: Icon(
+              allItemsCorrect
+                  ? Icons.check_circle_rounded
+                  : Icons.done_all_rounded,
+              size: 18,
+            ),
+            label: Text(
+              allItemsCorrect
+                  ? 'Submit Classification (All Correct!)'
+                  : 'Submit Classification ($classifiedCount/$totalCount • $correctCount correct)',
+            ),
             style: FilledButton.styleFrom(
+              backgroundColor:
+                  allItemsCorrect ? Colors.green.shade700 : null,
+              foregroundColor: allItemsCorrect ? Colors.white : null,
               padding: EdgeInsets.symmetric(
                 vertical: (13.0 * scale).clamp(10.0, 16.0),
               ),
