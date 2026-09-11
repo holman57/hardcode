@@ -409,40 +409,66 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
 
   Future<void> _loadData() async {
-    final graph = await DatabaseService.instance.getOrSeedGraph();
-    final data = graph;
-    final stats = DatabaseService.instance.getUserStats();
-    double initialTrend = 0.0;
-    if (stats.accuracyHistory.length >= 2) {
-      initialTrend = stats.accuracyHistory.last -
-          stats.accuracyHistory[stats.accuracyHistory.length - 2];
-    }
-    if (!mounted) return;
-    setState(() {
-      _knowledgeGraph = graph;
-      _data = data;
-      _prevAccuracyHistory = List<double>.from(stats.accuracyHistory);
-      _userStats = stats;
-      _trendDelta = initialTrend;
-      _isAccuracyUp = initialTrend > 0.05;
-      _isLoading = false;
-      _data["Language"].forEach((item) {
-        _languages[item] = 1;
+    try {
+      final graph = await DatabaseService.instance.getOrSeedGraph();
+      final data = graph;
+      final stats = DatabaseService.instance.getUserStats();
+      double initialTrend = 0.0;
+      if (stats.accuracyHistory.length >= 2) {
+        initialTrend = stats.accuracyHistory.last -
+            stats.accuracyHistory[stats.accuracyHistory.length - 2];
+      }
+      if (!mounted) return;
+      setState(() {
+        _knowledgeGraph = graph;
+        _data = data;
+        _prevAccuracyHistory = List<double>.from(stats.accuracyHistory);
+        _userStats = stats;
+        _trendDelta = initialTrend;
+        _isAccuracyUp = initialTrend > 0.05;
+        _isLoading = false;
+
+        final rawLangs = _data["Language"];
+        if (rawLangs is List && rawLangs.isNotEmpty) {
+          for (final item in rawLangs) {
+            _languages[item] = 1;
+          }
+          _langList = rawLangs.map((item) => item as String).toList();
+          _languages.forEach((k, v) => _langPriorities.add(v));
+        } else {
+          _langList = ["Python", "JavaScript", "C++", "Rust", "Go", "Dart", "Java", "C#", "TypeScript", "Bash"];
+          for (final item in _langList) {
+            _languages[item] = 1;
+            _langPriorities.add(1);
+          }
+        }
       });
-      _langList =
-          (_data["Language"] as List).map((item) => item as String).toList();
-      _languages.forEach((k, v) => _langPriorities.add(v));
-    });
-    _graphController.forward(from: 0.0);
-    _intVarNames = (_data['Variables']['Int Variable Names'] as List? ?? ['x', 'count']);
-    _intSmallVarSet =
-        (_data['Variables']['Integer Small Variable Sets'] as List? ?? ['x', 'y']);
-    _intRustVarTypes = (_data['Variables']['Rust Int Variable Types'] as List? ?? ['i32']);
-    _stringVarNames = (_data['Variables']['String Variable Names'] as List? ?? ['message', 'title']);
-    _stringValues = (_data['Variables']['String Values'] as List? ?? ['Hello', 'World']);
-    _boolVarNames = (_data['Variables']['Bool Variable Names'] as List? ?? ['isActive', 'isValid']);
-    _boolValues = (_data['Variables']['Bool Values'] as List? ?? ['true', 'false']);
-    generateQuestion();
+      _graphController.forward(from: 0.0);
+      final rawVars = (_data['Variables'] is Map) ? _data['Variables'] : {};
+      _intVarNames = (rawVars['Int Variable Names'] as List? ?? ['x', 'count']);
+      _intSmallVarSet =
+          (rawVars['Integer Small Variable Sets'] as List? ?? ['x', 'y']);
+      _intRustVarTypes = (rawVars['Rust Int Variable Types'] as List? ?? ['i32']);
+      _stringVarNames = (rawVars['String Variable Names'] as List? ?? ['message', 'title']);
+      _stringValues = (rawVars['String Values'] as List? ?? ['Hello', 'World']);
+      _boolVarNames = (rawVars['Bool Variable Names'] as List? ?? ['isActive', 'isValid']);
+      _boolValues = (rawVars['Bool Values'] as List? ?? ['true', 'false']);
+      generateQuestion();
+    } catch (e, stack) {
+      debugPrint('Error loading app data in _loadData: $e\n$stack');
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+        generateQuestion();
+      }
+    } finally {
+      if (mounted && _isLoading) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   /// Dynamically resolves all bracketed choice patterns (e.g. `[a|b|None]`, `[$|@|None]`, `[String|str|string|None]`)
@@ -629,25 +655,31 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     final curriculum = (_data["Curriculum"] as Map?) ?? {};
     final List<String> domains = curriculum.keys.cast<String>().toList();
 
-    switch (_currentQuestionType) {
-      case HardCodeQuestionType.trueFalse:
-        _generateTrueFalseQuestion(curriculum, domains, random);
-        break;
-      case HardCodeQuestionType.matching:
-        _generateMatchingQuestion(curriculum, domains, random);
-        break;
-      case HardCodeQuestionType.sequencing:
-        _generateSequencingQuestion(curriculum, domains, random);
-        break;
-      case HardCodeQuestionType.sorting:
-        _generateSortingQuestion(curriculum, domains, random);
-        break;
-      case HardCodeQuestionType.multiChoiceConceptual:
-        _generateConceptualMultiChoiceQuestion(curriculum, domains, random);
-        break;
-      case HardCodeQuestionType.multiChoiceSyntax:
-        _generateSyntaxMultiChoiceQuestion(random);
-        break;
+    try {
+      switch (_currentQuestionType) {
+        case HardCodeQuestionType.trueFalse:
+          _generateTrueFalseQuestion(curriculum, domains, random);
+          break;
+        case HardCodeQuestionType.matching:
+          _generateMatchingQuestion(curriculum, domains, random);
+          break;
+        case HardCodeQuestionType.sequencing:
+          _generateSequencingQuestion(curriculum, domains, random);
+          break;
+        case HardCodeQuestionType.sorting:
+          _generateSortingQuestion(curriculum, domains, random);
+          break;
+        case HardCodeQuestionType.multiChoiceConceptual:
+          _generateConceptualMultiChoiceQuestion(curriculum, domains, random);
+          break;
+        case HardCodeQuestionType.multiChoiceSyntax:
+          _generateSyntaxMultiChoiceQuestion(random);
+          break;
+      }
+    } catch (e, stack) {
+      debugPrint('Error generating question of type $_currentQuestionType: $e\n$stack. Falling back to diverse syntax.');
+      _currentQuestionType = HardCodeQuestionType.multiChoiceSyntax;
+      _generateDiverseSyntaxQuestion(random);
     }
 
     _startTimer();

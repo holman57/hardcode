@@ -27,3 +27,4 @@ flutter:
   assets:
     - assets/
     - assets/knowledge_graph.json
+    - assets/db.json

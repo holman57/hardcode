@@ -291,6 +291,86 @@ class KnowledgeGraph with MapMixin<String, dynamic> {
     );
   }
 
+  factory KnowledgeGraph.fromLegacyCatalog(Map<String, dynamic> catalog) {
+    final Map<String, GraphNode> nodes = {};
+    final Map<String, GraphEdge> edges = {};
+    final Map<String, List<String>> outgoing = {};
+    final Map<String, List<String>> incoming = {};
+    final Map<String, List<String>> byType = {};
+    final Map<String, List<String>> byGroup = {};
+    final Map<String, List<String>> byCategory = {};
+
+    final langs = (catalog['Language'] as List? ?? []).map((e) => e.toString()).toList();
+    byType['Language'] = [];
+    byGroup['language'] = [];
+    for (final l in langs) {
+      final id = 'lang:${l.toLowerCase()}';
+      nodes[id] = GraphNode(
+        id: id,
+        label: l,
+        type: 'Language',
+        category: 'General',
+        properties: {'name': l},
+        visualization: GraphNodeVisualization(group: 'language', color: '#3B82F6', size: 26, level: 2, icon: 'code'),
+      );
+      byType['Language']!.add(id);
+      byGroup['language']!.add(id);
+    }
+
+    final curriculum = (catalog['Curriculum'] as Map? ?? {});
+    byType['CurriculumDomain'] = [];
+    byGroup['domain'] = [];
+    curriculum.forEach((k, v) {
+      final id = 'domain:${k.toString().toLowerCase().replaceAll(RegExp(r'[^a-z0-9_]'), '_')}';
+      nodes[id] = GraphNode(
+        id: id,
+        label: k.toString(),
+        type: 'CurriculumDomain',
+        category: 'Computer Science',
+        properties: v is Map ? Map<String, dynamic>.from(v) : {},
+        visualization: GraphNodeVisualization(group: 'domain', color: '#6366F1', size: 32, level: 1, icon: 'hub'),
+      );
+      byType['CurriculumDomain']!.add(id);
+      byGroup['domain']!.add(id);
+    });
+
+    return KnowledgeGraph(
+      version: '1.0.0-legacy-migrated',
+      metadata: {'name': 'HardCode Knowledge Graph (Migrated)'},
+      nodes: nodes,
+      edges: edges,
+      outgoing: outgoing,
+      incoming: incoming,
+      byType: byType,
+      byGroup: byGroup,
+      byCategory: byCategory,
+      legacyBridge: catalog,
+    );
+  }
+
+  factory KnowledgeGraph.fallback() {
+    return KnowledgeGraph.fromLegacyCatalog({
+      "version": 7,
+      "Language": ["Python", "JavaScript", "C++", "Rust", "Go", "Dart", "Java", "C#", "TypeScript", "Bash"],
+      "Curriculum": {
+        "Computer Science": {
+          "Introduction": "Foundational computer science principles.",
+          "Remediation": "Review core concepts.",
+          "Deep Dive": "Advanced CS theory."
+        }
+      },
+      "Variables": {
+        "Int Variable Names": ["x", "count", "total", "index"],
+        "Integer Small Variable Sets": ["x", "y", "z"],
+        "Rust Int Variable Types": ["i32", "i64", "u32"],
+        "String Variable Names": ["message", "name", "title"],
+        "String Values": ["Hello", "World", "HardCode"],
+        "Bool Variable Names": ["isActive", "isValid", "flag"],
+        "Bool Values": ["true", "false"]
+      }
+    });
+  }
+
   // --- Graph Traversal & Query Methods ---
 
   GraphNode? getNode(String id) => nodes[id];
@@ -486,40 +566,72 @@ class DatabaseService {
     _isInitialized = true;
   }
 
-  /// Retrieves the complete KnowledgeGraph from the local database or seeds from assets/knowledge_graph.json.
+  /// Retrieves the complete KnowledgeGraph from the local database or seeds from assets/knowledge_graph.json or assets/db.json.
   Future<KnowledgeGraph> getOrSeedGraph() async {
-    if (!_isInitialized) {
-      await init();
+    try {
+      if (!_isInitialized) {
+        await init();
+      }
+    } catch (e) {
+      debugPrint('Warning: Hive init failed in getOrSeedGraph: $e');
     }
 
-    final int cachedVersion =
-        _catalogBox!.get('graph_version', defaultValue: 0) as int;
-    final String? cachedJson = _catalogBox!.get('knowledge_graph_json') as String?;
+    if (_catalogBox != null) {
+      final int cachedVersion =
+          _catalogBox!.get('graph_version', defaultValue: 0) as int;
+      final String? cachedJson = _catalogBox!.get('knowledge_graph_json') as String?;
 
-    if (cachedVersion >= 1 && cachedJson != null && cachedJson.isNotEmpty) {
-      try {
-        final Map<String, dynamic> decoded =
-            jsonDecode(cachedJson) as Map<String, dynamic>;
-        if (decoded.containsKey('nodes') && decoded.containsKey('edges')) {
-          _knowledgeGraph = KnowledgeGraph.fromJson(decoded);
-          return _knowledgeGraph!;
+      if (cachedVersion >= 1 && cachedJson != null && cachedJson.isNotEmpty) {
+        try {
+          final Map<String, dynamic> decoded =
+              jsonDecode(cachedJson) as Map<String, dynamic>;
+          if (decoded.containsKey('nodes') && decoded.containsKey('edges')) {
+            _knowledgeGraph = KnowledgeGraph.fromJson(decoded);
+            return _knowledgeGraph!;
+          }
+        } catch (_) {
+          // Fallback to re-seed if parsing fails
         }
-      } catch (_) {
-        // Fallback to re-seed if parsing fails
       }
     }
 
-    // Seed from assets/knowledge_graph.json into local Hive database
-    final String rawAsset =
-        await rootBundle.loadString('assets/knowledge_graph.json');
-    final Map<String, dynamic> parsed =
-        jsonDecode(rawAsset) as Map<String, dynamic>;
+    // Seed from assets: try knowledge_graph.json first, then db.json fallback
+    String? rawAsset;
+    try {
+      rawAsset = await rootBundle.loadString('assets/knowledge_graph.json');
+    } catch (e) {
+      debugPrint('Notice: could not load assets/knowledge_graph.json ($e), trying assets/db.json');
+      try {
+        rawAsset = await rootBundle.loadString('assets/db.json');
+      } catch (e2) {
+        debugPrint('Notice: could not load assets/db.json either ($e2)');
+      }
+    }
 
-    await _catalogBox!.put('knowledge_graph_json', rawAsset);
-    await _catalogBox!.put('graph_version', 1);
-    await _catalogBox!.put('last_updated', DateTime.now().toIso8601String());
+    if (rawAsset != null && rawAsset.isNotEmpty) {
+      try {
+        final Map<String, dynamic> parsed =
+            jsonDecode(rawAsset) as Map<String, dynamic>;
+        if (parsed.containsKey('nodes') && parsed.containsKey('edges')) {
+          if (_catalogBox != null) {
+            await _catalogBox!.put('knowledge_graph_json', rawAsset);
+            await _catalogBox!.put('graph_version', 1);
+            await _catalogBox!.put('last_updated', DateTime.now().toIso8601String());
+          }
+          _knowledgeGraph = KnowledgeGraph.fromJson(parsed);
+          return _knowledgeGraph!;
+        } else if (parsed.containsKey('Language') || parsed.containsKey('Curriculum')) {
+          final kg = KnowledgeGraph.fromLegacyCatalog(parsed);
+          _knowledgeGraph = kg;
+          return _knowledgeGraph!;
+        }
+      } catch (e) {
+        debugPrint('Error parsing loaded asset: $e');
+      }
+    }
 
-    _knowledgeGraph = KnowledgeGraph.fromJson(parsed);
+    // Final safety fallback to ensure the app never hangs on a loading spinner
+    _knowledgeGraph = KnowledgeGraph.fallback();
     return _knowledgeGraph!;
   }
 
