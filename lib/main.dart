@@ -3904,15 +3904,28 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                               width: 0.8,
                             ),
                           ),
-                          child: Text(
-                            isItemCorrect == true ? 'Correct' : 'Incorrect',
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 10.5,
-                              fontWeight: FontWeight.w700,
-                              color: isItemCorrect == true
-                                  ? Colors.green.shade800
-                                  : Colors.red.shade800,
-                            ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.lock_outline_rounded,
+                                size: 11,
+                                color: isItemCorrect == true
+                                    ? Colors.green.shade800
+                                    : Colors.red.shade800,
+                              ),
+                              const SizedBox(width: 3.5),
+                              Text(
+                                isItemCorrect == true ? 'Correct' : 'Incorrect',
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 10.5,
+                                  fontWeight: FontWeight.w700,
+                                  color: isItemCorrect == true
+                                      ? Colors.green.shade800
+                                      : Colors.red.shade800,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -3925,6 +3938,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     children: _sortingCategories.map((category) {
                       final bool isChipSelected = (selectedCategory == category);
                       final bool isTargetCategory = (expectedCat == category);
+                      final bool isLocked = (isCompleted || hasSelected);
 
                       Color chipBg = theme.colorScheme.surface;
                       Color chipBorder = theme.colorScheme.outline.withOpacity(0.4);
@@ -3948,44 +3962,60 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                         chipBg = Colors.green.withOpacity(0.15);
                         chipBorder = Colors.green.shade600;
                         chipText = Colors.green.shade900;
-                      } else if (isCompleted) {
-                        chipBg = theme.colorScheme.surface.withOpacity(0.4);
+                      } else if (isLocked) {
+                        chipBg = theme.colorScheme.surface.withOpacity(0.35);
                         chipBorder = theme.colorScheme.outline.withOpacity(0.15);
                         chipText = theme.colorScheme.onSurface.withOpacity(0.35);
                       }
 
-                      return InkWell(
-                        onTap: isCompleted
-                            ? null
-                            : () {
-                                final bool isChange =
-                                    (_userClassification[item] != category);
-                                setState(() {
-                                  _userClassification[item] = category;
-                                });
-                                if (isChange) {
+                      return Opacity(
+                        opacity: (hasSelected && !isChipSelected && !(isCompleted && isTargetCategory))
+                            ? 0.45
+                            : 1.0,
+                        child: InkWell(
+                          onTap: isLocked
+                              ? null
+                              : () {
+                                  setState(() {
+                                    _userClassification[item] = category;
+                                  });
                                   _addBonusTimeForOption(item);
-                                }
-                              },
-                        borderRadius: BorderRadius.circular(20),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: chipBg,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: chipBorder, width: 1.2),
-                          ),
-                          child: Text(
-                            category,
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: (statFontSize * 0.85).clamp(10.5, 12.5),
-                              fontWeight: isChipSelected
-                                  ? FontWeight.w700
-                                  : FontWeight.w500,
-                              color: chipText,
+                                },
+                          borderRadius: BorderRadius.circular(20),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: chipBg,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: chipBorder, width: 1.2),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (isChipSelected && isItemCorrect != null) ...[
+                                  Icon(
+                                    isItemCorrect == true
+                                        ? Icons.check_circle_rounded
+                                        : Icons.cancel_rounded,
+                                    size: 13,
+                                    color: Colors.white,
+                                  ),
+                                  const SizedBox(width: 4),
+                                ],
+                                Text(
+                                  category,
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: (statFontSize * 0.85).clamp(10.5, 12.5),
+                                    fontWeight: isChipSelected
+                                        ? FontWeight.w700
+                                        : FontWeight.w500,
+                                    color: chipText,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
