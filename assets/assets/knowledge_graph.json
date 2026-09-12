@@ -1,16 +1,16 @@
 {
   "version": 8,
-  "graph_version": "1.0.0-graph",
+  "graph_version": "1.3.0-graph",
   "schema": "knowledge-graph",
   "metadata": {
     "name": "HardCode Knowledge Graph",
     "schema": "knowledge-graph",
     "version": 8,
-    "graph_version": "1.0.0-graph",
+    "graph_version": "1.3.0-graph",
     "description": "Structured graph database powering syntax flashcards, CS curriculum, and visual navigation.",
-    "node_count": 603,
-    "edge_count": 697,
-    "question_count": 402,
+    "node_count": 620,
+    "edge_count": 714,
+    "question_count": 418,
     "created_at": "2026-09-10T21:30:00Z",
     "types": [
       "Category",
@@ -41,7 +41,8 @@
       "question_tf",
       "root",
       "syntax"
-    ]
+    ],
+    "last_updated": "2026-09-12T19:40:58Z"
   },
   "nodes": [
     {
@@ -14828,6 +14829,459 @@
         "level": 3,
         "icon": "quiz"
       }
+    },
+    {
+      "id": "domain:security_engineering",
+      "label": "Security Engineering",
+      "type": "CurriculumDomain",
+      "category": "Computer Science",
+      "properties": {
+        "name": "Security Engineering",
+        "introduction": "Security Engineering designs systems to remain dependable and resilient in the face of malice, error, or targeted compromise, spanning threat modeling, hardware-enforced isolation, and defense-in-depth.",
+        "remediation": "Focus on the STRIDE threat matrix (Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege), compile-time memory protections (ASLR/DEP/canaries), and the Principle of Least Privilege.",
+        "deep_dive": "Modern Security Engineering incorporates formal Threat Modeling during architectural design, automated static/dynamic security testing (SAST/DAST) in CI/CD, and cryptographically verified identities (mTLS, SPIFFE/SPIRE). Binary hardening eliminates memory corruption attack vectors via Return-Oriented Programming (ROP) defenses, Control Flow Integrity (CFI), and hardware-backed Key Management Systems (HSM/KMS)."
+      },
+      "visualization": {
+        "group": "domain",
+        "color": "#6366F1",
+        "size": 32,
+        "level": 1,
+        "icon": "domain"
+      }
+    },
+    {
+      "id": "q:tf:security_engineering_1",
+      "label": "Address Space Layout Randomization (ASLR) ...",
+      "type": "Question",
+      "category": "True-False",
+      "properties": {
+        "domain": "Security Engineering",
+        "sub_type": "True-False",
+        "statement": "Address Space Layout Randomization (ASLR) randomizes the memory locations of program segments (stack, heap, libraries) to prevent predictable buffer overflow exploits.",
+        "is_true": true,
+        "explanation": "ASLR makes it computationally infeasible for attackers to reliably target hardcoded shellcode or function pointers in virtual memory."
+      },
+      "visualization": {
+        "group": "question_tf",
+        "color": "#14B8A6",
+        "size": 16,
+        "level": 3,
+        "icon": "check_circle"
+      }
+    },
+    {
+      "id": "q:tf:security_engineering_2",
+      "label": "Static Application Security Testing (SAST)...",
+      "type": "Question",
+      "category": "True-False",
+      "properties": {
+        "domain": "Security Engineering",
+        "sub_type": "True-False",
+        "statement": "Static Application Security Testing (SAST) requires executing the compiled binary inside a live running test environment.",
+        "is_true": false,
+        "explanation": "SAST analyzes raw source code, byte code, or binary files without running the application; DAST analyzes running applications from the outside."
+      },
+      "visualization": {
+        "group": "question_tf",
+        "color": "#14B8A6",
+        "size": 16,
+        "level": 3,
+        "icon": "check_circle"
+      }
+    },
+    {
+      "id": "q:tf:security_engineering_3",
+      "label": "In the STRIDE threat modeling framework, t...",
+      "type": "Question",
+      "category": "True-False",
+      "properties": {
+        "domain": "Security Engineering",
+        "sub_type": "True-False",
+        "statement": "In the STRIDE threat modeling framework, the letter 'R' stands for 'Repudiation'—the ability of an actor to deny having performed an action without proof.",
+        "is_true": true,
+        "explanation": "Repudiation threats are mitigated through tamper-evident digital signatures, secure audit logs, and non-repudiation controls."
+      },
+      "visualization": {
+        "group": "question_tf",
+        "color": "#14B8A6",
+        "size": 16,
+        "level": 3,
+        "icon": "check_circle"
+      }
+    },
+    {
+      "id": "q:tf:security_engineering_4",
+      "label": "Stack Canaries are known sentinel values p...",
+      "type": "Question",
+      "category": "True-False",
+      "properties": {
+        "domain": "Security Engineering",
+        "sub_type": "True-False",
+        "statement": "Stack Canaries are known sentinel values placed on the stack before the return address to detect stack buffer overflows prior to function return.",
+        "is_true": true,
+        "explanation": "If a buffer overflow corrupts the stack, the canary value changes. The CPU checks this value before returning and aborts immediately if corrupted."
+      },
+      "visualization": {
+        "group": "question_tf",
+        "color": "#14B8A6",
+        "size": 16,
+        "level": 3,
+        "icon": "check_circle"
+      }
+    },
+    {
+      "id": "q:tf:security_engineering_5",
+      "label": "Attribute-Based Access Control (ABAC) eval...",
+      "type": "Question",
+      "category": "True-False",
+      "properties": {
+        "domain": "Security Engineering",
+        "sub_type": "True-False",
+        "statement": "Attribute-Based Access Control (ABAC) evaluates permissions strictly based on predefined fixed user job title roles without considering contextual environment attributes.",
+        "is_true": false,
+        "explanation": "Role-Based Access Control (RBAC) relies on fixed roles; ABAC dynamically evaluates attributes of the user, resource, action, and environment (e.g. time, IP, device security posture)."
+      },
+      "visualization": {
+        "group": "question_tf",
+        "color": "#14B8A6",
+        "size": 16,
+        "level": 3,
+        "icon": "check_circle"
+      }
+    },
+    {
+      "id": "q:tf:security_engineering_6",
+      "label": "Data Execution Prevention (DEP / W^X) enfo...",
+      "type": "Question",
+      "category": "True-False",
+      "properties": {
+        "domain": "Security Engineering",
+        "sub_type": "True-False",
+        "statement": "Data Execution Prevention (DEP / W^X) enforces that memory pages can be writable or executable, but never simultaneously writable AND executable.",
+        "is_true": true,
+        "explanation": "W^X (Write XOR Execute) stops attackers from injecting malicious machine code into data buffers (stack/heap) and executing it."
+      },
+      "visualization": {
+        "group": "question_tf",
+        "color": "#14B8A6",
+        "size": 16,
+        "level": 3,
+        "icon": "check_circle"
+      }
+    },
+    {
+      "id": "q:matching:security_engineering_1",
+      "label": "Match each Security Engineering concept wi...",
+      "type": "Question",
+      "category": "Matching",
+      "properties": {
+        "domain": "Security Engineering",
+        "sub_type": "Matching",
+        "prompt": "Match each Security Engineering concept with its primary objective",
+        "pairs": {
+          "STRIDE Matrix": "Systematic architectural threat categorization framework (Spoofing to Elevation of Privilege)",
+          "Control Flow Integrity (CFI)": "Hardware/compiler defense restricting runtime execution paths to valid call graph targets",
+          "Static Application Security Testing (SAST)": "White-box automated code scanning for vulnerabilities before compilation",
+          "Dynamic Application Security Testing (DAST)": "Black-box fault injection testing against running target applications",
+          "OpenID Connect (OIDC)": "Identity and authentication layer built directly on top of the OAuth 2.0 protocol"
+        }
+      },
+      "visualization": {
+        "group": "question_matching",
+        "color": "#F97316",
+        "size": 16,
+        "level": 3,
+        "icon": "compare_arrows"
+      }
+    },
+    {
+      "id": "q:matching:security_engineering_2",
+      "label": "Match each binary exploit defense with its...",
+      "type": "Question",
+      "category": "Matching",
+      "properties": {
+        "domain": "Security Engineering",
+        "sub_type": "Matching",
+        "prompt": "Match each binary exploit defense with its protection mechanism",
+        "pairs": {
+          "ASLR": "Randomizes base addresses of stack, heap, and libraries in virtual memory",
+          "Stack Canary": "Detects buffer overflow overwrites before return instruction executes",
+          "DEP / NX Bit": "Marks data pages non-executable so injected shellcode cannot run",
+          "Pointer Authentication (PAC)": "Cryptographically signs code pointers in unused 64-bit address bits (ARMv8.3+)",
+          "RELRO (Relocation Read-Only)": "Hardens Global Offset Table (GOT) against arbitrary pointer overwrite attacks"
+        }
+      },
+      "visualization": {
+        "group": "question_matching",
+        "color": "#F97316",
+        "size": 16,
+        "level": 3,
+        "icon": "compare_arrows"
+      }
+    },
+    {
+      "id": "q:sequencing:security_engineering_1",
+      "label": "Order the stages of a Secure Software Deve...",
+      "type": "Question",
+      "category": "Sequencing",
+      "properties": {
+        "domain": "Security Engineering",
+        "sub_type": "Sequencing",
+        "prompt": "Order the stages of a Secure Software Development Lifecycle (SSDLC)",
+        "sequence": [
+          "Security requirements definition and regulatory compliance scoping",
+          "Architectural threat modeling and attack surface decomposition (STRIDE)",
+          "Secure coding with automated static analysis (SAST) and dependency scanning",
+          "Dynamic application security testing (DAST) and interactive penetration testing",
+          "Continuous production monitoring, automated patching, and incident response readiness"
+        ],
+        "ordered_sequence": [
+          "Security requirements definition and regulatory compliance scoping",
+          "Architectural threat modeling and attack surface decomposition (STRIDE)",
+          "Secure coding with automated static analysis (SAST) and dependency scanning",
+          "Dynamic application security testing (DAST) and interactive penetration testing",
+          "Continuous production monitoring, automated patching, and incident response readiness"
+        ]
+      },
+      "visualization": {
+        "group": "question_sequencing",
+        "color": "#A855F7",
+        "size": 16,
+        "level": 3,
+        "icon": "format_list_numbered"
+      }
+    },
+    {
+      "id": "q:sequencing:security_engineering_2",
+      "label": "Order the steps an attacker takes during a...",
+      "type": "Question",
+      "category": "Sequencing",
+      "properties": {
+        "domain": "Security Engineering",
+        "sub_type": "Sequencing",
+        "prompt": "Order the steps an attacker takes during a traditional stack buffer overflow exploit and its defense response",
+        "sequence": [
+          "Attacker sends input exceeding the allocated stack buffer boundary",
+          "Malicious payload overwrites local variables and approaches the stack canary",
+          "Payload corrupts the stack canary value on its way to the function return address",
+          "Function epilogue executes `__stack_chk_fail` after detecting canary mismatch",
+          "Kernel terminates the process immediately with SIGABRT, preventing malicious code execution"
+        ],
+        "ordered_sequence": [
+          "Attacker sends input exceeding the allocated stack buffer boundary",
+          "Malicious payload overwrites local variables and approaches the stack canary",
+          "Payload corrupts the stack canary value on its way to the function return address",
+          "Function epilogue executes `__stack_chk_fail` after detecting canary mismatch",
+          "Kernel terminates the process immediately with SIGABRT, preventing malicious code execution"
+        ]
+      },
+      "visualization": {
+        "group": "question_sequencing",
+        "color": "#A855F7",
+        "size": 16,
+        "level": 3,
+        "icon": "format_list_numbered"
+      }
+    },
+    {
+      "id": "q:sorting:security_engineering_1",
+      "label": "Classify the following security testing to...",
+      "type": "Question",
+      "category": "Sorting-Classification",
+      "properties": {
+        "domain": "Security Engineering",
+        "sub_type": "Sorting-Classification",
+        "prompt": "Classify the following security testing tools into SAST (Static) or DAST (Dynamic)",
+        "categories": [
+          "SAST (Static Analysis)",
+          "DAST (Dynamic Analysis)"
+        ],
+        "items": {
+          "SAST (Static Analysis)": [
+            "Semgrep code rule engine",
+            "SonarQube source analyzer",
+            "CodeQL AST query engine"
+          ],
+          "DAST (Dynamic Analysis)": [
+            "OWASP ZAP vulnerability scanner",
+            "Burp Suite web proxy fuzzer",
+            "Nuclei network vulnerability scanner"
+          ]
+        }
+      },
+      "visualization": {
+        "group": "question_sorting",
+        "color": "#E11D48",
+        "size": 16,
+        "level": 3,
+        "icon": "dashboard_customize"
+      }
+    },
+    {
+      "id": "q:sorting:security_engineering_2",
+      "label": "Classify the following security controls i...",
+      "type": "Question",
+      "category": "Sorting-Classification",
+      "properties": {
+        "domain": "Security Engineering",
+        "sub_type": "Sorting-Classification",
+        "prompt": "Classify the following security controls into Preventive or Detective",
+        "categories": [
+          "Preventive Controls",
+          "Detective Controls"
+        ],
+        "items": {
+          "Preventive Controls": [
+            "Multi-Factor Authentication (MFA)",
+            "Input parameterization (Prepared Statements)",
+            "Hardware Security Module (HSM) key isolation"
+          ],
+          "Detective Controls": [
+            "Intrusion Detection System (IDS)",
+            "Security Information and Event Management (SIEM) log alerts",
+            "File Integrity Monitoring (FIM)"
+          ]
+        }
+      },
+      "visualization": {
+        "group": "question_sorting",
+        "color": "#E11D48",
+        "size": 16,
+        "level": 3,
+        "icon": "dashboard_customize"
+      }
+    },
+    {
+      "id": "q:mc:security_engineering_1",
+      "label": "Which binary exploitation technique bypass...",
+      "type": "Question",
+      "category": "Multi-Choice",
+      "properties": {
+        "domain": "Security Engineering",
+        "sub_type": "Multi-Choice",
+        "question": "Which binary exploitation technique bypasses non-executable stack protections (DEP/NX) by chaining together existing small machine code snippets ending in a RET instruction?",
+        "options": [
+          "Return-Oriented Programming (ROP)",
+          "SQL Injection",
+          "Cross-Site Scripting (XSS)",
+          "DNS Amplification"
+        ],
+        "choices": [
+          "Return-Oriented Programming (ROP)",
+          "SQL Injection",
+          "Cross-Site Scripting (XSS)",
+          "DNS Amplification"
+        ],
+        "correct": "Return-Oriented Programming (ROP)",
+        "correct_index": 0,
+        "explanation": "ROP locates 'gadgets' already present in executable program memory (e.g. libc) and chains them together by manipulating stack frame pointers."
+      },
+      "visualization": {
+        "group": "question_mc",
+        "color": "#10B981",
+        "size": 16,
+        "level": 3,
+        "icon": "quiz"
+      }
+    },
+    {
+      "id": "q:mc:security_engineering_2",
+      "label": "In the OAuth 2.0 authorization framework, ...",
+      "type": "Question",
+      "category": "Multi-Choice",
+      "properties": {
+        "domain": "Security Engineering",
+        "sub_type": "Multi-Choice",
+        "question": "In the OAuth 2.0 authorization framework, which grant type is recommended for single-page web applications and mobile apps to protect against authorization code interception?",
+        "options": [
+          "Authorization Code Grant with PKCE (Proof Key for Code Exchange)",
+          "Implicit Grant",
+          "Resource Owner Password Credentials Grant",
+          "Client Credentials Grant"
+        ],
+        "choices": [
+          "Authorization Code Grant with PKCE (Proof Key for Code Exchange)",
+          "Implicit Grant",
+          "Resource Owner Password Credentials Grant",
+          "Client Credentials Grant"
+        ],
+        "correct": "Authorization Code Grant with PKCE (Proof Key for Code Exchange)",
+        "correct_index": 0,
+        "explanation": "PKCE creates a dynamic cryptographic code verifier and challenge, completely replacing the vulnerable legacy Implicit Grant for public clients."
+      },
+      "visualization": {
+        "group": "question_mc",
+        "color": "#10B981",
+        "size": 16,
+        "level": 3,
+        "icon": "quiz"
+      }
+    },
+    {
+      "id": "q:mc:security_engineering_3",
+      "label": "What is the primary operational advantage ...",
+      "type": "Question",
+      "category": "Multi-Choice",
+      "properties": {
+        "domain": "Security Engineering",
+        "sub_type": "Multi-Choice",
+        "question": "What is the primary operational advantage of storing master cryptographic encryption keys inside a dedicated Hardware Security Module (HSM)?",
+        "options": [
+          "Keys never leave the physical tamper-resistant hardware boundary in plaintext and are zeroized upon physical intrusion",
+          "Triples the network throughput of HTTP/2 requests",
+          "Eliminates the need for software unit tests",
+          "Automatically compresses SQL database indexes"
+        ],
+        "choices": [
+          "Keys never leave the physical tamper-resistant hardware boundary in plaintext and are zeroized upon physical intrusion",
+          "Triples the network throughput of HTTP/2 requests",
+          "Eliminates the need for software unit tests",
+          "Automatically compresses SQL database indexes"
+        ],
+        "correct": "Keys never leave the physical tamper-resistant hardware boundary in plaintext and are zeroized upon physical intrusion",
+        "correct_index": 0,
+        "explanation": "HSMs are FIPS 140-2 Level 3/4 certified physical appliances designed to generate, store, and execute cryptographic operations without exposing raw keys to host OS memory."
+      },
+      "visualization": {
+        "group": "question_mc",
+        "color": "#10B981",
+        "size": 16,
+        "level": 3,
+        "icon": "quiz"
+      }
+    },
+    {
+      "id": "q:mc:security_engineering_4",
+      "label": "Which principle of Security Engineering di...",
+      "type": "Question",
+      "category": "Multi-Choice",
+      "properties": {
+        "domain": "Security Engineering",
+        "sub_type": "Multi-Choice",
+        "question": "Which principle of Security Engineering dictates that every program and every privileged user of the system should operate using the least amount of privilege necessary to complete the job?",
+        "options": [
+          "Principle of Least Privilege (PoLP)",
+          "Defense-in-Depth",
+          "Fail-Safe Defaults",
+          "Economy of Mechanism"
+        ],
+        "choices": [
+          "Principle of Least Privilege (PoLP)",
+          "Defense-in-Depth",
+          "Fail-Safe Defaults",
+          "Economy of Mechanism"
+        ],
+        "correct": "Principle of Least Privilege (PoLP)",
+        "correct_index": 0,
+        "explanation": "The Principle of Least Privilege limits the potential blast radius if a process or credential is compromised."
+      },
+      "visualization": {
+        "group": "question_mc",
+        "color": "#10B981",
+        "size": 16,
+        "level": 3,
+        "icon": "quiz"
+      }
     }
   ],
   "edges": [
@@ -21980,6 +22434,176 @@
       "weight": 1.0,
       "directed": true,
       "properties": {}
+    },
+    {
+      "id": "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:security_engineering",
+      "source": "root:hardcode",
+      "target": "domain:security_engineering",
+      "relation": "COVERS_CURRICULUM_DOMAIN",
+      "label": "Covers Domain",
+      "weight": 2.5,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_1",
+      "source": "domain:security_engineering",
+      "target": "q:tf:security_engineering_1",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_2",
+      "source": "domain:security_engineering",
+      "target": "q:tf:security_engineering_2",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_3",
+      "source": "domain:security_engineering",
+      "target": "q:tf:security_engineering_3",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_4",
+      "source": "domain:security_engineering",
+      "target": "q:tf:security_engineering_4",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_5",
+      "source": "domain:security_engineering",
+      "target": "q:tf:security_engineering_5",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_6",
+      "source": "domain:security_engineering",
+      "target": "q:tf:security_engineering_6",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:security_engineering->HAS_QUESTION->q:matching:security_engineering_1",
+      "source": "domain:security_engineering",
+      "target": "q:matching:security_engineering_1",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:security_engineering->HAS_QUESTION->q:matching:security_engineering_2",
+      "source": "domain:security_engineering",
+      "target": "q:matching:security_engineering_2",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:security_engineering->HAS_QUESTION->q:sequencing:security_engineering_1",
+      "source": "domain:security_engineering",
+      "target": "q:sequencing:security_engineering_1",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:security_engineering->HAS_QUESTION->q:sequencing:security_engineering_2",
+      "source": "domain:security_engineering",
+      "target": "q:sequencing:security_engineering_2",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:security_engineering->HAS_QUESTION->q:sorting:security_engineering_1",
+      "source": "domain:security_engineering",
+      "target": "q:sorting:security_engineering_1",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:security_engineering->HAS_QUESTION->q:sorting:security_engineering_2",
+      "source": "domain:security_engineering",
+      "target": "q:sorting:security_engineering_2",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:security_engineering->HAS_QUESTION->q:mc:security_engineering_1",
+      "source": "domain:security_engineering",
+      "target": "q:mc:security_engineering_1",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:security_engineering->HAS_QUESTION->q:mc:security_engineering_2",
+      "source": "domain:security_engineering",
+      "target": "q:mc:security_engineering_2",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:security_engineering->HAS_QUESTION->q:mc:security_engineering_3",
+      "source": "domain:security_engineering",
+      "target": "q:mc:security_engineering_3",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:security_engineering->HAS_QUESTION->q:mc:security_engineering_4",
+      "source": "domain:security_engineering",
+      "target": "q:mc:security_engineering_4",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
     }
   ],
   "adjacency": {
@@ -22061,7 +22685,8 @@
         "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:strings_text_processing",
         "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:memory_pointers",
         "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:cybersecurity_cryptography",
-        "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:devops_site_reliability_engineering"
+        "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:devops_site_reliability_engineering",
+        "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:security_engineering"
       ],
       "paradigm:oop": [],
       "paradigm:functional": [],
@@ -23349,7 +23974,41 @@
       "q:mc:devops_site_reliability_engineering_1": [],
       "q:mc:devops_site_reliability_engineering_2": [],
       "q:mc:devops_site_reliability_engineering_3": [],
-      "q:mc:devops_site_reliability_engineering_4": []
+      "q:mc:devops_site_reliability_engineering_4": [],
+      "domain:security_engineering": [
+        "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_1",
+        "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_2",
+        "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_3",
+        "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_4",
+        "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_5",
+        "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_6",
+        "e:domain:security_engineering->HAS_QUESTION->q:matching:security_engineering_1",
+        "e:domain:security_engineering->HAS_QUESTION->q:matching:security_engineering_2",
+        "e:domain:security_engineering->HAS_QUESTION->q:sequencing:security_engineering_1",
+        "e:domain:security_engineering->HAS_QUESTION->q:sequencing:security_engineering_2",
+        "e:domain:security_engineering->HAS_QUESTION->q:sorting:security_engineering_1",
+        "e:domain:security_engineering->HAS_QUESTION->q:sorting:security_engineering_2",
+        "e:domain:security_engineering->HAS_QUESTION->q:mc:security_engineering_1",
+        "e:domain:security_engineering->HAS_QUESTION->q:mc:security_engineering_2",
+        "e:domain:security_engineering->HAS_QUESTION->q:mc:security_engineering_3",
+        "e:domain:security_engineering->HAS_QUESTION->q:mc:security_engineering_4"
+      ],
+      "q:tf:security_engineering_1": [],
+      "q:tf:security_engineering_2": [],
+      "q:tf:security_engineering_3": [],
+      "q:tf:security_engineering_4": [],
+      "q:tf:security_engineering_5": [],
+      "q:tf:security_engineering_6": [],
+      "q:matching:security_engineering_1": [],
+      "q:matching:security_engineering_2": [],
+      "q:sequencing:security_engineering_1": [],
+      "q:sequencing:security_engineering_2": [],
+      "q:sorting:security_engineering_1": [],
+      "q:sorting:security_engineering_2": [],
+      "q:mc:security_engineering_1": [],
+      "q:mc:security_engineering_2": [],
+      "q:mc:security_engineering_3": [],
+      "q:mc:security_engineering_4": []
     },
     "incoming": {
       "root:hardcode": [],
@@ -25253,6 +25912,57 @@
       ],
       "q:mc:devops_site_reliability_engineering_4": [
         "e:domain:devops_site_reliability_engineering->HAS_QUESTION->q:mc:devops_site_reliability_engineering_4"
+      ],
+      "domain:security_engineering": [
+        "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:security_engineering"
+      ],
+      "q:tf:security_engineering_1": [
+        "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_1"
+      ],
+      "q:tf:security_engineering_2": [
+        "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_2"
+      ],
+      "q:tf:security_engineering_3": [
+        "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_3"
+      ],
+      "q:tf:security_engineering_4": [
+        "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_4"
+      ],
+      "q:tf:security_engineering_5": [
+        "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_5"
+      ],
+      "q:tf:security_engineering_6": [
+        "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_6"
+      ],
+      "q:matching:security_engineering_1": [
+        "e:domain:security_engineering->HAS_QUESTION->q:matching:security_engineering_1"
+      ],
+      "q:matching:security_engineering_2": [
+        "e:domain:security_engineering->HAS_QUESTION->q:matching:security_engineering_2"
+      ],
+      "q:sequencing:security_engineering_1": [
+        "e:domain:security_engineering->HAS_QUESTION->q:sequencing:security_engineering_1"
+      ],
+      "q:sequencing:security_engineering_2": [
+        "e:domain:security_engineering->HAS_QUESTION->q:sequencing:security_engineering_2"
+      ],
+      "q:sorting:security_engineering_1": [
+        "e:domain:security_engineering->HAS_QUESTION->q:sorting:security_engineering_1"
+      ],
+      "q:sorting:security_engineering_2": [
+        "e:domain:security_engineering->HAS_QUESTION->q:sorting:security_engineering_2"
+      ],
+      "q:mc:security_engineering_1": [
+        "e:domain:security_engineering->HAS_QUESTION->q:mc:security_engineering_1"
+      ],
+      "q:mc:security_engineering_2": [
+        "e:domain:security_engineering->HAS_QUESTION->q:mc:security_engineering_2"
+      ],
+      "q:mc:security_engineering_3": [
+        "e:domain:security_engineering->HAS_QUESTION->q:mc:security_engineering_3"
+      ],
+      "q:mc:security_engineering_4": [
+        "e:domain:security_engineering->HAS_QUESTION->q:mc:security_engineering_4"
       ]
     }
   },
@@ -25481,7 +26191,8 @@
         "domain:strings_text_processing",
         "domain:memory_pointers",
         "domain:cybersecurity_cryptography",
-        "domain:devops_site_reliability_engineering"
+        "domain:devops_site_reliability_engineering",
+        "domain:security_engineering"
       ],
       "Question": [
         "q:tf:system_architecture_1",
@@ -25885,7 +26596,23 @@
         "q:mc:devops_site_reliability_engineering_1",
         "q:mc:devops_site_reliability_engineering_2",
         "q:mc:devops_site_reliability_engineering_3",
-        "q:mc:devops_site_reliability_engineering_4"
+        "q:mc:devops_site_reliability_engineering_4",
+        "q:tf:security_engineering_1",
+        "q:tf:security_engineering_2",
+        "q:tf:security_engineering_3",
+        "q:tf:security_engineering_4",
+        "q:tf:security_engineering_5",
+        "q:tf:security_engineering_6",
+        "q:matching:security_engineering_1",
+        "q:matching:security_engineering_2",
+        "q:sequencing:security_engineering_1",
+        "q:sequencing:security_engineering_2",
+        "q:sorting:security_engineering_1",
+        "q:sorting:security_engineering_2",
+        "q:mc:security_engineering_1",
+        "q:mc:security_engineering_2",
+        "q:mc:security_engineering_3",
+        "q:mc:security_engineering_4"
       ]
     },
     "by_group": {
@@ -26104,7 +26831,8 @@
         "domain:strings_text_processing",
         "domain:memory_pointers",
         "domain:cybersecurity_cryptography",
-        "domain:devops_site_reliability_engineering"
+        "domain:devops_site_reliability_engineering",
+        "domain:security_engineering"
       ],
       "question_tf": [
         "q:tf:system_architecture_1",
@@ -26274,7 +27002,13 @@
         "q:tf:devops_site_reliability_engineering_3",
         "q:tf:devops_site_reliability_engineering_4",
         "q:tf:devops_site_reliability_engineering_5",
-        "q:tf:devops_site_reliability_engineering_6"
+        "q:tf:devops_site_reliability_engineering_6",
+        "q:tf:security_engineering_1",
+        "q:tf:security_engineering_2",
+        "q:tf:security_engineering_3",
+        "q:tf:security_engineering_4",
+        "q:tf:security_engineering_5",
+        "q:tf:security_engineering_6"
       ],
       "question_matching": [
         "q:matching:system_architecture_1",
@@ -26336,7 +27070,9 @@
         "q:matching:cybersecurity_cryptography_1",
         "q:matching:cybersecurity_cryptography_2",
         "q:matching:devops_site_reliability_engineering_1",
-        "q:matching:devops_site_reliability_engineering_2"
+        "q:matching:devops_site_reliability_engineering_2",
+        "q:matching:security_engineering_1",
+        "q:matching:security_engineering_2"
       ],
       "question_sequencing": [
         "q:sequencing:system_architecture_1",
@@ -26396,7 +27132,9 @@
         "q:sequencing:cybersecurity_cryptography_1",
         "q:sequencing:cybersecurity_cryptography_2",
         "q:sequencing:devops_site_reliability_engineering_1",
-        "q:sequencing:devops_site_reliability_engineering_2"
+        "q:sequencing:devops_site_reliability_engineering_2",
+        "q:sequencing:security_engineering_1",
+        "q:sequencing:security_engineering_2"
       ],
       "question_sorting": [
         "q:sorting:system_architecture_1",
@@ -26448,7 +27186,9 @@
         "q:sorting:memory_pointers_1",
         "q:sorting:cybersecurity_cryptography_1",
         "q:sorting:cybersecurity_cryptography_2",
-        "q:sorting:devops_site_reliability_engineering_1"
+        "q:sorting:devops_site_reliability_engineering_1",
+        "q:sorting:security_engineering_1",
+        "q:sorting:security_engineering_2"
       ],
       "question_mc": [
         "q:mc:system_architecture_1",
@@ -26516,7 +27256,11 @@
         "q:mc:devops_site_reliability_engineering_1",
         "q:mc:devops_site_reliability_engineering_2",
         "q:mc:devops_site_reliability_engineering_3",
-        "q:mc:devops_site_reliability_engineering_4"
+        "q:mc:devops_site_reliability_engineering_4",
+        "q:mc:security_engineering_1",
+        "q:mc:security_engineering_2",
+        "q:mc:security_engineering_3",
+        "q:mc:security_engineering_4"
       ]
     },
     "by_category": {
@@ -26775,7 +27519,8 @@
         "domain:strings_text_processing",
         "domain:memory_pointers",
         "domain:cybersecurity_cryptography",
-        "domain:devops_site_reliability_engineering"
+        "domain:devops_site_reliability_engineering",
+        "domain:security_engineering"
       ],
       "True-False": [
         "q:tf:system_architecture_1",
@@ -26945,7 +27690,13 @@
         "q:tf:devops_site_reliability_engineering_3",
         "q:tf:devops_site_reliability_engineering_4",
         "q:tf:devops_site_reliability_engineering_5",
-        "q:tf:devops_site_reliability_engineering_6"
+        "q:tf:devops_site_reliability_engineering_6",
+        "q:tf:security_engineering_1",
+        "q:tf:security_engineering_2",
+        "q:tf:security_engineering_3",
+        "q:tf:security_engineering_4",
+        "q:tf:security_engineering_5",
+        "q:tf:security_engineering_6"
       ],
       "Matching": [
         "q:matching:system_architecture_1",
@@ -27007,7 +27758,9 @@
         "q:matching:cybersecurity_cryptography_1",
         "q:matching:cybersecurity_cryptography_2",
         "q:matching:devops_site_reliability_engineering_1",
-        "q:matching:devops_site_reliability_engineering_2"
+        "q:matching:devops_site_reliability_engineering_2",
+        "q:matching:security_engineering_1",
+        "q:matching:security_engineering_2"
       ],
       "Sequencing": [
         "q:sequencing:system_architecture_1",
@@ -27067,7 +27820,9 @@
         "q:sequencing:cybersecurity_cryptography_1",
         "q:sequencing:cybersecurity_cryptography_2",
         "q:sequencing:devops_site_reliability_engineering_1",
-        "q:sequencing:devops_site_reliability_engineering_2"
+        "q:sequencing:devops_site_reliability_engineering_2",
+        "q:sequencing:security_engineering_1",
+        "q:sequencing:security_engineering_2"
       ],
       "Sorting-Classification": [
         "q:sorting:system_architecture_1",
@@ -27119,7 +27874,9 @@
         "q:sorting:memory_pointers_1",
         "q:sorting:cybersecurity_cryptography_1",
         "q:sorting:cybersecurity_cryptography_2",
-        "q:sorting:devops_site_reliability_engineering_1"
+        "q:sorting:devops_site_reliability_engineering_1",
+        "q:sorting:security_engineering_1",
+        "q:sorting:security_engineering_2"
       ],
       "Multi-Choice": [
         "q:mc:system_architecture_1",
@@ -27187,7 +27944,11 @@
         "q:mc:devops_site_reliability_engineering_1",
         "q:mc:devops_site_reliability_engineering_2",
         "q:mc:devops_site_reliability_engineering_3",
-        "q:mc:devops_site_reliability_engineering_4"
+        "q:mc:devops_site_reliability_engineering_4",
+        "q:mc:security_engineering_1",
+        "q:mc:security_engineering_2",
+        "q:mc:security_engineering_3",
+        "q:mc:security_engineering_4"
       ]
     }
   },
@@ -31521,6 +32282,175 @@
                 "Traces": [
                   "Span: checkout-service -> payment-gateway (142ms)",
                   "TraceParent HTTP Header W3C propagation context"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "Security Engineering": {
+        "introduction": "Security Engineering designs systems to remain dependable and resilient in the face of malice, error, or targeted compromise, spanning threat modeling, hardware-enforced isolation, and defense-in-depth.",
+        "remediation": "Focus on the STRIDE threat matrix (Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege), compile-time memory protections (ASLR/DEP/canaries), and the Principle of Least Privilege.",
+        "deep_dive": "Modern Security Engineering incorporates formal Threat Modeling during architectural design, automated static/dynamic security testing (SAST/DAST) in CI/CD, and cryptographically verified identities (mTLS, SPIFFE/SPIRE). Binary hardening eliminates memory corruption attack vectors via Return-Oriented Programming (ROP) defenses, Control Flow Integrity (CFI), and hardware-backed Key Management Systems (HSM/KMS).",
+        "questions": {
+          "True-False": [
+            {
+              "statement": "Address Space Layout Randomization (ASLR) randomizes the memory locations of program segments (stack, heap, libraries) to prevent predictable buffer overflow exploits.",
+              "is_true": true,
+              "explanation": "ASLR makes it computationally infeasible for attackers to reliably target hardcoded shellcode or function pointers in virtual memory."
+            },
+            {
+              "statement": "Static Application Security Testing (SAST) requires executing the compiled binary inside a live running test environment.",
+              "is_true": false,
+              "explanation": "SAST analyzes raw source code, byte code, or binary files without running the application; DAST analyzes running applications from the outside."
+            },
+            {
+              "statement": "In the STRIDE threat modeling framework, the letter 'R' stands for 'Repudiation'—the ability of an actor to deny having performed an action without proof.",
+              "is_true": true,
+              "explanation": "Repudiation threats are mitigated through tamper-evident digital signatures, secure audit logs, and non-repudiation controls."
+            },
+            {
+              "statement": "Stack Canaries are known sentinel values placed on the stack before the return address to detect stack buffer overflows prior to function return.",
+              "is_true": true,
+              "explanation": "If a buffer overflow corrupts the stack, the canary value changes. The CPU checks this value before returning and aborts immediately if corrupted."
+            },
+            {
+              "statement": "Attribute-Based Access Control (ABAC) evaluates permissions strictly based on predefined fixed user job title roles without considering contextual environment attributes.",
+              "is_true": false,
+              "explanation": "Role-Based Access Control (RBAC) relies on fixed roles; ABAC dynamically evaluates attributes of the user, resource, action, and environment (e.g. time, IP, device security posture)."
+            },
+            {
+              "statement": "Data Execution Prevention (DEP / W^X) enforces that memory pages can be writable or executable, but never simultaneously writable AND executable.",
+              "is_true": true,
+              "explanation": "W^X (Write XOR Execute) stops attackers from injecting malicious machine code into data buffers (stack/heap) and executing it."
+            }
+          ],
+          "Multi-Choice": [
+            {
+              "question": "Which binary exploitation technique bypasses non-executable stack protections (DEP/NX) by chaining together existing small machine code snippets ending in a RET instruction?",
+              "choices": [
+                "Return-Oriented Programming (ROP)",
+                "SQL Injection",
+                "Cross-Site Scripting (XSS)",
+                "DNS Amplification"
+              ],
+              "correct_index": 0,
+              "explanation": "ROP locates 'gadgets' already present in executable program memory (e.g. libc) and chains them together by manipulating stack frame pointers."
+            },
+            {
+              "question": "In the OAuth 2.0 authorization framework, which grant type is recommended for single-page web applications and mobile apps to protect against authorization code interception?",
+              "choices": [
+                "Authorization Code Grant with PKCE (Proof Key for Code Exchange)",
+                "Implicit Grant",
+                "Resource Owner Password Credentials Grant",
+                "Client Credentials Grant"
+              ],
+              "correct_index": 0,
+              "explanation": "PKCE creates a dynamic cryptographic code verifier and challenge, completely replacing the vulnerable legacy Implicit Grant for public clients."
+            },
+            {
+              "question": "What is the primary operational advantage of storing master cryptographic encryption keys inside a dedicated Hardware Security Module (HSM)?",
+              "choices": [
+                "Keys never leave the physical tamper-resistant hardware boundary in plaintext and are zeroized upon physical intrusion",
+                "Triples the network throughput of HTTP/2 requests",
+                "Eliminates the need for software unit tests",
+                "Automatically compresses SQL database indexes"
+              ],
+              "correct_index": 0,
+              "explanation": "HSMs are FIPS 140-2 Level 3/4 certified physical appliances designed to generate, store, and execute cryptographic operations without exposing raw keys to host OS memory."
+            },
+            {
+              "question": "Which principle of Security Engineering dictates that every program and every privileged user of the system should operate using the least amount of privilege necessary to complete the job?",
+              "choices": [
+                "Principle of Least Privilege (PoLP)",
+                "Defense-in-Depth",
+                "Fail-Safe Defaults",
+                "Economy of Mechanism"
+              ],
+              "correct_index": 0,
+              "explanation": "The Principle of Least Privilege limits the potential blast radius if a process or credential is compromised."
+            }
+          ],
+          "Matching": [
+            {
+              "prompt": "Match each Security Engineering concept with its primary objective",
+              "pairs": {
+                "STRIDE Matrix": "Systematic architectural threat categorization framework (Spoofing to Elevation of Privilege)",
+                "Control Flow Integrity (CFI)": "Hardware/compiler defense restricting runtime execution paths to valid call graph targets",
+                "Static Application Security Testing (SAST)": "White-box automated code scanning for vulnerabilities before compilation",
+                "Dynamic Application Security Testing (DAST)": "Black-box fault injection testing against running target applications",
+                "OpenID Connect (OIDC)": "Identity and authentication layer built directly on top of the OAuth 2.0 protocol"
+              }
+            },
+            {
+              "prompt": "Match each binary exploit defense with its protection mechanism",
+              "pairs": {
+                "ASLR": "Randomizes base addresses of stack, heap, and libraries in virtual memory",
+                "Stack Canary": "Detects buffer overflow overwrites before return instruction executes",
+                "DEP / NX Bit": "Marks data pages non-executable so injected shellcode cannot run",
+                "Pointer Authentication (PAC)": "Cryptographically signs code pointers in unused 64-bit address bits (ARMv8.3+)",
+                "RELRO (Relocation Read-Only)": "Hardens Global Offset Table (GOT) against arbitrary pointer overwrite attacks"
+              }
+            }
+          ],
+          "Sequencing": [
+            {
+              "prompt": "Order the stages of a Secure Software Development Lifecycle (SSDLC)",
+              "ordered_sequence": [
+                "Security requirements definition and regulatory compliance scoping",
+                "Architectural threat modeling and attack surface decomposition (STRIDE)",
+                "Secure coding with automated static analysis (SAST) and dependency scanning",
+                "Dynamic application security testing (DAST) and interactive penetration testing",
+                "Continuous production monitoring, automated patching, and incident response readiness"
+              ]
+            },
+            {
+              "prompt": "Order the steps an attacker takes during a traditional stack buffer overflow exploit and its defense response",
+              "ordered_sequence": [
+                "Attacker sends input exceeding the allocated stack buffer boundary",
+                "Malicious payload overwrites local variables and approaches the stack canary",
+                "Payload corrupts the stack canary value on its way to the function return address",
+                "Function epilogue executes `__stack_chk_fail` after detecting canary mismatch",
+                "Kernel terminates the process immediately with SIGABRT, preventing malicious code execution"
+              ]
+            }
+          ],
+          "Sorting-Classification": [
+            {
+              "prompt": "Classify the following security testing tools into SAST (Static) or DAST (Dynamic)",
+              "categories": [
+                "SAST (Static Analysis)",
+                "DAST (Dynamic Analysis)"
+              ],
+              "items": {
+                "SAST (Static Analysis)": [
+                  "Semgrep code rule engine",
+                  "SonarQube source analyzer",
+                  "CodeQL AST query engine"
+                ],
+                "DAST (Dynamic Analysis)": [
+                  "OWASP ZAP vulnerability scanner",
+                  "Burp Suite web proxy fuzzer",
+                  "Nuclei network vulnerability scanner"
+                ]
+              }
+            },
+            {
+              "prompt": "Classify the following security controls into Preventive or Detective",
+              "categories": [
+                "Preventive Controls",
+                "Detective Controls"
+              ],
+              "items": {
+                "Preventive Controls": [
+                  "Multi-Factor Authentication (MFA)",
+                  "Input parameterization (Prepared Statements)",
+                  "Hardware Security Module (HSM) key isolation"
+                ],
+                "Detective Controls": [
+                  "Intrusion Detection System (IDS)",
+                  "Security Information and Event Management (SIEM) log alerts",
+                  "File Integrity Monitoring (FIM)"
                 ]
               }
             }
