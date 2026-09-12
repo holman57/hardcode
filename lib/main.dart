@@ -5056,8 +5056,9 @@ class _QuestionFeedbackDialogState extends State<_QuestionFeedbackDialog> {
         'timestamp': DateTime.now().toIso8601String(),
       };
 
-      if (Hive.isBoxOpen('user_memory')) {
-        final box = Hive.box('user_memory');
+      final boxName = DatabaseService.userMemoryBoxName;
+      if (Hive.isBoxOpen(boxName)) {
+        final box = Hive.box(boxName);
         final List<dynamic> existing = (box.get('user_feedback_list', defaultValue: []) as List).toList();
         existing.add(feedbackEntry);
         await box.put('user_feedback_list', existing);
@@ -5315,10 +5316,13 @@ class _QuestionFeedbackDialogState extends State<_QuestionFeedbackDialog> {
                   FilledButton.icon(
                     onPressed: _isSubmitting ? null : _submit,
                     icon: _isSubmitting
-                        ? const SizedBox(
+                        ? SizedBox(
                             width: 14,
                             height: 14,
-                            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
                           )
                         : const Icon(Icons.send_rounded, size: 16),
                     label: const Text('Submit Feedback'),
