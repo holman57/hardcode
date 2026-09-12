@@ -186,6 +186,28 @@ class TestHardCodeSuite(unittest.TestCase):
         questions = self.db.get_nodes_by_type("Question")
         self.assertGreaterEqual(len(questions), 300)
 
+    def test_adaptive_explanation_integration(self):
+        from test.test_adaptive_explanation import PythonAdaptiveExplanationService
+        service = PythonAdaptiveExplanationService()
+        service.record_outcome("Rust", is_correct=False)
+        self.assertTrue(service.should_trigger_explanation("Rust"))
+        exp = service.generate_explanation("Rust")
+        self.assertEqual(exp["tier"], 1)
+
+        # Escalation to Tier 2 on repeat miss
+        service.record_outcome("Rust", is_correct=False)
+        exp2 = service.generate_explanation("Rust")
+        self.assertEqual(exp2["tier"], 2)
+
+    def test_motion_graphics_integration(self):
+        from test.test_motion_graphics import MotionGraphicMilestoneEngine
+        engine = MotionGraphicMilestoneEngine()
+        self.assertEqual(engine.evaluate_turn(3, 1, 1, "Rust"), "streak3")
+        self.assertEqual(engine.evaluate_turn(5, 1, 1, "Rust"), "streak5")
+        self.assertEqual(engine.evaluate_turn(10, 1, 1, "Rust"), "streak10")
+        self.assertEqual(engine.evaluate_turn(20, 1, 1, "Rust"), "streak20")
+        self.assertEqual(engine.evaluate_turn(1, 1, 2, "Rust"), "levelComplete")
+
 
 if __name__ == "__main__":
     unittest.main()

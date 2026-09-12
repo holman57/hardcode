@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'services/database_service.dart';
 import 'services/progression_service.dart';
+import 'services/adaptive_explanation_service.dart';
+import 'widgets/explanation_overlay.dart';
+import 'widgets/motion_graphics_overlay.dart';
 import 'screens/knowledge_graph_screen.dart';
 
 void main() async {
@@ -204,6 +207,68 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   UserStats _userStats = DatabaseService.instance.getUserStats();
   bool _isLoading = false;
 
+  // Adaptive Explanation Overlay State
+  ExplanationPayload? _activeExplanation;
+  bool _showExplanationOverlay = false;
+
+  // Motion Graphics Overlay State
+  MotionGraphicType? _activeMotionGraphic;
+  String _motionGraphicTitle = "";
+  String _motionGraphicSubtitle = "";
+  String? _motionGraphicTopicTag;
+  bool _showMotionGraphicOverlay = false;
+  Timer? _idleReengagementTimer;
+
+  void _resetIdleTimer() {
+    _idleReengagementTimer?.cancel();
+    if (_showExplanationOverlay || _showMotionGraphicOverlay || _isAnswerSubmitted) return;
+    _idleReengagementTimer = Timer(const Duration(seconds: 16), () {
+      if (!mounted || _isAnswerSubmitted || _showExplanationOverlay || _showMotionGraphicOverlay) return;
+      _triggerMotionGraphic(
+        type: MotionGraphicType.idleReengagement,
+        title: 'STAY SHARP!',
+        subtitle: 'Focus on $_language fundamentals. Keep your momentum going!',
+        topicTag: _language,
+        duration: const Duration(milliseconds: 2200),
+      );
+    });
+  }
+
+  void _triggerMotionGraphic({
+    required MotionGraphicType type,
+    required String title,
+    required String subtitle,
+    String? topicTag,
+    Duration duration = const Duration(milliseconds: 2400),
+  }) {
+    if (!mounted) return;
+    setState(() {
+      _activeMotionGraphic = type;
+      _motionGraphicTitle = title;
+      _motionGraphicSubtitle = subtitle;
+      _motionGraphicTopicTag = topicTag;
+      _showMotionGraphicOverlay = true;
+    });
+  }
+
+  void _onMotionGraphicDismissed() {
+    if (!mounted) return;
+    setState(() {
+      _showMotionGraphicOverlay = false;
+      _activeMotionGraphic = null;
+    });
+    _resetIdleTimer();
+  }
+
+  void _onExplanationDismissed() {
+    if (!mounted) return;
+    setState(() {
+      _showExplanationOverlay = false;
+      _activeExplanation = null;
+      generateQuestion();
+    });
+  }
+
   Timer? _questionTimer;
   Timer? _advanceTimer;
   int _questionSessionId = 0;
@@ -387,6 +452,34 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       icon: Icons.timer_off_outlined,
       backgroundColor: Colors.red.shade800,
     );
+
+    // Track outcome for adaptive explanation
+    AdaptiveExplanationService.instance.recordOutcome(
+      topic: _language,
+      isCorrect: false,
+    );
+
+    if (AdaptiveExplanationService.instance.shouldTriggerExplanation(
+      topic: _language,
+      subType: _questionSubType,
+    )) {
+      final payload = AdaptiveExplanationService.instance.generateExplanation(
+        topic: _language,
+        subType: _questionSubType,
+        questionSnippet: _question,
+        customExplanation: _conceptualExplanation ?? (_currentQuestionType == HardCodeQuestionType.trueFalse ? _tfExplanation : null),
+      );
+      _cancelAdvance();
+      Timer(const Duration(milliseconds: 320), () {
+        if (!mounted || session != _questionSessionId) return;
+        setState(() {
+          _activeExplanation = payload;
+          _showExplanationOverlay = true;
+        });
+      });
+    } else {
+      _scheduleAdvance(5000, session);
+    }
   }
 
   Future<void> _recordAnswerResult({
@@ -397,7 +490,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }) async {
     _cancelTimer();
     _topAlertTimer?.cancel();
+    _idleReengagementTimer?.cancel();
 
+    final int oldLevel = _userStats.level;
     final updatedStats = await DatabaseService.instance.recordAnswer(
       language: _language,
       isCorrect: isCorrect,
@@ -424,12 +519,59 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       _pulseController.forward(from: 0.0);
     }
 
+    // Track outcome in adaptive explanation engine
+    AdaptiveExplanationService.instance.recordOutcome(
+      topic: _language,
+      isCorrect: isCorrect,
+    );
+
     if (isCorrect) {
       _showTopAlert(
         message: successMsg ?? 'Correct! +15 XP',
         icon: Icons.check_circle_outline,
         backgroundColor: Colors.green.shade800,
       );
+
+      // Check Level Up / Complete Motion Graphic
+      if (updatedStats.level > oldLevel) {
+        _triggerMotionGraphic(
+          type: MotionGraphicType.levelComplete,
+          title: 'LEVEL ${updatedStats.level} UNLOCKED!',
+          subtitle: 'Rank: ${updatedStats.rankTitle}. Excellent problem solving!',
+          topicTag: _language,
+          duration: const Duration(milliseconds: 2600),
+        );
+      }
+      // Check Increasing Streak Milestones
+      else if (updatedStats.currentStreak == 3) {
+        _triggerMotionGraphic(
+          type: MotionGraphicType.streak3,
+          title: 'WARMING UP! (3x STREAK)',
+          subtitle: '3 consecutive correct solutions. Momentum building!',
+          topicTag: _language,
+        );
+      } else if (updatedStats.currentStreak == 5) {
+        _triggerMotionGraphic(
+          type: MotionGraphicType.streak5,
+          title: 'ON FIRE! (5x STREAK)',
+          subtitle: '5 in a row! Streak multiplier now 1.5x!',
+          topicTag: _language,
+        );
+      } else if (updatedStats.currentStreak == 10) {
+        _triggerMotionGraphic(
+          type: MotionGraphicType.streak10,
+          title: 'UNSTOPPABLE! (10x STREAK)',
+          subtitle: 'Double XP multiplier active! Flawless syntax mastery!',
+          topicTag: _language,
+        );
+      } else if (updatedStats.currentStreak == 20) {
+        _triggerMotionGraphic(
+          type: MotionGraphicType.streak20,
+          title: 'GODLIKE MASTERY! (20x STREAK)',
+          subtitle: 'Celestial tier performance! Incredible engineering skill!',
+          topicTag: _language,
+        );
+      }
 
       // Award Topic Progression Mastery XP and check cascading unlocks
       final String topicTarget = _activeTopicGrindNode?.id ?? _language;
@@ -465,6 +607,27 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         icon: Icons.cancel,
         backgroundColor: Colors.redAccent.shade700,
       );
+
+      // Check if Adaptive Explanation Overlay should be triggered
+      if (AdaptiveExplanationService.instance.shouldTriggerExplanation(
+        topic: _language,
+        subType: _questionSubType,
+      )) {
+        final payload = AdaptiveExplanationService.instance.generateExplanation(
+          topic: _language,
+          subType: _questionSubType,
+          questionSnippet: _question,
+          customExplanation: _conceptualExplanation ?? (_currentQuestionType == HardCodeQuestionType.trueFalse ? _tfExplanation : null),
+        );
+        _cancelAdvance();
+        Timer(const Duration(milliseconds: 320), () {
+          if (!mounted || (session != null && session != _questionSessionId)) return;
+          setState(() {
+            _activeExplanation = payload;
+            _showExplanationOverlay = true;
+          });
+        });
+      }
     }
   }
 
@@ -668,6 +831,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     _topAlertTimer?.cancel();
     _topAlertMessage = null;
     _isTimerExpired = false;
+    _showExplanationOverlay = false;
+    _activeExplanation = null;
+    _resetIdleTimer();
 
     // Reset all question-specific states
     _answerGroup.clear();
@@ -758,6 +924,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     }
 
     _startTimer();
+    _resetIdleTimer();
   }
 
   void _generateTrueFalseQuestion(Map curriculum, List<String> domains, Random random) {
@@ -1666,11 +1833,23 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     }
 
     // Load persisted graph and stats asynchronously in background
-    WidgetsBinding.instance.addPostFrameCallback((_) => _loadData());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadData();
+      if (mounted) {
+        _triggerMotionGraphic(
+          type: MotionGraphicType.levelStart,
+          title: 'HARDCODE ACADEMY',
+          subtitle: 'Level ${_userStats.level} • ${_userStats.rankTitle}',
+          topicTag: 'COMPUTER SCIENCE',
+          duration: const Duration(milliseconds: 1800),
+        );
+      }
+    });
   }
 
   @override
   void dispose() {
+    _idleReengagementTimer?.cancel();
     _cancelTimer();
     _topAlertTimer?.cancel();
     _pulseController.dispose();
@@ -1856,7 +2035,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       timerColor = Colors.orange.shade700;
     }
 
-    return Scaffold(
+    final scaffold = Scaffold(
       appBar: AppBar(
         toolbarHeight: 64,
         backgroundColor: theme.colorScheme.inversePrimary,
@@ -2671,6 +2850,25 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         tooltip: 'Next Question',
         child: const Icon(Icons.skip_next),
       ),
+    );
+
+    return Stack(
+      children: [
+        scaffold,
+        if (_showExplanationOverlay && _activeExplanation != null)
+          ExplanationOverlay(
+            payload: _activeExplanation!,
+            onDismiss: _onExplanationDismissed,
+          ),
+        if (_showMotionGraphicOverlay && _activeMotionGraphic != null)
+          MotionGraphicsOverlay(
+            type: _activeMotionGraphic!,
+            title: _motionGraphicTitle,
+            subtitle: _motionGraphicSubtitle,
+            topicTag: _motionGraphicTopicTag,
+            onDismiss: _onMotionGraphicDismissed,
+          ),
+      ],
     );
   }
 
