@@ -1,5 +1,5 @@
 {
-  "version": 7,
+  "version": 8,
   "Language": [
     "C",
     "Python",
@@ -2125,6 +2125,21 @@
             "statement": "Residual connections (skip connections) mitigate vanishing gradients in very deep networks by providing an identity gradient highway during backpropagation.",
             "is_true": true,
             "explanation": "Because d/dx (F(x) + x) = F'(x) + 1, gradients can flow back through the '+1' identity term without being exponentially degraded."
+          },
+          {
+            "statement": "The vanishing gradient problem in deep networks was significantly mitigated by replacing Sigmoid activations with Rectified Linear Units (ReLU).",
+            "is_true": true,
+            "explanation": "ReLU has a constant derivative of 1.0 for positive inputs, preventing gradients from decaying to near-zero across many layers."
+          },
+          {
+            "statement": "In unsupervised learning, training datasets must contain ground-truth human labels for every sample.",
+            "is_true": false,
+            "explanation": "Unsupervised learning (e.g. K-means, PCA, autoencoders) discovers hidden patterns without explicit ground-truth labels."
+          },
+          {
+            "statement": "Reinforcement Learning from Human Feedback (RLHF) trains a reward model to align LLM completions with human preferences.",
+            "is_true": true,
+            "explanation": "RLHF uses Proximal Policy Optimization (PPO) against a learned reward model to guide generative outputs."
           }
         ],
         "Matching": [
@@ -2164,6 +2179,16 @@
               "Positional Encoding": "Injects sequence token order information into permutation-invariant attention",
               "Cross-Entropy Loss": "Quantifies difference between predicted probability distribution and one-hot ground truth",
               "Weight Decay (L2)": "Regularizes network by adding squared parameter magnitude to the loss"
+            }
+          },
+          {
+            "prompt": "Match each machine learning concept with its primary definition",
+            "pairs": {
+              "Backpropagation": "Calculus chain-rule backward pass to compute gradients of loss with respect to weights",
+              "Stochastic Gradient Descent": "Iterative weight updates computed on randomized mini-batches of training data",
+              "Convolutional Layer": "Parameter-sharing kernel filters capturing spatial hierarchies in images",
+              "Softmax": "Mathematical function converting raw model logits into a normalized probability distribution",
+              "Embeddings": "Dense vector representations mapping discrete tokens into continuous semantic vector space"
             }
           }
         ],
@@ -2208,6 +2233,16 @@
               "Assign each data point to its closest centroid cluster",
               "Recompute each centroid position as the arithmetic mean of assigned points",
               "Repeat assignment and update steps until centroids cease moving"
+            ]
+          },
+          {
+            "prompt": "Order the standard workflow stages of training and evaluating a deep learning model",
+            "ordered_sequence": [
+              "Data ingestion, cleaning, normalization, and tokenization",
+              "Model architecture definition and randomized weight initialization",
+              "Forward pass computing predictions and evaluating loss function",
+              "Backward pass (backpropagation) calculating gradients via chain rule",
+              "Optimizer updates weights opposite the gradient and validation loss is logged"
             ]
           }
         ],
@@ -2280,6 +2315,25 @@
                 "Vehicle travel time prediction"
               ]
             }
+          },
+          {
+            "prompt": "Classify the following tasks into Supervised Learning or Reinforcement Learning",
+            "categories": [
+              "Supervised Learning",
+              "Reinforcement Learning"
+            ],
+            "items": {
+              "Supervised Learning": [
+                "Image Classification with labeled ImageNet",
+                "Spam email detection with labeled ham/spam datasets",
+                "Linear regression predicting house prices from sales records"
+              ],
+              "Reinforcement Learning": [
+                "Chess engine learning via game win/loss reward signals",
+                "Robotic arm locomotion guided by trajectory penalty functions",
+                "Self-driving steering optimization via distance rewards"
+              ]
+            }
           }
         ],
         "Multi-Choice": [
@@ -2315,6 +2369,28 @@
             ],
             "correct_index": 0,
             "explanation": "An excessively high learning rate causes updates to overshoot the minimum, leading to divergence or unstable oscillations."
+          },
+          {
+            "question": "In the Transformer architecture, what is the computational complexity of the standard self-attention mechanism with respect to sequence length N?",
+            "choices": [
+              "O(N^2) Quadratic complexity",
+              "O(N) Linear complexity",
+              "O(log N) Logarithmic complexity",
+              "O(N!) Factorial complexity"
+            ],
+            "correct_index": 0,
+            "explanation": "Every token computes dot-product attention against every other token in the sequence, producing an N x N attention matrix."
+          },
+          {
+            "question": "What technique prevents overfitting in deep neural networks by randomly deactivating a fraction of neurons during each training step?",
+            "choices": [
+              "Dropout",
+              "Batch Normalization",
+              "Gradient Clipping",
+              "Greedy Decoding"
+            ],
+            "correct_index": 0,
+            "explanation": "Dropout breaks co-adaptation between neurons by forcing the network to learn redundant, robust representations."
           }
         ]
       }
@@ -2607,6 +2683,26 @@
             "statement": "Network Address Translation (NAT) maps private RFC 1918 IP addresses to one or more public IP addresses at the router boundary.",
             "is_true": true,
             "explanation": "NAT / NAPT re-writes IP headers and port numbers to allow multiple private LAN devices to share public IPs."
+          },
+          {
+            "statement": "HTTP/3 replaces TCP with QUIC, which runs over UDP to eliminate head-of-line blocking across independent streams.",
+            "is_true": true,
+            "explanation": "QUIC operates over UDP, so lost packets on one stream do not stall unrelated multiplexed streams."
+          },
+          {
+            "statement": "The Border Gateway Protocol (BGP) is an interior gateway routing protocol used strictly within a single local area network.",
+            "is_true": false,
+            "explanation": "BGP is the exterior routing protocol that connects Autonomous Systems (AS) across the global Internet backbone."
+          },
+          {
+            "statement": "A subnet mask of /24 corresponds to the dotted-decimal subnet mask 255.255.255.0, providing 256 total IP addresses.",
+            "is_true": true,
+            "explanation": "/24 leaves 8 host bits (2^8 = 256 addresses, with 254 usable for hosts after network and broadcast)."
+          },
+          {
+            "statement": "TCP flow control is managed by the receiver announcing its receive window (rwnd) size in packet headers.",
+            "is_true": true,
+            "explanation": "The receive window advertises available buffer space so the sender does not overwhelm the receiver's memory."
           }
         ],
         "Matching": [
@@ -2647,6 +2743,16 @@
               "3xx Status Codes": "Redirection (e.g., 301 Moved Permanently, 304 Not Modified)",
               "4xx Status Codes": "Client Error (e.g., 400 Bad Request, 401 Unauthorized, 404 Not Found)",
               "5xx Status Codes": "Server Error (e.g., 500 Internal Error, 502 Bad Gateway, 503 Unavailable)"
+            }
+          },
+          {
+            "prompt": "Match each network protocol with its standard default port number",
+            "pairs": {
+              "HTTPS": "Port 443",
+              "DNS": "Port 53",
+              "SSH": "Port 22",
+              "BGP": "Port 179",
+              "HTTP": "Port 80"
             }
           }
         ],
@@ -2690,6 +2796,16 @@
               "Server sends CertificateVerify and Finished verification hash",
               "Client validates certificate and sends Finished verification hash",
               "Symmetric encrypted application data exchange begins"
+            ]
+          },
+          {
+            "prompt": "Order the sequence of network encapsulation when an HTTP GET request packet travels down the networking stack",
+            "ordered_sequence": [
+              "Application Layer generates HTTP GET request text header",
+              "Transport Layer encapsulates into TCP segment with Source/Destination ports and SEQ number",
+              "Network Layer encapsulates into IP packet with Source/Destination IP addresses and TTL",
+              "Data Link Layer encapsulates into Ethernet Frame with MAC addresses and CRC checksum",
+              "Physical Layer converts frame bits into electrical, optical, or radio physical signals"
             ]
           }
         ],
@@ -2757,6 +2873,25 @@
                 "UDP Port Number"
               ]
             }
+          },
+          {
+            "prompt": "Classify the following protocols into Transport Layer or Application Layer",
+            "categories": [
+              "Transport Layer",
+              "Application Layer"
+            ],
+            "items": {
+              "Transport Layer": [
+                "TCP",
+                "UDP",
+                "SCTP"
+              ],
+              "Application Layer": [
+                "DNS",
+                "HTTP/2",
+                "SSH"
+              ]
+            }
           }
         ],
         "Multi-Choice": [
@@ -2792,6 +2927,39 @@
             ],
             "correct_index": 0,
             "explanation": "HTTP 307 guarantees that the request method and body will not be changed when redirecting, unlike older 302 implementations."
+          },
+          {
+            "question": "Which DNS record type maps a domain name directly to an IPv6 128-bit address?",
+            "choices": [
+              "AAAA Record",
+              "A Record",
+              "CNAME Record",
+              "MX Record"
+            ],
+            "correct_index": 0,
+            "explanation": "An 'A' record maps to a 32-bit IPv4 address, while a quad-A 'AAAA' record maps to a 128-bit IPv6 address."
+          },
+          {
+            "question": "What is the primary technical distinction between TCP Reno and TCP BBR congestion control algorithms?",
+            "choices": [
+              "BBR models bottleneck bandwidth and round-trip propagation time instead of relying purely on packet loss",
+              "TCP Reno uses UDP sockets while BBR requires custom hardware ASICs",
+              "BBR disables TCP acknowledgments to double maximum bandwidth",
+              "TCP Reno runs exclusively inside satellite ground stations"
+            ],
+            "correct_index": 0,
+            "explanation": "BBR (Bottleneck Bandwidth and RTT) avoids bufferbloat by pacing packets to match physical pipe capacity rather than waiting for loss."
+          },
+          {
+            "question": "In the OSI 7-layer model, at which layer does IP packet routing and fragmentation occur?",
+            "choices": [
+              "Layer 3 (Network Layer)",
+              "Layer 2 (Data Link Layer)",
+              "Layer 4 (Transport Layer)",
+              "Layer 7 (Application Layer)"
+            ],
+            "correct_index": 0,
+            "explanation": "Routers operate at Layer 3 (Network Layer), inspecting IP headers and making hop-by-hop forwarding decisions."
           }
         ]
       }
@@ -3550,6 +3718,21 @@
             "statement": "In Dart, 'const' variables are compile-time constants, whereas 'final' variables are single-assignment runtime values.",
             "is_true": true,
             "explanation": "A 'const' object is created at compile time; 'final' variables can have their initial values computed dynamically at runtime."
+          },
+          {
+            "statement": "An Abstract Syntax Tree (AST) retains all original source code whitespace, indentation, and comments from the raw token stream.",
+            "is_true": false,
+            "explanation": "ASTs discard syntactic trivia like whitespace, parentheses, and comments, preserving only structural semantic hierarchy."
+          },
+          {
+            "statement": "Just-In-Time (JIT) compilers profile running bytecode and compile hot code paths directly into native machine code at runtime.",
+            "is_true": true,
+            "explanation": "JIT runtimes (V8, JVM HotSpot) achieve near-C speeds by optimizing frequently executed loops using runtime profiling data."
+          },
+          {
+            "statement": "In statically typed languages with Hindley-Milner type inference (e.g. Haskell, OCaml, Rust), compilers can infer types without explicit type annotations.",
+            "is_true": true,
+            "explanation": "Hindley-Milner type systems mathematically deduce the most general principal type for every expression."
           }
         ],
         "Matching": [
@@ -3573,6 +3756,16 @@
               "Optimization Pass": "Performs dead code elimination, constant folding, and loop unrolling",
               "Code Generation": "Translates intermediate representation into target machine code or bytecode"
             }
+          },
+          {
+            "prompt": "Match each compiler compilation stage with its output artifact",
+            "pairs": {
+              "Lexer": "Token stream (Keywords, Identifiers, Literals)",
+              "Parser": "Abstract Syntax Tree (AST)",
+              "Type Checker": "Decorated / Typed Abstract Syntax Tree",
+              "Intermediate Representation Generator": "LLVM IR / 3-Address Code",
+              "Code Generator": "Target machine assembly or native machine code"
+            }
           }
         ],
         "Sequencing": [
@@ -3585,6 +3778,16 @@
               "Intermediate Code Generation: AST converted into three-address IR",
               "Machine-Independent Optimization: Dead code removal and loop optimization",
               "Machine Code Generation: Instruction selection and register allocation"
+            ]
+          },
+          {
+            "prompt": "Order the standard pipeline stages of an optimizing compiler front-end and back-end",
+            "ordered_sequence": [
+              "Lexical Analysis scanning source characters into tokens",
+              "Syntactic Parsing building the Abstract Syntax Tree (AST)",
+              "Semantic Analysis verifying types, scopes, and symbol tables",
+              "Intermediate Representation (IR) generation in SSA form",
+              "Target machine code generation and hardware register allocation"
             ]
           }
         ],
@@ -3639,6 +3842,25 @@
                 "Rust (Borrow Checker / RAII)"
               ]
             }
+          },
+          {
+            "prompt": "Classify the following languages into Statically Typed or Dynamically Typed",
+            "categories": [
+              "Statically Typed",
+              "Dynamically Typed"
+            ],
+            "items": {
+              "Statically Typed": [
+                "Rust",
+                "Go",
+                "TypeScript"
+              ],
+              "Dynamically Typed": [
+                "Python",
+                "JavaScript",
+                "Ruby"
+              ]
+            }
           }
         ],
         "Multi-Choice": [
@@ -3663,6 +3885,28 @@
             ],
             "correct_index": 0,
             "explanation": "JIT compilers profile running bytecode and compile frequently executed 'hot' loops into native machine instructions."
+          },
+          {
+            "question": "Which compiler phase converts a linear stream of characters into a structured sequence of lexical tokens (e.g. keywords, identifiers, operators)?",
+            "choices": [
+              "Lexical Analysis (Scanner / Tokenizer)",
+              "Semantic Analysis (Type Checker)",
+              "Intermediate Code Generation",
+              "Register Allocation"
+            ],
+            "correct_index": 0,
+            "explanation": "Lexing splits the raw text file into tokens according to regular expression definitions."
+          },
+          {
+            "question": "What is the primary advantage of Static Single Assignment (SSA) form in modern compiler intermediate representations (like LLVM IR)?",
+            "choices": [
+              "Every variable is assigned exactly once, simplifying dead code elimination, constant propagation, and register allocation",
+              "Eliminates the need for CPU instruction caches",
+              "Automatically parallelizes sequential for-loops onto GPU threads",
+              "Prevents stack overflow exceptions at compile time"
+            ],
+            "correct_index": 0,
+            "explanation": "In SSA form, variables are renamed per assignment (e.g. x1, x2), turning data flow analysis into clean graph algorithms."
           }
         ]
       }
@@ -3702,6 +3946,21 @@
             "statement": "Database normalization to Third Normal Form (3NF) aims to eliminate transitive dependencies and minimize data redundancy.",
             "is_true": true,
             "explanation": "3NF requires the relation to be in 2NF and every non-prime attribute to be non-transitively dependent on the primary key."
+          },
+          {
+            "statement": "In database normalization, Third Normal Form (3NF) requires that every non-key column is non-transitively dependent on the primary key.",
+            "is_true": true,
+            "explanation": "3NF ensures each column depends on the key, the whole key, and nothing but the key."
+          },
+          {
+            "statement": "NoSQL document stores like MongoDB strictly enforce compile-time schema validation across all foreign key relationships.",
+            "is_true": false,
+            "explanation": "Document stores are schema-flexible, storing nested BSON/JSON documents without rigid relational foreign key constraints."
+          },
+          {
+            "statement": "Database indexes improve SELECT query performance but incur a write penalty during INSERT, UPDATE, and DELETE operations.",
+            "is_true": true,
+            "explanation": "Every mutation must also update index B-trees or hash maps on disk."
           }
         ],
         "Matching": [
@@ -3723,6 +3982,16 @@
               "Isolation": "Concurrent transactions execute without observing uncommitted changes",
               "Durability": "Committed updates survive crashes, power outages, and reboots"
             }
+          },
+          {
+            "prompt": "Match each database term with its core technical definition",
+            "pairs": {
+              "B+ Tree": "Balanced multi-way search tree where all keys are redundantly replicated in leaf nodes",
+              "Write-Ahead Log (WAL)": "Append-only log ensuring Durability by persisting transactions before page table writes",
+              "Sharding": "Horizontal partitioning of database rows across multiple physical database servers",
+              "Read Replica": "Read-only database clone asynchronously streaming replication logs from primary",
+              "Foreign Key": "Referential constraint ensuring a column value matches a primary key in another table"
+            }
           }
         ],
         "Sequencing": [
@@ -3736,6 +4005,16 @@
               "SELECT: Evaluate projection expressions and column aliases",
               "ORDER BY: Sort output rows according to specified criteria",
               "LIMIT / OFFSET: Restrict returned rows to the requested window"
+            ]
+          },
+          {
+            "prompt": "Order the SQL query execution lifecycle inside a relational database engine",
+            "ordered_sequence": [
+              "Parser verifies SQL syntax and constructs an Abstract Syntax Tree (AST)",
+              "Semantic Analyzer verifies table names, column existence, and user access permissions",
+              "Query Optimizer generates candidate execution plans using table statistics and calculates costs",
+              "Execution Engine runs the selected plan, fetching pages via Buffer Pool Manager",
+              "Result set is assembled, formatted, and streamed back to the client connection"
             ]
           }
         ],
@@ -3762,6 +4041,25 @@
                 "Amazon DynamoDB"
               ]
             }
+          },
+          {
+            "prompt": "Classify the following database engines into Relational (RDBMS) or NoSQL (Non-Relational)",
+            "categories": [
+              "Relational (RDBMS)",
+              "NoSQL (Non-Relational)"
+            ],
+            "items": {
+              "Relational (RDBMS)": [
+                "PostgreSQL",
+                "MySQL",
+                "SQLite"
+              ],
+              "NoSQL (Non-Relational)": [
+                "Redis (Key-Value)",
+                "MongoDB (Document)",
+                "Neo4j (Graph)"
+              ]
+            }
           }
         ],
         "Multi-Choice": [
@@ -3786,6 +4084,28 @@
             ],
             "correct_index": 0,
             "explanation": "A clustered index stores the actual row data directly in the leaf pages of the index, ordered by the clustered key."
+          },
+          {
+            "question": "Which database transaction isolation level prevents Dirty Reads and Non-Repeatable Reads, but may still permit Phantom Reads under the ANSI SQL standard?",
+            "choices": [
+              "Repeatable Read",
+              "Read Committed",
+              "Read Uncommitted",
+              "Serializable"
+            ],
+            "correct_index": 0,
+            "explanation": "Repeatable Read locks accessed rows to prevent modifications, but new rows matching the WHERE clause (phantoms) can still appear unless Serializable is used."
+          },
+          {
+            "question": "What data structure do modern high-throughput write-heavy storage engines (like RocksDB and Cassandra) use to buffer writes before flushing to disk?",
+            "choices": [
+              "Log-Structured Merge-tree (LSM-tree) with in-memory MemTable",
+              "Doubly Linked List without disk persistence",
+              "Single-threaded Binary Heap",
+              "B-Tree with synchronous random disk seeks"
+            ],
+            "correct_index": 0,
+            "explanation": "LSM trees turn random writes into sequential disk writes by buffering in RAM and flushing sorted SSTables to disk."
           }
         ]
       }
@@ -3810,6 +4130,21 @@
             "statement": "A Turing machine with a two-way infinite tape can compute strictly more functions than a standard one-way infinite tape Turing machine.",
             "is_true": false,
             "explanation": "Both models are computationally equivalent in terms of computability and recognize the exact same class of languages (RE)."
+          },
+          {
+            "statement": "Turing completeness means a computing system can simulate any single-taped Turing machine given sufficient time and memory.",
+            "is_true": true,
+            "explanation": "A system is Turing complete if it can compute any computable function (Church-Turing thesis)."
+          },
+          {
+            "statement": "The Halting Problem proven by Alan Turing is decidable: an algorithm exists that can determine if any arbitrary program will halt.",
+            "is_true": false,
+            "explanation": "Turing proved by diagonalization that no general algorithm can decide whether arbitrary programs will halt."
+          },
+          {
+            "statement": "Two's complement representation allows binary addition and subtraction to be executed by identical CPU ALU hardware.",
+            "is_true": true,
+            "explanation": "Two's complement represents negative numbers such that addition works uniformly without sign-magnitude special cases."
           }
         ],
         "Matching": [
@@ -3820,6 +4155,16 @@
               "Claude Shannon": "Founded Information Theory and digital circuit design theory",
               "Donald Knuth": "Authored 'The Art of Computer Programming' and created TeX",
               "Edsger Dijkstra": "Developed shortest path algorithm, semaphores, and structured programming"
+            }
+          },
+          {
+            "prompt": "Match each foundational computer science pioneer with their milestone breakthrough",
+            "pairs": {
+              "Alan Turing": "Formalized computation with the Turing machine and proved the Halting Problem",
+              "Claude Shannon": "Information theory, entropy, and digital circuit logic design",
+              "John von Neumann": "Stored-program computer architecture and game theory",
+              "Edsger Dijkstra": "Shortest-path algorithm, semaphores, and structured programming",
+              "Donald Knuth": "The Art of Computer Programming, TeX, and algorithm analysis"
             }
           }
         ],
@@ -3833,6 +4178,15 @@
               "Instruction Set Architecture (ISA - x86, ARM, RISC-V)",
               "Operating System kernel and system calls",
               "High-level programming languages and applications"
+            ]
+          },
+          {
+            "prompt": "Order the hierarchy of formal grammars in the Chomsky Hierarchy from most restrictive to most general",
+            "ordered_sequence": [
+              "Type-3: Regular Grammars (Finite State Automata)",
+              "Type-2: Context-Free Grammars (Pushdown Automata)",
+              "Type-1: Context-Sensitive Grammars (Linear-Bounded Automata)",
+              "Type-0: Unrestricted Grammars (Turing Machines)"
             ]
           }
         ],
@@ -3863,6 +4217,25 @@
                 "Assembly"
               ]
             }
+          },
+          {
+            "prompt": "Classify the following complexity classes into Deterministic or Non-Deterministic / Hard",
+            "categories": [
+              "Deterministic Polynomial",
+              "NP / Hard / Exponential"
+            ],
+            "items": {
+              "Deterministic Polynomial": [
+                "O(1) Constant Time",
+                "O(log N) Logarithmic Time",
+                "O(N^3) Cubic Time"
+              ],
+              "NP / Hard / Exponential": [
+                "Travelling Salesperson Problem (Exact)",
+                "Boolean Satisfiability (3-SAT)",
+                "O(2^N) Exponential Subsets"
+              ]
+            }
           }
         ],
         "Multi-Choice": [
@@ -3876,6 +4249,17 @@
             ],
             "correct_index": 0,
             "explanation": "Class P represents problems solvable in O(N^k) polynomial time on a deterministic machine."
+          },
+          {
+            "question": "What is the P versus NP problem in theoretical computer science?",
+            "choices": [
+              "Whether every problem whose solution can be quickly verified in polynomial time can also be solved in polynomial time",
+              "Whether parallel processors are faster than quantum computers",
+              "Whether pointer arithmetic is safer than reference counting",
+              "Whether Python can be compiled to native ARM64 assembly"
+            ],
+            "correct_index": 0,
+            "explanation": "P is the set of problems solvable in polynomial time; NP is the set of problems verifiable in polynomial time."
           }
         ]
       }
@@ -3910,6 +4294,26 @@
             "statement": "Dependency Injection decouples object creation from object usage, improving modularity and testability.",
             "is_true": true,
             "explanation": "Injecting dependencies allows swapping real services with mocks/stubs during automated testing."
+          },
+          {
+            "statement": "The Single Responsibility Principle (SRP) states that a class or module should have one, and only one, reason to change.",
+            "is_true": true,
+            "explanation": "SRP minimizes coupling and isolates the impact of requirement changes."
+          },
+          {
+            "statement": "In Test-Driven Development (TDD), production code is written first, and unit tests are written afterwards during QA staging.",
+            "is_true": false,
+            "explanation": "TDD follows Red-Green-Refactor: write a failing test first, write minimal code to pass, then refactor."
+          },
+          {
+            "statement": "The Open/Closed Principle (OCP) states that software entities should be open for extension, but closed for modification.",
+            "is_true": true,
+            "explanation": "New functionality should be added via inheritance, interfaces, or composition without editing existing tested source code."
+          },
+          {
+            "statement": "Event-driven architecture with CQRS decouples write operations (commands) from read operations (queries), allowing independent scaling.",
+            "is_true": true,
+            "explanation": "CQRS enables optimized read models (e.g. Elasticsearch or Redis) distinct from transactional write schemas."
           }
         ],
         "Matching": [
@@ -3930,6 +4334,16 @@
               "Adapter": "Structural Pattern allowing incompatible interfaces to work together",
               "Observer": "Behavioral Pattern notifying dependents automatically of state changes",
               "Singleton": "Creational Pattern restricting a class to a single global instance"
+            }
+          },
+          {
+            "prompt": "Match each SOLID principle with its core motto",
+            "pairs": {
+              "Single Responsibility (S)": "A module should have only one reason to change",
+              "Open/Closed (O)": "Open for extension, closed for modification",
+              "Liskov Substitution (L)": "Subtypes must be substitutable for their base types without altering correctness",
+              "Interface Segregation (I)": "Clients should not be forced to depend on interfaces they do not use",
+              "Dependency Inversion (D)": "High-level modules should depend on abstractions, not concrete details"
             }
           }
         ],
@@ -3953,6 +4367,16 @@
               "Container artifact compilation and build",
               "Integration and end-to-end testing in staging",
               "Canary or blue-green production deployment"
+            ]
+          },
+          {
+            "prompt": "Order the phases of the Red-Green-Refactor TDD cycle",
+            "ordered_sequence": [
+              "Write a small, focused unit test asserting a specific new behavior",
+              "Run test runner and verify the test fails for the expected reason (Red)",
+              "Write the minimal possible production code necessary to make the test pass (Green)",
+              "Refactor code to improve readability and remove duplication while tests remain green",
+              "Commit changes and proceed to the next requirement increment"
             ]
           }
         ],
@@ -3981,6 +4405,25 @@
                 "Cross-system payment gateway test"
               ]
             }
+          },
+          {
+            "prompt": "Classify the following GoF design patterns into Creational or Behavioral",
+            "categories": [
+              "Creational",
+              "Behavioral"
+            ],
+            "items": {
+              "Creational": [
+                "Builder Pattern",
+                "Abstract Factory Pattern",
+                "Prototype Pattern"
+              ],
+              "Behavioral": [
+                "Observer Pattern",
+                "Strategy Pattern",
+                "Chain of Responsibility Pattern"
+              ]
+            }
           }
         ],
         "Multi-Choice": [
@@ -4005,6 +4448,28 @@
             ],
             "correct_index": 0,
             "explanation": "Circular dependencies couple packages into monolithic cycles, making independent comprehension, testing, and compilation impossible."
+          },
+          {
+            "question": "Which Gang of Four (GoF) structural design pattern provides an alternative interface to an existing class to make incompatible interfaces work together?",
+            "choices": [
+              "Adapter Pattern",
+              "Singleton Pattern",
+              "Observer Pattern",
+              "Factory Method Pattern"
+            ],
+            "correct_index": 0,
+            "explanation": "The Adapter pattern converts the interface of a class into another interface clients expect."
+          },
+          {
+            "question": "What is the primary hazard of using the Singleton design pattern across multi-threaded applications?",
+            "choices": [
+              "Global mutable state that introduces concurrency race conditions and hinders isolated unit testing",
+              "Increases CPU clock cycle duration by 50%",
+              "Prevents compile-time type checking in C++ and Java",
+              "Forces the OS kernel into single-user recovery mode"
+            ],
+            "correct_index": 0,
+            "explanation": "Singletons introduce tightly coupled global state that makes mocking and parallel test execution difficult and error-prone."
           }
         ]
       }
@@ -4034,6 +4499,21 @@
             "statement": "In an eventually consistent database, all replicas will return the latest write immediately without any latency delay.",
             "is_true": false,
             "explanation": "Eventual consistency allows replicas to return stale data temporarily until synchronization messages propagate across the network."
+          },
+          {
+            "statement": "According to the CAP theorem, a distributed data store can simultaneously provide Consistency, Availability, and Partition Tolerance during a network partition.",
+            "is_true": false,
+            "explanation": "When network partition (P) occurs, a distributed system MUST choose between Consistency (C) or Availability (A)."
+          },
+          {
+            "statement": "In the Raft consensus algorithm, all log entries flow strictly in one direction: from the elected Leader to the Followers.",
+            "is_true": true,
+            "explanation": "Raft simplifies consensus by ensuring followers only accept log entries appended by the current term's leader."
+          },
+          {
+            "statement": "Horizontal pod autoscaling in Kubernetes scales applications by increasing CPU and RAM allocations on existing nodes rather than creating new pod replicas.",
+            "is_true": false,
+            "explanation": "Horizontal autoscaling creates new pod replicas; vertical autoscaling adjusts resource limits of existing containers."
           }
         ],
         "Matching": [
@@ -4044,6 +4524,16 @@
               "Circuit Breaker": "Prevents cascading failure by failing fast when downstream is degraded",
               "Consistent Hashing": "Minimizes key remapping when cache nodes are added or removed",
               "Heartbeat Protocol": "Periodically signals node liveness to detect cluster node failures"
+            }
+          },
+          {
+            "prompt": "Match each distributed systems design pattern with its problem domain",
+            "pairs": {
+              "Circuit Breaker": "Prevents cascading failures by stopping calls to failing downstream services",
+              "Consistent Hashing": "Minimizes key redistribution when nodes are added or removed from cache clusters",
+              "Saga Pattern": "Manages distributed transactions across microservices using compensating actions",
+              "Idempotency Key": "Ensures duplicate HTTP requests produce identical results without duplicate side effects",
+              "Write-Ahead Log (WAL)": "Appends mutations sequentially to persistent disk before memory updates for crash recovery"
             }
           }
         ],
@@ -4056,6 +4546,16 @@
               "Coordinator collects all votes from participant nodes",
               "If all voted YES, coordinator sends COMMIT (else ABORT)",
               "Participants apply commit/abort and acknowledge coordinator"
+            ]
+          },
+          {
+            "prompt": "Order the steps of a distributed Two-Phase Commit (2PC) protocol",
+            "ordered_sequence": [
+              "Coordinator node receives transaction request from client application",
+              "Coordinator sends PREPARE request to all participating cohort nodes",
+              "Each cohort executes transaction locally, locks resources, and votes YES or NO",
+              "If all cohorts vote YES, Coordinator broadcasts COMMIT; otherwise broadcasts ABORT",
+              "Cohorts finalize commit or rollback, release locks, and send acknowledgment to Coordinator"
             ]
           }
         ],
@@ -4084,6 +4584,25 @@
                 "AWS ECS"
               ]
             }
+          },
+          {
+            "prompt": "Classify the following cloud storage types into Object Storage or Block Storage",
+            "categories": [
+              "Object Storage",
+              "Block Storage"
+            ],
+            "items": {
+              "Object Storage": [
+                "Amazon S3",
+                "Google Cloud Storage",
+                "Azure Blob Storage"
+              ],
+              "Block Storage": [
+                "AWS EBS Volume",
+                "SAN (Storage Area Network)",
+                "Local NVMe SSD Mount"
+              ]
+            }
           }
         ],
         "Multi-Choice": [
@@ -4097,6 +4616,28 @@
             ],
             "correct_index": 0,
             "explanation": "Raft decomposes consensus into leader election, log replication, and safety to make distributed consensus intuitive and robust."
+          },
+          {
+            "question": "Which consensus protocol is widely used in Apache ZooKeeper and etcd to coordinate distributed cluster state?",
+            "choices": [
+              "Raft / Paxos",
+              "MapReduce",
+              "Gossip Protocol",
+              "Two-Phase Locking (2PL)"
+            ],
+            "correct_index": 0,
+            "explanation": "etcd uses Raft and ZooKeeper uses ZAB (a Paxos variant) to guarantee linearizable consistency across quorum nodes."
+          },
+          {
+            "question": "What is the primary benefit of deploying microservices using an Envoy-based Service Mesh architecture?",
+            "choices": [
+              "Offloads mTLS encryption, traffic routing, circuit breaking, and telemetry out of application code into sidecar proxies",
+              "Eliminates the need for databases by caching all state directly in L3 CPU cache",
+              "Automatically converts interpreted Python scripts into binary x86 assembly",
+              "Guarantees zero-millisecond network latency across transatlantic cables"
+            ],
+            "correct_index": 0,
+            "explanation": "A service mesh handles service-to-service communication infrastructure (observability, security, resilience) transparently."
           }
         ]
       }
@@ -4302,8 +4843,8 @@
             "prompt": "Match each asymptotic notation symbol with its formal mathematical meaning:",
             "pairs": {
               "Big-O (O)": "Asymptotic upper bound: f(n) <= c * g(n) for large n",
-              "Big-Omega (\u03a9)": "Asymptotic lower bound: f(n) >= c * g(n) for large n",
-              "Big-Theta (\u0398)": "Tight asymptotic bound: c1 * g(n) <= f(n) <= c2 * g(n)",
+              "Big-Omega (Ω)": "Asymptotic lower bound: f(n) >= c * g(n) for large n",
+              "Big-Theta (Θ)": "Tight asymptotic bound: c1 * g(n) <= f(n) <= c2 * g(n)",
               "Little-o (o)": "Strict non-tight upper bound: lim [f(n) / g(n)] = 0 as n -> inf"
             }
           }
@@ -5253,6 +5794,350 @@
             ],
             "correct_index": 0,
             "explanation": "The `&` address-of operator returns a pointer to the operand's memory location."
+          }
+        ]
+      }
+    },
+    "Cybersecurity & Cryptography": {
+      "introduction": "Cybersecurity investigates threat modeling, public-key cryptography, authorization protocols, and defenses against memory and network exploits.",
+      "remediation": "Focus on asymmetric vs symmetric key distribution, cryptographic salt uniqueness, and defense-in-depth principles (Zero Trust).",
+      "deep_dive": "Cryptographic security relies on computationally intractable mathematical problems (integer factorization in RSA, discrete log in ECC Curve25519). Modern security enforces TLS 1.3 with forward secrecy, memory-safe languages to eliminate 70% of CVE buffer overflows, and authenticated encryption with associated data (AEAD, AES-GCM).",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "Symmetric encryption algorithms like AES use the exact same cryptographic key for both encryption and decryption.",
+            "is_true": true,
+            "explanation": "AES is a symmetric cipher where sender and receiver share the same secret key."
+          },
+          {
+            "statement": "MD5 and SHA-1 are recommended today for secure cryptographic password hashing in modern production applications.",
+            "is_true": false,
+            "explanation": "MD5 and SHA-1 suffer from collision attacks and lack memory-hardness. Modern apps must use Argon2id or bcrypt."
+          },
+          {
+            "statement": "Perfect Forward Secrecy (PFS) ensures that compromise of a server's long-term private key cannot decrypt previously recorded network traffic.",
+            "is_true": true,
+            "explanation": "PFS generates unique ephemeral session keys (ECDHE) for each TLS session so old traffic remains indecipherable."
+          },
+          {
+            "statement": "In a SQL injection attack, attackers exploit flaws where user inputs are concatenated directly into raw database command strings.",
+            "is_true": true,
+            "explanation": "Parameterized queries and prepared statements completely neutralize SQL injection by separating code from data."
+          },
+          {
+            "statement": "Zero Trust network architecture assumes that any device inside the internal corporate network firewall can be inherently trusted.",
+            "is_true": false,
+            "explanation": "Zero Trust operates under 'Never Trust, Always Verify', enforcing mutual TLS and per-request authorization internally."
+          },
+          {
+            "statement": "Cross-Site Scripting (XSS) occurs when an application includes untrusted data in a web page without proper escaping, allowing malicious script execution.",
+            "is_true": true,
+            "explanation": "XSS allows attackers to hijack session cookies, deface DOM elements, or redirect users to malicious endpoints."
+          },
+          {
+            "statement": "A cryptographic salt should be kept top-secret alongside the server's master root key in an encrypted vault.",
+            "is_true": false,
+            "explanation": "Salts do not need to be secret; their sole purpose is uniqueness per user to defeat precomputed rainbow tables."
+          },
+          {
+            "statement": "Elliptic Curve Cryptography (ECC) achieves equivalent security to RSA with significantly smaller key sizes (e.g. 256-bit ECC ≈ 3072-bit RSA).",
+            "is_true": true,
+            "explanation": "ECC provides equal security with vastly shorter keys, reducing CPU cycles and network transmission overhead."
+          }
+        ],
+        "Multi-Choice": [
+          {
+            "question": "Which password hashing algorithm was selected as the official winner of the Password Hashing Competition for its memory-hard defense against ASIC/GPU attacks?",
+            "choices": [
+              "Argon2id",
+              "PBKDF2-HMAC-SHA256",
+              "MD5-Crypt",
+              "SHA-512"
+            ],
+            "correct_index": 0,
+            "explanation": "Argon2id combines data-independent and data-dependent memory access to resist both side-channel and GPU/ASIC brute force attacks."
+          },
+          {
+            "question": "Which HTTP security header instructs browsers to strictly communicate with a domain exclusively over HTTPS for a defined duration?",
+            "choices": [
+              "Strict-Transport-Security (HSTS)",
+              "Content-Security-Policy (CSP)",
+              "X-Frame-Options",
+              "Access-Control-Allow-Origin"
+            ],
+            "correct_index": 0,
+            "explanation": "HSTS eliminates SSL stripping attacks by forcing browsers to rewrite all HTTP URLs to HTTPS before making network requests."
+          },
+          {
+            "question": "What type of attack exploits race conditions between the verification of a resource condition and the subsequent use of that resource?",
+            "choices": [
+              "Time-of-Check to Time-of-Use (TOCTOU)",
+              "Buffer Overflow",
+              "Cross-Site Request Forgery (CSRF)",
+              "Server-Side Request Forgery (SSRF)"
+            ],
+            "correct_index": 0,
+            "explanation": "TOCTOU is a concurrency vulnerability where state changes between permission validation and operation execution."
+          },
+          {
+            "question": "In asymmetric cryptography, which key must the sender use to digitally sign a message digest so recipients can verify authenticity?",
+            "choices": [
+              "The sender's private key",
+              "The recipient's public key",
+              "The sender's public key",
+              "A pre-shared symmetric key"
+            ],
+            "correct_index": 0,
+            "explanation": "A digital signature is created using the sender's private key and verified by anyone using the sender's public key."
+          },
+          {
+            "question": "Which defense completely prevents Cross-Site Request Forgery (CSRF) in modern state-changing POST requests?",
+            "choices": [
+              "Cryptographic Anti-CSRF tokens and SameSite=Strict cookie policy",
+              "Base64 encoding all form submissions",
+              "Using HTTP Basic Authentication over TLS",
+              "Hiding the HTML submit button with CSS"
+            ],
+            "correct_index": 0,
+            "explanation": "SameSite cookies prevent cross-origin ambient cookie delivery, and anti-CSRF tokens guarantee deliberate user intent."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match each cryptographic primitive with its primary technical purpose",
+            "pairs": {
+              "AES-256-GCM": "Authenticated high-speed symmetric payload encryption",
+              "RSA / ECC Curve25519": "Asymmetric key exchange and digital identity signatures",
+              "HMAC-SHA256": "Message authentication code verifying tamper-proof data integrity",
+              "Argon2id": "Memory-hard password key derivation resisting GPU cracking",
+              "Diffie-Hellman (ECDHE)": "Ephemeral shared secret agreement over untrusted networks"
+            }
+          },
+          {
+            "prompt": "Match each cybersecurity vulnerability with its standard mitigation",
+            "pairs": {
+              "SQL Injection": "Parameterized queries / prepared statements with placeholder bindings",
+              "Cross-Site Scripting (XSS)": "Context-aware HTML/JS output encoding and Content Security Policy",
+              "Buffer Overflow": "Memory-safe languages (Rust/Go) or compiler stack canaries and ASLR",
+              "Man-In-The-Middle (MITM)": "TLS certificate pinning and Strict-Transport-Security (HSTS)",
+              "Credential Stuffing": "Multi-Factor Authentication (MFA) and adaptive rate limiting"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the sequence of operations in a standard TLS 1.3 cryptographic handshake",
+            "ordered_sequence": [
+              "Client sends ClientHello with supported cipher suites and ephemeral Diffie-Hellman key share",
+              "Server replies with ServerHello, selecting cipher suite and providing its own key share",
+              "Both parties derive symmetric session encryption keys from the shared Diffie-Hellman secret",
+              "Server sends encrypted certificate chain and digital signature for identity verification",
+              "Client verifies certificate and both parties exchange Finished messages to begin secure data transfer"
+            ]
+          },
+          {
+            "prompt": "Order the defense-in-depth steps to securely authenticate and store a user password",
+            "ordered_sequence": [
+              "User submits plaintext password over an encrypted TLS connection",
+              "Server generates a cryptographically secure random salt (at least 16 bytes)",
+              "Password and salt are hashed using Argon2id with calibrated time and memory costs",
+              "Salt, algorithm parameters, and resulting password hash are saved to the user table",
+              "Original plaintext password variable is zeroed in RAM immediately after hashing"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify the following cryptographic algorithms into Symmetric or Asymmetric",
+            "categories": [
+              "Symmetric",
+              "Asymmetric"
+            ],
+            "items": {
+              "Symmetric": [
+                "AES-256-GCM",
+                "ChaCha20-Poly1305",
+                "Triple DES (3DES)"
+              ],
+              "Asymmetric": [
+                "RSA-4096",
+                "ECC Curve25519",
+                "Diffie-Hellman (DH)"
+              ]
+            }
+          },
+          {
+            "prompt": "Classify the following security concerns into Network Security or Application Security",
+            "categories": [
+              "Network Security",
+              "Application Security"
+            ],
+            "items": {
+              "Network Security": [
+                "SYN Flood DDoS",
+                "ARP Spoofing",
+                "DNS Cache Poisoning"
+              ],
+              "Application Security": [
+                "SQL Injection (SQLi)",
+                "Remote Code Execution (RCE)",
+                "Cross-Site Scripting (XSS)"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "DevOps & Site Reliability Engineering": {
+      "introduction": "Site Reliability Engineering (SRE) applies software engineering principles to operations, infrastructure automation, observability, and incident lifecycle management.",
+      "remediation": "Focus on Service Level Indicators (SLIs), Service Level Objectives (SLOs), error budgets, container orchestration primitives, and immutable infrastructure.",
+      "deep_dive": "SRE targets the trade-off between deployment velocity and system reliability using Error Budgets: 100% - SLO. When the error budget is exhausted, deployments freeze in favor of stability. Infrastructure as Code (Terraform, Kubernetes Operator pattern) enables declarative convergence toward desired state via reconciliation control loops.",
+      "questions": {
+        "True-False": [
+          {
+            "statement": "An Error Budget is calculated directly from a Service Level Objective (SLO), representing the allowed amount of downtime or bad requests.",
+            "is_true": true,
+            "explanation": "If the SLO is 99.9% availability, the monthly Error Budget is 0.1% (approx. 43 minutes of allowed failure)."
+          },
+          {
+            "statement": "In Continuous Delivery (CD), every code commit that passes automated testing must be deployed to production immediately without human gates.",
+            "is_true": false,
+            "explanation": "Continuous Deployment deploys automatically; Continuous Delivery ensures code is ALWAYS in a deployable state, but deployment to production may require manual authorization."
+          },
+          {
+            "statement": "A Canary deployment routes a small percentage of real production traffic to a new service version before gradually rolling it out to all users.",
+            "is_true": true,
+            "explanation": "Canary releases validate performance and error rates on a tiny cohort to minimize the blast radius of unforeseen bugs."
+          },
+          {
+            "statement": "In Kubernetes, a ReplicaSet ensures that a specified number of identical pod replicas are running at all times.",
+            "is_true": true,
+            "explanation": "The ReplicaSet controller continuously monitors the current running count and reconciles against the desired pod count."
+          },
+          {
+            "statement": "Immutable Infrastructure updates production servers by logging in via SSH and running package upgrade scripts in place.",
+            "is_true": false,
+            "explanation": "Immutable infrastructure never mutates running servers; updates replace existing instances with newly built, versioned virtual machine or container images."
+          },
+          {
+            "statement": "The three pillars of observability in distributed cloud systems are Metrics, Logs, and Distributed Traces.",
+            "is_true": true,
+            "explanation": "Metrics track aggregated counters/gauges, logs record discrete events, and distributed traces track request context across microservices."
+          }
+        ],
+        "Multi-Choice": [
+          {
+            "question": "What is the primary difference between a Service Level Indicator (SLI) and a Service Level Objective (SLO)?",
+            "choices": [
+              "An SLI is a quantifiable metric of actual performance (e.g. latency); an SLO is the target goal agreed upon (e.g. 99% of requests < 200ms)",
+              "An SLI is a legal financial contract with customers; an SLO is an internal debugging tool",
+              "An SLI only applies to hardware; an SLO applies to databases",
+              "An SLO is recorded by Prometheus; an SLI cannot be measured"
+            ],
+            "correct_index": 0,
+            "explanation": "SLI is 'what is measured right now', SLO is 'the target reliability boundary we aim to maintain'."
+          },
+          {
+            "question": "Which deployment strategy maintains two identical production environments, switching active router traffic instantly from the old version to the new version?",
+            "choices": [
+              "Blue-Green Deployment",
+              "Rolling Update",
+              "Canary Deployment",
+              "Shadow Deployment"
+            ],
+            "correct_index": 0,
+            "explanation": "Blue-Green keeps one idle environment (Green) and one active (Blue). Switching load balancer target enables instantaneous rollback."
+          },
+          {
+            "question": "In the Kubernetes control plane, which component is responsible for assigning newly created pods to optimal worker nodes based on resource constraints?",
+            "choices": [
+              "kube-scheduler",
+              "kube-apiserver",
+              "kube-controller-manager",
+              "kubelet"
+            ],
+            "correct_index": 0,
+            "explanation": "kube-scheduler filters and scores nodes to decide the best node placement for unscheduled pods."
+          },
+          {
+            "question": "What is the primary objective of Chaos Engineering practices (e.g. Chaos Monkey)?",
+            "choices": [
+              "Proactively inject turbulent failures in production to build resilience before catastrophic outages occur",
+              "Randomly corrupt database tables to verify backup restore speeds",
+              "Disable firewall ports during peak business hours",
+              "Delete git branches to test developer memory"
+            ],
+            "correct_index": 0,
+            "explanation": "Chaos engineering systematically tests hypothesis about system fault tolerance by simulating instance, network, or disk failures."
+          }
+        ],
+        "Matching": [
+          {
+            "prompt": "Match each DevOps / SRE tool with its primary function",
+            "pairs": {
+              "Terraform": "Declarative multi-cloud Infrastructure as Code (IaC) provisioning",
+              "Prometheus": "Time-series monitoring, alerting, and metric scraping system",
+              "Docker": "OS-level virtualization packaging apps into portable container images",
+              "ArgoCD": "Declarative GitOps continuous delivery tool for Kubernetes",
+              "Jaeger / OpenTelemetry": "Distributed tracing framework across microservice call graphs"
+            }
+          },
+          {
+            "prompt": "Match each SRE reliability term with its core concept",
+            "pairs": {
+              "MTTR (Mean Time to Recover)": "Average duration required to restore service after an outage",
+              "MTTD (Mean Time to Detect)": "Average time from issue inception until monitoring alerts fire",
+              "Toil": "Manual, repetitive, operational work that could be automated by software",
+              "Blast Radius": "The maximum scope of impact or affected users if a failure occurs",
+              "Error Budget": "The threshold of permissible unreliability during a given time window"
+            }
+          }
+        ],
+        "Sequencing": [
+          {
+            "prompt": "Order the lifecycle phases of an automated CI/CD deployment pipeline",
+            "ordered_sequence": [
+              "Developer pushes code commit and opens pull request",
+              "CI server checks out code, runs linter, and builds executable artifacts",
+              "Unit, integration, and security static analysis (SAST) test suites execute",
+              "Container image is built, tagged with git commit SHA, and pushed to registry",
+              "CD engine deploys image to staging, runs smoke tests, and promotes to production"
+            ]
+          },
+          {
+            "prompt": "Order the incident response steps when a critical production alert fires",
+            "ordered_sequence": [
+              "On-call engineer acknowledges alert and establishes incident communication channel",
+              "Initial triage determines severity, blast radius, and triggers rollback or mitigation",
+              "Service health is stabilized (traffic rerouted, canary halted, or caches flushed)",
+              "Detailed root cause investigation inspects logs, traces, and metrics",
+              "Blameless post-mortem document is drafted to identify systemic preventative action items"
+            ]
+          }
+        ],
+        "Sorting-Classification": [
+          {
+            "prompt": "Classify the following telemetry data into Metrics, Logs, or Traces",
+            "categories": [
+              "Metrics",
+              "Logs",
+              "Traces"
+            ],
+            "items": {
+              "Metrics": [
+                "http_requests_total (Counter)",
+                "cpu_utilization_percent (Gauge)",
+                "request_duration_seconds (Histogram)"
+              ],
+              "Logs": [
+                "{\"level\":\"ERROR\",\"msg\":\"database connection refused\"}",
+                "[INFO] User 1042 successfully authenticated via OAuth"
+              ],
+              "Traces": [
+                "Span: checkout-service -> payment-gateway (142ms)",
+                "TraceParent HTTP Header W3C propagation context"
+              ]
+            }
           }
         ]
       }

@@ -34,7 +34,7 @@
 
   <script>
     // The value below is injected by flutter build, do not touch.
-    const serviceWorkerVersion = "3043179052" /* Flutter's service worker is deprecated and will be removed in a future Flutter release. */;
+    const serviceWorkerVersion = "4248911234" /* Flutter's service worker is deprecated and will be removed in a future Flutter release. */;
   </script>
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer></script>
@@ -51,7 +51,7 @@
         } catch(e) {}
       }
       const buttons = Array.from(document.querySelectorAll('button, [role="button"]')).map(b => (b.innerText || b.getAttribute('aria-label') || '').trim()).filter(Boolean);
-      const is3DActive = !!document.querySelector('[aria-label*="3D Knowledge Constellation"], [aria-label*="Constellation"], [aria-label*="3D Knowledge Graph"]');
+      const is3DActive = !!document.querySelector('[aria-label*="Knowledge Graph"], [aria-label*="3D Knowledge Graph"], [aria-label*="Constellation"]');
       const isMounted = document.querySelector('flt-glass-pane') !== null || document.querySelector('canvas') !== null;
       return {
         phase: isMounted ? "ACTIVE" : "INITIALIZING",
