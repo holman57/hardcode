@@ -4969,7 +4969,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 const SizedBox(width: 8),
                 Text(
                   'SESSION PAUSED',
-                  style: GoogleFonts.jetbrainsMono(
+                  style: GoogleFonts.jetBrainsMono(
                     color: Colors.amber.shade200,
                     fontWeight: FontWeight.w800,
                     fontSize: 12,
@@ -5184,7 +5184,7 @@ class _QuestionFeedbackDialogState extends State<_QuestionFeedbackDialog> {
                           ),
                           child: Text(
                             widget.languageOrDomain.toUpperCase(),
-                            style: GoogleFonts.jetbrainsMono(
+                            style: GoogleFonts.jetBrainsMono(
                               fontSize: 10,
                               fontWeight: FontWeight.w700,
                               color: theme.colorScheme.primary,
@@ -5200,7 +5200,7 @@ class _QuestionFeedbackDialogState extends State<_QuestionFeedbackDialog> {
                           ),
                           child: Text(
                             widget.questionType,
-                            style: GoogleFonts.jetbrainsMono(
+                            style: GoogleFonts.jetBrainsMono(
                               fontSize: 10,
                               fontWeight: FontWeight.w600,
                               color: Colors.grey.shade300,
