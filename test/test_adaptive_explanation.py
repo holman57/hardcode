@@ -35,10 +35,8 @@ class PythonAdaptiveExplanationService:
             return "system_architecture"
         if "ai" in t or "neural" in t or "learning" in t:
             return "ai"
-        if "security engineering" in t or "stride" in t or "sast" in t or "dast" in t:
+        if "security" in t or "crypto" in t or "stride" in t or "sast" in t or "dast" in t or "auth" in t:
             return "security_engineering"
-        if "sec" in t or "crypto" in t:
-            return "security"
         if "db" in t or "database" in t or "sql" in t:
             return "database"
         if "pattern" in t or "solid" in t or "software" in t:

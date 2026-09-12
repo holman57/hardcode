@@ -1,15 +1,15 @@
 {
-  "version": 8,
+  "version": 13,
   "graph_version": "1.3.0-graph",
   "schema": "knowledge-graph",
   "metadata": {
     "name": "HardCode Knowledge Graph",
     "schema": "knowledge-graph",
-    "version": 8,
+    "version": 13,
     "graph_version": "1.3.0-graph",
     "description": "Structured graph database powering syntax flashcards, CS curriculum, and visual navigation.",
-    "node_count": 620,
-    "edge_count": 714,
+    "node_count": 619,
+    "edge_count": 713,
     "question_count": 418,
     "created_at": "2026-09-10T21:30:00Z",
     "types": [
@@ -41,8 +41,7 @@
       "question_tf",
       "root",
       "syntax"
-    ],
-    "last_updated": "2026-09-12T19:50:06Z"
+    ]
   },
   "nodes": [
     {
@@ -52,7 +51,7 @@
       "category": "Root",
       "properties": {
         "description": "Central root for all programming languages, system paradigms, and CS curriculum.",
-        "original_version": 8
+        "original_version": 13
       },
       "visualization": {
         "group": "root",
@@ -13882,532 +13881,6 @@
       }
     },
     {
-      "id": "domain:cybersecurity_cryptography",
-      "label": "Cybersecurity & Cryptography",
-      "type": "CurriculumDomain",
-      "category": "Computer Science",
-      "properties": {
-        "name": "Cybersecurity & Cryptography",
-        "introduction": "Cybersecurity investigates threat modeling, public-key cryptography, authorization protocols, and defenses against memory and network exploits.",
-        "remediation": "Focus on asymmetric vs symmetric key distribution, cryptographic salt uniqueness, and defense-in-depth principles (Zero Trust).",
-        "deep_dive": "Cryptographic security relies on computationally intractable mathematical problems (integer factorization in RSA, discrete log in ECC Curve25519). Modern security enforces TLS 1.3 with forward secrecy, memory-safe languages to eliminate 70% of CVE buffer overflows, and authenticated encryption with associated data (AEAD, AES-GCM)."
-      },
-      "visualization": {
-        "group": "domain",
-        "color": "#6366F1",
-        "size": 32,
-        "level": 1,
-        "icon": "domain"
-      }
-    },
-    {
-      "id": "q:tf:cybersecurity_cryptography_1",
-      "label": "Symmetric encryption algorithms like AES u...",
-      "type": "Question",
-      "category": "True-False",
-      "properties": {
-        "domain": "Cybersecurity & Cryptography",
-        "sub_type": "True-False",
-        "statement": "Symmetric encryption algorithms like AES use the exact same cryptographic key for both encryption and decryption.",
-        "is_true": true,
-        "explanation": "AES is a symmetric cipher where sender and receiver share the same secret key."
-      },
-      "visualization": {
-        "group": "question_tf",
-        "color": "#14B8A6",
-        "size": 16,
-        "level": 3,
-        "icon": "check_circle"
-      }
-    },
-    {
-      "id": "q:tf:cybersecurity_cryptography_2",
-      "label": "MD5 and SHA-1 are recommended today for se...",
-      "type": "Question",
-      "category": "True-False",
-      "properties": {
-        "domain": "Cybersecurity & Cryptography",
-        "sub_type": "True-False",
-        "statement": "MD5 and SHA-1 are recommended today for secure cryptographic password hashing in modern production applications.",
-        "is_true": false,
-        "explanation": "MD5 and SHA-1 suffer from collision attacks and lack memory-hardness. Modern apps must use Argon2id or bcrypt."
-      },
-      "visualization": {
-        "group": "question_tf",
-        "color": "#14B8A6",
-        "size": 16,
-        "level": 3,
-        "icon": "check_circle"
-      }
-    },
-    {
-      "id": "q:tf:cybersecurity_cryptography_3",
-      "label": "Perfect Forward Secrecy (PFS) ensures that...",
-      "type": "Question",
-      "category": "True-False",
-      "properties": {
-        "domain": "Cybersecurity & Cryptography",
-        "sub_type": "True-False",
-        "statement": "Perfect Forward Secrecy (PFS) ensures that compromise of a server's long-term private key cannot decrypt previously recorded network traffic.",
-        "is_true": true,
-        "explanation": "PFS generates unique ephemeral session keys (ECDHE) for each TLS session so old traffic remains indecipherable."
-      },
-      "visualization": {
-        "group": "question_tf",
-        "color": "#14B8A6",
-        "size": 16,
-        "level": 3,
-        "icon": "check_circle"
-      }
-    },
-    {
-      "id": "q:tf:cybersecurity_cryptography_4",
-      "label": "In a SQL injection attack, attackers explo...",
-      "type": "Question",
-      "category": "True-False",
-      "properties": {
-        "domain": "Cybersecurity & Cryptography",
-        "sub_type": "True-False",
-        "statement": "In a SQL injection attack, attackers exploit flaws where user inputs are concatenated directly into raw database command strings.",
-        "is_true": true,
-        "explanation": "Parameterized queries and prepared statements completely neutralize SQL injection by separating code from data."
-      },
-      "visualization": {
-        "group": "question_tf",
-        "color": "#14B8A6",
-        "size": 16,
-        "level": 3,
-        "icon": "check_circle"
-      }
-    },
-    {
-      "id": "q:tf:cybersecurity_cryptography_5",
-      "label": "Zero Trust network architecture assumes th...",
-      "type": "Question",
-      "category": "True-False",
-      "properties": {
-        "domain": "Cybersecurity & Cryptography",
-        "sub_type": "True-False",
-        "statement": "Zero Trust network architecture assumes that any device inside the internal corporate network firewall can be inherently trusted.",
-        "is_true": false,
-        "explanation": "Zero Trust operates under 'Never Trust, Always Verify', enforcing mutual TLS and per-request authorization internally."
-      },
-      "visualization": {
-        "group": "question_tf",
-        "color": "#14B8A6",
-        "size": 16,
-        "level": 3,
-        "icon": "check_circle"
-      }
-    },
-    {
-      "id": "q:tf:cybersecurity_cryptography_6",
-      "label": "Cross-Site Scripting (XSS) occurs when an ...",
-      "type": "Question",
-      "category": "True-False",
-      "properties": {
-        "domain": "Cybersecurity & Cryptography",
-        "sub_type": "True-False",
-        "statement": "Cross-Site Scripting (XSS) occurs when an application includes untrusted data in a web page without proper escaping, allowing malicious script execution.",
-        "is_true": true,
-        "explanation": "XSS allows attackers to hijack session cookies, deface DOM elements, or redirect users to malicious endpoints."
-      },
-      "visualization": {
-        "group": "question_tf",
-        "color": "#14B8A6",
-        "size": 16,
-        "level": 3,
-        "icon": "check_circle"
-      }
-    },
-    {
-      "id": "q:tf:cybersecurity_cryptography_7",
-      "label": "A cryptographic salt should be kept top-se...",
-      "type": "Question",
-      "category": "True-False",
-      "properties": {
-        "domain": "Cybersecurity & Cryptography",
-        "sub_type": "True-False",
-        "statement": "A cryptographic salt should be kept top-secret alongside the server's master root key in an encrypted vault.",
-        "is_true": false,
-        "explanation": "Salts do not need to be secret; their sole purpose is uniqueness per user to defeat precomputed rainbow tables."
-      },
-      "visualization": {
-        "group": "question_tf",
-        "color": "#14B8A6",
-        "size": 16,
-        "level": 3,
-        "icon": "check_circle"
-      }
-    },
-    {
-      "id": "q:tf:cybersecurity_cryptography_8",
-      "label": "Elliptic Curve Cryptography (ECC) achieves...",
-      "type": "Question",
-      "category": "True-False",
-      "properties": {
-        "domain": "Cybersecurity & Cryptography",
-        "sub_type": "True-False",
-        "statement": "Elliptic Curve Cryptography (ECC) achieves equivalent security to RSA with significantly smaller key sizes (e.g. 256-bit ECC ≈ 3072-bit RSA).",
-        "is_true": true,
-        "explanation": "ECC provides equal security with vastly shorter keys, reducing CPU cycles and network transmission overhead."
-      },
-      "visualization": {
-        "group": "question_tf",
-        "color": "#14B8A6",
-        "size": 16,
-        "level": 3,
-        "icon": "check_circle"
-      }
-    },
-    {
-      "id": "q:matching:cybersecurity_cryptography_1",
-      "label": "Match each cryptographic primitive with it...",
-      "type": "Question",
-      "category": "Matching",
-      "properties": {
-        "domain": "Cybersecurity & Cryptography",
-        "sub_type": "Matching",
-        "prompt": "Match each cryptographic primitive with its primary technical purpose",
-        "pairs": {
-          "AES-256-GCM": "Authenticated high-speed symmetric payload encryption",
-          "RSA / ECC Curve25519": "Asymmetric key exchange and digital identity signatures",
-          "HMAC-SHA256": "Message authentication code verifying tamper-proof data integrity",
-          "Argon2id": "Memory-hard password key derivation resisting GPU cracking",
-          "Diffie-Hellman (ECDHE)": "Ephemeral shared secret agreement over untrusted networks"
-        }
-      },
-      "visualization": {
-        "group": "question_matching",
-        "color": "#F97316",
-        "size": 16,
-        "level": 3,
-        "icon": "compare_arrows"
-      }
-    },
-    {
-      "id": "q:matching:cybersecurity_cryptography_2",
-      "label": "Match each cybersecurity vulnerability wit...",
-      "type": "Question",
-      "category": "Matching",
-      "properties": {
-        "domain": "Cybersecurity & Cryptography",
-        "sub_type": "Matching",
-        "prompt": "Match each cybersecurity vulnerability with its standard mitigation",
-        "pairs": {
-          "SQL Injection": "Parameterized queries / prepared statements with placeholder bindings",
-          "Cross-Site Scripting (XSS)": "Context-aware HTML/JS output encoding and Content Security Policy",
-          "Buffer Overflow": "Memory-safe languages (Rust/Go) or compiler stack canaries and ASLR",
-          "Man-In-The-Middle (MITM)": "TLS certificate pinning and Strict-Transport-Security (HSTS)",
-          "Credential Stuffing": "Multi-Factor Authentication (MFA) and adaptive rate limiting"
-        }
-      },
-      "visualization": {
-        "group": "question_matching",
-        "color": "#F97316",
-        "size": 16,
-        "level": 3,
-        "icon": "compare_arrows"
-      }
-    },
-    {
-      "id": "q:sequencing:cybersecurity_cryptography_1",
-      "label": "Order the sequence of operations in a stan...",
-      "type": "Question",
-      "category": "Sequencing",
-      "properties": {
-        "domain": "Cybersecurity & Cryptography",
-        "sub_type": "Sequencing",
-        "prompt": "Order the sequence of operations in a standard TLS 1.3 cryptographic handshake",
-        "sequence": [
-          "Client sends ClientHello with supported cipher suites and ephemeral Diffie-Hellman key share",
-          "Server replies with ServerHello, selecting cipher suite and providing its own key share",
-          "Both parties derive symmetric session encryption keys from the shared Diffie-Hellman secret",
-          "Server sends encrypted certificate chain and digital signature for identity verification",
-          "Client verifies certificate and both parties exchange Finished messages to begin secure data transfer"
-        ],
-        "ordered_sequence": [
-          "Client sends ClientHello with supported cipher suites and ephemeral Diffie-Hellman key share",
-          "Server replies with ServerHello, selecting cipher suite and providing its own key share",
-          "Both parties derive symmetric session encryption keys from the shared Diffie-Hellman secret",
-          "Server sends encrypted certificate chain and digital signature for identity verification",
-          "Client verifies certificate and both parties exchange Finished messages to begin secure data transfer"
-        ]
-      },
-      "visualization": {
-        "group": "question_sequencing",
-        "color": "#A855F7",
-        "size": 16,
-        "level": 3,
-        "icon": "format_list_numbered"
-      }
-    },
-    {
-      "id": "q:sequencing:cybersecurity_cryptography_2",
-      "label": "Order the defense-in-depth steps to secure...",
-      "type": "Question",
-      "category": "Sequencing",
-      "properties": {
-        "domain": "Cybersecurity & Cryptography",
-        "sub_type": "Sequencing",
-        "prompt": "Order the defense-in-depth steps to securely authenticate and store a user password",
-        "sequence": [
-          "User submits plaintext password over an encrypted TLS connection",
-          "Server generates a cryptographically secure random salt (at least 16 bytes)",
-          "Password and salt are hashed using Argon2id with calibrated time and memory costs",
-          "Salt, algorithm parameters, and resulting password hash are saved to the user table",
-          "Original plaintext password variable is zeroed in RAM immediately after hashing"
-        ],
-        "ordered_sequence": [
-          "User submits plaintext password over an encrypted TLS connection",
-          "Server generates a cryptographically secure random salt (at least 16 bytes)",
-          "Password and salt are hashed using Argon2id with calibrated time and memory costs",
-          "Salt, algorithm parameters, and resulting password hash are saved to the user table",
-          "Original plaintext password variable is zeroed in RAM immediately after hashing"
-        ]
-      },
-      "visualization": {
-        "group": "question_sequencing",
-        "color": "#A855F7",
-        "size": 16,
-        "level": 3,
-        "icon": "format_list_numbered"
-      }
-    },
-    {
-      "id": "q:sorting:cybersecurity_cryptography_1",
-      "label": "Classify the following cryptographic algor...",
-      "type": "Question",
-      "category": "Sorting-Classification",
-      "properties": {
-        "domain": "Cybersecurity & Cryptography",
-        "sub_type": "Sorting-Classification",
-        "prompt": "Classify the following cryptographic algorithms into Symmetric or Asymmetric",
-        "categories": [
-          "Symmetric",
-          "Asymmetric"
-        ],
-        "items": {
-          "Symmetric": [
-            "AES-256-GCM",
-            "ChaCha20-Poly1305",
-            "Triple DES (3DES)"
-          ],
-          "Asymmetric": [
-            "RSA-4096",
-            "ECC Curve25519",
-            "Diffie-Hellman (DH)"
-          ]
-        }
-      },
-      "visualization": {
-        "group": "question_sorting",
-        "color": "#E11D48",
-        "size": 16,
-        "level": 3,
-        "icon": "dashboard_customize"
-      }
-    },
-    {
-      "id": "q:sorting:cybersecurity_cryptography_2",
-      "label": "Classify the following security concerns i...",
-      "type": "Question",
-      "category": "Sorting-Classification",
-      "properties": {
-        "domain": "Cybersecurity & Cryptography",
-        "sub_type": "Sorting-Classification",
-        "prompt": "Classify the following security concerns into Network Security or Application Security",
-        "categories": [
-          "Network Security",
-          "Application Security"
-        ],
-        "items": {
-          "Network Security": [
-            "SYN Flood DDoS",
-            "ARP Spoofing",
-            "DNS Cache Poisoning"
-          ],
-          "Application Security": [
-            "SQL Injection (SQLi)",
-            "Remote Code Execution (RCE)",
-            "Cross-Site Scripting (XSS)"
-          ]
-        }
-      },
-      "visualization": {
-        "group": "question_sorting",
-        "color": "#E11D48",
-        "size": 16,
-        "level": 3,
-        "icon": "dashboard_customize"
-      }
-    },
-    {
-      "id": "q:mc:cybersecurity_cryptography_1",
-      "label": "Which password hashing algorithm was selec...",
-      "type": "Question",
-      "category": "Multi-Choice",
-      "properties": {
-        "domain": "Cybersecurity & Cryptography",
-        "sub_type": "Multi-Choice",
-        "question": "Which password hashing algorithm was selected as the official winner of the Password Hashing Competition for its memory-hard defense against ASIC/GPU attacks?",
-        "options": [
-          "Argon2id",
-          "PBKDF2-HMAC-SHA256",
-          "MD5-Crypt",
-          "SHA-512"
-        ],
-        "choices": [
-          "Argon2id",
-          "PBKDF2-HMAC-SHA256",
-          "MD5-Crypt",
-          "SHA-512"
-        ],
-        "correct": "Argon2id",
-        "correct_index": 0,
-        "explanation": "Argon2id combines data-independent and data-dependent memory access to resist both side-channel and GPU/ASIC brute force attacks."
-      },
-      "visualization": {
-        "group": "question_mc",
-        "color": "#10B981",
-        "size": 16,
-        "level": 3,
-        "icon": "quiz"
-      }
-    },
-    {
-      "id": "q:mc:cybersecurity_cryptography_2",
-      "label": "Which HTTP security header instructs brows...",
-      "type": "Question",
-      "category": "Multi-Choice",
-      "properties": {
-        "domain": "Cybersecurity & Cryptography",
-        "sub_type": "Multi-Choice",
-        "question": "Which HTTP security header instructs browsers to strictly communicate with a domain exclusively over HTTPS for a defined duration?",
-        "options": [
-          "Strict-Transport-Security (HSTS)",
-          "Content-Security-Policy (CSP)",
-          "X-Frame-Options",
-          "Access-Control-Allow-Origin"
-        ],
-        "choices": [
-          "Strict-Transport-Security (HSTS)",
-          "Content-Security-Policy (CSP)",
-          "X-Frame-Options",
-          "Access-Control-Allow-Origin"
-        ],
-        "correct": "Strict-Transport-Security (HSTS)",
-        "correct_index": 0,
-        "explanation": "HSTS eliminates SSL stripping attacks by forcing browsers to rewrite all HTTP URLs to HTTPS before making network requests."
-      },
-      "visualization": {
-        "group": "question_mc",
-        "color": "#10B981",
-        "size": 16,
-        "level": 3,
-        "icon": "quiz"
-      }
-    },
-    {
-      "id": "q:mc:cybersecurity_cryptography_3",
-      "label": "What type of attack exploits race conditio...",
-      "type": "Question",
-      "category": "Multi-Choice",
-      "properties": {
-        "domain": "Cybersecurity & Cryptography",
-        "sub_type": "Multi-Choice",
-        "question": "What type of attack exploits race conditions between the verification of a resource condition and the subsequent use of that resource?",
-        "options": [
-          "Time-of-Check to Time-of-Use (TOCTOU)",
-          "Buffer Overflow",
-          "Cross-Site Request Forgery (CSRF)",
-          "Server-Side Request Forgery (SSRF)"
-        ],
-        "choices": [
-          "Time-of-Check to Time-of-Use (TOCTOU)",
-          "Buffer Overflow",
-          "Cross-Site Request Forgery (CSRF)",
-          "Server-Side Request Forgery (SSRF)"
-        ],
-        "correct": "Time-of-Check to Time-of-Use (TOCTOU)",
-        "correct_index": 0,
-        "explanation": "TOCTOU is a concurrency vulnerability where state changes between permission validation and operation execution."
-      },
-      "visualization": {
-        "group": "question_mc",
-        "color": "#10B981",
-        "size": 16,
-        "level": 3,
-        "icon": "quiz"
-      }
-    },
-    {
-      "id": "q:mc:cybersecurity_cryptography_4",
-      "label": "In asymmetric cryptography, which key must...",
-      "type": "Question",
-      "category": "Multi-Choice",
-      "properties": {
-        "domain": "Cybersecurity & Cryptography",
-        "sub_type": "Multi-Choice",
-        "question": "In asymmetric cryptography, which key must the sender use to digitally sign a message digest so recipients can verify authenticity?",
-        "options": [
-          "The sender's private key",
-          "The recipient's public key",
-          "The sender's public key",
-          "A pre-shared symmetric key"
-        ],
-        "choices": [
-          "The sender's private key",
-          "The recipient's public key",
-          "The sender's public key",
-          "A pre-shared symmetric key"
-        ],
-        "correct": "The sender's private key",
-        "correct_index": 0,
-        "explanation": "A digital signature is created using the sender's private key and verified by anyone using the sender's public key."
-      },
-      "visualization": {
-        "group": "question_mc",
-        "color": "#10B981",
-        "size": 16,
-        "level": 3,
-        "icon": "quiz"
-      }
-    },
-    {
-      "id": "q:mc:cybersecurity_cryptography_5",
-      "label": "Which defense completely prevents Cross-Si...",
-      "type": "Question",
-      "category": "Multi-Choice",
-      "properties": {
-        "domain": "Cybersecurity & Cryptography",
-        "sub_type": "Multi-Choice",
-        "question": "Which defense completely prevents Cross-Site Request Forgery (CSRF) in modern state-changing POST requests?",
-        "options": [
-          "Cryptographic Anti-CSRF tokens and SameSite=Strict cookie policy",
-          "Base64 encoding all form submissions",
-          "Using HTTP Basic Authentication over TLS",
-          "Hiding the HTML submit button with CSS"
-        ],
-        "choices": [
-          "Cryptographic Anti-CSRF tokens and SameSite=Strict cookie policy",
-          "Base64 encoding all form submissions",
-          "Using HTTP Basic Authentication over TLS",
-          "Hiding the HTML submit button with CSS"
-        ],
-        "correct": "Cryptographic Anti-CSRF tokens and SameSite=Strict cookie policy",
-        "correct_index": 0,
-        "explanation": "SameSite cookies prevent cross-origin ambient cookie delivery, and anti-CSRF tokens guarantee deliberate user intent."
-      },
-      "visualization": {
-        "group": "question_mc",
-        "color": "#10B981",
-        "size": 16,
-        "level": 3,
-        "icon": "quiz"
-      }
-    },
-    {
       "id": "domain:devops_site_reliability_engineering",
       "label": "DevOps & Site Reliability Engineering",
       "type": "CurriculumDomain",
@@ -14831,15 +14304,15 @@
       }
     },
     {
-      "id": "domain:security_engineering",
-      "label": "Security Engineering",
+      "id": "domain:cybersecurity_cryptography_security_engineering",
+      "label": "Cybersecurity, Cryptography & Security Engineering",
       "type": "CurriculumDomain",
       "category": "Computer Science",
       "properties": {
-        "name": "Security Engineering",
-        "introduction": "Security Engineering designs systems to remain dependable and resilient in the face of malice, error, or targeted compromise, spanning threat modeling, hardware-enforced isolation, and defense-in-depth.",
-        "remediation": "Focus on the STRIDE threat matrix (Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege), compile-time memory protections (ASLR/DEP/canaries), and the Principle of Least Privilege.",
-        "deep_dive": "Modern Security Engineering incorporates formal Threat Modeling during architectural design, automated static/dynamic security testing (SAST/DAST) in CI/CD, and cryptographically verified identities (mTLS, SPIFFE/SPIRE). Binary hardening eliminates memory corruption attack vectors via Return-Oriented Programming (ROP) defenses, Control Flow Integrity (CFI), and hardware-backed Key Management Systems (HSM/KMS)."
+        "name": "Cybersecurity, Cryptography & Security Engineering",
+        "introduction": "Cybersecurity, Cryptography & Security Engineering investigates threat modeling (STRIDE), secure software development lifecycles (SSDLC), binary exploitation mitigations (ASLR, DEP/NX, Stack Canaries, ROP), applied symmetric and asymmetric cryptography (AES-256-GCM, RSA, ECC Curve25519, Argon2id), and Zero Trust architectures.",
+        "remediation": "Focus on the STRIDE threat matrix (Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege), compile-time memory protections (ASLR, DEP/NX, Stack Canaries, ROP gadgets), asymmetric vs symmetric key mechanics (RSA/ECC vs AES-GCM), and the Principle of Least Privilege.",
+        "deep_dive": "A unified engineering discipline uniting architectural threat modeling, automated static and dynamic analysis (SAST/DAST) in CI/CD, and low-level binary hardening. Explores mathematical intractability in modern cryptography (elliptic curve Diffie-Hellman, authenticated AEAD ciphers, memory-hard password hashing), ephemeral TLS 1.3 handshakes, Hardware Security Modules (HSM/KMS), and Zero Trust access management (OAuth 2.0 PKCE, OIDC, and Attribute-Based Access Control)."
       },
       "visualization": {
         "group": "domain",
@@ -14850,12 +14323,172 @@
       }
     },
     {
-      "id": "q:tf:security_engineering_1",
+      "id": "q:tf:cybersecurity_cryptography_security_engineering_1",
+      "label": "Symmetric encryption algorithms like AES u...",
+      "type": "Question",
+      "category": "True-False",
+      "properties": {
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
+        "sub_type": "True-False",
+        "statement": "Symmetric encryption algorithms like AES use the exact same cryptographic key for both encryption and decryption.",
+        "is_true": true,
+        "explanation": "AES is a symmetric cipher where sender and receiver share the same secret key."
+      },
+      "visualization": {
+        "group": "question_tf",
+        "color": "#14B8A6",
+        "size": 16,
+        "level": 3,
+        "icon": "check_circle"
+      }
+    },
+    {
+      "id": "q:tf:cybersecurity_cryptography_security_engineering_2",
+      "label": "MD5 and SHA-1 are recommended today for se...",
+      "type": "Question",
+      "category": "True-False",
+      "properties": {
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
+        "sub_type": "True-False",
+        "statement": "MD5 and SHA-1 are recommended today for secure cryptographic password hashing in modern production applications.",
+        "is_true": false,
+        "explanation": "MD5 and SHA-1 suffer from collision attacks and lack memory-hardness. Modern apps must use Argon2id or bcrypt."
+      },
+      "visualization": {
+        "group": "question_tf",
+        "color": "#14B8A6",
+        "size": 16,
+        "level": 3,
+        "icon": "check_circle"
+      }
+    },
+    {
+      "id": "q:tf:cybersecurity_cryptography_security_engineering_3",
+      "label": "Perfect Forward Secrecy (PFS) ensures that...",
+      "type": "Question",
+      "category": "True-False",
+      "properties": {
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
+        "sub_type": "True-False",
+        "statement": "Perfect Forward Secrecy (PFS) ensures that compromise of a server's long-term private key cannot decrypt previously recorded network traffic.",
+        "is_true": true,
+        "explanation": "PFS generates unique ephemeral session keys (ECDHE) for each TLS session so old traffic remains indecipherable."
+      },
+      "visualization": {
+        "group": "question_tf",
+        "color": "#14B8A6",
+        "size": 16,
+        "level": 3,
+        "icon": "check_circle"
+      }
+    },
+    {
+      "id": "q:tf:cybersecurity_cryptography_security_engineering_4",
+      "label": "In a SQL injection attack, attackers explo...",
+      "type": "Question",
+      "category": "True-False",
+      "properties": {
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
+        "sub_type": "True-False",
+        "statement": "In a SQL injection attack, attackers exploit flaws where user inputs are concatenated directly into raw database command strings.",
+        "is_true": true,
+        "explanation": "Parameterized queries and prepared statements completely neutralize SQL injection by separating code from data."
+      },
+      "visualization": {
+        "group": "question_tf",
+        "color": "#14B8A6",
+        "size": 16,
+        "level": 3,
+        "icon": "check_circle"
+      }
+    },
+    {
+      "id": "q:tf:cybersecurity_cryptography_security_engineering_5",
+      "label": "Zero Trust network architecture assumes th...",
+      "type": "Question",
+      "category": "True-False",
+      "properties": {
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
+        "sub_type": "True-False",
+        "statement": "Zero Trust network architecture assumes that any device inside the internal corporate network firewall can be inherently trusted.",
+        "is_true": false,
+        "explanation": "Zero Trust operates under 'Never Trust, Always Verify', enforcing mutual TLS and per-request authorization internally."
+      },
+      "visualization": {
+        "group": "question_tf",
+        "color": "#14B8A6",
+        "size": 16,
+        "level": 3,
+        "icon": "check_circle"
+      }
+    },
+    {
+      "id": "q:tf:cybersecurity_cryptography_security_engineering_6",
+      "label": "Cross-Site Scripting (XSS) occurs when an ...",
+      "type": "Question",
+      "category": "True-False",
+      "properties": {
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
+        "sub_type": "True-False",
+        "statement": "Cross-Site Scripting (XSS) occurs when an application includes untrusted data in a web page without proper escaping, allowing malicious script execution.",
+        "is_true": true,
+        "explanation": "XSS allows attackers to hijack session cookies, deface DOM elements, or redirect users to malicious endpoints."
+      },
+      "visualization": {
+        "group": "question_tf",
+        "color": "#14B8A6",
+        "size": 16,
+        "level": 3,
+        "icon": "check_circle"
+      }
+    },
+    {
+      "id": "q:tf:cybersecurity_cryptography_security_engineering_7",
+      "label": "A cryptographic salt should be kept top-se...",
+      "type": "Question",
+      "category": "True-False",
+      "properties": {
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
+        "sub_type": "True-False",
+        "statement": "A cryptographic salt should be kept top-secret alongside the server's master root key in an encrypted vault.",
+        "is_true": false,
+        "explanation": "Salts do not need to be secret; their sole purpose is uniqueness per user to defeat precomputed rainbow tables."
+      },
+      "visualization": {
+        "group": "question_tf",
+        "color": "#14B8A6",
+        "size": 16,
+        "level": 3,
+        "icon": "check_circle"
+      }
+    },
+    {
+      "id": "q:tf:cybersecurity_cryptography_security_engineering_8",
+      "label": "Elliptic Curve Cryptography (ECC) achieves...",
+      "type": "Question",
+      "category": "True-False",
+      "properties": {
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
+        "sub_type": "True-False",
+        "statement": "Elliptic Curve Cryptography (ECC) achieves equivalent security to RSA with significantly smaller key sizes (e.g. 256-bit ECC ≈ 3072-bit RSA).",
+        "is_true": true,
+        "explanation": "ECC provides equal security with vastly shorter keys, reducing CPU cycles and network transmission overhead."
+      },
+      "visualization": {
+        "group": "question_tf",
+        "color": "#14B8A6",
+        "size": 16,
+        "level": 3,
+        "icon": "check_circle"
+      }
+    },
+    {
+      "id": "q:tf:cybersecurity_cryptography_security_engineering_9",
       "label": "Address Space Layout Randomization (ASLR) ...",
       "type": "Question",
       "category": "True-False",
       "properties": {
-        "domain": "Security Engineering",
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
         "sub_type": "True-False",
         "statement": "Address Space Layout Randomization (ASLR) randomizes the memory locations of program segments (stack, heap, libraries) to prevent predictable buffer overflow exploits.",
         "is_true": true,
@@ -14870,12 +14503,12 @@
       }
     },
     {
-      "id": "q:tf:security_engineering_2",
+      "id": "q:tf:cybersecurity_cryptography_security_engineering_10",
       "label": "Static Application Security Testing (SAST)...",
       "type": "Question",
       "category": "True-False",
       "properties": {
-        "domain": "Security Engineering",
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
         "sub_type": "True-False",
         "statement": "Static Application Security Testing (SAST) requires executing the compiled binary inside a live running test environment.",
         "is_true": false,
@@ -14890,12 +14523,12 @@
       }
     },
     {
-      "id": "q:tf:security_engineering_3",
+      "id": "q:tf:cybersecurity_cryptography_security_engineering_11",
       "label": "In the STRIDE threat modeling framework, t...",
       "type": "Question",
       "category": "True-False",
       "properties": {
-        "domain": "Security Engineering",
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
         "sub_type": "True-False",
         "statement": "In the STRIDE threat modeling framework, the letter 'R' stands for 'Repudiation'—the ability of an actor to deny having performed an action without proof.",
         "is_true": true,
@@ -14910,12 +14543,12 @@
       }
     },
     {
-      "id": "q:tf:security_engineering_4",
+      "id": "q:tf:cybersecurity_cryptography_security_engineering_12",
       "label": "Stack Canaries are known sentinel values p...",
       "type": "Question",
       "category": "True-False",
       "properties": {
-        "domain": "Security Engineering",
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
         "sub_type": "True-False",
         "statement": "Stack Canaries are known sentinel values placed on the stack before the return address to detect stack buffer overflows prior to function return.",
         "is_true": true,
@@ -14930,12 +14563,12 @@
       }
     },
     {
-      "id": "q:tf:security_engineering_5",
+      "id": "q:tf:cybersecurity_cryptography_security_engineering_13",
       "label": "Attribute-Based Access Control (ABAC) eval...",
       "type": "Question",
       "category": "True-False",
       "properties": {
-        "domain": "Security Engineering",
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
         "sub_type": "True-False",
         "statement": "Attribute-Based Access Control (ABAC) evaluates permissions strictly based on predefined fixed user job title roles without considering contextual environment attributes.",
         "is_true": false,
@@ -14950,12 +14583,12 @@
       }
     },
     {
-      "id": "q:tf:security_engineering_6",
+      "id": "q:tf:cybersecurity_cryptography_security_engineering_14",
       "label": "Data Execution Prevention (DEP / W^X) enfo...",
       "type": "Question",
       "category": "True-False",
       "properties": {
-        "domain": "Security Engineering",
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
         "sub_type": "True-False",
         "statement": "Data Execution Prevention (DEP / W^X) enforces that memory pages can be writable or executable, but never simultaneously writable AND executable.",
         "is_true": true,
@@ -14970,12 +14603,62 @@
       }
     },
     {
-      "id": "q:matching:security_engineering_1",
+      "id": "q:matching:cybersecurity_cryptography_security_engineering_1",
+      "label": "Match each cryptographic primitive with it...",
+      "type": "Question",
+      "category": "Matching",
+      "properties": {
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
+        "sub_type": "Matching",
+        "prompt": "Match each cryptographic primitive with its primary technical purpose",
+        "pairs": {
+          "AES-256-GCM": "Authenticated high-speed symmetric payload encryption",
+          "RSA / ECC Curve25519": "Asymmetric key exchange and digital identity signatures",
+          "HMAC-SHA256": "Message authentication code verifying tamper-proof data integrity",
+          "Argon2id": "Memory-hard password key derivation resisting GPU cracking",
+          "Diffie-Hellman (ECDHE)": "Ephemeral shared secret agreement over untrusted networks"
+        }
+      },
+      "visualization": {
+        "group": "question_matching",
+        "color": "#F97316",
+        "size": 16,
+        "level": 3,
+        "icon": "compare_arrows"
+      }
+    },
+    {
+      "id": "q:matching:cybersecurity_cryptography_security_engineering_2",
+      "label": "Match each cybersecurity vulnerability wit...",
+      "type": "Question",
+      "category": "Matching",
+      "properties": {
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
+        "sub_type": "Matching",
+        "prompt": "Match each cybersecurity vulnerability with its standard mitigation",
+        "pairs": {
+          "SQL Injection": "Parameterized queries / prepared statements with placeholder bindings",
+          "Cross-Site Scripting (XSS)": "Context-aware HTML/JS output encoding and Content Security Policy",
+          "Buffer Overflow": "Memory-safe languages (Rust/Go) or compiler stack canaries and ASLR",
+          "Man-In-The-Middle (MITM)": "TLS certificate pinning and Strict-Transport-Security (HSTS)",
+          "Credential Stuffing": "Multi-Factor Authentication (MFA) and adaptive rate limiting"
+        }
+      },
+      "visualization": {
+        "group": "question_matching",
+        "color": "#F97316",
+        "size": 16,
+        "level": 3,
+        "icon": "compare_arrows"
+      }
+    },
+    {
+      "id": "q:matching:cybersecurity_cryptography_security_engineering_3",
       "label": "Match each Security Engineering concept wi...",
       "type": "Question",
       "category": "Matching",
       "properties": {
-        "domain": "Security Engineering",
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
         "sub_type": "Matching",
         "prompt": "Match each Security Engineering concept with its primary objective",
         "pairs": {
@@ -14995,12 +14678,12 @@
       }
     },
     {
-      "id": "q:matching:security_engineering_2",
+      "id": "q:matching:cybersecurity_cryptography_security_engineering_4",
       "label": "Match each binary exploit defense with its...",
       "type": "Question",
       "category": "Matching",
       "properties": {
-        "domain": "Security Engineering",
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
         "sub_type": "Matching",
         "prompt": "Match each binary exploit defense with its protection mechanism",
         "pairs": {
@@ -15020,12 +14703,76 @@
       }
     },
     {
-      "id": "q:sequencing:security_engineering_1",
+      "id": "q:sequencing:cybersecurity_cryptography_security_engineering_1",
+      "label": "Order the sequence of operations in a stan...",
+      "type": "Question",
+      "category": "Sequencing",
+      "properties": {
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
+        "sub_type": "Sequencing",
+        "prompt": "Order the sequence of operations in a standard TLS 1.3 cryptographic handshake",
+        "sequence": [
+          "Client sends ClientHello with supported cipher suites and ephemeral Diffie-Hellman key share",
+          "Server replies with ServerHello, selecting cipher suite and providing its own key share",
+          "Both parties derive symmetric session encryption keys from the shared Diffie-Hellman secret",
+          "Server sends encrypted certificate chain and digital signature for identity verification",
+          "Client verifies certificate and both parties exchange Finished messages to begin secure data transfer"
+        ],
+        "ordered_sequence": [
+          "Client sends ClientHello with supported cipher suites and ephemeral Diffie-Hellman key share",
+          "Server replies with ServerHello, selecting cipher suite and providing its own key share",
+          "Both parties derive symmetric session encryption keys from the shared Diffie-Hellman secret",
+          "Server sends encrypted certificate chain and digital signature for identity verification",
+          "Client verifies certificate and both parties exchange Finished messages to begin secure data transfer"
+        ]
+      },
+      "visualization": {
+        "group": "question_sequencing",
+        "color": "#A855F7",
+        "size": 16,
+        "level": 3,
+        "icon": "format_list_numbered"
+      }
+    },
+    {
+      "id": "q:sequencing:cybersecurity_cryptography_security_engineering_2",
+      "label": "Order the defense-in-depth steps to secure...",
+      "type": "Question",
+      "category": "Sequencing",
+      "properties": {
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
+        "sub_type": "Sequencing",
+        "prompt": "Order the defense-in-depth steps to securely authenticate and store a user password",
+        "sequence": [
+          "User submits plaintext password over an encrypted TLS connection",
+          "Server generates a cryptographically secure random salt (at least 16 bytes)",
+          "Password and salt are hashed using Argon2id with calibrated time and memory costs",
+          "Salt, algorithm parameters, and resulting password hash are saved to the user table",
+          "Original plaintext password variable is zeroed in RAM immediately after hashing"
+        ],
+        "ordered_sequence": [
+          "User submits plaintext password over an encrypted TLS connection",
+          "Server generates a cryptographically secure random salt (at least 16 bytes)",
+          "Password and salt are hashed using Argon2id with calibrated time and memory costs",
+          "Salt, algorithm parameters, and resulting password hash are saved to the user table",
+          "Original plaintext password variable is zeroed in RAM immediately after hashing"
+        ]
+      },
+      "visualization": {
+        "group": "question_sequencing",
+        "color": "#A855F7",
+        "size": 16,
+        "level": 3,
+        "icon": "format_list_numbered"
+      }
+    },
+    {
+      "id": "q:sequencing:cybersecurity_cryptography_security_engineering_3",
       "label": "Order the stages of a Secure Software Deve...",
       "type": "Question",
       "category": "Sequencing",
       "properties": {
-        "domain": "Security Engineering",
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
         "sub_type": "Sequencing",
         "prompt": "Order the stages of a Secure Software Development Lifecycle (SSDLC)",
         "sequence": [
@@ -15052,12 +14799,12 @@
       }
     },
     {
-      "id": "q:sequencing:security_engineering_2",
+      "id": "q:sequencing:cybersecurity_cryptography_security_engineering_4",
       "label": "Order the steps an attacker takes during a...",
       "type": "Question",
       "category": "Sequencing",
       "properties": {
-        "domain": "Security Engineering",
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
         "sub_type": "Sequencing",
         "prompt": "Order the steps an attacker takes during a traditional stack buffer overflow exploit and its defense response",
         "sequence": [
@@ -15084,12 +14831,80 @@
       }
     },
     {
-      "id": "q:sorting:security_engineering_1",
+      "id": "q:sorting:cybersecurity_cryptography_security_engineering_1",
+      "label": "Classify the following cryptographic algor...",
+      "type": "Question",
+      "category": "Sorting-Classification",
+      "properties": {
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
+        "sub_type": "Sorting-Classification",
+        "prompt": "Classify the following cryptographic algorithms into Symmetric or Asymmetric",
+        "categories": [
+          "Symmetric",
+          "Asymmetric"
+        ],
+        "items": {
+          "Symmetric": [
+            "AES-256-GCM",
+            "ChaCha20-Poly1305",
+            "Triple DES (3DES)"
+          ],
+          "Asymmetric": [
+            "RSA-4096",
+            "ECC Curve25519",
+            "Diffie-Hellman (DH)"
+          ]
+        }
+      },
+      "visualization": {
+        "group": "question_sorting",
+        "color": "#E11D48",
+        "size": 16,
+        "level": 3,
+        "icon": "dashboard_customize"
+      }
+    },
+    {
+      "id": "q:sorting:cybersecurity_cryptography_security_engineering_2",
+      "label": "Classify the following security concerns i...",
+      "type": "Question",
+      "category": "Sorting-Classification",
+      "properties": {
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
+        "sub_type": "Sorting-Classification",
+        "prompt": "Classify the following security concerns into Network Security or Application Security",
+        "categories": [
+          "Network Security",
+          "Application Security"
+        ],
+        "items": {
+          "Network Security": [
+            "SYN Flood DDoS",
+            "ARP Spoofing",
+            "DNS Cache Poisoning"
+          ],
+          "Application Security": [
+            "SQL Injection (SQLi)",
+            "Remote Code Execution (RCE)",
+            "Cross-Site Scripting (XSS)"
+          ]
+        }
+      },
+      "visualization": {
+        "group": "question_sorting",
+        "color": "#E11D48",
+        "size": 16,
+        "level": 3,
+        "icon": "dashboard_customize"
+      }
+    },
+    {
+      "id": "q:sorting:cybersecurity_cryptography_security_engineering_3",
       "label": "Classify the following security testing to...",
       "type": "Question",
       "category": "Sorting-Classification",
       "properties": {
-        "domain": "Security Engineering",
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
         "sub_type": "Sorting-Classification",
         "prompt": "Classify the following security testing tools into SAST (Static) or DAST (Dynamic)",
         "categories": [
@@ -15118,12 +14933,12 @@
       }
     },
     {
-      "id": "q:sorting:security_engineering_2",
+      "id": "q:sorting:cybersecurity_cryptography_security_engineering_4",
       "label": "Classify the following security controls i...",
       "type": "Question",
       "category": "Sorting-Classification",
       "properties": {
-        "domain": "Security Engineering",
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
         "sub_type": "Sorting-Classification",
         "prompt": "Classify the following security controls into Preventive or Detective",
         "categories": [
@@ -15152,12 +14967,177 @@
       }
     },
     {
-      "id": "q:mc:security_engineering_1",
+      "id": "q:mc:cybersecurity_cryptography_security_engineering_1",
+      "label": "Which password hashing algorithm was selec...",
+      "type": "Question",
+      "category": "Multi-Choice",
+      "properties": {
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
+        "sub_type": "Multi-Choice",
+        "question": "Which password hashing algorithm was selected as the official winner of the Password Hashing Competition for its memory-hard defense against ASIC/GPU attacks?",
+        "options": [
+          "Argon2id",
+          "PBKDF2-HMAC-SHA256",
+          "MD5-Crypt",
+          "SHA-512"
+        ],
+        "choices": [
+          "Argon2id",
+          "PBKDF2-HMAC-SHA256",
+          "MD5-Crypt",
+          "SHA-512"
+        ],
+        "correct": "Argon2id",
+        "correct_index": 0,
+        "explanation": "Argon2id combines data-independent and data-dependent memory access to resist both side-channel and GPU/ASIC brute force attacks."
+      },
+      "visualization": {
+        "group": "question_mc",
+        "color": "#10B981",
+        "size": 16,
+        "level": 3,
+        "icon": "quiz"
+      }
+    },
+    {
+      "id": "q:mc:cybersecurity_cryptography_security_engineering_2",
+      "label": "Which HTTP security header instructs brows...",
+      "type": "Question",
+      "category": "Multi-Choice",
+      "properties": {
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
+        "sub_type": "Multi-Choice",
+        "question": "Which HTTP security header instructs browsers to strictly communicate with a domain exclusively over HTTPS for a defined duration?",
+        "options": [
+          "Strict-Transport-Security (HSTS)",
+          "Content-Security-Policy (CSP)",
+          "X-Frame-Options",
+          "Access-Control-Allow-Origin"
+        ],
+        "choices": [
+          "Strict-Transport-Security (HSTS)",
+          "Content-Security-Policy (CSP)",
+          "X-Frame-Options",
+          "Access-Control-Allow-Origin"
+        ],
+        "correct": "Strict-Transport-Security (HSTS)",
+        "correct_index": 0,
+        "explanation": "HSTS eliminates SSL stripping attacks by forcing browsers to rewrite all HTTP URLs to HTTPS before making network requests."
+      },
+      "visualization": {
+        "group": "question_mc",
+        "color": "#10B981",
+        "size": 16,
+        "level": 3,
+        "icon": "quiz"
+      }
+    },
+    {
+      "id": "q:mc:cybersecurity_cryptography_security_engineering_3",
+      "label": "What type of attack exploits race conditio...",
+      "type": "Question",
+      "category": "Multi-Choice",
+      "properties": {
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
+        "sub_type": "Multi-Choice",
+        "question": "What type of attack exploits race conditions between the verification of a resource condition and the subsequent use of that resource?",
+        "options": [
+          "Time-of-Check to Time-of-Use (TOCTOU)",
+          "Buffer Overflow",
+          "Cross-Site Request Forgery (CSRF)",
+          "Server-Side Request Forgery (SSRF)"
+        ],
+        "choices": [
+          "Time-of-Check to Time-of-Use (TOCTOU)",
+          "Buffer Overflow",
+          "Cross-Site Request Forgery (CSRF)",
+          "Server-Side Request Forgery (SSRF)"
+        ],
+        "correct": "Time-of-Check to Time-of-Use (TOCTOU)",
+        "correct_index": 0,
+        "explanation": "TOCTOU is a concurrency vulnerability where state changes between permission validation and operation execution."
+      },
+      "visualization": {
+        "group": "question_mc",
+        "color": "#10B981",
+        "size": 16,
+        "level": 3,
+        "icon": "quiz"
+      }
+    },
+    {
+      "id": "q:mc:cybersecurity_cryptography_security_engineering_4",
+      "label": "In asymmetric cryptography, which key must...",
+      "type": "Question",
+      "category": "Multi-Choice",
+      "properties": {
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
+        "sub_type": "Multi-Choice",
+        "question": "In asymmetric cryptography, which key must the sender use to digitally sign a message digest so recipients can verify authenticity?",
+        "options": [
+          "The sender's private key",
+          "The recipient's public key",
+          "The sender's public key",
+          "A pre-shared symmetric key"
+        ],
+        "choices": [
+          "The sender's private key",
+          "The recipient's public key",
+          "The sender's public key",
+          "A pre-shared symmetric key"
+        ],
+        "correct": "The sender's private key",
+        "correct_index": 0,
+        "explanation": "A digital signature is created using the sender's private key and verified by anyone using the sender's public key."
+      },
+      "visualization": {
+        "group": "question_mc",
+        "color": "#10B981",
+        "size": 16,
+        "level": 3,
+        "icon": "quiz"
+      }
+    },
+    {
+      "id": "q:mc:cybersecurity_cryptography_security_engineering_5",
+      "label": "Which defense completely prevents Cross-Si...",
+      "type": "Question",
+      "category": "Multi-Choice",
+      "properties": {
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
+        "sub_type": "Multi-Choice",
+        "question": "Which defense completely prevents Cross-Site Request Forgery (CSRF) in modern state-changing POST requests?",
+        "options": [
+          "Cryptographic Anti-CSRF tokens and SameSite=Strict cookie policy",
+          "Base64 encoding all form submissions",
+          "Using HTTP Basic Authentication over TLS",
+          "Hiding the HTML submit button with CSS"
+        ],
+        "choices": [
+          "Cryptographic Anti-CSRF tokens and SameSite=Strict cookie policy",
+          "Base64 encoding all form submissions",
+          "Using HTTP Basic Authentication over TLS",
+          "Hiding the HTML submit button with CSS"
+        ],
+        "correct": "Cryptographic Anti-CSRF tokens and SameSite=Strict cookie policy",
+        "correct_index": 0,
+        "explanation": "SameSite cookies prevent cross-origin ambient cookie delivery, and anti-CSRF tokens guarantee deliberate user intent."
+      },
+      "visualization": {
+        "group": "question_mc",
+        "color": "#10B981",
+        "size": 16,
+        "level": 3,
+        "icon": "quiz"
+      }
+    },
+    {
+      "id": "q:mc:cybersecurity_cryptography_security_engineering_6",
       "label": "Which binary exploitation technique bypass...",
       "type": "Question",
       "category": "Multi-Choice",
       "properties": {
-        "domain": "Security Engineering",
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
         "sub_type": "Multi-Choice",
         "question": "Which binary exploitation technique bypasses non-executable stack protections (DEP/NX) by chaining together existing small machine code snippets ending in a RET instruction?",
         "options": [
@@ -15185,12 +15165,12 @@
       }
     },
     {
-      "id": "q:mc:security_engineering_2",
+      "id": "q:mc:cybersecurity_cryptography_security_engineering_7",
       "label": "In the OAuth 2.0 authorization framework, ...",
       "type": "Question",
       "category": "Multi-Choice",
       "properties": {
-        "domain": "Security Engineering",
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
         "sub_type": "Multi-Choice",
         "question": "In the OAuth 2.0 authorization framework, which grant type is recommended for single-page web applications and mobile apps to protect against authorization code interception?",
         "options": [
@@ -15218,12 +15198,12 @@
       }
     },
     {
-      "id": "q:mc:security_engineering_3",
+      "id": "q:mc:cybersecurity_cryptography_security_engineering_8",
       "label": "What is the primary operational advantage ...",
       "type": "Question",
       "category": "Multi-Choice",
       "properties": {
-        "domain": "Security Engineering",
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
         "sub_type": "Multi-Choice",
         "question": "What is the primary operational advantage of storing master cryptographic encryption keys inside a dedicated Hardware Security Module (HSM)?",
         "options": [
@@ -15251,12 +15231,12 @@
       }
     },
     {
-      "id": "q:mc:security_engineering_4",
+      "id": "q:mc:cybersecurity_cryptography_security_engineering_9",
       "label": "Which principle of Security Engineering di...",
       "type": "Question",
       "category": "Multi-Choice",
       "properties": {
-        "domain": "Security Engineering",
+        "domain": "Cybersecurity, Cryptography & Security Engineering",
         "sub_type": "Multi-Choice",
         "question": "Which principle of Security Engineering dictates that every program and every privileged user of the system should operate using the least amount of privilege necessary to complete the job?",
         "options": [
@@ -22076,206 +22056,6 @@
       "properties": {}
     },
     {
-      "id": "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:cybersecurity_cryptography",
-      "source": "root:hardcode",
-      "target": "domain:cybersecurity_cryptography",
-      "relation": "COVERS_CURRICULUM_DOMAIN",
-      "label": "Covers Domain",
-      "weight": 2.5,
-      "directed": true,
-      "properties": {}
-    },
-    {
-      "id": "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:tf:cybersecurity_cryptography_1",
-      "source": "domain:cybersecurity_cryptography",
-      "target": "q:tf:cybersecurity_cryptography_1",
-      "relation": "HAS_QUESTION",
-      "label": "Has Question",
-      "weight": 1.0,
-      "directed": true,
-      "properties": {}
-    },
-    {
-      "id": "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:tf:cybersecurity_cryptography_2",
-      "source": "domain:cybersecurity_cryptography",
-      "target": "q:tf:cybersecurity_cryptography_2",
-      "relation": "HAS_QUESTION",
-      "label": "Has Question",
-      "weight": 1.0,
-      "directed": true,
-      "properties": {}
-    },
-    {
-      "id": "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:tf:cybersecurity_cryptography_3",
-      "source": "domain:cybersecurity_cryptography",
-      "target": "q:tf:cybersecurity_cryptography_3",
-      "relation": "HAS_QUESTION",
-      "label": "Has Question",
-      "weight": 1.0,
-      "directed": true,
-      "properties": {}
-    },
-    {
-      "id": "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:tf:cybersecurity_cryptography_4",
-      "source": "domain:cybersecurity_cryptography",
-      "target": "q:tf:cybersecurity_cryptography_4",
-      "relation": "HAS_QUESTION",
-      "label": "Has Question",
-      "weight": 1.0,
-      "directed": true,
-      "properties": {}
-    },
-    {
-      "id": "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:tf:cybersecurity_cryptography_5",
-      "source": "domain:cybersecurity_cryptography",
-      "target": "q:tf:cybersecurity_cryptography_5",
-      "relation": "HAS_QUESTION",
-      "label": "Has Question",
-      "weight": 1.0,
-      "directed": true,
-      "properties": {}
-    },
-    {
-      "id": "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:tf:cybersecurity_cryptography_6",
-      "source": "domain:cybersecurity_cryptography",
-      "target": "q:tf:cybersecurity_cryptography_6",
-      "relation": "HAS_QUESTION",
-      "label": "Has Question",
-      "weight": 1.0,
-      "directed": true,
-      "properties": {}
-    },
-    {
-      "id": "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:tf:cybersecurity_cryptography_7",
-      "source": "domain:cybersecurity_cryptography",
-      "target": "q:tf:cybersecurity_cryptography_7",
-      "relation": "HAS_QUESTION",
-      "label": "Has Question",
-      "weight": 1.0,
-      "directed": true,
-      "properties": {}
-    },
-    {
-      "id": "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:tf:cybersecurity_cryptography_8",
-      "source": "domain:cybersecurity_cryptography",
-      "target": "q:tf:cybersecurity_cryptography_8",
-      "relation": "HAS_QUESTION",
-      "label": "Has Question",
-      "weight": 1.0,
-      "directed": true,
-      "properties": {}
-    },
-    {
-      "id": "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:matching:cybersecurity_cryptography_1",
-      "source": "domain:cybersecurity_cryptography",
-      "target": "q:matching:cybersecurity_cryptography_1",
-      "relation": "HAS_QUESTION",
-      "label": "Has Question",
-      "weight": 1.0,
-      "directed": true,
-      "properties": {}
-    },
-    {
-      "id": "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:matching:cybersecurity_cryptography_2",
-      "source": "domain:cybersecurity_cryptography",
-      "target": "q:matching:cybersecurity_cryptography_2",
-      "relation": "HAS_QUESTION",
-      "label": "Has Question",
-      "weight": 1.0,
-      "directed": true,
-      "properties": {}
-    },
-    {
-      "id": "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:sequencing:cybersecurity_cryptography_1",
-      "source": "domain:cybersecurity_cryptography",
-      "target": "q:sequencing:cybersecurity_cryptography_1",
-      "relation": "HAS_QUESTION",
-      "label": "Has Question",
-      "weight": 1.0,
-      "directed": true,
-      "properties": {}
-    },
-    {
-      "id": "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:sequencing:cybersecurity_cryptography_2",
-      "source": "domain:cybersecurity_cryptography",
-      "target": "q:sequencing:cybersecurity_cryptography_2",
-      "relation": "HAS_QUESTION",
-      "label": "Has Question",
-      "weight": 1.0,
-      "directed": true,
-      "properties": {}
-    },
-    {
-      "id": "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:sorting:cybersecurity_cryptography_1",
-      "source": "domain:cybersecurity_cryptography",
-      "target": "q:sorting:cybersecurity_cryptography_1",
-      "relation": "HAS_QUESTION",
-      "label": "Has Question",
-      "weight": 1.0,
-      "directed": true,
-      "properties": {}
-    },
-    {
-      "id": "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:sorting:cybersecurity_cryptography_2",
-      "source": "domain:cybersecurity_cryptography",
-      "target": "q:sorting:cybersecurity_cryptography_2",
-      "relation": "HAS_QUESTION",
-      "label": "Has Question",
-      "weight": 1.0,
-      "directed": true,
-      "properties": {}
-    },
-    {
-      "id": "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:mc:cybersecurity_cryptography_1",
-      "source": "domain:cybersecurity_cryptography",
-      "target": "q:mc:cybersecurity_cryptography_1",
-      "relation": "HAS_QUESTION",
-      "label": "Has Question",
-      "weight": 1.0,
-      "directed": true,
-      "properties": {}
-    },
-    {
-      "id": "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:mc:cybersecurity_cryptography_2",
-      "source": "domain:cybersecurity_cryptography",
-      "target": "q:mc:cybersecurity_cryptography_2",
-      "relation": "HAS_QUESTION",
-      "label": "Has Question",
-      "weight": 1.0,
-      "directed": true,
-      "properties": {}
-    },
-    {
-      "id": "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:mc:cybersecurity_cryptography_3",
-      "source": "domain:cybersecurity_cryptography",
-      "target": "q:mc:cybersecurity_cryptography_3",
-      "relation": "HAS_QUESTION",
-      "label": "Has Question",
-      "weight": 1.0,
-      "directed": true,
-      "properties": {}
-    },
-    {
-      "id": "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:mc:cybersecurity_cryptography_4",
-      "source": "domain:cybersecurity_cryptography",
-      "target": "q:mc:cybersecurity_cryptography_4",
-      "relation": "HAS_QUESTION",
-      "label": "Has Question",
-      "weight": 1.0,
-      "directed": true,
-      "properties": {}
-    },
-    {
-      "id": "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:mc:cybersecurity_cryptography_5",
-      "source": "domain:cybersecurity_cryptography",
-      "target": "q:mc:cybersecurity_cryptography_5",
-      "relation": "HAS_QUESTION",
-      "label": "Has Question",
-      "weight": 1.0,
-      "directed": true,
-      "properties": {}
-    },
-    {
       "id": "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:devops_site_reliability_engineering",
       "source": "root:hardcode",
       "target": "domain:devops_site_reliability_engineering",
@@ -22436,9 +22216,9 @@
       "properties": {}
     },
     {
-      "id": "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:security_engineering",
+      "id": "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:cybersecurity_cryptography_security_engineering",
       "source": "root:hardcode",
-      "target": "domain:security_engineering",
+      "target": "domain:cybersecurity_cryptography_security_engineering",
       "relation": "COVERS_CURRICULUM_DOMAIN",
       "label": "Covers Domain",
       "weight": 2.5,
@@ -22446,9 +22226,9 @@
       "properties": {}
     },
     {
-      "id": "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_1",
-      "source": "domain:security_engineering",
-      "target": "q:tf:security_engineering_1",
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_1",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:tf:cybersecurity_cryptography_security_engineering_1",
       "relation": "HAS_QUESTION",
       "label": "Has Question",
       "weight": 1.0,
@@ -22456,9 +22236,9 @@
       "properties": {}
     },
     {
-      "id": "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_2",
-      "source": "domain:security_engineering",
-      "target": "q:tf:security_engineering_2",
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_2",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:tf:cybersecurity_cryptography_security_engineering_2",
       "relation": "HAS_QUESTION",
       "label": "Has Question",
       "weight": 1.0,
@@ -22466,9 +22246,9 @@
       "properties": {}
     },
     {
-      "id": "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_3",
-      "source": "domain:security_engineering",
-      "target": "q:tf:security_engineering_3",
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_3",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:tf:cybersecurity_cryptography_security_engineering_3",
       "relation": "HAS_QUESTION",
       "label": "Has Question",
       "weight": 1.0,
@@ -22476,9 +22256,9 @@
       "properties": {}
     },
     {
-      "id": "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_4",
-      "source": "domain:security_engineering",
-      "target": "q:tf:security_engineering_4",
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_4",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:tf:cybersecurity_cryptography_security_engineering_4",
       "relation": "HAS_QUESTION",
       "label": "Has Question",
       "weight": 1.0,
@@ -22486,9 +22266,9 @@
       "properties": {}
     },
     {
-      "id": "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_5",
-      "source": "domain:security_engineering",
-      "target": "q:tf:security_engineering_5",
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_5",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:tf:cybersecurity_cryptography_security_engineering_5",
       "relation": "HAS_QUESTION",
       "label": "Has Question",
       "weight": 1.0,
@@ -22496,9 +22276,9 @@
       "properties": {}
     },
     {
-      "id": "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_6",
-      "source": "domain:security_engineering",
-      "target": "q:tf:security_engineering_6",
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_6",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:tf:cybersecurity_cryptography_security_engineering_6",
       "relation": "HAS_QUESTION",
       "label": "Has Question",
       "weight": 1.0,
@@ -22506,9 +22286,9 @@
       "properties": {}
     },
     {
-      "id": "e:domain:security_engineering->HAS_QUESTION->q:matching:security_engineering_1",
-      "source": "domain:security_engineering",
-      "target": "q:matching:security_engineering_1",
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_7",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:tf:cybersecurity_cryptography_security_engineering_7",
       "relation": "HAS_QUESTION",
       "label": "Has Question",
       "weight": 1.0,
@@ -22516,9 +22296,9 @@
       "properties": {}
     },
     {
-      "id": "e:domain:security_engineering->HAS_QUESTION->q:matching:security_engineering_2",
-      "source": "domain:security_engineering",
-      "target": "q:matching:security_engineering_2",
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_8",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:tf:cybersecurity_cryptography_security_engineering_8",
       "relation": "HAS_QUESTION",
       "label": "Has Question",
       "weight": 1.0,
@@ -22526,9 +22306,9 @@
       "properties": {}
     },
     {
-      "id": "e:domain:security_engineering->HAS_QUESTION->q:sequencing:security_engineering_1",
-      "source": "domain:security_engineering",
-      "target": "q:sequencing:security_engineering_1",
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_9",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:tf:cybersecurity_cryptography_security_engineering_9",
       "relation": "HAS_QUESTION",
       "label": "Has Question",
       "weight": 1.0,
@@ -22536,9 +22316,9 @@
       "properties": {}
     },
     {
-      "id": "e:domain:security_engineering->HAS_QUESTION->q:sequencing:security_engineering_2",
-      "source": "domain:security_engineering",
-      "target": "q:sequencing:security_engineering_2",
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_10",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:tf:cybersecurity_cryptography_security_engineering_10",
       "relation": "HAS_QUESTION",
       "label": "Has Question",
       "weight": 1.0,
@@ -22546,9 +22326,9 @@
       "properties": {}
     },
     {
-      "id": "e:domain:security_engineering->HAS_QUESTION->q:sorting:security_engineering_1",
-      "source": "domain:security_engineering",
-      "target": "q:sorting:security_engineering_1",
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_11",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:tf:cybersecurity_cryptography_security_engineering_11",
       "relation": "HAS_QUESTION",
       "label": "Has Question",
       "weight": 1.0,
@@ -22556,9 +22336,9 @@
       "properties": {}
     },
     {
-      "id": "e:domain:security_engineering->HAS_QUESTION->q:sorting:security_engineering_2",
-      "source": "domain:security_engineering",
-      "target": "q:sorting:security_engineering_2",
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_12",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:tf:cybersecurity_cryptography_security_engineering_12",
       "relation": "HAS_QUESTION",
       "label": "Has Question",
       "weight": 1.0,
@@ -22566,9 +22346,9 @@
       "properties": {}
     },
     {
-      "id": "e:domain:security_engineering->HAS_QUESTION->q:mc:security_engineering_1",
-      "source": "domain:security_engineering",
-      "target": "q:mc:security_engineering_1",
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_13",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:tf:cybersecurity_cryptography_security_engineering_13",
       "relation": "HAS_QUESTION",
       "label": "Has Question",
       "weight": 1.0,
@@ -22576,9 +22356,9 @@
       "properties": {}
     },
     {
-      "id": "e:domain:security_engineering->HAS_QUESTION->q:mc:security_engineering_2",
-      "source": "domain:security_engineering",
-      "target": "q:mc:security_engineering_2",
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_14",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:tf:cybersecurity_cryptography_security_engineering_14",
       "relation": "HAS_QUESTION",
       "label": "Has Question",
       "weight": 1.0,
@@ -22586,9 +22366,9 @@
       "properties": {}
     },
     {
-      "id": "e:domain:security_engineering->HAS_QUESTION->q:mc:security_engineering_3",
-      "source": "domain:security_engineering",
-      "target": "q:mc:security_engineering_3",
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:matching:cybersecurity_cryptography_security_engineering_1",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:matching:cybersecurity_cryptography_security_engineering_1",
       "relation": "HAS_QUESTION",
       "label": "Has Question",
       "weight": 1.0,
@@ -22596,9 +22376,199 @@
       "properties": {}
     },
     {
-      "id": "e:domain:security_engineering->HAS_QUESTION->q:mc:security_engineering_4",
-      "source": "domain:security_engineering",
-      "target": "q:mc:security_engineering_4",
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:matching:cybersecurity_cryptography_security_engineering_2",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:matching:cybersecurity_cryptography_security_engineering_2",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:matching:cybersecurity_cryptography_security_engineering_3",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:matching:cybersecurity_cryptography_security_engineering_3",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:matching:cybersecurity_cryptography_security_engineering_4",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:matching:cybersecurity_cryptography_security_engineering_4",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:sequencing:cybersecurity_cryptography_security_engineering_1",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:sequencing:cybersecurity_cryptography_security_engineering_1",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:sequencing:cybersecurity_cryptography_security_engineering_2",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:sequencing:cybersecurity_cryptography_security_engineering_2",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:sequencing:cybersecurity_cryptography_security_engineering_3",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:sequencing:cybersecurity_cryptography_security_engineering_3",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:sequencing:cybersecurity_cryptography_security_engineering_4",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:sequencing:cybersecurity_cryptography_security_engineering_4",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:sorting:cybersecurity_cryptography_security_engineering_1",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:sorting:cybersecurity_cryptography_security_engineering_1",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:sorting:cybersecurity_cryptography_security_engineering_2",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:sorting:cybersecurity_cryptography_security_engineering_2",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:sorting:cybersecurity_cryptography_security_engineering_3",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:sorting:cybersecurity_cryptography_security_engineering_3",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:sorting:cybersecurity_cryptography_security_engineering_4",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:sorting:cybersecurity_cryptography_security_engineering_4",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_1",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:mc:cybersecurity_cryptography_security_engineering_1",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_2",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:mc:cybersecurity_cryptography_security_engineering_2",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_3",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:mc:cybersecurity_cryptography_security_engineering_3",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_4",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:mc:cybersecurity_cryptography_security_engineering_4",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_5",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:mc:cybersecurity_cryptography_security_engineering_5",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_6",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:mc:cybersecurity_cryptography_security_engineering_6",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_7",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:mc:cybersecurity_cryptography_security_engineering_7",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_8",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:mc:cybersecurity_cryptography_security_engineering_8",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_9",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "q:mc:cybersecurity_cryptography_security_engineering_9",
       "relation": "HAS_QUESTION",
       "label": "Has Question",
       "weight": 1.0,
@@ -22684,9 +22654,8 @@
         "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:collections_data_structures",
         "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:strings_text_processing",
         "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:memory_pointers",
-        "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:cybersecurity_cryptography",
         "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:devops_site_reliability_engineering",
-        "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:security_engineering"
+        "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:cybersecurity_cryptography_security_engineering"
       ],
       "paradigm:oop": [],
       "paradigm:functional": [],
@@ -23903,46 +23872,6 @@
       "q:sequencing:memory_pointers_1": [],
       "q:sorting:memory_pointers_1": [],
       "q:mc:memory_pointers_1": [],
-      "domain:cybersecurity_cryptography": [
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:tf:cybersecurity_cryptography_1",
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:tf:cybersecurity_cryptography_2",
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:tf:cybersecurity_cryptography_3",
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:tf:cybersecurity_cryptography_4",
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:tf:cybersecurity_cryptography_5",
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:tf:cybersecurity_cryptography_6",
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:tf:cybersecurity_cryptography_7",
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:tf:cybersecurity_cryptography_8",
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:matching:cybersecurity_cryptography_1",
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:matching:cybersecurity_cryptography_2",
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:sequencing:cybersecurity_cryptography_1",
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:sequencing:cybersecurity_cryptography_2",
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:sorting:cybersecurity_cryptography_1",
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:sorting:cybersecurity_cryptography_2",
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:mc:cybersecurity_cryptography_1",
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:mc:cybersecurity_cryptography_2",
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:mc:cybersecurity_cryptography_3",
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:mc:cybersecurity_cryptography_4",
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:mc:cybersecurity_cryptography_5"
-      ],
-      "q:tf:cybersecurity_cryptography_1": [],
-      "q:tf:cybersecurity_cryptography_2": [],
-      "q:tf:cybersecurity_cryptography_3": [],
-      "q:tf:cybersecurity_cryptography_4": [],
-      "q:tf:cybersecurity_cryptography_5": [],
-      "q:tf:cybersecurity_cryptography_6": [],
-      "q:tf:cybersecurity_cryptography_7": [],
-      "q:tf:cybersecurity_cryptography_8": [],
-      "q:matching:cybersecurity_cryptography_1": [],
-      "q:matching:cybersecurity_cryptography_2": [],
-      "q:sequencing:cybersecurity_cryptography_1": [],
-      "q:sequencing:cybersecurity_cryptography_2": [],
-      "q:sorting:cybersecurity_cryptography_1": [],
-      "q:sorting:cybersecurity_cryptography_2": [],
-      "q:mc:cybersecurity_cryptography_1": [],
-      "q:mc:cybersecurity_cryptography_2": [],
-      "q:mc:cybersecurity_cryptography_3": [],
-      "q:mc:cybersecurity_cryptography_4": [],
-      "q:mc:cybersecurity_cryptography_5": [],
       "domain:devops_site_reliability_engineering": [
         "e:domain:devops_site_reliability_engineering->HAS_QUESTION->q:tf:devops_site_reliability_engineering_1",
         "e:domain:devops_site_reliability_engineering->HAS_QUESTION->q:tf:devops_site_reliability_engineering_2",
@@ -23975,40 +23904,78 @@
       "q:mc:devops_site_reliability_engineering_2": [],
       "q:mc:devops_site_reliability_engineering_3": [],
       "q:mc:devops_site_reliability_engineering_4": [],
-      "domain:security_engineering": [
-        "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_1",
-        "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_2",
-        "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_3",
-        "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_4",
-        "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_5",
-        "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_6",
-        "e:domain:security_engineering->HAS_QUESTION->q:matching:security_engineering_1",
-        "e:domain:security_engineering->HAS_QUESTION->q:matching:security_engineering_2",
-        "e:domain:security_engineering->HAS_QUESTION->q:sequencing:security_engineering_1",
-        "e:domain:security_engineering->HAS_QUESTION->q:sequencing:security_engineering_2",
-        "e:domain:security_engineering->HAS_QUESTION->q:sorting:security_engineering_1",
-        "e:domain:security_engineering->HAS_QUESTION->q:sorting:security_engineering_2",
-        "e:domain:security_engineering->HAS_QUESTION->q:mc:security_engineering_1",
-        "e:domain:security_engineering->HAS_QUESTION->q:mc:security_engineering_2",
-        "e:domain:security_engineering->HAS_QUESTION->q:mc:security_engineering_3",
-        "e:domain:security_engineering->HAS_QUESTION->q:mc:security_engineering_4"
+      "domain:cybersecurity_cryptography_security_engineering": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_1",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_2",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_3",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_4",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_5",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_6",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_7",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_8",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_9",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_10",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_11",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_12",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_13",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_14",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:matching:cybersecurity_cryptography_security_engineering_1",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:matching:cybersecurity_cryptography_security_engineering_2",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:matching:cybersecurity_cryptography_security_engineering_3",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:matching:cybersecurity_cryptography_security_engineering_4",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:sequencing:cybersecurity_cryptography_security_engineering_1",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:sequencing:cybersecurity_cryptography_security_engineering_2",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:sequencing:cybersecurity_cryptography_security_engineering_3",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:sequencing:cybersecurity_cryptography_security_engineering_4",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:sorting:cybersecurity_cryptography_security_engineering_1",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:sorting:cybersecurity_cryptography_security_engineering_2",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:sorting:cybersecurity_cryptography_security_engineering_3",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:sorting:cybersecurity_cryptography_security_engineering_4",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_1",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_2",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_3",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_4",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_5",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_6",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_7",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_8",
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_9"
       ],
-      "q:tf:security_engineering_1": [],
-      "q:tf:security_engineering_2": [],
-      "q:tf:security_engineering_3": [],
-      "q:tf:security_engineering_4": [],
-      "q:tf:security_engineering_5": [],
-      "q:tf:security_engineering_6": [],
-      "q:matching:security_engineering_1": [],
-      "q:matching:security_engineering_2": [],
-      "q:sequencing:security_engineering_1": [],
-      "q:sequencing:security_engineering_2": [],
-      "q:sorting:security_engineering_1": [],
-      "q:sorting:security_engineering_2": [],
-      "q:mc:security_engineering_1": [],
-      "q:mc:security_engineering_2": [],
-      "q:mc:security_engineering_3": [],
-      "q:mc:security_engineering_4": []
+      "q:tf:cybersecurity_cryptography_security_engineering_1": [],
+      "q:tf:cybersecurity_cryptography_security_engineering_2": [],
+      "q:tf:cybersecurity_cryptography_security_engineering_3": [],
+      "q:tf:cybersecurity_cryptography_security_engineering_4": [],
+      "q:tf:cybersecurity_cryptography_security_engineering_5": [],
+      "q:tf:cybersecurity_cryptography_security_engineering_6": [],
+      "q:tf:cybersecurity_cryptography_security_engineering_7": [],
+      "q:tf:cybersecurity_cryptography_security_engineering_8": [],
+      "q:tf:cybersecurity_cryptography_security_engineering_9": [],
+      "q:tf:cybersecurity_cryptography_security_engineering_10": [],
+      "q:tf:cybersecurity_cryptography_security_engineering_11": [],
+      "q:tf:cybersecurity_cryptography_security_engineering_12": [],
+      "q:tf:cybersecurity_cryptography_security_engineering_13": [],
+      "q:tf:cybersecurity_cryptography_security_engineering_14": [],
+      "q:matching:cybersecurity_cryptography_security_engineering_1": [],
+      "q:matching:cybersecurity_cryptography_security_engineering_2": [],
+      "q:matching:cybersecurity_cryptography_security_engineering_3": [],
+      "q:matching:cybersecurity_cryptography_security_engineering_4": [],
+      "q:sequencing:cybersecurity_cryptography_security_engineering_1": [],
+      "q:sequencing:cybersecurity_cryptography_security_engineering_2": [],
+      "q:sequencing:cybersecurity_cryptography_security_engineering_3": [],
+      "q:sequencing:cybersecurity_cryptography_security_engineering_4": [],
+      "q:sorting:cybersecurity_cryptography_security_engineering_1": [],
+      "q:sorting:cybersecurity_cryptography_security_engineering_2": [],
+      "q:sorting:cybersecurity_cryptography_security_engineering_3": [],
+      "q:sorting:cybersecurity_cryptography_security_engineering_4": [],
+      "q:mc:cybersecurity_cryptography_security_engineering_1": [],
+      "q:mc:cybersecurity_cryptography_security_engineering_2": [],
+      "q:mc:cybersecurity_cryptography_security_engineering_3": [],
+      "q:mc:cybersecurity_cryptography_security_engineering_4": [],
+      "q:mc:cybersecurity_cryptography_security_engineering_5": [],
+      "q:mc:cybersecurity_cryptography_security_engineering_6": [],
+      "q:mc:cybersecurity_cryptography_security_engineering_7": [],
+      "q:mc:cybersecurity_cryptography_security_engineering_8": [],
+      "q:mc:cybersecurity_cryptography_security_engineering_9": []
     },
     "incoming": {
       "root:hardcode": [],
@@ -25805,66 +25772,6 @@
       "q:mc:memory_pointers_1": [
         "e:domain:memory_pointers->HAS_QUESTION->q:mc:memory_pointers_1"
       ],
-      "domain:cybersecurity_cryptography": [
-        "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:cybersecurity_cryptography"
-      ],
-      "q:tf:cybersecurity_cryptography_1": [
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:tf:cybersecurity_cryptography_1"
-      ],
-      "q:tf:cybersecurity_cryptography_2": [
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:tf:cybersecurity_cryptography_2"
-      ],
-      "q:tf:cybersecurity_cryptography_3": [
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:tf:cybersecurity_cryptography_3"
-      ],
-      "q:tf:cybersecurity_cryptography_4": [
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:tf:cybersecurity_cryptography_4"
-      ],
-      "q:tf:cybersecurity_cryptography_5": [
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:tf:cybersecurity_cryptography_5"
-      ],
-      "q:tf:cybersecurity_cryptography_6": [
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:tf:cybersecurity_cryptography_6"
-      ],
-      "q:tf:cybersecurity_cryptography_7": [
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:tf:cybersecurity_cryptography_7"
-      ],
-      "q:tf:cybersecurity_cryptography_8": [
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:tf:cybersecurity_cryptography_8"
-      ],
-      "q:matching:cybersecurity_cryptography_1": [
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:matching:cybersecurity_cryptography_1"
-      ],
-      "q:matching:cybersecurity_cryptography_2": [
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:matching:cybersecurity_cryptography_2"
-      ],
-      "q:sequencing:cybersecurity_cryptography_1": [
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:sequencing:cybersecurity_cryptography_1"
-      ],
-      "q:sequencing:cybersecurity_cryptography_2": [
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:sequencing:cybersecurity_cryptography_2"
-      ],
-      "q:sorting:cybersecurity_cryptography_1": [
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:sorting:cybersecurity_cryptography_1"
-      ],
-      "q:sorting:cybersecurity_cryptography_2": [
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:sorting:cybersecurity_cryptography_2"
-      ],
-      "q:mc:cybersecurity_cryptography_1": [
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:mc:cybersecurity_cryptography_1"
-      ],
-      "q:mc:cybersecurity_cryptography_2": [
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:mc:cybersecurity_cryptography_2"
-      ],
-      "q:mc:cybersecurity_cryptography_3": [
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:mc:cybersecurity_cryptography_3"
-      ],
-      "q:mc:cybersecurity_cryptography_4": [
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:mc:cybersecurity_cryptography_4"
-      ],
-      "q:mc:cybersecurity_cryptography_5": [
-        "e:domain:cybersecurity_cryptography->HAS_QUESTION->q:mc:cybersecurity_cryptography_5"
-      ],
       "domain:devops_site_reliability_engineering": [
         "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:devops_site_reliability_engineering"
       ],
@@ -25913,56 +25820,113 @@
       "q:mc:devops_site_reliability_engineering_4": [
         "e:domain:devops_site_reliability_engineering->HAS_QUESTION->q:mc:devops_site_reliability_engineering_4"
       ],
-      "domain:security_engineering": [
-        "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:security_engineering"
+      "domain:cybersecurity_cryptography_security_engineering": [
+        "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:cybersecurity_cryptography_security_engineering"
       ],
-      "q:tf:security_engineering_1": [
-        "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_1"
+      "q:tf:cybersecurity_cryptography_security_engineering_1": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_1"
       ],
-      "q:tf:security_engineering_2": [
-        "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_2"
+      "q:tf:cybersecurity_cryptography_security_engineering_2": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_2"
       ],
-      "q:tf:security_engineering_3": [
-        "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_3"
+      "q:tf:cybersecurity_cryptography_security_engineering_3": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_3"
       ],
-      "q:tf:security_engineering_4": [
-        "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_4"
+      "q:tf:cybersecurity_cryptography_security_engineering_4": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_4"
       ],
-      "q:tf:security_engineering_5": [
-        "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_5"
+      "q:tf:cybersecurity_cryptography_security_engineering_5": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_5"
       ],
-      "q:tf:security_engineering_6": [
-        "e:domain:security_engineering->HAS_QUESTION->q:tf:security_engineering_6"
+      "q:tf:cybersecurity_cryptography_security_engineering_6": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_6"
       ],
-      "q:matching:security_engineering_1": [
-        "e:domain:security_engineering->HAS_QUESTION->q:matching:security_engineering_1"
+      "q:tf:cybersecurity_cryptography_security_engineering_7": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_7"
       ],
-      "q:matching:security_engineering_2": [
-        "e:domain:security_engineering->HAS_QUESTION->q:matching:security_engineering_2"
+      "q:tf:cybersecurity_cryptography_security_engineering_8": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_8"
       ],
-      "q:sequencing:security_engineering_1": [
-        "e:domain:security_engineering->HAS_QUESTION->q:sequencing:security_engineering_1"
+      "q:tf:cybersecurity_cryptography_security_engineering_9": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_9"
       ],
-      "q:sequencing:security_engineering_2": [
-        "e:domain:security_engineering->HAS_QUESTION->q:sequencing:security_engineering_2"
+      "q:tf:cybersecurity_cryptography_security_engineering_10": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_10"
       ],
-      "q:sorting:security_engineering_1": [
-        "e:domain:security_engineering->HAS_QUESTION->q:sorting:security_engineering_1"
+      "q:tf:cybersecurity_cryptography_security_engineering_11": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_11"
       ],
-      "q:sorting:security_engineering_2": [
-        "e:domain:security_engineering->HAS_QUESTION->q:sorting:security_engineering_2"
+      "q:tf:cybersecurity_cryptography_security_engineering_12": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_12"
       ],
-      "q:mc:security_engineering_1": [
-        "e:domain:security_engineering->HAS_QUESTION->q:mc:security_engineering_1"
+      "q:tf:cybersecurity_cryptography_security_engineering_13": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_13"
       ],
-      "q:mc:security_engineering_2": [
-        "e:domain:security_engineering->HAS_QUESTION->q:mc:security_engineering_2"
+      "q:tf:cybersecurity_cryptography_security_engineering_14": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_14"
       ],
-      "q:mc:security_engineering_3": [
-        "e:domain:security_engineering->HAS_QUESTION->q:mc:security_engineering_3"
+      "q:matching:cybersecurity_cryptography_security_engineering_1": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:matching:cybersecurity_cryptography_security_engineering_1"
       ],
-      "q:mc:security_engineering_4": [
-        "e:domain:security_engineering->HAS_QUESTION->q:mc:security_engineering_4"
+      "q:matching:cybersecurity_cryptography_security_engineering_2": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:matching:cybersecurity_cryptography_security_engineering_2"
+      ],
+      "q:matching:cybersecurity_cryptography_security_engineering_3": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:matching:cybersecurity_cryptography_security_engineering_3"
+      ],
+      "q:matching:cybersecurity_cryptography_security_engineering_4": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:matching:cybersecurity_cryptography_security_engineering_4"
+      ],
+      "q:sequencing:cybersecurity_cryptography_security_engineering_1": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:sequencing:cybersecurity_cryptography_security_engineering_1"
+      ],
+      "q:sequencing:cybersecurity_cryptography_security_engineering_2": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:sequencing:cybersecurity_cryptography_security_engineering_2"
+      ],
+      "q:sequencing:cybersecurity_cryptography_security_engineering_3": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:sequencing:cybersecurity_cryptography_security_engineering_3"
+      ],
+      "q:sequencing:cybersecurity_cryptography_security_engineering_4": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:sequencing:cybersecurity_cryptography_security_engineering_4"
+      ],
+      "q:sorting:cybersecurity_cryptography_security_engineering_1": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:sorting:cybersecurity_cryptography_security_engineering_1"
+      ],
+      "q:sorting:cybersecurity_cryptography_security_engineering_2": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:sorting:cybersecurity_cryptography_security_engineering_2"
+      ],
+      "q:sorting:cybersecurity_cryptography_security_engineering_3": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:sorting:cybersecurity_cryptography_security_engineering_3"
+      ],
+      "q:sorting:cybersecurity_cryptography_security_engineering_4": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:sorting:cybersecurity_cryptography_security_engineering_4"
+      ],
+      "q:mc:cybersecurity_cryptography_security_engineering_1": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_1"
+      ],
+      "q:mc:cybersecurity_cryptography_security_engineering_2": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_2"
+      ],
+      "q:mc:cybersecurity_cryptography_security_engineering_3": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_3"
+      ],
+      "q:mc:cybersecurity_cryptography_security_engineering_4": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_4"
+      ],
+      "q:mc:cybersecurity_cryptography_security_engineering_5": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_5"
+      ],
+      "q:mc:cybersecurity_cryptography_security_engineering_6": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_6"
+      ],
+      "q:mc:cybersecurity_cryptography_security_engineering_7": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_7"
+      ],
+      "q:mc:cybersecurity_cryptography_security_engineering_8": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_8"
+      ],
+      "q:mc:cybersecurity_cryptography_security_engineering_9": [
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_9"
       ]
     }
   },
@@ -26190,9 +26154,8 @@
         "domain:collections_data_structures",
         "domain:strings_text_processing",
         "domain:memory_pointers",
-        "domain:cybersecurity_cryptography",
         "domain:devops_site_reliability_engineering",
-        "domain:security_engineering"
+        "domain:cybersecurity_cryptography_security_engineering"
       ],
       "Question": [
         "q:tf:system_architecture_1",
@@ -26563,25 +26526,6 @@
         "q:sequencing:memory_pointers_1",
         "q:sorting:memory_pointers_1",
         "q:mc:memory_pointers_1",
-        "q:tf:cybersecurity_cryptography_1",
-        "q:tf:cybersecurity_cryptography_2",
-        "q:tf:cybersecurity_cryptography_3",
-        "q:tf:cybersecurity_cryptography_4",
-        "q:tf:cybersecurity_cryptography_5",
-        "q:tf:cybersecurity_cryptography_6",
-        "q:tf:cybersecurity_cryptography_7",
-        "q:tf:cybersecurity_cryptography_8",
-        "q:matching:cybersecurity_cryptography_1",
-        "q:matching:cybersecurity_cryptography_2",
-        "q:sequencing:cybersecurity_cryptography_1",
-        "q:sequencing:cybersecurity_cryptography_2",
-        "q:sorting:cybersecurity_cryptography_1",
-        "q:sorting:cybersecurity_cryptography_2",
-        "q:mc:cybersecurity_cryptography_1",
-        "q:mc:cybersecurity_cryptography_2",
-        "q:mc:cybersecurity_cryptography_3",
-        "q:mc:cybersecurity_cryptography_4",
-        "q:mc:cybersecurity_cryptography_5",
         "q:tf:devops_site_reliability_engineering_1",
         "q:tf:devops_site_reliability_engineering_2",
         "q:tf:devops_site_reliability_engineering_3",
@@ -26597,22 +26541,41 @@
         "q:mc:devops_site_reliability_engineering_2",
         "q:mc:devops_site_reliability_engineering_3",
         "q:mc:devops_site_reliability_engineering_4",
-        "q:tf:security_engineering_1",
-        "q:tf:security_engineering_2",
-        "q:tf:security_engineering_3",
-        "q:tf:security_engineering_4",
-        "q:tf:security_engineering_5",
-        "q:tf:security_engineering_6",
-        "q:matching:security_engineering_1",
-        "q:matching:security_engineering_2",
-        "q:sequencing:security_engineering_1",
-        "q:sequencing:security_engineering_2",
-        "q:sorting:security_engineering_1",
-        "q:sorting:security_engineering_2",
-        "q:mc:security_engineering_1",
-        "q:mc:security_engineering_2",
-        "q:mc:security_engineering_3",
-        "q:mc:security_engineering_4"
+        "q:tf:cybersecurity_cryptography_security_engineering_1",
+        "q:tf:cybersecurity_cryptography_security_engineering_2",
+        "q:tf:cybersecurity_cryptography_security_engineering_3",
+        "q:tf:cybersecurity_cryptography_security_engineering_4",
+        "q:tf:cybersecurity_cryptography_security_engineering_5",
+        "q:tf:cybersecurity_cryptography_security_engineering_6",
+        "q:tf:cybersecurity_cryptography_security_engineering_7",
+        "q:tf:cybersecurity_cryptography_security_engineering_8",
+        "q:tf:cybersecurity_cryptography_security_engineering_9",
+        "q:tf:cybersecurity_cryptography_security_engineering_10",
+        "q:tf:cybersecurity_cryptography_security_engineering_11",
+        "q:tf:cybersecurity_cryptography_security_engineering_12",
+        "q:tf:cybersecurity_cryptography_security_engineering_13",
+        "q:tf:cybersecurity_cryptography_security_engineering_14",
+        "q:matching:cybersecurity_cryptography_security_engineering_1",
+        "q:matching:cybersecurity_cryptography_security_engineering_2",
+        "q:matching:cybersecurity_cryptography_security_engineering_3",
+        "q:matching:cybersecurity_cryptography_security_engineering_4",
+        "q:sequencing:cybersecurity_cryptography_security_engineering_1",
+        "q:sequencing:cybersecurity_cryptography_security_engineering_2",
+        "q:sequencing:cybersecurity_cryptography_security_engineering_3",
+        "q:sequencing:cybersecurity_cryptography_security_engineering_4",
+        "q:sorting:cybersecurity_cryptography_security_engineering_1",
+        "q:sorting:cybersecurity_cryptography_security_engineering_2",
+        "q:sorting:cybersecurity_cryptography_security_engineering_3",
+        "q:sorting:cybersecurity_cryptography_security_engineering_4",
+        "q:mc:cybersecurity_cryptography_security_engineering_1",
+        "q:mc:cybersecurity_cryptography_security_engineering_2",
+        "q:mc:cybersecurity_cryptography_security_engineering_3",
+        "q:mc:cybersecurity_cryptography_security_engineering_4",
+        "q:mc:cybersecurity_cryptography_security_engineering_5",
+        "q:mc:cybersecurity_cryptography_security_engineering_6",
+        "q:mc:cybersecurity_cryptography_security_engineering_7",
+        "q:mc:cybersecurity_cryptography_security_engineering_8",
+        "q:mc:cybersecurity_cryptography_security_engineering_9"
       ]
     },
     "by_group": {
@@ -26830,9 +26793,8 @@
         "domain:collections_data_structures",
         "domain:strings_text_processing",
         "domain:memory_pointers",
-        "domain:cybersecurity_cryptography",
         "domain:devops_site_reliability_engineering",
-        "domain:security_engineering"
+        "domain:cybersecurity_cryptography_security_engineering"
       ],
       "question_tf": [
         "q:tf:system_architecture_1",
@@ -26989,26 +26951,26 @@
         "q:tf:memory_pointers_1",
         "q:tf:memory_pointers_2",
         "q:tf:memory_pointers_3",
-        "q:tf:cybersecurity_cryptography_1",
-        "q:tf:cybersecurity_cryptography_2",
-        "q:tf:cybersecurity_cryptography_3",
-        "q:tf:cybersecurity_cryptography_4",
-        "q:tf:cybersecurity_cryptography_5",
-        "q:tf:cybersecurity_cryptography_6",
-        "q:tf:cybersecurity_cryptography_7",
-        "q:tf:cybersecurity_cryptography_8",
         "q:tf:devops_site_reliability_engineering_1",
         "q:tf:devops_site_reliability_engineering_2",
         "q:tf:devops_site_reliability_engineering_3",
         "q:tf:devops_site_reliability_engineering_4",
         "q:tf:devops_site_reliability_engineering_5",
         "q:tf:devops_site_reliability_engineering_6",
-        "q:tf:security_engineering_1",
-        "q:tf:security_engineering_2",
-        "q:tf:security_engineering_3",
-        "q:tf:security_engineering_4",
-        "q:tf:security_engineering_5",
-        "q:tf:security_engineering_6"
+        "q:tf:cybersecurity_cryptography_security_engineering_1",
+        "q:tf:cybersecurity_cryptography_security_engineering_2",
+        "q:tf:cybersecurity_cryptography_security_engineering_3",
+        "q:tf:cybersecurity_cryptography_security_engineering_4",
+        "q:tf:cybersecurity_cryptography_security_engineering_5",
+        "q:tf:cybersecurity_cryptography_security_engineering_6",
+        "q:tf:cybersecurity_cryptography_security_engineering_7",
+        "q:tf:cybersecurity_cryptography_security_engineering_8",
+        "q:tf:cybersecurity_cryptography_security_engineering_9",
+        "q:tf:cybersecurity_cryptography_security_engineering_10",
+        "q:tf:cybersecurity_cryptography_security_engineering_11",
+        "q:tf:cybersecurity_cryptography_security_engineering_12",
+        "q:tf:cybersecurity_cryptography_security_engineering_13",
+        "q:tf:cybersecurity_cryptography_security_engineering_14"
       ],
       "question_matching": [
         "q:matching:system_architecture_1",
@@ -27067,12 +27029,12 @@
         "q:matching:collections_data_structures_1",
         "q:matching:strings_text_processing_1",
         "q:matching:memory_pointers_1",
-        "q:matching:cybersecurity_cryptography_1",
-        "q:matching:cybersecurity_cryptography_2",
         "q:matching:devops_site_reliability_engineering_1",
         "q:matching:devops_site_reliability_engineering_2",
-        "q:matching:security_engineering_1",
-        "q:matching:security_engineering_2"
+        "q:matching:cybersecurity_cryptography_security_engineering_1",
+        "q:matching:cybersecurity_cryptography_security_engineering_2",
+        "q:matching:cybersecurity_cryptography_security_engineering_3",
+        "q:matching:cybersecurity_cryptography_security_engineering_4"
       ],
       "question_sequencing": [
         "q:sequencing:system_architecture_1",
@@ -27129,12 +27091,12 @@
         "q:sequencing:collections_data_structures_1",
         "q:sequencing:strings_text_processing_1",
         "q:sequencing:memory_pointers_1",
-        "q:sequencing:cybersecurity_cryptography_1",
-        "q:sequencing:cybersecurity_cryptography_2",
         "q:sequencing:devops_site_reliability_engineering_1",
         "q:sequencing:devops_site_reliability_engineering_2",
-        "q:sequencing:security_engineering_1",
-        "q:sequencing:security_engineering_2"
+        "q:sequencing:cybersecurity_cryptography_security_engineering_1",
+        "q:sequencing:cybersecurity_cryptography_security_engineering_2",
+        "q:sequencing:cybersecurity_cryptography_security_engineering_3",
+        "q:sequencing:cybersecurity_cryptography_security_engineering_4"
       ],
       "question_sorting": [
         "q:sorting:system_architecture_1",
@@ -27184,11 +27146,11 @@
         "q:sorting:collections_data_structures_1",
         "q:sorting:strings_text_processing_1",
         "q:sorting:memory_pointers_1",
-        "q:sorting:cybersecurity_cryptography_1",
-        "q:sorting:cybersecurity_cryptography_2",
         "q:sorting:devops_site_reliability_engineering_1",
-        "q:sorting:security_engineering_1",
-        "q:sorting:security_engineering_2"
+        "q:sorting:cybersecurity_cryptography_security_engineering_1",
+        "q:sorting:cybersecurity_cryptography_security_engineering_2",
+        "q:sorting:cybersecurity_cryptography_security_engineering_3",
+        "q:sorting:cybersecurity_cryptography_security_engineering_4"
       ],
       "question_mc": [
         "q:mc:system_architecture_1",
@@ -27248,19 +27210,19 @@
         "q:mc:collections_data_structures_1",
         "q:mc:strings_text_processing_1",
         "q:mc:memory_pointers_1",
-        "q:mc:cybersecurity_cryptography_1",
-        "q:mc:cybersecurity_cryptography_2",
-        "q:mc:cybersecurity_cryptography_3",
-        "q:mc:cybersecurity_cryptography_4",
-        "q:mc:cybersecurity_cryptography_5",
         "q:mc:devops_site_reliability_engineering_1",
         "q:mc:devops_site_reliability_engineering_2",
         "q:mc:devops_site_reliability_engineering_3",
         "q:mc:devops_site_reliability_engineering_4",
-        "q:mc:security_engineering_1",
-        "q:mc:security_engineering_2",
-        "q:mc:security_engineering_3",
-        "q:mc:security_engineering_4"
+        "q:mc:cybersecurity_cryptography_security_engineering_1",
+        "q:mc:cybersecurity_cryptography_security_engineering_2",
+        "q:mc:cybersecurity_cryptography_security_engineering_3",
+        "q:mc:cybersecurity_cryptography_security_engineering_4",
+        "q:mc:cybersecurity_cryptography_security_engineering_5",
+        "q:mc:cybersecurity_cryptography_security_engineering_6",
+        "q:mc:cybersecurity_cryptography_security_engineering_7",
+        "q:mc:cybersecurity_cryptography_security_engineering_8",
+        "q:mc:cybersecurity_cryptography_security_engineering_9"
       ]
     },
     "by_category": {
@@ -27518,9 +27480,8 @@
         "domain:collections_data_structures",
         "domain:strings_text_processing",
         "domain:memory_pointers",
-        "domain:cybersecurity_cryptography",
         "domain:devops_site_reliability_engineering",
-        "domain:security_engineering"
+        "domain:cybersecurity_cryptography_security_engineering"
       ],
       "True-False": [
         "q:tf:system_architecture_1",
@@ -27677,26 +27638,26 @@
         "q:tf:memory_pointers_1",
         "q:tf:memory_pointers_2",
         "q:tf:memory_pointers_3",
-        "q:tf:cybersecurity_cryptography_1",
-        "q:tf:cybersecurity_cryptography_2",
-        "q:tf:cybersecurity_cryptography_3",
-        "q:tf:cybersecurity_cryptography_4",
-        "q:tf:cybersecurity_cryptography_5",
-        "q:tf:cybersecurity_cryptography_6",
-        "q:tf:cybersecurity_cryptography_7",
-        "q:tf:cybersecurity_cryptography_8",
         "q:tf:devops_site_reliability_engineering_1",
         "q:tf:devops_site_reliability_engineering_2",
         "q:tf:devops_site_reliability_engineering_3",
         "q:tf:devops_site_reliability_engineering_4",
         "q:tf:devops_site_reliability_engineering_5",
         "q:tf:devops_site_reliability_engineering_6",
-        "q:tf:security_engineering_1",
-        "q:tf:security_engineering_2",
-        "q:tf:security_engineering_3",
-        "q:tf:security_engineering_4",
-        "q:tf:security_engineering_5",
-        "q:tf:security_engineering_6"
+        "q:tf:cybersecurity_cryptography_security_engineering_1",
+        "q:tf:cybersecurity_cryptography_security_engineering_2",
+        "q:tf:cybersecurity_cryptography_security_engineering_3",
+        "q:tf:cybersecurity_cryptography_security_engineering_4",
+        "q:tf:cybersecurity_cryptography_security_engineering_5",
+        "q:tf:cybersecurity_cryptography_security_engineering_6",
+        "q:tf:cybersecurity_cryptography_security_engineering_7",
+        "q:tf:cybersecurity_cryptography_security_engineering_8",
+        "q:tf:cybersecurity_cryptography_security_engineering_9",
+        "q:tf:cybersecurity_cryptography_security_engineering_10",
+        "q:tf:cybersecurity_cryptography_security_engineering_11",
+        "q:tf:cybersecurity_cryptography_security_engineering_12",
+        "q:tf:cybersecurity_cryptography_security_engineering_13",
+        "q:tf:cybersecurity_cryptography_security_engineering_14"
       ],
       "Matching": [
         "q:matching:system_architecture_1",
@@ -27755,12 +27716,12 @@
         "q:matching:collections_data_structures_1",
         "q:matching:strings_text_processing_1",
         "q:matching:memory_pointers_1",
-        "q:matching:cybersecurity_cryptography_1",
-        "q:matching:cybersecurity_cryptography_2",
         "q:matching:devops_site_reliability_engineering_1",
         "q:matching:devops_site_reliability_engineering_2",
-        "q:matching:security_engineering_1",
-        "q:matching:security_engineering_2"
+        "q:matching:cybersecurity_cryptography_security_engineering_1",
+        "q:matching:cybersecurity_cryptography_security_engineering_2",
+        "q:matching:cybersecurity_cryptography_security_engineering_3",
+        "q:matching:cybersecurity_cryptography_security_engineering_4"
       ],
       "Sequencing": [
         "q:sequencing:system_architecture_1",
@@ -27817,12 +27778,12 @@
         "q:sequencing:collections_data_structures_1",
         "q:sequencing:strings_text_processing_1",
         "q:sequencing:memory_pointers_1",
-        "q:sequencing:cybersecurity_cryptography_1",
-        "q:sequencing:cybersecurity_cryptography_2",
         "q:sequencing:devops_site_reliability_engineering_1",
         "q:sequencing:devops_site_reliability_engineering_2",
-        "q:sequencing:security_engineering_1",
-        "q:sequencing:security_engineering_2"
+        "q:sequencing:cybersecurity_cryptography_security_engineering_1",
+        "q:sequencing:cybersecurity_cryptography_security_engineering_2",
+        "q:sequencing:cybersecurity_cryptography_security_engineering_3",
+        "q:sequencing:cybersecurity_cryptography_security_engineering_4"
       ],
       "Sorting-Classification": [
         "q:sorting:system_architecture_1",
@@ -27872,11 +27833,11 @@
         "q:sorting:collections_data_structures_1",
         "q:sorting:strings_text_processing_1",
         "q:sorting:memory_pointers_1",
-        "q:sorting:cybersecurity_cryptography_1",
-        "q:sorting:cybersecurity_cryptography_2",
         "q:sorting:devops_site_reliability_engineering_1",
-        "q:sorting:security_engineering_1",
-        "q:sorting:security_engineering_2"
+        "q:sorting:cybersecurity_cryptography_security_engineering_1",
+        "q:sorting:cybersecurity_cryptography_security_engineering_2",
+        "q:sorting:cybersecurity_cryptography_security_engineering_3",
+        "q:sorting:cybersecurity_cryptography_security_engineering_4"
       ],
       "Multi-Choice": [
         "q:mc:system_architecture_1",
@@ -27936,24 +27897,24 @@
         "q:mc:collections_data_structures_1",
         "q:mc:strings_text_processing_1",
         "q:mc:memory_pointers_1",
-        "q:mc:cybersecurity_cryptography_1",
-        "q:mc:cybersecurity_cryptography_2",
-        "q:mc:cybersecurity_cryptography_3",
-        "q:mc:cybersecurity_cryptography_4",
-        "q:mc:cybersecurity_cryptography_5",
         "q:mc:devops_site_reliability_engineering_1",
         "q:mc:devops_site_reliability_engineering_2",
         "q:mc:devops_site_reliability_engineering_3",
         "q:mc:devops_site_reliability_engineering_4",
-        "q:mc:security_engineering_1",
-        "q:mc:security_engineering_2",
-        "q:mc:security_engineering_3",
-        "q:mc:security_engineering_4"
+        "q:mc:cybersecurity_cryptography_security_engineering_1",
+        "q:mc:cybersecurity_cryptography_security_engineering_2",
+        "q:mc:cybersecurity_cryptography_security_engineering_3",
+        "q:mc:cybersecurity_cryptography_security_engineering_4",
+        "q:mc:cybersecurity_cryptography_security_engineering_5",
+        "q:mc:cybersecurity_cryptography_security_engineering_6",
+        "q:mc:cybersecurity_cryptography_security_engineering_7",
+        "q:mc:cybersecurity_cryptography_security_engineering_8",
+        "q:mc:cybersecurity_cryptography_security_engineering_9"
       ]
     }
   },
   "legacy_bridge": {
-    "version": 8,
+    "version": 13,
     "Language": [
       "C",
       "Python",
@@ -31944,196 +31905,6 @@
           ]
         }
       },
-      "Cybersecurity & Cryptography": {
-        "introduction": "Cybersecurity investigates threat modeling, public-key cryptography, authorization protocols, and defenses against memory and network exploits.",
-        "remediation": "Focus on asymmetric vs symmetric key distribution, cryptographic salt uniqueness, and defense-in-depth principles (Zero Trust).",
-        "deep_dive": "Cryptographic security relies on computationally intractable mathematical problems (integer factorization in RSA, discrete log in ECC Curve25519). Modern security enforces TLS 1.3 with forward secrecy, memory-safe languages to eliminate 70% of CVE buffer overflows, and authenticated encryption with associated data (AEAD, AES-GCM).",
-        "questions": {
-          "True-False": [
-            {
-              "statement": "Symmetric encryption algorithms like AES use the exact same cryptographic key for both encryption and decryption.",
-              "is_true": true,
-              "explanation": "AES is a symmetric cipher where sender and receiver share the same secret key."
-            },
-            {
-              "statement": "MD5 and SHA-1 are recommended today for secure cryptographic password hashing in modern production applications.",
-              "is_true": false,
-              "explanation": "MD5 and SHA-1 suffer from collision attacks and lack memory-hardness. Modern apps must use Argon2id or bcrypt."
-            },
-            {
-              "statement": "Perfect Forward Secrecy (PFS) ensures that compromise of a server's long-term private key cannot decrypt previously recorded network traffic.",
-              "is_true": true,
-              "explanation": "PFS generates unique ephemeral session keys (ECDHE) for each TLS session so old traffic remains indecipherable."
-            },
-            {
-              "statement": "In a SQL injection attack, attackers exploit flaws where user inputs are concatenated directly into raw database command strings.",
-              "is_true": true,
-              "explanation": "Parameterized queries and prepared statements completely neutralize SQL injection by separating code from data."
-            },
-            {
-              "statement": "Zero Trust network architecture assumes that any device inside the internal corporate network firewall can be inherently trusted.",
-              "is_true": false,
-              "explanation": "Zero Trust operates under 'Never Trust, Always Verify', enforcing mutual TLS and per-request authorization internally."
-            },
-            {
-              "statement": "Cross-Site Scripting (XSS) occurs when an application includes untrusted data in a web page without proper escaping, allowing malicious script execution.",
-              "is_true": true,
-              "explanation": "XSS allows attackers to hijack session cookies, deface DOM elements, or redirect users to malicious endpoints."
-            },
-            {
-              "statement": "A cryptographic salt should be kept top-secret alongside the server's master root key in an encrypted vault.",
-              "is_true": false,
-              "explanation": "Salts do not need to be secret; their sole purpose is uniqueness per user to defeat precomputed rainbow tables."
-            },
-            {
-              "statement": "Elliptic Curve Cryptography (ECC) achieves equivalent security to RSA with significantly smaller key sizes (e.g. 256-bit ECC ≈ 3072-bit RSA).",
-              "is_true": true,
-              "explanation": "ECC provides equal security with vastly shorter keys, reducing CPU cycles and network transmission overhead."
-            }
-          ],
-          "Multi-Choice": [
-            {
-              "question": "Which password hashing algorithm was selected as the official winner of the Password Hashing Competition for its memory-hard defense against ASIC/GPU attacks?",
-              "choices": [
-                "Argon2id",
-                "PBKDF2-HMAC-SHA256",
-                "MD5-Crypt",
-                "SHA-512"
-              ],
-              "correct_index": 0,
-              "explanation": "Argon2id combines data-independent and data-dependent memory access to resist both side-channel and GPU/ASIC brute force attacks."
-            },
-            {
-              "question": "Which HTTP security header instructs browsers to strictly communicate with a domain exclusively over HTTPS for a defined duration?",
-              "choices": [
-                "Strict-Transport-Security (HSTS)",
-                "Content-Security-Policy (CSP)",
-                "X-Frame-Options",
-                "Access-Control-Allow-Origin"
-              ],
-              "correct_index": 0,
-              "explanation": "HSTS eliminates SSL stripping attacks by forcing browsers to rewrite all HTTP URLs to HTTPS before making network requests."
-            },
-            {
-              "question": "What type of attack exploits race conditions between the verification of a resource condition and the subsequent use of that resource?",
-              "choices": [
-                "Time-of-Check to Time-of-Use (TOCTOU)",
-                "Buffer Overflow",
-                "Cross-Site Request Forgery (CSRF)",
-                "Server-Side Request Forgery (SSRF)"
-              ],
-              "correct_index": 0,
-              "explanation": "TOCTOU is a concurrency vulnerability where state changes between permission validation and operation execution."
-            },
-            {
-              "question": "In asymmetric cryptography, which key must the sender use to digitally sign a message digest so recipients can verify authenticity?",
-              "choices": [
-                "The sender's private key",
-                "The recipient's public key",
-                "The sender's public key",
-                "A pre-shared symmetric key"
-              ],
-              "correct_index": 0,
-              "explanation": "A digital signature is created using the sender's private key and verified by anyone using the sender's public key."
-            },
-            {
-              "question": "Which defense completely prevents Cross-Site Request Forgery (CSRF) in modern state-changing POST requests?",
-              "choices": [
-                "Cryptographic Anti-CSRF tokens and SameSite=Strict cookie policy",
-                "Base64 encoding all form submissions",
-                "Using HTTP Basic Authentication over TLS",
-                "Hiding the HTML submit button with CSS"
-              ],
-              "correct_index": 0,
-              "explanation": "SameSite cookies prevent cross-origin ambient cookie delivery, and anti-CSRF tokens guarantee deliberate user intent."
-            }
-          ],
-          "Matching": [
-            {
-              "prompt": "Match each cryptographic primitive with its primary technical purpose",
-              "pairs": {
-                "AES-256-GCM": "Authenticated high-speed symmetric payload encryption",
-                "RSA / ECC Curve25519": "Asymmetric key exchange and digital identity signatures",
-                "HMAC-SHA256": "Message authentication code verifying tamper-proof data integrity",
-                "Argon2id": "Memory-hard password key derivation resisting GPU cracking",
-                "Diffie-Hellman (ECDHE)": "Ephemeral shared secret agreement over untrusted networks"
-              }
-            },
-            {
-              "prompt": "Match each cybersecurity vulnerability with its standard mitigation",
-              "pairs": {
-                "SQL Injection": "Parameterized queries / prepared statements with placeholder bindings",
-                "Cross-Site Scripting (XSS)": "Context-aware HTML/JS output encoding and Content Security Policy",
-                "Buffer Overflow": "Memory-safe languages (Rust/Go) or compiler stack canaries and ASLR",
-                "Man-In-The-Middle (MITM)": "TLS certificate pinning and Strict-Transport-Security (HSTS)",
-                "Credential Stuffing": "Multi-Factor Authentication (MFA) and adaptive rate limiting"
-              }
-            }
-          ],
-          "Sequencing": [
-            {
-              "prompt": "Order the sequence of operations in a standard TLS 1.3 cryptographic handshake",
-              "ordered_sequence": [
-                "Client sends ClientHello with supported cipher suites and ephemeral Diffie-Hellman key share",
-                "Server replies with ServerHello, selecting cipher suite and providing its own key share",
-                "Both parties derive symmetric session encryption keys from the shared Diffie-Hellman secret",
-                "Server sends encrypted certificate chain and digital signature for identity verification",
-                "Client verifies certificate and both parties exchange Finished messages to begin secure data transfer"
-              ]
-            },
-            {
-              "prompt": "Order the defense-in-depth steps to securely authenticate and store a user password",
-              "ordered_sequence": [
-                "User submits plaintext password over an encrypted TLS connection",
-                "Server generates a cryptographically secure random salt (at least 16 bytes)",
-                "Password and salt are hashed using Argon2id with calibrated time and memory costs",
-                "Salt, algorithm parameters, and resulting password hash are saved to the user table",
-                "Original plaintext password variable is zeroed in RAM immediately after hashing"
-              ]
-            }
-          ],
-          "Sorting-Classification": [
-            {
-              "prompt": "Classify the following cryptographic algorithms into Symmetric or Asymmetric",
-              "categories": [
-                "Symmetric",
-                "Asymmetric"
-              ],
-              "items": {
-                "Symmetric": [
-                  "AES-256-GCM",
-                  "ChaCha20-Poly1305",
-                  "Triple DES (3DES)"
-                ],
-                "Asymmetric": [
-                  "RSA-4096",
-                  "ECC Curve25519",
-                  "Diffie-Hellman (DH)"
-                ]
-              }
-            },
-            {
-              "prompt": "Classify the following security concerns into Network Security or Application Security",
-              "categories": [
-                "Network Security",
-                "Application Security"
-              ],
-              "items": {
-                "Network Security": [
-                  "SYN Flood DDoS",
-                  "ARP Spoofing",
-                  "DNS Cache Poisoning"
-                ],
-                "Application Security": [
-                  "SQL Injection (SQLi)",
-                  "Remote Code Execution (RCE)",
-                  "Cross-Site Scripting (XSS)"
-                ]
-              }
-            }
-          ]
-        }
-      },
       "DevOps & Site Reliability Engineering": {
         "introduction": "Site Reliability Engineering (SRE) applies software engineering principles to operations, infrastructure automation, observability, and incident lifecycle management.",
         "remediation": "Focus on Service Level Indicators (SLIs), Service Level Objectives (SLOs), error budgets, container orchestration primitives, and immutable infrastructure.",
@@ -32288,12 +32059,52 @@
           ]
         }
       },
-      "Security Engineering": {
-        "introduction": "Security Engineering designs systems to remain dependable and resilient in the face of malice, error, or targeted compromise, spanning threat modeling, hardware-enforced isolation, and defense-in-depth.",
-        "remediation": "Focus on the STRIDE threat matrix (Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege), compile-time memory protections (ASLR/DEP/canaries), and the Principle of Least Privilege.",
-        "deep_dive": "Modern Security Engineering incorporates formal Threat Modeling during architectural design, automated static/dynamic security testing (SAST/DAST) in CI/CD, and cryptographically verified identities (mTLS, SPIFFE/SPIRE). Binary hardening eliminates memory corruption attack vectors via Return-Oriented Programming (ROP) defenses, Control Flow Integrity (CFI), and hardware-backed Key Management Systems (HSM/KMS).",
+      "Cybersecurity, Cryptography & Security Engineering": {
+        "introduction": "Cybersecurity, Cryptography & Security Engineering investigates threat modeling (STRIDE), secure software development lifecycles (SSDLC), binary exploitation mitigations (ASLR, DEP/NX, Stack Canaries, ROP), applied symmetric and asymmetric cryptography (AES-256-GCM, RSA, ECC Curve25519, Argon2id), and Zero Trust architectures.",
+        "remediation": "Focus on the STRIDE threat matrix (Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege), compile-time memory protections (ASLR, DEP/NX, Stack Canaries, ROP gadgets), asymmetric vs symmetric key mechanics (RSA/ECC vs AES-GCM), and the Principle of Least Privilege.",
+        "deep_dive": "A unified engineering discipline uniting architectural threat modeling, automated static and dynamic analysis (SAST/DAST) in CI/CD, and low-level binary hardening. Explores mathematical intractability in modern cryptography (elliptic curve Diffie-Hellman, authenticated AEAD ciphers, memory-hard password hashing), ephemeral TLS 1.3 handshakes, Hardware Security Modules (HSM/KMS), and Zero Trust access management (OAuth 2.0 PKCE, OIDC, and Attribute-Based Access Control).",
         "questions": {
           "True-False": [
+            {
+              "statement": "Symmetric encryption algorithms like AES use the exact same cryptographic key for both encryption and decryption.",
+              "is_true": true,
+              "explanation": "AES is a symmetric cipher where sender and receiver share the same secret key."
+            },
+            {
+              "statement": "MD5 and SHA-1 are recommended today for secure cryptographic password hashing in modern production applications.",
+              "is_true": false,
+              "explanation": "MD5 and SHA-1 suffer from collision attacks and lack memory-hardness. Modern apps must use Argon2id or bcrypt."
+            },
+            {
+              "statement": "Perfect Forward Secrecy (PFS) ensures that compromise of a server's long-term private key cannot decrypt previously recorded network traffic.",
+              "is_true": true,
+              "explanation": "PFS generates unique ephemeral session keys (ECDHE) for each TLS session so old traffic remains indecipherable."
+            },
+            {
+              "statement": "In a SQL injection attack, attackers exploit flaws where user inputs are concatenated directly into raw database command strings.",
+              "is_true": true,
+              "explanation": "Parameterized queries and prepared statements completely neutralize SQL injection by separating code from data."
+            },
+            {
+              "statement": "Zero Trust network architecture assumes that any device inside the internal corporate network firewall can be inherently trusted.",
+              "is_true": false,
+              "explanation": "Zero Trust operates under 'Never Trust, Always Verify', enforcing mutual TLS and per-request authorization internally."
+            },
+            {
+              "statement": "Cross-Site Scripting (XSS) occurs when an application includes untrusted data in a web page without proper escaping, allowing malicious script execution.",
+              "is_true": true,
+              "explanation": "XSS allows attackers to hijack session cookies, deface DOM elements, or redirect users to malicious endpoints."
+            },
+            {
+              "statement": "A cryptographic salt should be kept top-secret alongside the server's master root key in an encrypted vault.",
+              "is_true": false,
+              "explanation": "Salts do not need to be secret; their sole purpose is uniqueness per user to defeat precomputed rainbow tables."
+            },
+            {
+              "statement": "Elliptic Curve Cryptography (ECC) achieves equivalent security to RSA with significantly smaller key sizes (e.g. 256-bit ECC ≈ 3072-bit RSA).",
+              "is_true": true,
+              "explanation": "ECC provides equal security with vastly shorter keys, reducing CPU cycles and network transmission overhead."
+            },
             {
               "statement": "Address Space Layout Randomization (ASLR) randomizes the memory locations of program segments (stack, heap, libraries) to prevent predictable buffer overflow exploits.",
               "is_true": true,
@@ -32326,6 +32137,61 @@
             }
           ],
           "Multi-Choice": [
+            {
+              "question": "Which password hashing algorithm was selected as the official winner of the Password Hashing Competition for its memory-hard defense against ASIC/GPU attacks?",
+              "choices": [
+                "Argon2id",
+                "PBKDF2-HMAC-SHA256",
+                "MD5-Crypt",
+                "SHA-512"
+              ],
+              "correct_index": 0,
+              "explanation": "Argon2id combines data-independent and data-dependent memory access to resist both side-channel and GPU/ASIC brute force attacks."
+            },
+            {
+              "question": "Which HTTP security header instructs browsers to strictly communicate with a domain exclusively over HTTPS for a defined duration?",
+              "choices": [
+                "Strict-Transport-Security (HSTS)",
+                "Content-Security-Policy (CSP)",
+                "X-Frame-Options",
+                "Access-Control-Allow-Origin"
+              ],
+              "correct_index": 0,
+              "explanation": "HSTS eliminates SSL stripping attacks by forcing browsers to rewrite all HTTP URLs to HTTPS before making network requests."
+            },
+            {
+              "question": "What type of attack exploits race conditions between the verification of a resource condition and the subsequent use of that resource?",
+              "choices": [
+                "Time-of-Check to Time-of-Use (TOCTOU)",
+                "Buffer Overflow",
+                "Cross-Site Request Forgery (CSRF)",
+                "Server-Side Request Forgery (SSRF)"
+              ],
+              "correct_index": 0,
+              "explanation": "TOCTOU is a concurrency vulnerability where state changes between permission validation and operation execution."
+            },
+            {
+              "question": "In asymmetric cryptography, which key must the sender use to digitally sign a message digest so recipients can verify authenticity?",
+              "choices": [
+                "The sender's private key",
+                "The recipient's public key",
+                "The sender's public key",
+                "A pre-shared symmetric key"
+              ],
+              "correct_index": 0,
+              "explanation": "A digital signature is created using the sender's private key and verified by anyone using the sender's public key."
+            },
+            {
+              "question": "Which defense completely prevents Cross-Site Request Forgery (CSRF) in modern state-changing POST requests?",
+              "choices": [
+                "Cryptographic Anti-CSRF tokens and SameSite=Strict cookie policy",
+                "Base64 encoding all form submissions",
+                "Using HTTP Basic Authentication over TLS",
+                "Hiding the HTML submit button with CSS"
+              ],
+              "correct_index": 0,
+              "explanation": "SameSite cookies prevent cross-origin ambient cookie delivery, and anti-CSRF tokens guarantee deliberate user intent."
+            },
             {
               "question": "Which binary exploitation technique bypasses non-executable stack protections (DEP/NX) by chaining together existing small machine code snippets ending in a RET instruction?",
               "choices": [
@@ -32373,6 +32239,26 @@
           ],
           "Matching": [
             {
+              "prompt": "Match each cryptographic primitive with its primary technical purpose",
+              "pairs": {
+                "AES-256-GCM": "Authenticated high-speed symmetric payload encryption",
+                "RSA / ECC Curve25519": "Asymmetric key exchange and digital identity signatures",
+                "HMAC-SHA256": "Message authentication code verifying tamper-proof data integrity",
+                "Argon2id": "Memory-hard password key derivation resisting GPU cracking",
+                "Diffie-Hellman (ECDHE)": "Ephemeral shared secret agreement over untrusted networks"
+              }
+            },
+            {
+              "prompt": "Match each cybersecurity vulnerability with its standard mitigation",
+              "pairs": {
+                "SQL Injection": "Parameterized queries / prepared statements with placeholder bindings",
+                "Cross-Site Scripting (XSS)": "Context-aware HTML/JS output encoding and Content Security Policy",
+                "Buffer Overflow": "Memory-safe languages (Rust/Go) or compiler stack canaries and ASLR",
+                "Man-In-The-Middle (MITM)": "TLS certificate pinning and Strict-Transport-Security (HSTS)",
+                "Credential Stuffing": "Multi-Factor Authentication (MFA) and adaptive rate limiting"
+              }
+            },
+            {
               "prompt": "Match each Security Engineering concept with its primary objective",
               "pairs": {
                 "STRIDE Matrix": "Systematic architectural threat categorization framework (Spoofing to Elevation of Privilege)",
@@ -32395,6 +32281,26 @@
           ],
           "Sequencing": [
             {
+              "prompt": "Order the sequence of operations in a standard TLS 1.3 cryptographic handshake",
+              "ordered_sequence": [
+                "Client sends ClientHello with supported cipher suites and ephemeral Diffie-Hellman key share",
+                "Server replies with ServerHello, selecting cipher suite and providing its own key share",
+                "Both parties derive symmetric session encryption keys from the shared Diffie-Hellman secret",
+                "Server sends encrypted certificate chain and digital signature for identity verification",
+                "Client verifies certificate and both parties exchange Finished messages to begin secure data transfer"
+              ]
+            },
+            {
+              "prompt": "Order the defense-in-depth steps to securely authenticate and store a user password",
+              "ordered_sequence": [
+                "User submits plaintext password over an encrypted TLS connection",
+                "Server generates a cryptographically secure random salt (at least 16 bytes)",
+                "Password and salt are hashed using Argon2id with calibrated time and memory costs",
+                "Salt, algorithm parameters, and resulting password hash are saved to the user table",
+                "Original plaintext password variable is zeroed in RAM immediately after hashing"
+              ]
+            },
+            {
               "prompt": "Order the stages of a Secure Software Development Lifecycle (SSDLC)",
               "ordered_sequence": [
                 "Security requirements definition and regulatory compliance scoping",
@@ -32416,6 +32322,44 @@
             }
           ],
           "Sorting-Classification": [
+            {
+              "prompt": "Classify the following cryptographic algorithms into Symmetric or Asymmetric",
+              "categories": [
+                "Symmetric",
+                "Asymmetric"
+              ],
+              "items": {
+                "Symmetric": [
+                  "AES-256-GCM",
+                  "ChaCha20-Poly1305",
+                  "Triple DES (3DES)"
+                ],
+                "Asymmetric": [
+                  "RSA-4096",
+                  "ECC Curve25519",
+                  "Diffie-Hellman (DH)"
+                ]
+              }
+            },
+            {
+              "prompt": "Classify the following security concerns into Network Security or Application Security",
+              "categories": [
+                "Network Security",
+                "Application Security"
+              ],
+              "items": {
+                "Network Security": [
+                  "SYN Flood DDoS",
+                  "ARP Spoofing",
+                  "DNS Cache Poisoning"
+                ],
+                "Application Security": [
+                  "SQL Injection (SQLi)",
+                  "Remote Code Execution (RCE)",
+                  "Cross-Site Scripting (XSS)"
+                ]
+              }
+            },
             {
               "prompt": "Classify the following security testing tools into SAST (Static) or DAST (Dynamic)",
               "categories": [

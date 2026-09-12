@@ -5798,196 +5798,6 @@
         ]
       }
     },
-    "Cybersecurity & Cryptography": {
-      "introduction": "Cybersecurity investigates threat modeling, public-key cryptography, authorization protocols, and defenses against memory and network exploits.",
-      "remediation": "Focus on asymmetric vs symmetric key distribution, cryptographic salt uniqueness, and defense-in-depth principles (Zero Trust).",
-      "deep_dive": "Cryptographic security relies on computationally intractable mathematical problems (integer factorization in RSA, discrete log in ECC Curve25519). Modern security enforces TLS 1.3 with forward secrecy, memory-safe languages to eliminate 70% of CVE buffer overflows, and authenticated encryption with associated data (AEAD, AES-GCM).",
-      "questions": {
-        "True-False": [
-          {
-            "statement": "Symmetric encryption algorithms like AES use the exact same cryptographic key for both encryption and decryption.",
-            "is_true": true,
-            "explanation": "AES is a symmetric cipher where sender and receiver share the same secret key."
-          },
-          {
-            "statement": "MD5 and SHA-1 are recommended today for secure cryptographic password hashing in modern production applications.",
-            "is_true": false,
-            "explanation": "MD5 and SHA-1 suffer from collision attacks and lack memory-hardness. Modern apps must use Argon2id or bcrypt."
-          },
-          {
-            "statement": "Perfect Forward Secrecy (PFS) ensures that compromise of a server's long-term private key cannot decrypt previously recorded network traffic.",
-            "is_true": true,
-            "explanation": "PFS generates unique ephemeral session keys (ECDHE) for each TLS session so old traffic remains indecipherable."
-          },
-          {
-            "statement": "In a SQL injection attack, attackers exploit flaws where user inputs are concatenated directly into raw database command strings.",
-            "is_true": true,
-            "explanation": "Parameterized queries and prepared statements completely neutralize SQL injection by separating code from data."
-          },
-          {
-            "statement": "Zero Trust network architecture assumes that any device inside the internal corporate network firewall can be inherently trusted.",
-            "is_true": false,
-            "explanation": "Zero Trust operates under 'Never Trust, Always Verify', enforcing mutual TLS and per-request authorization internally."
-          },
-          {
-            "statement": "Cross-Site Scripting (XSS) occurs when an application includes untrusted data in a web page without proper escaping, allowing malicious script execution.",
-            "is_true": true,
-            "explanation": "XSS allows attackers to hijack session cookies, deface DOM elements, or redirect users to malicious endpoints."
-          },
-          {
-            "statement": "A cryptographic salt should be kept top-secret alongside the server's master root key in an encrypted vault.",
-            "is_true": false,
-            "explanation": "Salts do not need to be secret; their sole purpose is uniqueness per user to defeat precomputed rainbow tables."
-          },
-          {
-            "statement": "Elliptic Curve Cryptography (ECC) achieves equivalent security to RSA with significantly smaller key sizes (e.g. 256-bit ECC ≈ 3072-bit RSA).",
-            "is_true": true,
-            "explanation": "ECC provides equal security with vastly shorter keys, reducing CPU cycles and network transmission overhead."
-          }
-        ],
-        "Multi-Choice": [
-          {
-            "question": "Which password hashing algorithm was selected as the official winner of the Password Hashing Competition for its memory-hard defense against ASIC/GPU attacks?",
-            "choices": [
-              "Argon2id",
-              "PBKDF2-HMAC-SHA256",
-              "MD5-Crypt",
-              "SHA-512"
-            ],
-            "correct_index": 0,
-            "explanation": "Argon2id combines data-independent and data-dependent memory access to resist both side-channel and GPU/ASIC brute force attacks."
-          },
-          {
-            "question": "Which HTTP security header instructs browsers to strictly communicate with a domain exclusively over HTTPS for a defined duration?",
-            "choices": [
-              "Strict-Transport-Security (HSTS)",
-              "Content-Security-Policy (CSP)",
-              "X-Frame-Options",
-              "Access-Control-Allow-Origin"
-            ],
-            "correct_index": 0,
-            "explanation": "HSTS eliminates SSL stripping attacks by forcing browsers to rewrite all HTTP URLs to HTTPS before making network requests."
-          },
-          {
-            "question": "What type of attack exploits race conditions between the verification of a resource condition and the subsequent use of that resource?",
-            "choices": [
-              "Time-of-Check to Time-of-Use (TOCTOU)",
-              "Buffer Overflow",
-              "Cross-Site Request Forgery (CSRF)",
-              "Server-Side Request Forgery (SSRF)"
-            ],
-            "correct_index": 0,
-            "explanation": "TOCTOU is a concurrency vulnerability where state changes between permission validation and operation execution."
-          },
-          {
-            "question": "In asymmetric cryptography, which key must the sender use to digitally sign a message digest so recipients can verify authenticity?",
-            "choices": [
-              "The sender's private key",
-              "The recipient's public key",
-              "The sender's public key",
-              "A pre-shared symmetric key"
-            ],
-            "correct_index": 0,
-            "explanation": "A digital signature is created using the sender's private key and verified by anyone using the sender's public key."
-          },
-          {
-            "question": "Which defense completely prevents Cross-Site Request Forgery (CSRF) in modern state-changing POST requests?",
-            "choices": [
-              "Cryptographic Anti-CSRF tokens and SameSite=Strict cookie policy",
-              "Base64 encoding all form submissions",
-              "Using HTTP Basic Authentication over TLS",
-              "Hiding the HTML submit button with CSS"
-            ],
-            "correct_index": 0,
-            "explanation": "SameSite cookies prevent cross-origin ambient cookie delivery, and anti-CSRF tokens guarantee deliberate user intent."
-          }
-        ],
-        "Matching": [
-          {
-            "prompt": "Match each cryptographic primitive with its primary technical purpose",
-            "pairs": {
-              "AES-256-GCM": "Authenticated high-speed symmetric payload encryption",
-              "RSA / ECC Curve25519": "Asymmetric key exchange and digital identity signatures",
-              "HMAC-SHA256": "Message authentication code verifying tamper-proof data integrity",
-              "Argon2id": "Memory-hard password key derivation resisting GPU cracking",
-              "Diffie-Hellman (ECDHE)": "Ephemeral shared secret agreement over untrusted networks"
-            }
-          },
-          {
-            "prompt": "Match each cybersecurity vulnerability with its standard mitigation",
-            "pairs": {
-              "SQL Injection": "Parameterized queries / prepared statements with placeholder bindings",
-              "Cross-Site Scripting (XSS)": "Context-aware HTML/JS output encoding and Content Security Policy",
-              "Buffer Overflow": "Memory-safe languages (Rust/Go) or compiler stack canaries and ASLR",
-              "Man-In-The-Middle (MITM)": "TLS certificate pinning and Strict-Transport-Security (HSTS)",
-              "Credential Stuffing": "Multi-Factor Authentication (MFA) and adaptive rate limiting"
-            }
-          }
-        ],
-        "Sequencing": [
-          {
-            "prompt": "Order the sequence of operations in a standard TLS 1.3 cryptographic handshake",
-            "ordered_sequence": [
-              "Client sends ClientHello with supported cipher suites and ephemeral Diffie-Hellman key share",
-              "Server replies with ServerHello, selecting cipher suite and providing its own key share",
-              "Both parties derive symmetric session encryption keys from the shared Diffie-Hellman secret",
-              "Server sends encrypted certificate chain and digital signature for identity verification",
-              "Client verifies certificate and both parties exchange Finished messages to begin secure data transfer"
-            ]
-          },
-          {
-            "prompt": "Order the defense-in-depth steps to securely authenticate and store a user password",
-            "ordered_sequence": [
-              "User submits plaintext password over an encrypted TLS connection",
-              "Server generates a cryptographically secure random salt (at least 16 bytes)",
-              "Password and salt are hashed using Argon2id with calibrated time and memory costs",
-              "Salt, algorithm parameters, and resulting password hash are saved to the user table",
-              "Original plaintext password variable is zeroed in RAM immediately after hashing"
-            ]
-          }
-        ],
-        "Sorting-Classification": [
-          {
-            "prompt": "Classify the following cryptographic algorithms into Symmetric or Asymmetric",
-            "categories": [
-              "Symmetric",
-              "Asymmetric"
-            ],
-            "items": {
-              "Symmetric": [
-                "AES-256-GCM",
-                "ChaCha20-Poly1305",
-                "Triple DES (3DES)"
-              ],
-              "Asymmetric": [
-                "RSA-4096",
-                "ECC Curve25519",
-                "Diffie-Hellman (DH)"
-              ]
-            }
-          },
-          {
-            "prompt": "Classify the following security concerns into Network Security or Application Security",
-            "categories": [
-              "Network Security",
-              "Application Security"
-            ],
-            "items": {
-              "Network Security": [
-                "SYN Flood DDoS",
-                "ARP Spoofing",
-                "DNS Cache Poisoning"
-              ],
-              "Application Security": [
-                "SQL Injection (SQLi)",
-                "Remote Code Execution (RCE)",
-                "Cross-Site Scripting (XSS)"
-              ]
-            }
-          }
-        ]
-      }
-    },
     "DevOps & Site Reliability Engineering": {
       "introduction": "Site Reliability Engineering (SRE) applies software engineering principles to operations, infrastructure automation, observability, and incident lifecycle management.",
       "remediation": "Focus on Service Level Indicators (SLIs), Service Level Objectives (SLOs), error budgets, container orchestration primitives, and immutable infrastructure.",
@@ -6142,12 +5952,52 @@
         ]
       }
     },
-    "Security Engineering": {
-      "introduction": "Security Engineering designs systems to remain dependable and resilient in the face of malice, error, or targeted compromise, spanning threat modeling, hardware-enforced isolation, and defense-in-depth.",
-      "remediation": "Focus on the STRIDE threat matrix (Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege), compile-time memory protections (ASLR/DEP/canaries), and the Principle of Least Privilege.",
-      "deep_dive": "Modern Security Engineering incorporates formal Threat Modeling during architectural design, automated static/dynamic security testing (SAST/DAST) in CI/CD, and cryptographically verified identities (mTLS, SPIFFE/SPIRE). Binary hardening eliminates memory corruption attack vectors via Return-Oriented Programming (ROP) defenses, Control Flow Integrity (CFI), and hardware-backed Key Management Systems (HSM/KMS).",
+    "Cybersecurity, Cryptography & Security Engineering": {
+      "introduction": "Cybersecurity, Cryptography & Security Engineering investigates threat modeling (STRIDE), secure software development lifecycles (SSDLC), binary exploitation mitigations (ASLR, DEP/NX, Stack Canaries, ROP), applied symmetric and asymmetric cryptography (AES-256-GCM, RSA, ECC Curve25519, Argon2id), and Zero Trust architectures.",
+      "remediation": "Focus on the STRIDE threat matrix (Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege), compile-time memory protections (ASLR, DEP/NX, Stack Canaries, ROP gadgets), asymmetric vs symmetric key mechanics (RSA/ECC vs AES-GCM), and the Principle of Least Privilege.",
+      "deep_dive": "A unified engineering discipline uniting architectural threat modeling, automated static and dynamic analysis (SAST/DAST) in CI/CD, and low-level binary hardening. Explores mathematical intractability in modern cryptography (elliptic curve Diffie-Hellman, authenticated AEAD ciphers, memory-hard password hashing), ephemeral TLS 1.3 handshakes, Hardware Security Modules (HSM/KMS), and Zero Trust access management (OAuth 2.0 PKCE, OIDC, and Attribute-Based Access Control).",
       "questions": {
         "True-False": [
+          {
+            "statement": "Symmetric encryption algorithms like AES use the exact same cryptographic key for both encryption and decryption.",
+            "is_true": true,
+            "explanation": "AES is a symmetric cipher where sender and receiver share the same secret key."
+          },
+          {
+            "statement": "MD5 and SHA-1 are recommended today for secure cryptographic password hashing in modern production applications.",
+            "is_true": false,
+            "explanation": "MD5 and SHA-1 suffer from collision attacks and lack memory-hardness. Modern apps must use Argon2id or bcrypt."
+          },
+          {
+            "statement": "Perfect Forward Secrecy (PFS) ensures that compromise of a server's long-term private key cannot decrypt previously recorded network traffic.",
+            "is_true": true,
+            "explanation": "PFS generates unique ephemeral session keys (ECDHE) for each TLS session so old traffic remains indecipherable."
+          },
+          {
+            "statement": "In a SQL injection attack, attackers exploit flaws where user inputs are concatenated directly into raw database command strings.",
+            "is_true": true,
+            "explanation": "Parameterized queries and prepared statements completely neutralize SQL injection by separating code from data."
+          },
+          {
+            "statement": "Zero Trust network architecture assumes that any device inside the internal corporate network firewall can be inherently trusted.",
+            "is_true": false,
+            "explanation": "Zero Trust operates under 'Never Trust, Always Verify', enforcing mutual TLS and per-request authorization internally."
+          },
+          {
+            "statement": "Cross-Site Scripting (XSS) occurs when an application includes untrusted data in a web page without proper escaping, allowing malicious script execution.",
+            "is_true": true,
+            "explanation": "XSS allows attackers to hijack session cookies, deface DOM elements, or redirect users to malicious endpoints."
+          },
+          {
+            "statement": "A cryptographic salt should be kept top-secret alongside the server's master root key in an encrypted vault.",
+            "is_true": false,
+            "explanation": "Salts do not need to be secret; their sole purpose is uniqueness per user to defeat precomputed rainbow tables."
+          },
+          {
+            "statement": "Elliptic Curve Cryptography (ECC) achieves equivalent security to RSA with significantly smaller key sizes (e.g. 256-bit ECC ≈ 3072-bit RSA).",
+            "is_true": true,
+            "explanation": "ECC provides equal security with vastly shorter keys, reducing CPU cycles and network transmission overhead."
+          },
           {
             "statement": "Address Space Layout Randomization (ASLR) randomizes the memory locations of program segments (stack, heap, libraries) to prevent predictable buffer overflow exploits.",
             "is_true": true,
@@ -6180,6 +6030,61 @@
           }
         ],
         "Multi-Choice": [
+          {
+            "question": "Which password hashing algorithm was selected as the official winner of the Password Hashing Competition for its memory-hard defense against ASIC/GPU attacks?",
+            "choices": [
+              "Argon2id",
+              "PBKDF2-HMAC-SHA256",
+              "MD5-Crypt",
+              "SHA-512"
+            ],
+            "correct_index": 0,
+            "explanation": "Argon2id combines data-independent and data-dependent memory access to resist both side-channel and GPU/ASIC brute force attacks."
+          },
+          {
+            "question": "Which HTTP security header instructs browsers to strictly communicate with a domain exclusively over HTTPS for a defined duration?",
+            "choices": [
+              "Strict-Transport-Security (HSTS)",
+              "Content-Security-Policy (CSP)",
+              "X-Frame-Options",
+              "Access-Control-Allow-Origin"
+            ],
+            "correct_index": 0,
+            "explanation": "HSTS eliminates SSL stripping attacks by forcing browsers to rewrite all HTTP URLs to HTTPS before making network requests."
+          },
+          {
+            "question": "What type of attack exploits race conditions between the verification of a resource condition and the subsequent use of that resource?",
+            "choices": [
+              "Time-of-Check to Time-of-Use (TOCTOU)",
+              "Buffer Overflow",
+              "Cross-Site Request Forgery (CSRF)",
+              "Server-Side Request Forgery (SSRF)"
+            ],
+            "correct_index": 0,
+            "explanation": "TOCTOU is a concurrency vulnerability where state changes between permission validation and operation execution."
+          },
+          {
+            "question": "In asymmetric cryptography, which key must the sender use to digitally sign a message digest so recipients can verify authenticity?",
+            "choices": [
+              "The sender's private key",
+              "The recipient's public key",
+              "The sender's public key",
+              "A pre-shared symmetric key"
+            ],
+            "correct_index": 0,
+            "explanation": "A digital signature is created using the sender's private key and verified by anyone using the sender's public key."
+          },
+          {
+            "question": "Which defense completely prevents Cross-Site Request Forgery (CSRF) in modern state-changing POST requests?",
+            "choices": [
+              "Cryptographic Anti-CSRF tokens and SameSite=Strict cookie policy",
+              "Base64 encoding all form submissions",
+              "Using HTTP Basic Authentication over TLS",
+              "Hiding the HTML submit button with CSS"
+            ],
+            "correct_index": 0,
+            "explanation": "SameSite cookies prevent cross-origin ambient cookie delivery, and anti-CSRF tokens guarantee deliberate user intent."
+          },
           {
             "question": "Which binary exploitation technique bypasses non-executable stack protections (DEP/NX) by chaining together existing small machine code snippets ending in a RET instruction?",
             "choices": [
@@ -6227,6 +6132,26 @@
         ],
         "Matching": [
           {
+            "prompt": "Match each cryptographic primitive with its primary technical purpose",
+            "pairs": {
+              "AES-256-GCM": "Authenticated high-speed symmetric payload encryption",
+              "RSA / ECC Curve25519": "Asymmetric key exchange and digital identity signatures",
+              "HMAC-SHA256": "Message authentication code verifying tamper-proof data integrity",
+              "Argon2id": "Memory-hard password key derivation resisting GPU cracking",
+              "Diffie-Hellman (ECDHE)": "Ephemeral shared secret agreement over untrusted networks"
+            }
+          },
+          {
+            "prompt": "Match each cybersecurity vulnerability with its standard mitigation",
+            "pairs": {
+              "SQL Injection": "Parameterized queries / prepared statements with placeholder bindings",
+              "Cross-Site Scripting (XSS)": "Context-aware HTML/JS output encoding and Content Security Policy",
+              "Buffer Overflow": "Memory-safe languages (Rust/Go) or compiler stack canaries and ASLR",
+              "Man-In-The-Middle (MITM)": "TLS certificate pinning and Strict-Transport-Security (HSTS)",
+              "Credential Stuffing": "Multi-Factor Authentication (MFA) and adaptive rate limiting"
+            }
+          },
+          {
             "prompt": "Match each Security Engineering concept with its primary objective",
             "pairs": {
               "STRIDE Matrix": "Systematic architectural threat categorization framework (Spoofing to Elevation of Privilege)",
@@ -6249,6 +6174,26 @@
         ],
         "Sequencing": [
           {
+            "prompt": "Order the sequence of operations in a standard TLS 1.3 cryptographic handshake",
+            "ordered_sequence": [
+              "Client sends ClientHello with supported cipher suites and ephemeral Diffie-Hellman key share",
+              "Server replies with ServerHello, selecting cipher suite and providing its own key share",
+              "Both parties derive symmetric session encryption keys from the shared Diffie-Hellman secret",
+              "Server sends encrypted certificate chain and digital signature for identity verification",
+              "Client verifies certificate and both parties exchange Finished messages to begin secure data transfer"
+            ]
+          },
+          {
+            "prompt": "Order the defense-in-depth steps to securely authenticate and store a user password",
+            "ordered_sequence": [
+              "User submits plaintext password over an encrypted TLS connection",
+              "Server generates a cryptographically secure random salt (at least 16 bytes)",
+              "Password and salt are hashed using Argon2id with calibrated time and memory costs",
+              "Salt, algorithm parameters, and resulting password hash are saved to the user table",
+              "Original plaintext password variable is zeroed in RAM immediately after hashing"
+            ]
+          },
+          {
             "prompt": "Order the stages of a Secure Software Development Lifecycle (SSDLC)",
             "ordered_sequence": [
               "Security requirements definition and regulatory compliance scoping",
@@ -6270,6 +6215,44 @@
           }
         ],
         "Sorting-Classification": [
+          {
+            "prompt": "Classify the following cryptographic algorithms into Symmetric or Asymmetric",
+            "categories": [
+              "Symmetric",
+              "Asymmetric"
+            ],
+            "items": {
+              "Symmetric": [
+                "AES-256-GCM",
+                "ChaCha20-Poly1305",
+                "Triple DES (3DES)"
+              ],
+              "Asymmetric": [
+                "RSA-4096",
+                "ECC Curve25519",
+                "Diffie-Hellman (DH)"
+              ]
+            }
+          },
+          {
+            "prompt": "Classify the following security concerns into Network Security or Application Security",
+            "categories": [
+              "Network Security",
+              "Application Security"
+            ],
+            "items": {
+              "Network Security": [
+                "SYN Flood DDoS",
+                "ARP Spoofing",
+                "DNS Cache Poisoning"
+              ],
+              "Application Security": [
+                "SQL Injection (SQLi)",
+                "Remote Code Execution (RCE)",
+                "Cross-Site Scripting (XSS)"
+              ]
+            }
+          },
           {
             "prompt": "Classify the following security testing tools into SAST (Static) or DAST (Dynamic)",
             "categories": [
@@ -6312,5 +6295,5 @@
       }
     }
   },
-  "last_updated": "2026-09-12T19:50:06Z"
+  "last_updated": "2026-09-12T19:56:15Z"
 }

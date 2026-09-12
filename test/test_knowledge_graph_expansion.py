@@ -67,9 +67,8 @@ class TestKnowledgeGraphExpansion(unittest.TestCase):
             "Cloud & Distributed Computing",
             "Databases & Distributed Storage",
             "Software Engineering",
-            "Cybersecurity & Cryptography",
             "DevOps & Site Reliability Engineering",
-            "Security Engineering",
+            "Cybersecurity, Cryptography & Security Engineering",
         ]
         for rd in required_domains:
             self.assertIn(rd, domain_names, f"Missing required domain: '{rd}'")
@@ -78,6 +77,11 @@ class TestKnowledgeGraphExpansion(unittest.TestCase):
             self.assertTrue(len(props.get("introduction", "")) > 20, f"Introduction too short for {rd}")
             self.assertTrue(len(props.get("remediation", "")) > 20, f"Remediation too short for {rd}")
             self.assertTrue(len(props.get("deep_dive", "")) > 20, f"Deep dive too short for {rd}")
+
+        # Verify combined domain has full set of 35 questions across all 5 modalities
+        combined_node = next(n for n in curriculum_nodes if n["properties"].get("name") == "Cybersecurity, Cryptography & Security Engineering")
+        connected_edges = [e for e in self.kg_data.get("edges", []) if e["source"] == combined_node["id"]]
+        self.assertGreaterEqual(len(connected_edges), 30, f"Expected >= 30 questions in combined security domain, got {len(connected_edges)}")
 
     def test_relational_integrity_no_dangling_edges(self):
         """Ensure all edge sources and targets strictly resolve to existing vertices."""
@@ -97,33 +101,33 @@ class TestKnowledgeGraphExpansion(unittest.TestCase):
         }
 
         # First encounter intro check
-        intro = tracker.observe_topic("Cybersecurity & Cryptography")
+        intro = tracker.observe_topic("Cybersecurity, Cryptography & Security Engineering")
         self.assertIsNotNone(intro)
         self.assertEqual(intro[0], "Introduction")
 
         # Turn 1: First wrong answer -> Tier 1 Refresh
         tracker.turn = 1
-        res1 = tracker.record_result("Cybersecurity & Cryptography", False, cyber_meta)
+        res1 = tracker.record_result("Cybersecurity, Cryptography & Security Engineering", False, cyber_meta)
         self.assertIsNotNone(res1)
         self.assertEqual(res1[0], "Concept Refresh")
 
         # Turn 3: 2 turns later (satisfies 2^1 backoff) -> Tier 2 Remediation
         tracker.turn = 3
-        res2 = tracker.record_result("Cybersecurity & Cryptography", False, cyber_meta)
+        res2 = tracker.record_result("Cybersecurity, Cryptography & Security Engineering", False, cyber_meta)
         self.assertIsNotNone(res2)
         self.assertEqual(res2[0], "Targeted Remediation Hint")
 
         # Turn 7: 4 turns later (satisfies 2^2 backoff) -> Tier 3 Deep Dive
         tracker.turn = 7
-        res3 = tracker.record_result("Cybersecurity & Cryptography", False, cyber_meta)
+        res3 = tracker.record_result("Cybersecurity, Cryptography & Security Engineering", False, cyber_meta)
         self.assertIsNotNone(res3)
         self.assertIn("Deep Dive", res3[0])
 
         # Turn 8: Correct answer resets consecutive misses
         tracker.turn = 8
-        res4 = tracker.record_result("Cybersecurity & Cryptography", True, cyber_meta)
+        res4 = tracker.record_result("Cybersecurity, Cryptography & Security Engineering", True, cyber_meta)
         self.assertIsNone(res4)
-        self.assertEqual(tracker.consecutive_misses["Cybersecurity & Cryptography"], 0)
+        self.assertEqual(tracker.consecutive_misses["Cybersecurity, Cryptography & Security Engineering"], 0)
 
         # Also verify PythonAdaptiveExplanationService on new domains
         from test.test_adaptive_explanation import PythonAdaptiveExplanationService

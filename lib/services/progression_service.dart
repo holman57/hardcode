@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'database_service.dart';
 
@@ -207,7 +206,7 @@ class TopicProgressionService {
         pointsToUnlock: 0,
         pointsToMaster: 100,
         prerequisiteIds: [],
-        similarNodeIds: ['topic:tcp_ip', 'domain:cloud_computing', 'domain:cybersecurity'],
+        similarNodeIds: ['topic:tcp_ip', 'domain:cloud_computing', 'domain:security_engineering'],
         position3D: const Vector3D(-190, 80, 130),
         colorHex: '#06B6D4', // Cyan
         status: TopicUnlockStatus.unlocked,
@@ -256,30 +255,16 @@ class TopicProgressionService {
       ),
       TopicProgressionNode(
         id: 'domain:security_engineering',
-        label: 'Security Engineering',
+        label: 'Cybersecurity, Cryptography & Security Engineering',
         category: 'Core Domain',
         icon: 'security',
-        description: 'Threat modeling (STRIDE), SSDLC (SAST/DAST), memory mitigations (ASLR/DEP/canaries), and Zero Trust IAM.',
+        description: 'Threat modeling (STRIDE), SSDLC (SAST/DAST), binary mitigations (ASLR/DEP/canaries, ROP), Zero Trust IAM, and applied cryptography (AES-GCM, RSA, ECC, Argon2id, TLS 1.3).',
         pointsToUnlock: 0,
         pointsToMaster: 100,
         prerequisiteIds: [],
-        similarNodeIds: ['domain:cybersecurity', 'domain:operating_systems', 'lang:rust'],
-        position3D: const Vector3D(-220, 20, -110),
+        similarNodeIds: ['domain:operating_systems', 'domain:networking', 'lang:rust'],
+        position3D: const Vector3D(-215, 30, -125),
         colorHex: '#E11D48', // Crimson/Rose
-        status: TopicUnlockStatus.unlocked,
-      ),
-      TopicProgressionNode(
-        id: 'domain:cybersecurity',
-        label: 'Cybersecurity & Cryptography',
-        category: 'Core Domain',
-        icon: 'lock',
-        description: 'Public-key RSA/ECC cryptography, zero-trust architectures, OWASP vulnerabilities.',
-        pointsToUnlock: 0,
-        pointsToMaster: 100,
-        prerequisiteIds: [],
-        similarNodeIds: ['domain:security_engineering', 'domain:networking', 'lang:rust'],
-        position3D: const Vector3D(-210, 40, -140),
-        colorHex: '#F43F5E', // Rose
         status: TopicUnlockStatus.unlocked,
       ),
       TopicProgressionNode(
@@ -391,7 +376,7 @@ class TopicProgressionService {
         pointsToUnlock: 25,
         pointsToMaster: 100,
         prerequisiteIds: ['domain:networking'],
-        similarNodeIds: ['domain:networking', 'domain:cybersecurity'],
+        similarNodeIds: ['domain:networking', 'domain:security_engineering'],
         position3D: const Vector3D(-240, 130, 90),
         colorHex: '#14B8A6',
         status: TopicUnlockStatus.unlocked,
@@ -637,6 +622,19 @@ class TopicProgressionService {
   /// Finds a node by raw title, subject, or language string.
   TopicProgressionNode? _findNodeByAlias(String alias) {
     final clean = alias.trim().toLowerCase();
+    if (clean == 'domain:cybersecurity' ||
+        clean == 'domain:cybersecurity_cryptography' ||
+        clean == 'domain:cybersecurity_cryptography_security_engineering' ||
+        clean == 'cybersecurity' ||
+        clean == 'cryptography' ||
+        clean == 'cybersecurity & cryptography' ||
+        clean == 'security' ||
+        clean == 'security engineering' ||
+        clean == 'domain:security_engineering') {
+      if (_nodes.containsKey('domain:security_engineering')) {
+        return _nodes['domain:security_engineering'];
+      }
+    }
     for (final n in _nodes.values) {
       if (n.id.toLowerCase() == clean ||
           n.label.toLowerCase() == clean ||

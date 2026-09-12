@@ -460,15 +460,24 @@ class KnowledgeGraphBuilder:
             index_by_category.setdefault(ncat, []).append(nid)
 
         # 10. Assemble Final Graph Object
+        semver = "1.3.0"
+        v_file = self.source_db_path.parent.parent / "version.json" if self.source_db_path else None
+        if v_file and v_file.exists():
+            try:
+                with open(v_file, "r", encoding="utf-8") as vf:
+                    semver = json.load(vf).get("version", "1.3.0")
+            except Exception:
+                pass
+
         graph_data = {
             "version": raw_db.get("version", 7),
-            "graph_version": "1.0.0-graph",
+            "graph_version": f"{semver}-graph",
             "schema": "knowledge-graph",
             "metadata": {
                 "name": "HardCode Knowledge Graph",
                 "schema": "knowledge-graph",
                 "version": raw_db.get("version", 7),
-                "graph_version": "1.0.0-graph",
+                "graph_version": f"{semver}-graph",
                 "description": "Structured graph database powering syntax flashcards, CS curriculum, and visual navigation.",
                 "node_count": len(self.nodes),
                 "edge_count": len(self.edges),

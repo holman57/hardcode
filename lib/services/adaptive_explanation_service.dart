@@ -167,8 +167,7 @@ class AdaptiveExplanationService {
     if (lower.contains('os') || lower.contains('operating') || lower.contains('concurrency')) return 'operating_systems';
     if (lower.contains('arch') || lower.contains('cpu') || lower.contains('cache') || lower.contains('hardware') || lower.contains('system')) return 'system_architecture';
     if (lower.contains('ai') || lower.contains('machine') || lower.contains('neural') || lower.contains('learning') || lower.contains('transformer')) return 'ai';
-    if (lower.contains('security engineering') || lower.contains('stride') || lower.contains('sast') || lower.contains('dast')) return 'security_engineering';
-    if (lower.contains('sec') || lower.contains('crypto') || lower.contains('auth') || lower.contains('cipher')) return 'security';
+    if (lower.contains('security') || lower.contains('crypto') || lower.contains('auth') || lower.contains('cipher') || lower.contains('stride') || lower.contains('sast') || lower.contains('dast')) return 'security_engineering';
     if (lower.contains('db') || (lower.contains('data') && lower.contains('base')) || lower.contains('sql')) return 'database';
     if (lower.contains('data') || lower.contains('struct') || lower.contains('tree') || lower.contains('stack') || lower.contains('queue')) return 'data_structures';
     if (lower.contains('pattern') || lower.contains('solid') || lower.contains('design') || lower.contains('software')) return 'software_engineering';
