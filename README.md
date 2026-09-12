@@ -1,7 +1,7 @@
 # HardCode
 
 > **Security Engineering & Automated Versioning Edition (v1.3.0)**  
-> *A high-velocity flashcard, syntax memorization, and interactive 3D Knowledge Graph engine for polyglot developers.*
+> *An automated, low-latency syntax memorization and multidimensional Knowledge Graph engine for computer science pedagogy and polyglot software engineering.*
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-success?style=for-the-badge&logo=github)](https://holman57.github.io/hardcode/)
 [![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)](https://flutter.dev)
@@ -11,131 +11,318 @@
 
 ---
 
-## 🚀 Overview
+## System Overview
 
-**HardCode** is an interactive, speed-oriented question-and-answer training engine engineered to build muscle memory and instant syntax recognition across **18 distinct programming languages** and the entire spectrum of **Computer Science fundamentals**.
+**HardCode** is an interactive, high-velocity knowledge verification and cognitive training engine engineered to establish instant recall and syntax fluency across **18 programming languages** and the foundational disciplines of **Computer Science and Systems Engineering**.
 
-Powered by an interactive **3D Knowledge Graph** containing **600+ vertices**, **690+ directed relations**, and **400+ interactive questions**, HardCode dynamically challenges learners, tracks struggle patterns with **adaptive multi-tier explanations**, and celebrates learning milestones with **high-impact particle motion graphics**.
+The application models pedagogical concepts as an interactive, directed **Knowledge Graph** comprising **620 vertices**, **714 directed relational edges**, and **418 interactive multi-modal questions**. HardCode continuously evaluates learner proficiency, detects conceptual struggle patterns via an **adaptive multi-tier explanation service**, and provides visual feedback through a **procedural motion graphics engine**.
 
-🔗 **Try the live web app:** [https://holman57.github.io/hardcode/](https://holman57.github.io/hardcode/)
-
----
-
-## 🌌 3D Knowledge Graph & Progression System
-
-The **Knowledge Graph** visualizes your entire computer science journey as an interactive spatial network:
-
-- **Orbital Spatial 3D Projection**: Mathematical 3D camera projection with real-time yaw/pitch rotation, inertial panning, and optical depth scaling.
-- **Unobstructed Viewport Centering**: Centered vertically at 38% viewport height, ensuring floating graph nodes orbit cleanly above the inspection controls.
-- **High-Contrast Typography**: Text labels feature dark slate backdrop pills (`#0F172A`) with glowing cyan/amber borders and high-contrast typography, guaranteeing 100% legibility against spatial starfields.
-- **Interactive Inspection Sheet**: Collapsible/expandable bottom inspector displaying topic description, mastery progress bar, prerequisite unlock chains, and connected topics.
-- **Topic Mission Grinding**: Tap any unlocked node and click **"Grind Questions"** to filter questions dynamically and earn mastery points toward cascading node unlocks.
+The live production deployment is accessible at: [https://holman57.github.io/hardcode/](https://holman57.github.io/hardcode/)
 
 ---
 
-## 📚 Master Curriculum Hierarchy
+## Hierarchical Curriculum Taxonomy and Interdependency Architecture
 
-HardCode covers 26 master domains and languages arranged in spherical orbits:
+Curriculum content in HardCode is structured as a strict three-tier ontology:
 
-| Core Master Domain | Key Topics & Concepts Covered | Question Variety |
-| :--- | :--- | :--- |
-| **Computer Science** | Turing machines, decidability, Halting Problem, Chomsky hierarchy, two's complement, P vs NP | Multi-Choice, True-False, Matching, Sequencing, Sorting |
-| **Computer Networking** | OSI 7-layer stack, TCP 3-way handshake, BBR vs Reno, DNS records (A/AAAA), QUIC / HTTP/3, BGP | Multi-Choice, True-False, Matching, Sequencing, Sorting |
-| **Artificial Intelligence & ML** | Neural network backpropagation, ReLU vanishing gradients, self-attention \(O(N^2)\), Transformers, RLHF | Multi-Choice, True-False, Matching, Sequencing, Sorting |
-| **Operating Systems & Concurrency** | Virtual memory paging, MMU, CPU scheduling, Mutexes vs Semaphores, Coffman deadlock conditions | Multi-Choice, True-False, Matching, Sequencing, Sorting |
-| **Cloud Computing & Distributed Systems** | CAP theorem, Raft / Paxos consensus, Kubernetes controllers, Service Mesh (mTLS), Object vs Block storage | Multi-Choice, True-False, Matching, Sequencing, Sorting |
-| **Cybersecurity & Cryptography** | Symmetric AES vs Asymmetric RSA/ECC, Argon2id password hashing, Zero Trust, TLS 1.3, OWASP Top 10 | Multi-Choice, True-False, Matching, Sequencing, Sorting |
-| **Security Engineering** | Threat modeling (STRIDE/DREAD), SSDLC, SAST vs DAST, memory mitigations (ASLR, DEP/NX, Stack Canaries, ROP), Zero Trust IAM, HSM/KMS | Multi-Choice, True-False, Matching, Sequencing, Sorting |
-| **System Architecture** | Von Neumann memory wall, L1/L2/L3 SRAM cache latencies, instruction pipelining hazards, TLB | Multi-Choice, True-False, Matching, Sequencing, Sorting |
-| **Database Systems & Storage Engines** | ACID guarantees, Write-Ahead Logs (WAL), B+ Trees vs LSM Trees, ANSI SQL isolation levels, MVCC | Multi-Choice, True-False, Matching, Sequencing, Sorting |
-| **Software Engineering & Architecture** | SOLID principles, GoF design patterns (Adapter, Strategy, Builder), CQRS, Event Sourcing, TDD | Multi-Choice, True-False, Matching, Sequencing, Sorting |
-| **DevOps & Site Reliability Engineering** | SLIs, SLOs, Error Budgets, Blue-Green / Canary releases, Chaos Engineering, Metrics / Logs / Traces | Multi-Choice, True-False, Matching, Sequencing, Sorting |
-| **Programming Languages & Compilers** | Lexing, AST generation, Hindley-Milner type inference, SSA intermediate representations, JIT runtimes | Multi-Choice, True-False, Matching, Sequencing, Sorting |
+$$\text{Core Master Domain (Level 0)} \supset \text{Sub-Topic Module (Level 1)} \supset \text{Concept Primitive (Level 2)}$$
 
-### Supported Programming Languages (18 Languages)
-- **Systems & Performance**: Rust, C, C++, C#
-- **General-Purpose & Backends**: Go, Python 3, Java, Kotlin, Scala
-- **Web, Scripting & Mobile**: TypeScript, JavaScript, Dart, Swift, PHP, Ruby, Bash, PowerShell, Lua, R
+### Hierarchical Containment and Inter-Domain Overlap
 
----
+Concepts are not isolated flashcards; they represent nodes within a directed acyclic dependency network. For example:
+- **Variable Declaration** is an atomic concept primitive ($\text{Level 2}$).
+- It is a strict subset of **Programming Languages & Type Systems** ($\text{Level 1}$).
+- Which is in turn a constituent subdiscipline of **Computer Science** ($\text{Level 0}$).
 
-## 🕹️ 5 Interactive Question Modalities
+Simultaneously, **Variable Declaration** maintains cross-cutting interdependencies with adjacent domains:
+1. **Systems Architecture & Memory Hierarchy**: Variable allocation semantics directly depend on word alignment, register assignment, and the architectural distinction between the call stack and the heap.
+2. **Operating Systems**: Uninitialized stack variables or unbounded pointer arithmetic interface directly with virtual memory paging, segmentation faults, and memory management unit (MMU) protections.
+3. **Security Engineering**: Improper variable bounds handling in unmanaged languages (such as C and C++) results in stack-based buffer overflows, corrupted return pointers, and arbitrary code execution—necessitating security primitives such as **Address Space Layout Randomization (ASLR)**, **Data Execution Prevention (DEP/NX)**, and **Stack Canaries**.
 
-1. **Multiple Choice (Syntax & Conceptual)**:
-   - Evaluates syntax variations against realistic distractors with four option cards and detailed conceptual breakdown explanations.
-2. **True / False Rapid Evaluation**:
-   - Rapid statement verification testing language edge cases, operator precedence, keyword rules, and algorithmic complexities.
-3. **Term & Definition Matching**:
-   - Two-column pairing linking language concepts, memory models, and execution semantics to definitions with visual pairing badges.
-4. **Sequencing & Execution Order**:
-   - Real-time hover-swap drag & drop sequencing and precision ▲ / ▼ incremental arrow controls to arrange execution pipelines.
-5. **Sorting & Classification**:
-   - Multi-item category sorting (e.g., RISC vs CISC, Symmetric vs Asymmetric, Creational vs Behavioral) with immediate visual lock-in.
+### Topological Progression Flow
 
----
+```mermaid
+graph TD
+    CS["Core Domain: Computer Science"] --> PL["Sub-Topic: Programming Languages"]
+    CS --> SA["Sub-Topic: Systems Architecture"]
+    CS --> OS["Core Domain: Operating Systems"]
 
-## 🧠 Adaptive Pedagogical Explanation System
+    PL --> VD["Concept Primitive: Variable Declaration & Lifetime"]
+    PL --> TS["Concept Primitive: Static vs Dynamic Type Systems"]
 
-HardCode monitors learner struggle patterns per topic and automatically adapts remediation depth:
-- **Tier 1 — Key Insight (1st miss)**: Concise concept refresh and essential mental models (Dwell time: 4-5.5s).
-- **Tier 2 — Deep Dive Mechanics (2nd consecutive miss)**: Structural diagnostics, memory allocation semantics, and concrete code snippets (Dwell time: 7-9s).
-- **Tier 3 — Architectural Masterclass (3+ consecutive misses)**: Low-level runtime deep dive, compiler translation phases, and fail-fast invariants (Dwell time: 10-13s).
-- **Pedagogical Throttling**: Exponential backoff prevents annoying popups during rapid review while preserving intervention when truly needed.
+    SA --> MH["Concept Primitive: Memory Hierarchy (L1-L3, DRAM)"]
+    OS --> SF["Concept Primitive: Stack Frames & Heap Allocations"]
+
+    VD -. "Interdependency: Allocation Semantics" .-> SF
+    MH -. "Interdependency: Word Alignment" .-> VD
+
+    VD --> C_LANG["Language Specialization: C / C++ Pointers"]
+    SF --> SEC["Core Domain: Security Engineering"]
+    SEC --> BOF["Concept Primitive: Buffer Overflows & Return Addresses"]
+    BOF --> MITIG["Concept Primitive: ASLR, Stack Canaries, DEP/NX"]
+    TS --> RUST["Language Specialization: Rust Borrow Checker & Ownership"]
+    MITIG -. "Upstream Prerequisite" .-> ROP["Advanced Concept: Return-Oriented Programming (ROP)"]
+```
+
+User progression through the Knowledge Graph is governed by edge constraints: mastering upstream primitives awards mastery points that unlock downstream concepts and specialized language implementations.
 
 ---
 
-## 🎆 Motion Graphics Milestone System
+### Curriculum Domain Taxonomy and Dependency Matrix
 
-HardCode rewards focus and flow state with dynamic, hardware-accelerated particle overlays:
-- **Level Start**: Expanding cosmic starburst with glowing speed rays.
-- **Level Complete**: Golden particle vortex with celestial achievement banner.
-- **Streak 3 (Spark)**: Amber flame particles and pulse waves.
-- **Streak 5 (Inferno)**: Double-layered blazing trail with kinetic velocity sparks.
-- **Streak 10 (Hyperdrive)**: Radiant shockwave ring with warp-speed light streaks.
-- **Streak 20 (Singularity)**: Cosmic galaxy spiral with chromatic aberration glow.
-
----
-
-## 🔄 Automated Version Management System
-
-HardCode includes an automated semantic versioning and synchronization engine:
-- **Canonical Single Source of Truth**: [`version.json`](version.json) tracks current version, incremental build numbers, and timestamped release editions.
-- **Atomic Multi-Target Synchronization**: Running `python scripts/bump_version.py` atomically synchronizes:
-  1. `version.json` (version, build number, updated timestamp)
-  2. `pubspec.yaml` (`version: X.Y.Z+build`)
-  3. `README.md` (badges and header edition subtitle)
-  4. `assets/knowledge_graph.json` (`graph_version` and metadata)
-  5. `assets/db.json` (`version` and metadata)
-- **Automated Git Hook Integrations**:
-  - **Branch Merges (`.git/hooks/post-merge`)**: Automatically increments minor version and commits the version bump whenever branches are merged.
-  - **Commit Pushing (`.git/hooks/pre-push`)**: Verifies full automated test suites pass and synchronizes version tags before pushing commits to remote branches.
-  - **Manual / CI Trigger**:
-    ```bash
-    python scripts/bump_version.py --type patch   # 1.3.0 -> 1.3.1
-    python scripts/bump_version.py --type minor   # 1.3.0 -> 1.4.0
-    python scripts/bump_version.py --type major   # 1.3.0 -> 2.0.0
-    ```
+| Core Master Domain | Hierarchical Sub-Topics (Subsets) | Core Concept Primitives (Entities) | Upstream Prerequisites & Downstream Interdependencies |
+| :--- | :--- | :--- | :--- |
+| **Computer Science** | Computation Theory, Formal Automata, Algorithmic Analysis, Discrete Structures | Turing Completeness, Decidability, Halting Problem, Chomsky Hierarchy, Asymptotic Complexity ($O, \Omega, \Theta$), P vs NP | **Root Domain**: Global ontological root ($id: \text{root:hardcode}$). Unlocks sub-topic modules and defines foundational complexity bounds. |
+| **Programming Languages & Compilers** | Language Semantics, Type Theory, Lexical Analysis, Parsing, Intermediate Code Generation | Variable Declaration, Scoping Rules (Lexical/Dynamic), Hindley-Milner Type Inference, AST Construction, SSA Representation, JIT Runtimes | **Upstream**: Computer Science.<br>**Downstream**: Unlocks 18 language specializations.<br>**Interdependency**: Overlaps with Systems Architecture (calling conventions) and Security Engineering (type safety, memory guarantees). |
+| **Systems Architecture** | Microarchitecture, Memory Hierarchy, Instruction Sets, CPU Pipelining | Von Neumann vs Harvard, L1/L2/L3 SRAM Latency, Branch Prediction, Instruction Hazards, Cache Coherence (MESI), Translation Lookaside Buffers (TLB) | **Upstream**: Computer Science.<br>**Downstream**: Operating Systems, High-Performance Systems Languages ($C$, $C++$, Rust).<br>**Interdependency**: Dictates cache-line alignment and compiler memory layout optimizations. |
+| **Operating Systems & Concurrency** | Kernel Architecture, Process Scheduling, Virtual Memory, Inter-Process Communication | Virtual Memory Paging, Demand Paging, Page Fault Handling, Mutex vs Semaphore, Coffman Deadlock Invariants, Context Switching Overhead | **Upstream**: Systems Architecture.<br>**Downstream**: Cloud Infrastructure, Container Runtimes, SRE.<br>**Interdependency**: Concurrency primitives directly govern database transactional engines and network socket event loops. |
+| **Security Engineering** | Threat Modeling, Secure Software Development Lifecycle (SSDLC), Binary Exploitation Mitigations | STRIDE / DREAD Methodologies, SAST vs DAST, ASLR, Data Execution Prevention (DEP/NX), Stack Canaries, Return-Oriented Programming (ROP), Zero Trust IAM | **Upstream**: Operating Systems, Systems Architecture, Programming Languages.<br>**Downstream**: Cryptographic Engineering, Cloud Security.<br>**Interdependency**: Directly mitigates memory corruption stemming from unchecked variable allocations and raw pointer operations. |
+| **Cybersecurity & Cryptography** | Cryptographic Primitives, Key Exchange Protocols, Network Security, Application Security | Symmetric Ciphers (AES-GCM), Asymmetric Cryptography (RSA, ECC), Key Derivation (Argon2id), TLS 1.3 Handshake, OWASP Top 10 | **Upstream**: Computer Science (Number Theory), Computer Networking.<br>**Downstream**: Security Engineering, Distributed Ledger Consensus.<br>**Interdependency**: Secures transport-layer socket communications and distributed data stores. |
+| **Computer Networking** | Protocol Layering, Transport Protocols, Routing Infrastructure, Application Protocols | OSI 7-Layer Model, TCP 3-Way Handshake, Congestion Control (BBR vs Reno), DNS Resource Records (A, AAAA, CNAME), QUIC / HTTP/3, BGP Route Convergence | **Upstream**: Operating Systems (Socket APIs).<br>**Downstream**: Cloud Computing, Distributed Systems.<br>**Interdependency**: Transport layer round-trip times (RTT) dictate distributed consensus election timeouts and database replication lag. |
+| **Cloud Computing & Distributed Systems** | Distributed Consensus, Orchestration, Microservices, Cloud Storage Architectures | CAP Theorem, PACELC Theorem, Raft Consensus, Paxos State Machines, Kubernetes Controller Loops, Service Mesh mTLS, Block vs Object Storage | **Upstream**: Computer Networking, Operating Systems.<br>**Downstream**: Site Reliability Engineering, Distributed Databases.<br>**Interdependency**: Relies on network fault-tolerance invariants and OS kernel containerization primitives (cgroups/namespaces). |
+| **Database Systems & Storage Engines** | Transaction Management, Indexing Structures, Storage Layouts, Concurrency Control | ACID Guarantees, Two-Phase Commit (2PC), Write-Ahead Logging (WAL), B+ Trees vs Log-Structured Merge (LSM) Trees, Multi-Version Concurrency Control (MVCC) | **Upstream**: Systems Architecture (Disk/NVMe I/O), Operating Systems (Page Caches).<br>**Downstream**: Cloud Infrastructure, Software Architecture.<br>**Interdependency**: Implements concurrency control algorithms to resolve lock contention across table partitions. |
+| **Software Engineering & Architecture** | Architectural Patterns, Object-Oriented Design, Domain-Driven Design, Continuous Delivery | SOLID Principles, Gang of Four Patterns (Adapter, Strategy, Observer, Builder), CQRS, Event Sourcing, Test-Driven Development (TDD) | **Upstream**: Programming Languages.<br>**Downstream**: Maintainability Engineering, Microservices Architecture.<br>**Interdependency**: Defines strict architectural boundaries between domain logic, persistence layers, and external APIs. |
+| **DevOps & Site Reliability Engineering** | Reliability Engineering, Infrastructure as Code (IaC), Observability, Continuous Deployment | Service Level Indicators (SLIs), Service Level Objectives (SLOs), Error Budgets, Blue-Green / Canary Deployments, Chaos Engineering, Distributed Tracing | **Upstream**: Cloud Computing, Operating Systems.<br>**Downstream**: Production Service Operations.<br>**Interdependency**: Bridges software deployment pipelines with distributed runtime observability. |
+| **Artificial Intelligence & Machine Learning** | Deep Neural Architectures, Optimization Algorithms, Representation Learning, Alignment | Backpropagation, Gradient Descent Variants (AdamW), Vanishing/Exploding Gradients, Self-Attention Mechanisms, Transformer Architectures, RLHF | **Upstream**: Computer Science (Linear Algebra, Optimization Theory).<br>**Downstream**: Autonomous Agent Architectures.<br>**Interdependency**: Relies on SIMD vector processing hardware and low-latency tensor storage engines. |
 
 ---
 
-## 🏗️ Architecture & Technology Stack
+### Polyglot Language Taxonomy (18 Supported Languages)
 
-- **Framework**: [Flutter Web](https://flutter.dev/multi-platform/web) with Material 3 styling and responsive desktop viewport adaptation.
-- **Typography**: [Google Fonts](https://pub.dev/packages/google_fonts) (`Plus Jakarta Sans` & `JetBrains Mono`).
-- **Client-Side Persistence**: [Hive](https://pub.dev/packages/hive) & `hive_flutter` for lightweight, offline-first storage of progression XP, unlocked nodes, and user stats.
-- **Knowledge Graph Database**: Formal graph schema (`assets/knowledge_graph.json`) with adjacency lists, type indices, and unified legacy bridging.
-- **Automated Validation**: Automated Python test suite (`python -m unittest discover -s test`) running 33 automated tests in < 0.6s.
+Nodes corresponding to specific programming languages are organized along concentric orbital shells based on execution environment and type system:
+
+1. **Native Systems Languages**:
+   - `Rust`: Zero-cost abstractions, compile-time borrow checker, affine types, fearless concurrency.
+   - `C`: Direct memory addressability, pointer arithmetic, manual heap management, POSIX interfaces.
+   - `C++`: Resource Acquisition Is Initialization (RAII), template metaprogramming, modern move semantics.
+   - `C#`: .NET Common Language Runtime (CLR), Task Parallel Library (TPL), Language Integrated Query (LINQ).
+2. **Managed Runtime and Enterprise Backends**:
+   - `Go`: Communicating Sequential Processes (CSP), lightweight goroutines, runtime channel multiplexing.
+   - `Java`: Java Virtual Machine (JVM) bytecode, generational garbage collection, memory model invariants.
+   - `Kotlin`: Null-safety type system, coroutine dispatchers, JVM interoperability.
+   - `Scala`: Hybrid functional-object paradigm, higher-kinded types, actor concurrency.
+3. **Web, Scripting, and Systems Automation**:
+   - `TypeScript`: Static type system, structural subtyping, union/intersection types, JavaScript compilation.
+   - `JavaScript`: Single-threaded event loop, asynchronous promises, prototype inheritance, V8 JIT engine.
+   - `Dart`: Ahead-Of-Time (AOT) and Just-In-Time (JIT) compilation, reactive widget trees, Flutter runtime.
+   - `Swift`: Automatic Reference Counting (ARC), protocol-oriented programming, LLVM native compilation.
+   - `Python 3`: Dynamic typing, bytecode interpretation, Global Interpreter Lock (GIL), iterator protocols.
+   - `Ruby`: Pure object-oriented reflection, dynamic method dispatch, metaprogramming DSLs.
+   - `PHP`: Request-response execution lifecycle, Zend engine, modern typed properties.
+   - `Bash / POSIX Shell`: UNIX pipelines, standard input/output/error stream redirection, POSIX shell scripts.
+   - `PowerShell`: Object-based pipeline processing, .NET object access, Windows management automation.
+   - `Lua`: Register-based virtual machine, coroutines, embeddable C application scripting.
+   - `R`: S3/S4 vectorization, matrix algebra execution, statistical computing environments.
 
 ---
 
-## 💻 Local Development Setup
+## Directed Knowledge Graph and Progression Mechanics
+
+The spatial graph visualization is implemented as a directed graph $G = (V, E)$ in [`lib/widgets/knowledge_graph_3d_view.dart`](lib/widgets/knowledge_graph_3d_view.dart) and backed by the progression engine in [`lib/services/progression_service.dart`](lib/services/progression_service.dart).
+
+### Mathematical 3D Camera Projection Model
+
+Vertices in $\mathbb{R}^3$ are mapped to screen space $(x', y') \in \mathbb{R}^2$ using perspective camera rotation and depth-divided projection:
+
+1. **Yaw Rotation (Around the $Y$-axis by angle $\theta_y$):**
+   $$\begin{pmatrix} x_1 \\ y_1 \\ z_1 \end{pmatrix} = \begin{pmatrix} \cos\theta_y & 0 & \sin\theta_y \\ 0 & 1 & 0 \\ -\sin\theta_y & 0 & \cos\theta_y \end{pmatrix} \begin{pmatrix} x \\ y \\ z \end{pmatrix}$$
+
+2. **Pitch Rotation (Around the $X$-axis by angle $\theta_p$):**
+   $$\begin{pmatrix} x_2 \\ y_2 \\ z_2 \end{pmatrix} = \begin{pmatrix} 1 & 0 & 0 \\ 0 & \cos\theta_p & -\sin\theta_p \\ 0 & \sin\theta_p & \cos\theta_p \end{pmatrix} \begin{pmatrix} x_1 \\ y_1 \\ z_1 \end{pmatrix}$$
+
+3. **Perspective Division and Optical Depth Scaling:**
+   Given focal length $f = 600.0$, camera distance $d_{\text{cam}} = 750.0$, and user zoom scale $z_{\text{zoom}} \in [0.4, 3.0]$:
+   $$z_{\text{eff}} = \max(z_2 + d_{\text{cam}}, 25.0)$$
+   $$S = \frac{f \cdot z_{\text{zoom}}}{z_{\text{eff}}}$$
+
+4. **Viewport Center Mapping with Vertical Offset:**
+   To guarantee that floating graph nodes remain completely unobstructed by the collapsible bottom inspection sheet, the vertical center coordinate $y_c$ is calibrated to $38\%$ of total viewport height:
+   $$x' = \left(\frac{W_{\text{viewport}}}{2} + \Delta x_{\text{pan}}\right) + x_1 \cdot S$$
+   $$y' = \left(0.38 \cdot H_{\text{viewport}} + \Delta y_{\text{pan}}\right) + y_2 \cdot S$$
+
+5. **Depth-Sorted Rendering (Painter's Algorithm):**
+   Projected vertices are sorted in ascending order of transformed depth $z_2$ prior to rendering:
+   $$\text{RenderOrder} = \text{sort}_{\le z_2}(\{v \in V\})$$
+   Background edges and nodes are drawn with distance attenuation ($\alpha \propto z_{\text{eff}}^{-1}$), ensuring visual hierarchy and eliminating z-fighting.
+
+### Topological Cascading Unlock Algorithm
+
+Node availability is evaluated using fixed-point topological relaxation whenever mastery points are awarded:
+
+$$\text{CanUnlock}(v) \iff \forall u \in \text{Prerequisites}(v) : \left(\text{Status}(u) \neq \text{Locked} \;\land\; \text{Points}(u) \ge \text{PointsToUnlock}(v)\right)$$
+
+Upon completing a question, the system increments the target node's points ($\Delta P$) and iteratively traverses downstream edges until no further transitions occur:
+
+```dart
+// Fixed-point topological resolution loop
+bool changed = true;
+while (changed) {
+  changed = false;
+  for (final node in nodes.values) {
+    if (node.isUnlocked) continue;
+    bool canUnlock = node.prerequisiteIds.every((prereqId) {
+      final parent = nodes[prereqId];
+      return parent != null && parent.isUnlocked && parent.points >= node.pointsToUnlock;
+    });
+    if (canUnlock) {
+      node.status = TopicUnlockStatus.unlocked;
+      changed = true;
+    }
+  }
+}
+```
+
+---
+
+## Cognitive Evaluation Modalities
+
+HardCode provides five distinct cognitive evaluation modalities, each designed to test a different tier of mental representation:
+
+1. **Multiple Choice (Syntax & Conceptual Verification)**:
+   - Evaluates syntax recognition against realistic compiler error and runtime distractors.
+   - Requires disambiguating language semantics (e.g., pass-by-value vs pass-by-reference).
+2. **True / False Binary Rapid Evaluation**:
+   - Tests binary invariants, language edge cases, operator precedence rules, and algorithmic complexity limits.
+   - Calibrated for sub-second rapid decision making.
+3. **Term & Definition Bipartite Matching**:
+   - Renders dual-column shuffled lists requiring the learner to establish one-to-one correspondences between architectural patterns, memory models, and definitions.
+   - Requires full matrix resolution before point settlement.
+4. **Real-Time Sequential Pipeline Ordering**:
+   - Tests execution pipelines (e.g., TLS 1.3 handshakes, compiler lowering stages, TCP teardown sequences).
+   - Features real-time drag-and-drop swap mechanics and directional step triggers.
+5. **Categorical Classification & Partitioning**:
+   - Requires partitioning a set of concepts into disjoint architectural bins (e.g., Symmetric vs Asymmetric Ciphers, Stack vs Heap Allocations, RISC vs CISC).
+   - Validates multi-attribute taxonomy retention under time pressure.
+
+---
+
+## Adaptive Pedagogical Struggle-Detection Engine
+
+Implemented in [`lib/services/adaptive_explanation_service.dart`](lib/services/adaptive_explanation_service.dart), this subsystem dynamically monitors error trajectories and intervenes when conceptual deficits are identified.
+
+### State Tracking and Struggle Quantification
+
+For each distinct topic $t \in T$, the engine maintains an interaction state vector:
+
+$$\mathbf{S}_t = \big(M_t, \; C_t, \; N_t, \; \tau_{\text{last}}\big)$$
+
+Where $M_t$ is total misses, $C_t$ is consecutive misses, $N_t$ is total attempts, and $\tau_{\text{last}}$ is the turn index of the previous remediation event.
+
+### Remediation Escalation Policy
+
+When a learner answers incorrectly, the system escalates remediation across three pedagogically distinct tiers:
+
+$$\text{Tier}(C_t) = \begin{cases} 
+1 \; (\text{Key Insight}) & \text{if } C_t = 1 \\
+2 \; (\text{Deep Dive Mechanics}) & \text{if } C_t = 2 \\
+3 \; (\text{Architectural Masterclass}) & \text{if } C_t \ge 3 
+\end{cases}$$
+
+- **Tier 1 (Key Insight)**: Concise mental model refresh, immediate mnemonic, and invariant statement.
+- **Tier 2 (Deep Dive Mechanics)**: Structural mechanics, concrete code snippets, and memory layout diagrams.
+- **Tier 3 (Architectural Masterclass)**: Low-level runtime deep dive, compiler translation phases, and hardware-level constraints.
+
+### Adaptive Dwell Time Formulation
+
+To prevent learners from impulsively dismissing explanations during severe struggle states, the required on-screen dwell time $T_{\text{dwell}}$ scales as a function of tier and consecutive error depth:
+
+$$T_{\text{dwell}}(C_t) = \left\lfloor 4.0 + (\text{Tier}(C_t) - 1) \cdot 3.0 + \min(C_t \cdot 1.5, \; 5.0) \right\rceil \quad \text{[seconds]}$$
+
+| Struggle Level | Consecutive Misses ($C_t$) | Active Tier | Dwell Duration Range |
+| :--- | :--- | :--- | :--- |
+| **Initial Error** | 1 | Tier 1 (Key Insight) | 4.0s – 5.5s |
+| **Persistent Error** | 2 | Tier 2 (Deep Dive) | 7.0s – 9.0s |
+| **Critical Deficit** | $\ge 3$ | Tier 3 (Architectural Masterclass) | 10.0s – 13.0s |
+
+### Exponential Backoff Throttling
+
+To prevent cognitive fatigue and banner spam during review sessions, remediation displays are throttled by an exponential interaction interval:
+
+$$\Delta\tau_{\text{min}} = \begin{cases}
+1 & \text{if } K_t \le 1 \\
+\min\left(8, \; 2^{K_t - 1}\right) & \text{if } K_t > 1
+\end{cases}$$
+
+Where $K_t$ is the cumulative count of explanations previously shown for topic $t$. If $C_t \ge 2$ (indicating urgent struggle), the threshold is halved: $\Delta\tau_{\text{required}} = \max\left(1, \; \lfloor \Delta\tau_{\text{min}} / 2 \rfloor\right)$.
+
+---
+
+## Procedural Motion Graphics Architecture
+
+Rendered by [`lib/widgets/motion_graphics_overlay.dart`](lib/widgets/motion_graphics_overlay.dart), this engine provides vector feedback for performance milestones without external raster assets:
+
+- **Particle Kinetics**: Evaluated per tick using Newtonian equations of motion:
+  $$\mathbf{p}(t + \Delta t) = \mathbf{p}(t) + \mathbf{v}(t)\Delta t, \quad \mathbf{v}(t + \Delta t) = \mathbf{v}(t) \cdot \gamma + \mathbf{a}\Delta t$$
+  Where $\gamma \in [0.92, 0.98]$ represents velocity damping.
+- **Milestone Triggers**:
+  - *Level Initialization*: Expanding cosmic starburst with radial velocity vectors.
+  - *Level Completion*: Golden particle vortex with celestial achievement banner.
+  - *Streak 3 (Spark)*: Amber particle emitter with pulse oscillations.
+  - *Streak 5 (Inferno)*: Double-layered flame particles with kinetic acceleration.
+  - *Streak 10 (Hyperdrive)*: Cyan radiant shockwave with warp-speed light streaks.
+  - *Streak 20 (Singularity)*: Violet logarithmic spiral ($r = a e^{b\theta}$) with chromatic aberration offset passes.
+- **Immediate Dismissal Pipeline**: All particle tickers are non-blocking and register touch-anywhere or key-down handlers to allow instant dismissal without interrupting input velocity.
+
+---
+
+## Automated Semantic Versioning and CI/CD Synchronization
+
+HardCode includes an automated Semantic Versioning ($SemVer$) management engine implemented in [`scripts/bump_version.py`](scripts/bump_version.py).
+
+### Version Synchronization Pipeline
+
+The system enforces [`version.json`](version.json) as the single source of truth:
+
+```json
+{
+  "version": "1.3.0",
+  "build_number": 1,
+  "edition": "Security Engineering & Automated Versioning Edition",
+  "updated_at": "2026-09-12T19:40:58Z"
+}
+```
+
+Running `python scripts/bump_version.py` executes atomic multi-target synchronization across:
+1. `version.json`: Increments version and monotonic build integer.
+2. `pubspec.yaml`: Replaces `version: X.Y.Z+build`.
+3. `README.md`: Updates release edition header subtitle and shield status badges.
+4. `assets/knowledge_graph.json`: Updates internal `graph_version` and metadata timestamps.
+5. `assets/db.json`: Synchronizes root database metadata schema version.
+
+### Automated Git Hook Lifecycles
+
+Git hooks are installed via `python scripts/setup_git_hooks.py`:
+- **Post-Merge Hook (`.git/hooks/post-merge`)**: Triggered automatically when branches are merged; calculates next minor version bump and creates a synchronized release commit.
+- **Pre-Push Hook (`.git/hooks/pre-push`)**: Executes the full Python automated test suite prior to allowing pushes to remote branches. Rejects pushes if tests fail or version metadata is desynchronized.
+
+```bash
+# Manual version bumping CLI commands
+python scripts/bump_version.py --type patch   # 1.3.0 -> 1.3.1
+python scripts/bump_version.py --type minor   # 1.3.0 -> 1.4.0
+python scripts/bump_version.py --type major   # 1.3.0 -> 2.0.0
+python scripts/bump_version.py --sync-only    # Re-sync across all 5 files without incrementing
+```
+
+---
+
+## System Architecture and Runtime Specifications
+
+- **Client Runtime**: [Flutter Web](https://flutter.dev/multi-platform/web) running on the Dart SDK with HTML5 Canvas / WebGL accelerated rendering.
+- **Responsive Viewport Layout**: Dynamic breakpoints adapting seamlessly across mobile viewports, high-density desktop displays ($4\text{K}$), and ultra-wide aspect ratios.
+- **Client-Side Persistence**: [Hive](https://pub.dev/packages/hive) binary key-value storage (`TypeAdapter` serialization) for offline-first persistence of XP progress, unlocked nodes, and interaction history.
+- **Knowledge Graph Database**: In-memory adjacency graph index loaded from serialized JSON (`assets/knowledge_graph.json`), supporting $O(1)$ node lookups and $O(|V| + |E|)$ topological traversals.
+- **Automated Test Coverage**: Python validation suite (`python -m unittest discover -s test`) running 38 automated tests in $< 0.45\text{s}$, verifying graph integrity, question evaluators, and version bump synchronization.
+
+---
+
+## Local Development and Verification Protocols
 
 ### Prerequisites
-- [Flutter SDK](https://docs.flutter.dev/get-started/install) (version 3.1.5 or higher)
+- [Flutter SDK](https://docs.flutter.dev/get-started/install) ($\ge 3.1.5$)
 - [Python 3.10+](https://www.python.org/)
-- [Google Chrome](https://www.google.com/chrome/)
+- [Google Chrome](https://www.google.com/chrome/) or standard Chromium-based browser
 
-### Installation & Run
+### Execution Commands
 
 1. **Clone the repository:**
    ```bash
@@ -143,23 +330,28 @@ HardCode includes an automated semantic versioning and synchronization engine:
    cd hardcode
    ```
 
-2. **Run automated test suite:**
+2. **Execute automated verification suite:**
    ```bash
    python -m unittest discover -s test
    ```
 
-3. **Validate and rebuild Knowledge Graph:**
+3. **Validate and rebuild Knowledge Graph schema:**
    ```bash
    python scripts/build_knowledge_graph.py --validate
    ```
 
-4. **Launch Flutter Web:**
+4. **Install automated Git hooks:**
+   ```bash
+   python scripts/setup_git_hooks.py
+   ```
+
+5. **Launch development server:**
    ```bash
    flutter run -d chrome
    ```
 
 ---
 
-## 📄 License
+## License
 
-This project is licensed under the [MIT License](LICENSE) - feel free to use, modify, and build upon it.
+This software is distributed under the [MIT License](LICENSE).
