@@ -36,7 +36,24 @@ jobs:
         run: flutter pub get
 
       - name: Build Web Application for Callisto VM
-        run: flutter build web --release --base-href=/ --verbose
+        run: |
+          set +e
+          flutter build web --release --base-href=/ --verbose > build_callisto.log 2>&1
+          BUILD_STATUS=$?
+          if [ $BUILD_STATUS -ne 0 ]; then
+            echo "::error::Flutter web build failed with exit code $BUILD_STATUS"
+            tail -n 120 build_callisto.log
+            git config --global user.name "github-actions"
+            git config --global user.email "github-actions@github.com"
+            git branch -D build-debug-log 2>/dev/null || true
+            git checkout --orphan build-debug-log
+            git rm -rf .
+            tail -n 500 build_callisto.log > build_failure.txt
+            git add build_failure.txt
+            git commit -m "build failure log"
+            git push -f origin build-debug-log
+            exit $BUILD_STATUS
+          fi
 
       - name: Setup SSH Deploy Key for Callisto VM
         env:
