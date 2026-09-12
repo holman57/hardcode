@@ -1,12 +1,12 @@
 {
   "version": 14,
-  "graph_version": "1.4.0-graph",
+  "graph_version": "1.5.0-graph",
   "schema": "knowledge-graph",
   "metadata": {
     "name": "HardCode Knowledge Graph",
     "schema": "knowledge-graph",
     "version": 14,
-    "graph_version": "1.4.0-graph",
+    "graph_version": "1.5.0-graph",
     "description": "Structured graph database powering syntax flashcards, CS curriculum, and visual navigation.",
     "node_count": 658,
     "edge_count": 786,
@@ -44,7 +44,8 @@
       "question_tf",
       "root",
       "syntax"
-    ]
+    ],
+    "last_updated": "2026-09-12T22:15:37Z"
   },
   "nodes": [
     {
