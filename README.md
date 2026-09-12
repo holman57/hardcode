@@ -1,12 +1,12 @@
 # HardCode
 
-> **Stable Knowledge Graph Edition (v1.2.0)**  
+> **Security Engineering & Automated Versioning Edition (v1.3.0)**  
 > *A high-velocity flashcard, syntax memorization, and interactive 3D Knowledge Graph engine for polyglot developers.*
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-success?style=for-the-badge&logo=github)](https://holman57.github.io/hardcode/)
 [![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
-[![Version](https://img.shields.io/badge/Version-v1.2.0-blue?style=for-the-badge)](https://github.com/holman57/hardcode)
+[![Version](https://img.shields.io/badge/Version-v1.3.0-blue?style=for-the-badge)](https://github.com/holman57/hardcode)
 [![Deploy Status](https://img.shields.io/badge/Deployment-Callisto%20VM%20%2B%20GH%20Pages-orange?style=for-the-badge)](https://holman57.github.io/hardcode/)
 
 ---
@@ -45,6 +45,7 @@ HardCode covers 26 master domains and languages arranged in spherical orbits:
 | **Operating Systems & Concurrency** | Virtual memory paging, MMU, CPU scheduling, Mutexes vs Semaphores, Coffman deadlock conditions | Multi-Choice, True-False, Matching, Sequencing, Sorting |
 | **Cloud Computing & Distributed Systems** | CAP theorem, Raft / Paxos consensus, Kubernetes controllers, Service Mesh (mTLS), Object vs Block storage | Multi-Choice, True-False, Matching, Sequencing, Sorting |
 | **Cybersecurity & Cryptography** | Symmetric AES vs Asymmetric RSA/ECC, Argon2id password hashing, Zero Trust, TLS 1.3, OWASP Top 10 | Multi-Choice, True-False, Matching, Sequencing, Sorting |
+| **Security Engineering** | Threat modeling (STRIDE/DREAD), SSDLC, SAST vs DAST, memory mitigations (ASLR, DEP/NX, Stack Canaries, ROP), Zero Trust IAM, HSM/KMS | Multi-Choice, True-False, Matching, Sequencing, Sorting |
 | **System Architecture** | Von Neumann memory wall, L1/L2/L3 SRAM cache latencies, instruction pipelining hazards, TLB | Multi-Choice, True-False, Matching, Sequencing, Sorting |
 | **Database Systems & Storage Engines** | ACID guarantees, Write-Ahead Logs (WAL), B+ Trees vs LSM Trees, ANSI SQL isolation levels, MVCC | Multi-Choice, True-False, Matching, Sequencing, Sorting |
 | **Software Engineering & Architecture** | SOLID principles, GoF design patterns (Adapter, Strategy, Builder), CQRS, Event Sourcing, TDD | Multi-Choice, True-False, Matching, Sequencing, Sorting |
@@ -92,6 +93,28 @@ HardCode rewards focus and flow state with dynamic, hardware-accelerated particl
 - **Streak 5 (Inferno)**: Double-layered blazing trail with kinetic velocity sparks.
 - **Streak 10 (Hyperdrive)**: Radiant shockwave ring with warp-speed light streaks.
 - **Streak 20 (Singularity)**: Cosmic galaxy spiral with chromatic aberration glow.
+
+---
+
+## 🔄 Automated Version Management System
+
+HardCode includes an automated semantic versioning and synchronization engine:
+- **Canonical Single Source of Truth**: [`version.json`](version.json) tracks current version, incremental build numbers, and timestamped release editions.
+- **Atomic Multi-Target Synchronization**: Running `python scripts/bump_version.py` atomically synchronizes:
+  1. `version.json` (version, build number, updated timestamp)
+  2. `pubspec.yaml` (`version: X.Y.Z+build`)
+  3. `README.md` (badges and header edition subtitle)
+  4. `assets/knowledge_graph.json` (`graph_version` and metadata)
+  5. `assets/db.json` (`version` and metadata)
+- **Automated Git Hook Integrations**:
+  - **Branch Merges (`.git/hooks/post-merge`)**: Automatically increments minor version and commits the version bump whenever branches are merged.
+  - **Commit Pushing (`.git/hooks/pre-push`)**: Verifies full automated test suites pass and synchronizes version tags before pushing commits to remote branches.
+  - **Manual / CI Trigger**:
+    ```bash
+    python scripts/bump_version.py --type patch   # 1.3.0 -> 1.3.1
+    python scripts/bump_version.py --type minor   # 1.3.0 -> 1.4.0
+    python scripts/bump_version.py --type major   # 1.3.0 -> 2.0.0
+    ```
 
 ---
 

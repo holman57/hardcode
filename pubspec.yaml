@@ -2,7 +2,7 @@ name: multiprogramming
 description: Learn the syntax for different programming languages
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.0+1
+version: 1.3.0+1
 
 environment:
   sdk: '>=3.1.5 <4.0.0'

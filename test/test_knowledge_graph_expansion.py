@@ -69,6 +69,7 @@ class TestKnowledgeGraphExpansion(unittest.TestCase):
             "Software Engineering",
             "Cybersecurity & Cryptography",
             "DevOps & Site Reliability Engineering",
+            "Security Engineering",
         ]
         for rd in required_domains:
             self.assertIn(rd, domain_names, f"Missing required domain: '{rd}'")
@@ -141,6 +142,14 @@ class TestKnowledgeGraphExpansion(unittest.TestCase):
         self.assertTrue(adapt_service.should_trigger_explanation("Cybersecurity"))
         e3 = adapt_service.generate_explanation("Cybersecurity")
         self.assertEqual(e3["tier"], 3)
+
+        # Test Security Engineering domain specifically
+        sec_eng_service = PythonAdaptiveExplanationService()
+        sec_eng_service.record_outcome("Security Engineering (STRIDE)", is_correct=False)
+        self.assertTrue(sec_eng_service.should_trigger_explanation("Security Engineering (STRIDE)"))
+        se1 = sec_eng_service.generate_explanation("Security Engineering (STRIDE)")
+        self.assertEqual(se1["tier"], 1)
+        self.assertEqual(sec_eng_service.normalize_topic("Security Engineering (STRIDE)"), "security_engineering")
 
 
 if __name__ == "__main__":

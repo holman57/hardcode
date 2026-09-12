@@ -167,6 +167,7 @@ class AdaptiveExplanationService {
     if (lower.contains('os') || lower.contains('operating') || lower.contains('concurrency')) return 'operating_systems';
     if (lower.contains('arch') || lower.contains('cpu') || lower.contains('cache') || lower.contains('hardware') || lower.contains('system')) return 'system_architecture';
     if (lower.contains('ai') || lower.contains('machine') || lower.contains('neural') || lower.contains('learning') || lower.contains('transformer')) return 'ai';
+    if (lower.contains('security engineering') || lower.contains('stride') || lower.contains('sast') || lower.contains('dast')) return 'security_engineering';
     if (lower.contains('sec') || lower.contains('crypto') || lower.contains('auth') || lower.contains('cipher')) return 'security';
     if (lower.contains('db') || (lower.contains('data') && lower.contains('base')) || lower.contains('sql')) return 'database';
     if (lower.contains('data') || lower.contains('struct') || lower.contains('tree') || lower.contains('stack') || lower.contains('queue')) return 'data_structures';
@@ -573,6 +574,54 @@ Server sends ServerHello + KeyShare_S + EncryptedCertificate
 Both derive Symmetric Session Key; compromised server private key CANNOT decrypt past traffic!''',
         'mentalModel':
             'Perimeter security is a castle moat; Zero-Trust places guard checkpoints and biometric locks at every single doorway inside the castle.',
+      },
+    },
+
+    // 8b. Security Engineering
+    'security_engineering': {
+      1: {
+        'title': 'Threat Modeling (STRIDE) & Principle of Least Privilege',
+        'explanation':
+            'Security Engineering begins during architecture design with Threat Modeling: decomposing systems using the STRIDE matrix '
+            '(Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege). '
+            'The Principle of Least Privilege guarantees every process runs with strictly the minimal rights required.',
+        'codeSnippet': '''// STRIDE Decomposition Matrix:
+S: Identity verification (mTLS, MFA)
+T: Data integrity (HMAC, Digital Signatures)
+R: Auditability (Tamper-proof append-only logs)
+I: Confidentiality (AES-256-GCM encryption)
+D: Availability (Rate limiting, DDoS mitigation)
+E: Authorization (Least privilege, RBAC/ABAC)''',
+        'mentalModel':
+            'Threat modeling is inspecting blueprints before construction: discovering structural weak points before concrete is poured.',
+      },
+      2: {
+        'title': 'SSDLC, SAST vs DAST & Memory Mitigations',
+        'explanation':
+            'The Secure Software Development Lifecycle embeds security early (Shift-Left). SAST scans uncompiled code for syntax/pattern flaws; '
+            'DAST probes running binaries for runtime vulnerabilities. Binary hardening activates compiler defenses: Stack Canaries '
+            '(detect buffer corruption), ASLR (randomize virtual memory layouts), and DEP/W^X (prevent executing code from data pages).',
+        'codeSnippet': '''// Modern Binary Hardening Flags (GCC/Clang):
+-fstack-protector-strong   // Stack Canary buffer overflow abort
+-D_FORTIFY_SOURCE=2       // Buffer length boundary validation
+-Wl,-z,relro,-z,now       // Read-Only Relocations (Full RELRO)
+-pie -fPIE                // Position Independent Executable (ASLR)''',
+        'mentalModel':
+            'Canaries in a coal mine: if gas leaks, the canary dies first and miners evacuate before the explosion.',
+      },
+      3: {
+        'title': 'Cryptographic Key Management (HSM) & Zero Trust Identity',
+        'explanation':
+            'Hardware Security Modules (HSMs) generate and isolate master cryptographic keys within tamper-resistant physical silicon, '
+            'guaranteeing plaintext keys never enter OS RAM. In Zero Trust networks, perimeter firewalls are deemed insufficient; '
+            'every intra-service RPC must present mutual TLS (mTLS) with short-lived X.509 certificates and federated tokens (OAuth2/OIDC/SPIFFE).',
+        'codeSnippet': '''// Zero Trust Service-to-Service Request:
+GET /v1/payments HTTP/2
+Authorization: Bearer <cryptographically signed short-lived JWT>
+mTLS Certificate: spiffe://cluster.local/ns/prod/sa/order-service
+Policy Engine: Evaluates ABAC context (IP, device posture, tenant) before granting access''',
+        'mentalModel':
+            'A bank vault where cash is never handled directly; transactions happen through airtight pneumatic tubes verified at each window.',
       },
     },
 
