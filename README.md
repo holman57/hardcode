@@ -1,101 +1,118 @@
 # HardCode
 
-> **First Stable Version Proof of Concept (v1.0.0-PoC)**  
-> *A high-velocity flashcard and syntax memorization engine for polyglot developers.*
+> **Stable Knowledge Graph Edition (v1.2.0)**  
+> *A high-velocity flashcard, syntax memorization, and interactive 3D Knowledge Graph engine for polyglot developers.*
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-success?style=for-the-badge&logo=github)](https://holman57.github.io/hardcode/)
 [![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
-[![Version](https://img.shields.io/badge/Version-v1.0.0--PoC-blue?style=for-the-badge)](https://github.com/holman57/hardcode)
+[![Version](https://img.shields.io/badge/Version-v1.2.0-blue?style=for-the-badge)](https://github.com/holman57/hardcode)
 [![Deploy Status](https://img.shields.io/badge/Deployment-Callisto%20VM%20%2B%20GH%20Pages-orange?style=for-the-badge)](https://holman57.github.io/hardcode/)
 
 ---
 
 ## 🚀 Overview
 
-**HardCode** is an interactive, speed-oriented question-and-answer training engine engineered to build muscle memory and instant syntax recognition across **18 distinct programming languages** and core computer science fundamentals.
+**HardCode** is an interactive, speed-oriented question-and-answer training engine engineered to build muscle memory and instant syntax recognition across **18 distinct programming languages** and the entire spectrum of **Computer Science fundamentals**.
 
-Whether switching between systems programming in Rust and C++, scripting in Python or PowerShell, or building frontend apps in TypeScript and Dart, HardCode trains developers to eliminate syntax hesitation under simulated time pressure.
+Powered by an interactive **3D Knowledge Graph** containing **600+ vertices**, **690+ directed relations**, and **400+ interactive questions**, HardCode dynamically challenges learners, tracks struggle patterns with **adaptive multi-tier explanations**, and celebrates learning milestones with **high-impact particle motion graphics**.
 
 🔗 **Try the live web app:** [https://holman57.github.io/hardcode/](https://holman57.github.io/hardcode/)
 
 ---
 
-## 🎯 Supported Languages (18 Languages)
+## 🌌 3D Knowledge Graph & Progression System
 
-HardCode covers syntax, type declarations, control flow, scoping, and idiomatic conventions across 18 major languages:
+The **Knowledge Graph** visualizes your entire computer science journey as an interactive spatial network:
 
-| Systems & Performance | Modern General-Purpose | Scripting & Shell | Web & Mobile |
-| :--- | :--- | :--- | :--- |
-| **C** | **Python 3** | **Bash** | **JavaScript** |
-| **C++** | **Go** | **PowerShell** | **TypeScript** |
-| **Rust** | **Java** | **Ruby** | **Dart** |
-| **C#** | **Kotlin** | **Lua** | **Swift** |
-| | **Scala** | **PHP** | **R** |
+- **Orbital Spatial 3D Projection**: Mathematical 3D camera projection with real-time yaw/pitch rotation, inertial panning, and optical depth scaling.
+- **Unobstructed Viewport Centering**: Centered vertically at 38% viewport height, ensuring floating graph nodes orbit cleanly above the inspection controls.
+- **High-Contrast Typography**: Text labels feature dark slate backdrop pills (`#0F172A`) with glowing cyan/amber borders and high-contrast typography, guaranteeing 100% legibility against spatial starfields.
+- **Interactive Inspection Sheet**: Collapsible/expandable bottom inspector displaying topic description, mastery progress bar, prerequisite unlock chains, and connected topics.
+- **Topic Mission Grinding**: Tap any unlocked node and click **"Grind Questions"** to filter questions dynamically and earn mastery points toward cascading node unlocks.
 
 ---
 
-## 🕹️ Interactive Question Modalities
+## 📚 Master Curriculum Hierarchy
 
-HardCode moves beyond standard multiple-choice quizzes by incorporating diverse question formats designed to test different cognitive layers of programming knowledge:
+HardCode covers 26 master domains and languages arranged in spherical orbits:
 
-### 1. Multiple Choice (Syntax & Conceptual)
-- **Syntax Recognition**: Identifies correct syntax variations against realistic distractors generated dynamically.
-- **Deep Explanations**: Features in-depth conceptual breakdown boxes (lightbulb tips) explaining language-specific semantics.
-- **Persistent Flow**: Answers lock instantly, and completion buttons remain permanently visible to let developers read at their own pace.
+| Core Master Domain | Key Topics & Concepts Covered | Question Variety |
+| :--- | :--- | :--- |
+| **Computer Science** | Turing machines, decidability, Halting Problem, Chomsky hierarchy, two's complement, P vs NP | Multi-Choice, True-False, Matching, Sequencing, Sorting |
+| **Computer Networking** | OSI 7-layer stack, TCP 3-way handshake, BBR vs Reno, DNS records (A/AAAA), QUIC / HTTP/3, BGP | Multi-Choice, True-False, Matching, Sequencing, Sorting |
+| **Artificial Intelligence & ML** | Neural network backpropagation, ReLU vanishing gradients, self-attention \(O(N^2)\), Transformers, RLHF | Multi-Choice, True-False, Matching, Sequencing, Sorting |
+| **Operating Systems & Concurrency** | Virtual memory paging, MMU, CPU scheduling, Mutexes vs Semaphores, Coffman deadlock conditions | Multi-Choice, True-False, Matching, Sequencing, Sorting |
+| **Cloud Computing & Distributed Systems** | CAP theorem, Raft / Paxos consensus, Kubernetes controllers, Service Mesh (mTLS), Object vs Block storage | Multi-Choice, True-False, Matching, Sequencing, Sorting |
+| **Cybersecurity & Cryptography** | Symmetric AES vs Asymmetric RSA/ECC, Argon2id password hashing, Zero Trust, TLS 1.3, OWASP Top 10 | Multi-Choice, True-False, Matching, Sequencing, Sorting |
+| **System Architecture** | Von Neumann memory wall, L1/L2/L3 SRAM cache latencies, instruction pipelining hazards, TLB | Multi-Choice, True-False, Matching, Sequencing, Sorting |
+| **Database Systems & Storage Engines** | ACID guarantees, Write-Ahead Logs (WAL), B+ Trees vs LSM Trees, ANSI SQL isolation levels, MVCC | Multi-Choice, True-False, Matching, Sequencing, Sorting |
+| **Software Engineering & Architecture** | SOLID principles, GoF design patterns (Adapter, Strategy, Builder), CQRS, Event Sourcing, TDD | Multi-Choice, True-False, Matching, Sequencing, Sorting |
+| **DevOps & Site Reliability Engineering** | SLIs, SLOs, Error Budgets, Blue-Green / Canary releases, Chaos Engineering, Metrics / Logs / Traces | Multi-Choice, True-False, Matching, Sequencing, Sorting |
+| **Programming Languages & Compilers** | Lexing, AST generation, Hindley-Milner type inference, SSA intermediate representations, JIT runtimes | Multi-Choice, True-False, Matching, Sequencing, Sorting |
 
-### 2. True / False Evaluation
-- Rapid statement evaluation testing edge cases, operator precedence, keyword rules, and language quirks.
-- Instant color-coded feedback and canonical explanations.
-
-### 3. Term & Definition Matching
-- Two-column interactive pairing system linking language concepts, memory models, and execution semantics to definitions.
-- Visual pairing badges and reset controls.
-
-### 4. Sequencing & Canonical Execution Order
-- **Real-Time Hover-Swap Drag & Drop**: Drag steps up or down; slots dynamically swap positions under the cursor in real-time.
-- **Precision Arrow Controls**: Move steps incrementally with dedicated ▲ / ▼ controls.
-- **Dynamic Order Verification**: Visual cues indicate steps in order or out of sequence, with canonical execution revealed upon submission.
-
-### 5. Classification & Sorting
-- Multi-item category sorting (e.g., Value Types vs. Reference Types, Compile-Time vs. Runtime).
-- Interactive category chips with immediate lock-in, bonus time incentives, and side-by-side correct category reveals.
+### Supported Programming Languages (18 Languages)
+- **Systems & Performance**: Rust, C, C++, C#
+- **General-Purpose & Backends**: Go, Python 3, Java, Kotlin, Scala
+- **Web, Scripting & Mobile**: TypeScript, JavaScript, Dart, Swift, PHP, Ruby, Bash, PowerShell, Lua, R
 
 ---
 
-## ⚡ Gamified Speed & Accuracy Mechanics
+## 🕹️ 5 Interactive Question Modalities
 
-- **20-Second Dynamic Countdown Timer**: Capped timer creates pressure while rewarding proactive moves (+3s, +2s, +1s bonus time per interaction).
-- **Persistent Header Navigation**: The timer and accuracy trend graph remain sticky at the top of the viewport, ensuring uninterrupted visibility when scrolling long questions.
-- **Live Sparkline Accuracy Graph**: Renders real-time performance trends right in the header bar.
-- **Streak & XP Counter**: Tracks active streaks, personal best streaks, and total session XP.
-- **Interaction-Aware Halting**: Clicking anywhere in the question area immediately halts auto-advance timers so you never get skipped while reading or reviewing code.
-- **500ms Click Debouncing**: Prevents accidental double-clicks from skipping questions.
+1. **Multiple Choice (Syntax & Conceptual)**:
+   - Evaluates syntax variations against realistic distractors with four option cards and detailed conceptual breakdown explanations.
+2. **True / False Rapid Evaluation**:
+   - Rapid statement verification testing language edge cases, operator precedence, keyword rules, and algorithmic complexities.
+3. **Term & Definition Matching**:
+   - Two-column pairing linking language concepts, memory models, and execution semantics to definitions with visual pairing badges.
+4. **Sequencing & Execution Order**:
+   - Real-time hover-swap drag & drop sequencing and precision ▲ / ▼ incremental arrow controls to arrange execution pipelines.
+5. **Sorting & Classification**:
+   - Multi-item category sorting (e.g., RISC vs CISC, Symmetric vs Asymmetric, Creational vs Behavioral) with immediate visual lock-in.
+
+---
+
+## 🧠 Adaptive Pedagogical Explanation System
+
+HardCode monitors learner struggle patterns per topic and automatically adapts remediation depth:
+- **Tier 1 — Key Insight (1st miss)**: Concise concept refresh and essential mental models (Dwell time: 4-5.5s).
+- **Tier 2 — Deep Dive Mechanics (2nd consecutive miss)**: Structural diagnostics, memory allocation semantics, and concrete code snippets (Dwell time: 7-9s).
+- **Tier 3 — Architectural Masterclass (3+ consecutive misses)**: Low-level runtime deep dive, compiler translation phases, and fail-fast invariants (Dwell time: 10-13s).
+- **Pedagogical Throttling**: Exponential backoff prevents annoying popups during rapid review while preserving intervention when truly needed.
+
+---
+
+## 🎆 Motion Graphics Milestone System
+
+HardCode rewards focus and flow state with dynamic, hardware-accelerated particle overlays:
+- **Level Start**: Expanding cosmic starburst with glowing speed rays.
+- **Level Complete**: Golden particle vortex with celestial achievement banner.
+- **Streak 3 (Spark)**: Amber flame particles and pulse waves.
+- **Streak 5 (Inferno)**: Double-layered blazing trail with kinetic velocity sparks.
+- **Streak 10 (Hyperdrive)**: Radiant shockwave ring with warp-speed light streaks.
+- **Streak 20 (Singularity)**: Cosmic galaxy spiral with chromatic aberration glow.
 
 ---
 
 ## 🏗️ Architecture & Technology Stack
 
-- **Framework**: [Flutter Web](https://flutter.dev/multi-platform/web) with Material 3 styling and fluid responsive scaling.
-- **Typography**: [Google Fonts](https://pub.dev/packages/google_fonts) (`Plus Jakarta Sans`).
-- **Client-Side Persistence**: [Hive](https://pub.dev/packages/hive) & `hive_flutter` for lightweight, offline-first storage of user accuracy, streaks, and question records.
-- **Knowledge Graph Database**: Comprehensive graph structure (`assets/knowledge_graph.json`) modeling 500+ vertices and 600+ directed relations across languages, paradigms, domains, and questions with pre-computed visual styling metadata.
-- **Automated CI/CD**: Dual deployment workflow via GitHub Actions:
-  - Production deployment to **Callisto VM** via SSH key authentication, Rsync synchronization, and Nginx reloads.
-  - Public static deployment to **GitHub Pages**.
+- **Framework**: [Flutter Web](https://flutter.dev/multi-platform/web) with Material 3 styling and responsive desktop viewport adaptation.
+- **Typography**: [Google Fonts](https://pub.dev/packages/google_fonts) (`Plus Jakarta Sans` & `JetBrains Mono`).
+- **Client-Side Persistence**: [Hive](https://pub.dev/packages/hive) & `hive_flutter` for lightweight, offline-first storage of progression XP, unlocked nodes, and user stats.
+- **Knowledge Graph Database**: Formal graph schema (`assets/knowledge_graph.json`) with adjacency lists, type indices, and unified legacy bridging.
+- **Automated Validation**: Automated Python test suite (`python -m unittest discover -s test`) running 33 automated tests in < 0.6s.
 
 ---
 
 ## 💻 Local Development Setup
 
-To run HardCode locally on your machine:
-
 ### Prerequisites
 - [Flutter SDK](https://docs.flutter.dev/get-started/install) (version 3.1.5 or higher)
-- [Google Chrome](https://www.google.com/chrome/) (for Flutter Web debugging)
-- [Git](https://git-scm.com/)
+- [Python 3.10+](https://www.python.org/)
+- [Google Chrome](https://www.google.com/chrome/)
 
-### Installation
+### Installation & Run
 
 1. **Clone the repository:**
    ```bash
@@ -103,50 +120,20 @@ To run HardCode locally on your machine:
    cd hardcode
    ```
 
-2. **Install dependencies:**
+2. **Run automated test suite:**
    ```bash
-   flutter pub get
+   python -m unittest discover -s test
    ```
 
-3. **Run on Chrome (Debug mode):**
+3. **Validate and rebuild Knowledge Graph:**
+   ```bash
+   python scripts/build_knowledge_graph.py --validate
+   ```
+
+4. **Launch Flutter Web:**
    ```bash
    flutter run -d chrome
    ```
-
-4. **Build for production (Web release):**
-   ```bash
-   flutter build web --release --base-href=/
-   ```
-
----
-
-## 📂 Repository Structure
-
-```
-hardcode/
-├── .github/
-│   └── workflows/
-│       └── deploy_flutter.yml    # Dual deployment to Callisto VM & GitHub Pages
-├── assets/
-│   └── knowledge_graph.json      # Knowledge Graph database & syntax relations
-├── lib/
-│   ├── services/
-│   │   └── database_service.dart # KnowledgeGraph, GraphNode, GraphEdge & Hive storage
-│   └── main.dart                 # Primary application entry point & UI engine
-├── scripts/
-│   └── build_knowledge_graph.py  # Knowledge graph compiler and integrity validator
-├── pubspec.yaml                  # Project configuration & package dependencies
-└── README.md                     # Documentation & project overview
-```
-
----
-
-## 🗺️ Roadmap & Next Steps
-
-- [ ] **Custom Language Filtering**: Select specific language subsets (e.g. only Rust + Go, or only Frontend).
-- [ ] **Offline PWA Support**: Installable Progressive Web App with service worker caching.
-- [ ] **Audio & Haptic Feedback**: Optional sound cues for streaks, timeouts, and correct answers.
-- [ ] **Community Decks**: Support for user-submitted custom question sets via JSON schema.
 
 ---
 

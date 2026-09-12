@@ -2417,7 +2417,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             ListTile(
               key: const Key('drawer_open_3d_kg'),
               leading: const Icon(Icons.hub_rounded, color: Colors.cyan),
-              title: const Text('3D Knowledge Constellation'),
+              title: const Text('Knowledge Graph'),
               subtitle: Text(
                 '${TopicProgressionService.instance.unlockedCount} / ${TopicProgressionService.instance.nodes.length} Nodes Unlocked • Progression System',
                 style: const TextStyle(fontSize: 11),

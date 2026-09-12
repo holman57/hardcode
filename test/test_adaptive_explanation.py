@@ -29,8 +29,18 @@ class PythonAdaptiveExplanationService:
             return "variables"
         if "algo" in t or "complexity" in t:
             return "algorithms"
-        if "os" in t or "system" in t:
+        if "os" in t or "operating" in t:
             return "operating_systems"
+        if "arch" in t or "cpu" in t or "hardware" in t or "system" in t:
+            return "system_architecture"
+        if "ai" in t or "neural" in t or "learning" in t:
+            return "ai"
+        if "sec" in t or "crypto" in t:
+            return "security"
+        if "db" in t or "database" in t or "sql" in t:
+            return "database"
+        if "pattern" in t or "solid" in t or "software" in t:
+            return "software_engineering"
         return t
 
     def record_outcome(self, topic: str, is_correct: bool):

@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../services/progression_service.dart';
 
 enum Graph3DViewMode {
-  constellation,
+  orbital,
   matrixGrid,
 }
 
@@ -20,7 +20,7 @@ class KnowledgeGraph3DView extends StatefulWidget {
     required this.nodes,
     this.selectedNodeId,
     this.onNodeSelected,
-    this.viewMode = Graph3DViewMode.constellation,
+    this.viewMode = Graph3DViewMode.orbital,
     this.autoRotate = false,
   });
 
@@ -32,7 +32,7 @@ class KnowledgeGraph3DViewState extends State<KnowledgeGraph3DView>
     with SingleTickerProviderStateMixin {
   double _yaw = 0.45;
   double _pitch = -0.25;
-  double _zoom = 1.0;
+  double _zoom = 0.85;
   Offset _panOffset = Offset.zero;
 
   Offset? _lastDragPosition;
@@ -204,7 +204,7 @@ class _KnowledgeGraph3DPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2 + panOffset.dx, size.height / 2 + panOffset.dy);
+    final center = Offset(size.width / 2 + panOffset.dx, size.height * 0.38 + panOffset.dy);
     const double cameraDistance = 750.0;
     const double focalLength = 600.0;
 
@@ -451,7 +451,7 @@ class _KnowledgeGraph3DPainter extends CustomPainter {
           fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
           color: isSelected
               ? Colors.amberAccent
-              : (node.isLocked ? Colors.grey.shade400 : Colors.white).withOpacity(textOpacity),
+              : (node.isLocked ? const Color(0xFFE2E8F0) : Colors.white).withOpacity(textOpacity),
           shadows: const [
             Shadow(color: Colors.black, blurRadius: 4, offset: Offset(0, 1)),
           ],
@@ -461,10 +461,29 @@ class _KnowledgeGraph3DPainter extends CustomPainter {
       textDirection: TextDirection.ltr,
     )..layout(maxWidth: 140 * pNode.scale);
 
-    labelPainter.paint(
-      canvas,
-      Offset(pos.dx - labelPainter.width / 2, pos.dy + r + 5),
+    final textOffset = Offset(pos.dx - labelPainter.width / 2, pos.dy + r + 5);
+    final bgRect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(
+        textOffset.dx - 6,
+        textOffset.dy - 2,
+        labelPainter.width + 12,
+        labelPainter.height + 4,
+      ),
+      const Radius.circular(6),
     );
+    final bgPaint = Paint()
+      ..color = const Color(0xF20A0F1D)
+      ..style = PaintingStyle.fill;
+    final borderPillPaint = Paint()
+      ..color = isSelected
+          ? Colors.amberAccent.withOpacity(0.8)
+          : (node.isLocked ? const Color(0x3394A3B8) : const Color(0x5538BDF8))
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+    canvas.drawRRect(bgRect, bgPaint);
+    canvas.drawRRect(bgRect, borderPillPaint);
+
+    labelPainter.paint(canvas, textOffset);
   }
 
   @override

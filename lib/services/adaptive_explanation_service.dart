@@ -164,8 +164,13 @@ class AdaptiveExplanationService {
     if (lower.contains('cloud') || lower.contains('distributed') || lower.contains('microservice')) return 'cloud';
     if (lower.contains('var') || lower.contains('assignment') || lower.contains('declaration')) return 'variables';
     if (lower.contains('algo') || lower.contains('complexity') || lower.contains('sorting') || lower.contains('search')) return 'algorithms';
-    if (lower.contains('os') || lower.contains('system') || lower.contains('operating') || lower.contains('concurrency')) return 'operating_systems';
+    if (lower.contains('os') || lower.contains('operating') || lower.contains('concurrency')) return 'operating_systems';
+    if (lower.contains('arch') || lower.contains('cpu') || lower.contains('cache') || lower.contains('hardware') || lower.contains('system')) return 'system_architecture';
+    if (lower.contains('ai') || lower.contains('machine') || lower.contains('neural') || lower.contains('learning') || lower.contains('transformer')) return 'ai';
+    if (lower.contains('sec') || lower.contains('crypto') || lower.contains('auth') || lower.contains('cipher')) return 'security';
+    if (lower.contains('db') || (lower.contains('data') && lower.contains('base')) || lower.contains('sql')) return 'database';
     if (lower.contains('data') || lower.contains('struct') || lower.contains('tree') || lower.contains('stack') || lower.contains('queue')) return 'data_structures';
+    if (lower.contains('pattern') || lower.contains('solid') || lower.contains('design') || lower.contains('software')) return 'software_engineering';
     return lower;
   }
 
@@ -483,6 +488,226 @@ pthread_mutex_unlock(&lock);''',
 // This breaks Coffman Condition #4 (Circular Wait).''',
         'mentalModel':
             'To prevent deadlock in a four-way street intersection, all drivers must yield by the exact same priority rule.',
+      },
+    },
+
+    // 7. Artificial Intelligence & Machine Learning
+    'ai': {
+      1: {
+        'title': 'Neural Networks & Gradient Descent',
+        'explanation':
+            'Neural networks approximate mathematical functions by passing weighted inputs through non-linear activation functions (ReLU, GELU). '
+            'Optimization proceeds via Gradient Descent, adjusting network weights opposite the gradient of the loss function.',
+        'codeSnippet': '''// Forward Pass & Weight Update:
+z = dot_product(weights, inputs) + bias
+output = max(0.0, z) // ReLU activation
+weights = weights - learning_rate * gradient''',
+        'mentalModel':
+            'Gradient descent is rolling a marble down a foggy mountain slope toward the lowest valley (minimum loss).',
+      },
+      2: {
+        'title': 'Overfitting, Regularization & Backpropagation',
+        'explanation':
+            'Backpropagation applies the calculus chain rule backward through compute graphs to compute partial derivatives of loss with respect to all parameters. '
+            'Overfitting occurs when high-capacity models memorize training noise; it is prevented with Dropout, Weight Decay (L2), and Data Augmentation.',
+        'codeSnippet': '''// Chain rule backward pass:
+dL_dw = (dL_doutput) * (doutput_dz) * (dz_dw)
+// Dropout zeroing out random activations during training:
+mask = rand(shape) > dropout_p; activations *= mask;''',
+        'mentalModel':
+            'Overfitting is memorizing the practice test questions rather than understanding the underlying concepts.',
+      },
+      3: {
+        'title': 'Transformer Self-Attention & LLM Scaling',
+        'explanation':
+            'The Transformer architecture computes Scaled Dot-Product Attention: Attention(Q, K, V) = softmax(Q * K^T / sqrt(d_k)) * V. '
+            'This enables every token in a sequence to attend directly to every other token in O(1) sequential step, '
+            'unlocking massively parallel GPU matrix multiplication compared to sequential recurrent (RNN/LSTM) networks.',
+        'codeSnippet': '''// Scaled Dot-Product Attention:
+scores = matmul(Q, transpose(K)) / sqrt(d_k)
+attention_weights = softmax(scores, axis=-1)
+context_vector = matmul(attention_weights, V)''',
+        'mentalModel':
+            'Self-attention is a spotlight: each word dynamically shines light onto the words that give it context.',
+      },
+    },
+
+    // 8. Cybersecurity & Cryptography
+    'security': {
+      1: {
+        'title': 'Symmetric vs Asymmetric Encryption',
+        'explanation':
+            'Symmetric encryption (AES-256) uses the exact same secret key to encrypt and decrypt data at wire speed. '
+            'Asymmetric encryption (RSA, ECC Curve25519) uses a mathematically linked Public/Private keypair, solving secure key exchange over insecure channels.',
+        'codeSnippet': '''// Symmetric (Fast, shared secret):
+ciphertext = AES_GCM_Encrypt(plaintext, shared_key, nonce)
+
+// Asymmetric (Key exchange & Signatures):
+ciphertext = RSA_Encrypt(plaintext, recipient_public_key)
+signature = Ed25519_Sign(message_digest, sender_private_key)''',
+        'mentalModel':
+            'Public key is an open padlock anyone can snap shut; Private key is the only physical key that unlocks it.',
+      },
+      2: {
+        'title': 'Cryptographic Hashing & OWASP Core Defenses',
+        'explanation':
+            'Cryptographic hash functions (SHA-256, BLAKE3) are deterministic, one-way, and collision-resistant. '
+            'Never store passwords in plain text or fast hashes (MD5, SHA1); always use slow, memory-hard key derivation functions '
+            '(Argon2id, bcrypt) with unique per-user salts to neutralize rainbow tables. Prevent SQL injection via parameterized queries.',
+        'codeSnippet': '''// Vulnerable: "SELECT * FROM users WHERE user = '" + input + "'"
+// Defended (Parameterized query):
+stmt = db.prepare("SELECT * FROM users WHERE user = ?")
+stmt.execute([sanitized_input])''',
+        'mentalModel':
+            'A hash is a one-way blender: easy to blend fruit into a smoothie, impossible to reconstruct the intact fruit from the smoothie.',
+      },
+      3: {
+        'title': 'Zero-Trust Architecture & Ephemeral TLS Handshakes',
+        'explanation':
+            'Zero-Trust operates on the principle "Never Trust, Always Verify": perimeter security is insufficient, '
+            'so all internal microservice calls must authenticate with mTLS and short-lived cryptographically signed tokens (JWT/SPIFFE). '
+            'TLS 1.3 eliminates round trips with 1-RTT handshakes and enforces Perfect Forward Secrecy (PFS) using ephemeral Diffie-Hellman (ECDHE).',
+        'codeSnippet': '''// ECDHE Ephemeral Key Exchange:
+Client sends ClientHello + Ephemeral KeyShare_C
+Server sends ServerHello + KeyShare_S + EncryptedCertificate
+Both derive Symmetric Session Key; compromised server private key CANNOT decrypt past traffic!''',
+        'mentalModel':
+            'Perimeter security is a castle moat; Zero-Trust places guard checkpoints and biometric locks at every single doorway inside the castle.',
+      },
+    },
+
+    // 9. System Architecture & Memory
+    'system_architecture': {
+      1: {
+        'title': 'Von Neumann Architecture & Cache Hierarchy',
+        'explanation':
+            'Modern CPUs execute instructions stored in unified memory. Because CPU clock speeds have far outpaced DRAM access times '
+            '(the "Memory Wall"), CPUs feature hierarchical hardware SRAM caches: L1 (~1ns), L2 (~4ns), L3 (~12ns), vs Main RAM (~80-100ns).',
+        'codeSnippet': '''// Memory Access Latency Scale:
+CPU Register:   0.5 ns
+L1 SRAM Cache:  1.0 ns (32 KB - 64 KB per core)
+L2 SRAM Cache:  4.0 ns (512 KB - 1 MB per core)
+L3 SRAM Cache:  12.0 ns (Shared 16 MB - 64 MB)
+DRAM (Main RAM): 80-100 ns (100x slower than L1!)''',
+        'mentalModel':
+            'L1 is what you hold in your hands. L2 is your desk drawer. L3 is the bookshelf. RAM is driving across town to the warehouse.',
+      },
+      2: {
+        'title': 'Instruction Pipelining & Branch Hazards',
+        'explanation':
+            'CPUs overlap instruction stages (Fetch, Decode, Execute, Memory, Writeback) in a pipeline. '
+            'When conditional branches occur (if/else), branch prediction guesses the outcome. If mispredicted, the entire pipeline must be flushed, '
+            'incurring a 15-20 cycle latency penalty. Writing branchless code for inner loops dramatically accelerates performance.',
+        'codeSnippet': '''// Branched (Risk of branch predictor misprediction penalty):
+if (val > 128) sum += val;
+
+// Branchless (Zero branch hazard, uses CPU CMOV instruction):
+sum += val * (val > 128);''',
+        'mentalModel':
+            'A pipeline is an assembly line. A branch misprediction is finding a defect and discarding all 15 half-built cars on the line.',
+      },
+      3: {
+        'title': 'Translation Lookaside Buffers (TLB) & Cache Line Alignment',
+        'explanation':
+            'Virtual-to-physical memory translations are mapped through hierarchical page tables. The TLB is a dedicated MMU cache storing recent translations. '
+            'A TLB miss triggers expensive multi-level page table walks in RAM. Hardware transfers memory in 64-byte Cache Lines; '
+            'data structures aligned to 64-byte boundaries avoid split reads and eliminate false sharing across multi-core CPU caches.',
+        'codeSnippet': '''// False Sharing Hazard:
+struct SharedState {
+    alignas(64) atomic<int> thread1_counter; // Separated into unique 64B cache lines!
+    alignas(64) atomic<int> thread2_counter; // Eliminates cache invalidation ping-pong!
+};''',
+        'mentalModel':
+            'Cache lines are egg cartons of 64 bytes. If two chefs fight over two eggs in the same carton, neither can cook efficiently.',
+      },
+    },
+
+    // 10. Database Systems
+    'database': {
+      1: {
+        'title': 'ACID Guarantees & Relational Integrity',
+        'explanation':
+            'Relational databases enforce ACID guarantees: Atomicity (all-or-nothing), Consistency (schema constraints preserved), '
+            'Isolation (concurrent transactions execute safely), and Durability (committed data survives crashes via Write-Ahead Logs).',
+        'codeSnippet': '''BEGIN TRANSACTION;
+  UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+  UPDATE accounts SET balance = balance + 100 WHERE id = 2;
+COMMIT; -- Atomic: If server crashes mid-flight, transaction rolls back completely!''',
+        'mentalModel':
+            'Atomicity is an electron: cannot be split in half. Either the whole transfer happens, or none of it happens.',
+      },
+      2: {
+        'title': 'B+ Trees vs LSM Trees',
+        'explanation':
+            'B+ Trees store sorted keys in balanced nodes with wide fan-out (100-500 children per page), optimizing read-heavy workloads with 3-4 random disk I/Os. '
+            'Log-Structured Merge (LSM) Trees (RocksDB, Cassandra) buffer writes in memory (MemTable) and append to disk sequentially (SSTables), '
+            'optimizing write-heavy ingestion workloads at the cost of compaction overhead.',
+        'codeSnippet': '''// B+ Tree: O(log_B N) Random Read Optimization
+// LSM Tree: Append-Only Sequential Write Pipeline:
+Client Write -> Write-Ahead Log (Disk) + MemTable (RAM)
+When MemTable full -> Flushed as immutable SSTable -> Periodic Compaction''',
+        'mentalModel':
+            'B+ Tree is an alphabetized card catalog. LSM Tree is a notebook you write quickly into, sorting pages during downtime.',
+      },
+      3: {
+        'title': 'Isolation Levels & Read Phenomena',
+        'explanation':
+            'ANSI SQL defines 4 Isolation Levels: Read Uncommitted, Read Committed, Repeatable Read, and Serializable. '
+            'Higher isolation prevents Dirty Reads (reading uncommitted data), Non-Repeatable Reads (row values change mid-transaction), '
+            'and Phantom Reads (new matching rows appear mid-query). Modern engines use Multi-Version Concurrency Control (MVCC) '
+            'so readers never block writers and writers never block readers.',
+        'codeSnippet': '''// MVCC (Multi-Version Concurrency Control):
+Row ID 10:
+  Version 1 (xmin=100, xmax=105): balance = \$500
+  Version 2 (xmin=105, xmax=inf): balance = \$600
+Snapshot isolation serves Version 1 to transactions started before tx 105!''',
+        'mentalModel':
+            'MVCC gives each reader their own photographic snapshot of the database at the moment their query began.',
+      },
+    },
+
+    // 11. Software Engineering & Architecture
+    'software_engineering': {
+      1: {
+        'title': 'SOLID Principles: Single Responsibility & Dependency Inversion',
+        'explanation':
+            'SOLID guides clean, maintainable software design: Single Responsibility (one reason to change), Open/Closed (open for extension, closed for modification), '
+            'Liskov Substitution, Interface Segregation, and Dependency Inversion (high-level policy should depend on abstractions, not concrete implementations).',
+        'codeSnippet': '''// Dependency Inversion:
+interface PaymentGateway { process(amount: number): boolean; }
+class OrderService {
+  constructor(private gateway: PaymentGateway) {} // Injected abstraction!
+}''',
+        'mentalModel':
+            'A wall power socket is an abstraction interface. Your laptop charger doesn\'t care whether power is generated by solar, hydro, or wind.',
+      },
+      2: {
+        'title': 'Design Patterns: Creational, Structural & Behavioral',
+        'explanation':
+            'GoF Design Patterns provide reusable solutions to recurring problems: '
+            'Factory/Builder (encapsulating complex object creation), Adapter/Decorator (composing and altering behavior without subclassing), '
+            'and Observer/Strategy (loosely coupled event subscriptions and interchangeable algorithms).',
+        'codeSnippet': '''// Strategy Pattern:
+class CompressionContext {
+  setStrategy(strategy: CompressionStrategy) { this.strategy = strategy; }
+  compress(file: File) { return this.strategy.compress(file); }
+}''',
+        'mentalModel':
+            'Strategy pattern is swapping camera lenses: the camera body remains identical while you attach macro, wide-angle, or telephoto glass.',
+      },
+      3: {
+        'title': 'CQRS, Event Sourcing & Architectural Scalability',
+        'explanation':
+            'CQRS (Command Query Responsibility Segregation) separates mutations (Commands) from read models (Queries), '
+            'enabling independent scaling of read replicas and write engines. Event Sourcing records state not as mutable records, '
+            'but as an immutable, append-only sequence of domain events, providing an audit log and time-travel debugging.',
+        'codeSnippet': '''// Event Sourcing Stream:
+Event 1: AccountOpened { id: "acc_1", initial_deposit: 100 }
+Event 2: FundsDeposited { amount: 50 }
+Event 3: FundsWithdrawn { amount: 30 }
+// Current balance (120) is dynamically reconstructed by replaying the event stream!''',
+        'mentalModel':
+            'Your bank account ledger is event-sourced: the bank doesn\'t just store your current balance number, they store every check and transfer ever written.',
       },
     },
   };

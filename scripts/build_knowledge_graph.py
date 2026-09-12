@@ -365,7 +365,7 @@ class KnowledgeGraphBuilder:
                 qid = f"q:sequencing:{slugify(domain_name)}_{i+1}"
                 prompt = q.get("prompt", "Arrange steps")
                 label = (prompt[:42] + "...") if len(prompt) > 42 else prompt
-                seq = q.get("sequence", [])
+                seq = q.get("sequence", []) or q.get("ordered_sequence", [])
                 self.add_node(
                     qid,
                     label,
@@ -377,6 +377,7 @@ class KnowledgeGraphBuilder:
                         "sub_type": "Sequencing",
                         "prompt": prompt,
                         "sequence": seq,
+                        "ordered_sequence": seq,
                     },
                 )
                 self.add_edge(domain_id, qid, "HAS_QUESTION", "Has Question")
@@ -387,7 +388,8 @@ class KnowledgeGraphBuilder:
                 qid = f"q:sorting:{slugify(domain_name)}_{i+1}"
                 prompt = q.get("prompt", "Classify items")
                 label = (prompt[:42] + "...") if len(prompt) > 42 else prompt
-                categories = q.get("categories", {})
+                categories = q.get("categories", [])
+                items = q.get("items", {})
                 self.add_node(
                     qid,
                     label,
@@ -399,6 +401,7 @@ class KnowledgeGraphBuilder:
                         "sub_type": "Sorting-Classification",
                         "prompt": prompt,
                         "categories": categories,
+                        "items": items,
                     },
                 )
                 self.add_edge(domain_id, qid, "HAS_QUESTION", "Has Question")
@@ -409,6 +412,11 @@ class KnowledgeGraphBuilder:
                 qid = f"q:mc:{slugify(domain_name)}_{i+1}"
                 qtext = q.get("question", "Conceptual question")
                 label = (qtext[:42] + "...") if len(qtext) > 42 else qtext
+                choices = q.get("choices", []) or q.get("options", [])
+                c_idx = q.get("correct_index", 0)
+                correct = q.get("correct", "")
+                if not correct and choices and 0 <= c_idx < len(choices):
+                    correct = choices[c_idx]
                 self.add_node(
                     qid,
                     label,
@@ -419,8 +427,10 @@ class KnowledgeGraphBuilder:
                         "domain": domain_name,
                         "sub_type": "Multi-Choice",
                         "question": qtext,
-                        "options": q.get("options", []),
-                        "correct": q.get("correct", ""),
+                        "options": choices,
+                        "choices": choices,
+                        "correct": correct,
+                        "correct_index": c_idx,
                         "explanation": q.get("explanation", ""),
                     },
                 )

@@ -20,8 +20,9 @@ class _KnowledgeGraph3DScreenState extends State<KnowledgeGraph3DScreen> {
   final TopicProgressionService _progressionService = TopicProgressionService.instance;
 
   TopicProgressionNode? _selectedNode;
-  Graph3DViewMode _viewMode = Graph3DViewMode.constellation;
+  Graph3DViewMode _viewMode = Graph3DViewMode.orbital;
   bool _autoRotate = false;
+  bool _isInspectorCollapsed = false;
 
   @override
   void initState() {
@@ -69,7 +70,7 @@ class _KnowledgeGraph3DScreenState extends State<KnowledgeGraph3DScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    '3D Knowledge Constellation',
+                    'Knowledge Graph',
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -130,19 +131,19 @@ class _KnowledgeGraph3DScreenState extends State<KnowledgeGraph3DScreen> {
           // View Mode Switcher
           IconButton(
             icon: Icon(
-              _viewMode == Graph3DViewMode.constellation
+              _viewMode == Graph3DViewMode.orbital
                   ? Icons.grain_rounded
                   : Icons.grid_4x4_rounded,
               color: Colors.cyanAccent,
             ),
-            tooltip: _viewMode == Graph3DViewMode.constellation
+            tooltip: _viewMode == Graph3DViewMode.orbital
                 ? 'Switch to Matrix Grid View'
-                : 'Switch to Constellation View',
+                : 'Switch to 3D Orbital View',
             onPressed: () {
               setState(() {
-                _viewMode = _viewMode == Graph3DViewMode.constellation
+                _viewMode = _viewMode == Graph3DViewMode.orbital
                     ? Graph3DViewMode.matrixGrid
-                    : Graph3DViewMode.constellation;
+                    : Graph3DViewMode.orbital;
               });
             },
           ),
@@ -248,6 +249,68 @@ class _KnowledgeGraph3DScreenState extends State<KnowledgeGraph3DScreen> {
       statusIcon = Icons.bolt_rounded;
     }
 
+    if (_isInspectorCollapsed) {
+      return Container(
+        constraints: const BoxConstraints(maxWidth: 680),
+        margin: const EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        decoration: BoxDecoration(
+          color: const Color(0xFF0F172A).withOpacity(0.96),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isUnlocked ? Colors.cyanAccent.withOpacity(0.4) : Colors.white12,
+            width: 1.5,
+          ),
+          boxShadow: const [
+            BoxShadow(color: Colors.black54, blurRadius: 10, offset: Offset(0, 4)),
+          ],
+        ),
+        child: Row(
+          children: [
+            Icon(statusIcon, color: badgeColor, size: 20),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                node.label,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: badgeColor.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                statusText,
+                style: GoogleFonts.jetBrainsMono(
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  color: badgeColor,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            IconButton(
+              key: const Key('kg_btn_expand_inspector'),
+              icon: const Icon(Icons.keyboard_arrow_up_rounded, color: Colors.cyanAccent),
+              tooltip: 'Expand Node Details',
+              onPressed: () {
+                setState(() {
+                  _isInspectorCollapsed = false;
+                });
+              },
+            ),
+          ],
+        ),
+      );
+    }
+
     return Container(
       constraints: const BoxConstraints(maxWidth: 680),
       margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -330,6 +393,16 @@ class _KnowledgeGraph3DScreenState extends State<KnowledgeGraph3DScreen> {
                 tooltip: 'Focus Camera on Node',
                 onPressed: () => _viewKey.currentState?.focusOnNode(node.id),
               ),
+              IconButton(
+                key: const Key('kg_btn_collapse_inspector'),
+                icon: const Icon(Icons.keyboard_arrow_down_rounded, color: Colors.white70),
+                tooltip: 'Minimize Details Panel',
+                onPressed: () {
+                  setState(() {
+                    _isInspectorCollapsed = true;
+                  });
+                },
+              ),
             ],
           ),
           const SizedBox(height: 10),
@@ -402,17 +475,30 @@ class _KnowledgeGraph3DScreenState extends State<KnowledgeGraph3DScreen> {
                 ),
                 ...node.similarNodeIds.map((simId) {
                   final target = _progressionService.getNode(simId);
-                  return ActionChip(
-                    label: Text(target?.label ?? simId),
-                    labelStyle: GoogleFonts.plusJakartaSans(fontSize: 10, color: Colors.white70),
-                    backgroundColor: Colors.white.withOpacity(0.08),
-                    padding: EdgeInsets.zero,
-                    onPressed: () {
+                  return InkWell(
+                    borderRadius: BorderRadius.circular(14),
+                    onTap: () {
                       if (target != null) {
                         _onNodeTapped(target);
                         _viewKey.currentState?.focusOnNode(target.id);
                       }
                     },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF0F172A),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: const Color(0xFF38BDF8).withOpacity(0.4)),
+                      ),
+                      child: Text(
+                        target?.label ?? simId,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF38BDF8),
+                        ),
+                      ),
+                    ),
                   );
                 }),
               ],
