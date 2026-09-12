@@ -4867,18 +4867,18 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        // 1. Pause / Resume Button
+        // 1. Pause / Resume Button (56x56 HUD Squircle)
         Tooltip(
           message: _isPaused ? 'Resume Session (P)' : 'Pause Session (P)',
           preferBelow: false,
-          child: FloatingActionButton.small(
+          child: FloatingActionButton(
             heroTag: 'fab_pause_btn',
             onPressed: _togglePause,
             backgroundColor: _isPaused ? Colors.amber.shade700 : const Color(0xFF1E293B),
             foregroundColor: _isPaused ? Colors.black : Colors.amber.shade300,
             elevation: 6,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(18),
               side: BorderSide(
                 color: _isPaused ? Colors.amber : Colors.amber.withOpacity(0.4),
                 width: 1.4,
@@ -4886,24 +4886,24 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             ),
             child: Icon(
               _isPaused ? Icons.play_arrow_rounded : Icons.pause_rounded,
-              size: 22,
+              size: 26,
             ),
           ),
         ),
         const SizedBox(height: 12),
 
-        // 2. Feedback Button
+        // 2. Feedback Button (56x56 HUD Squircle)
         Tooltip(
           message: 'Question Feedback & Suggestions',
           preferBelow: false,
-          child: FloatingActionButton.small(
+          child: FloatingActionButton(
             heroTag: 'fab_feedback_btn',
             onPressed: _openFeedbackDialog,
             backgroundColor: const Color(0xFF1E293B),
             foregroundColor: const Color(0xFF38BDF8),
             elevation: 6,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(18),
               side: BorderSide(
                 color: const Color(0xFF38BDF8).withOpacity(0.4),
                 width: 1.4,
@@ -4911,28 +4911,32 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             ),
             child: const Icon(
               Icons.feedback_outlined,
-              size: 20,
+              size: 24,
             ),
           ),
         ),
         const SizedBox(height: 12),
 
-        // 3. Next Question Button (Persistent Anchor, floats above everything)
+        // 3. Next Question Button (56x56 HUD Squircle, matching dark slate + blue outline)
         Tooltip(
           message: 'Next Question (Skip)',
           preferBelow: false,
           child: FloatingActionButton(
             heroTag: 'fab_next_question_btn',
             onPressed: _onNextQuestionFloatingPressed,
-            backgroundColor: theme.colorScheme.primary,
-            foregroundColor: theme.colorScheme.onPrimary,
-            elevation: 8,
+            backgroundColor: const Color(0xFF1E293B),
+            foregroundColor: const Color(0xFF60A5FA),
+            elevation: 6,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(18),
+              side: BorderSide(
+                color: const Color(0xFF60A5FA).withOpacity(0.4),
+                width: 1.4,
+              ),
             ),
             child: const Icon(
               Icons.skip_next_rounded,
-              size: 32,
+              size: 28,
             ),
           ),
         ),
