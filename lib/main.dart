@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'services/database_service.dart';
 import 'services/progression_service.dart';
 import 'services/adaptive_explanation_service.dart';
@@ -219,11 +220,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   bool _showMotionGraphicOverlay = false;
   Timer? _idleReengagementTimer;
 
+  // Persistent Session Pause State
+  bool _isPaused = false;
+
   void _resetIdleTimer() {
     _idleReengagementTimer?.cancel();
-    if (_showExplanationOverlay || _showMotionGraphicOverlay || _isAnswerSubmitted) return;
+    if (_showExplanationOverlay || _showMotionGraphicOverlay || _isAnswerSubmitted || _isPaused) return;
     _idleReengagementTimer = Timer(const Duration(seconds: 16), () {
-      if (!mounted || _isAnswerSubmitted || _showExplanationOverlay || _showMotionGraphicOverlay) return;
+      if (!mounted || _isAnswerSubmitted || _showExplanationOverlay || _showMotionGraphicOverlay || _isPaused) return;
       _triggerMotionGraphic(
         type: MotionGraphicType.idleReengagement,
         title: 'STAY SHARP!',
@@ -831,6 +835,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     _topAlertTimer?.cancel();
     _topAlertMessage = null;
     _isTimerExpired = false;
+    _isPaused = false;
     _showExplanationOverlay = false;
     _activeExplanation = null;
     _resetIdleTimer();
@@ -2841,15 +2846,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       );
     },
   ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            generateQuestion();
-          });
-        },
-        tooltip: 'Next Question',
-        child: const Icon(Icons.skip_next),
-      ),
+      floatingActionButton: null,
     );
 
     return Stack(
@@ -2868,6 +2865,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             topicTag: _motionGraphicTopicTag,
             onDismiss: _onMotionGraphicDismissed,
           ),
+        if (_isPaused)
+          _buildPausedBanner(theme),
+        // Persistent vertical floating controls hugging bottom right (floats above overlays)
+        Positioned(
+          bottom: 24,
+          right: 24,
+          child: _buildPersistentFloatingControls(theme),
+        ),
       ],
     );
   }
@@ -4763,6 +4768,570 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             style: GoogleFonts.jetBrainsMono(fontSize: 12, fontWeight: FontWeight.bold, color: color),
           ),
         ],
+      ),
+    );
+  }
+
+  // --- Persistent Floating Control Actions (Pause, Feedback, Next Question) ---
+
+  void _togglePause() {
+    setState(() {
+      _isPaused = !_isPaused;
+      if (_isPaused) {
+        _questionTimer?.cancel();
+        _questionTimer = null;
+        _idleReengagementTimer?.cancel();
+      } else {
+        _resumeTimer();
+      }
+    });
+  }
+
+  void _resumeTimer() {
+    if (_isTimerExpired || _remainingSeconds <= 0) return;
+    _questionTimer?.cancel();
+    _questionTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) return;
+      if (_remainingSeconds > 1) {
+        setState(() {
+          _remainingSeconds--;
+        });
+      } else {
+        _handleTimeout();
+      }
+    });
+    _resetIdleTimer();
+  }
+
+  void _onNextQuestionFloatingPressed() {
+    setState(() {
+      // Dismiss any active overlays immediately so user is never blocked
+      if (_showExplanationOverlay) {
+        _showExplanationOverlay = false;
+        _activeExplanation = null;
+      }
+      if (_showMotionGraphicOverlay) {
+        _showMotionGraphicOverlay = false;
+        _activeMotionGraphic = null;
+      }
+      if (_isPaused) {
+        _isPaused = false;
+      }
+      generateQuestion();
+    });
+  }
+
+  String _getCurrentQuestionSummary() {
+    switch (_currentQuestionType) {
+      case HardCodeQuestionType.trueFalse:
+        return _tfStatement.isNotEmpty ? _tfStatement : 'True/False Statement';
+      case HardCodeQuestionType.matching:
+        return _matchingPrompt.isNotEmpty ? _matchingPrompt : 'Term & Definition Matching';
+      case HardCodeQuestionType.sequencing:
+        return _sequencingPrompt.isNotEmpty ? _sequencingPrompt : 'Step Execution Sequencing';
+      case HardCodeQuestionType.sorting:
+        return _sortingPrompt.isNotEmpty ? _sortingPrompt : 'Category Classification';
+      case HardCodeQuestionType.multiChoiceSyntax:
+        return 'Syntax Question ($_language)';
+      case HardCodeQuestionType.multiChoiceConceptual:
+        return _conceptualExplanation != null && _conceptualExplanation!.isNotEmpty
+            ? _conceptualExplanation!
+            : 'Conceptual Question ($_language)';
+    }
+  }
+
+  void _openFeedbackDialog() {
+    final bool wasPaused = _isPaused;
+    if (!_isPaused && _questionTimer != null) {
+      _togglePause();
+    }
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (ctx) => _QuestionFeedbackDialog(
+        questionSummary: _getCurrentQuestionSummary(),
+        questionType: _currentQuestionType.name,
+        languageOrDomain: _language,
+        onDismissed: () {
+          if (!wasPaused && _isPaused) {
+            _togglePause();
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildPersistentFloatingControls(ThemeData theme) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        // 1. Pause / Resume Button
+        Tooltip(
+          message: _isPaused ? 'Resume Session (P)' : 'Pause Session (P)',
+          preferBelow: false,
+          child: FloatingActionButton.small(
+            heroTag: 'fab_pause_btn',
+            onPressed: _togglePause,
+            backgroundColor: _isPaused ? Colors.amber.shade700 : const Color(0xFF1E293B),
+            foregroundColor: _isPaused ? Colors.black : Colors.amber.shade300,
+            elevation: 6,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: BorderSide(
+                color: _isPaused ? Colors.amber : Colors.amber.withOpacity(0.4),
+                width: 1.4,
+              ),
+            ),
+            child: Icon(
+              _isPaused ? Icons.play_arrow_rounded : Icons.pause_rounded,
+              size: 22,
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+
+        // 2. Feedback Button
+        Tooltip(
+          message: 'Question Feedback & Suggestions',
+          preferBelow: false,
+          child: FloatingActionButton.small(
+            heroTag: 'fab_feedback_btn',
+            onPressed: _openFeedbackDialog,
+            backgroundColor: const Color(0xFF1E293B),
+            foregroundColor: const Color(0xFF38BDF8),
+            elevation: 6,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: BorderSide(
+                color: const Color(0xFF38BDF8).withOpacity(0.4),
+                width: 1.4,
+              ),
+            ),
+            child: const Icon(
+              Icons.feedback_outlined,
+              size: 20,
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+
+        // 3. Next Question Button (Persistent Anchor, floats above everything)
+        Tooltip(
+          message: 'Next Question (Skip)',
+          preferBelow: false,
+          child: FloatingActionButton(
+            heroTag: 'fab_next_question_btn',
+            onPressed: _onNextQuestionFloatingPressed,
+            backgroundColor: theme.colorScheme.primary,
+            foregroundColor: theme.colorScheme.onPrimary,
+            elevation: 8,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: const Icon(
+              Icons.skip_next_rounded,
+              size: 32,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPausedBanner(ThemeData theme) {
+    return Positioned(
+      top: 76,
+      left: 0,
+      right: 0,
+      child: Center(
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+            decoration: BoxDecoration(
+              color: const Color(0xFF0F172A).withOpacity(0.94),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: Colors.amber.shade400, width: 1.5),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.amber.withOpacity(0.25),
+                  blurRadius: 20,
+                  spreadRadius: 2,
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.pause_circle_filled_rounded, color: Colors.amber, size: 22),
+                const SizedBox(width: 8),
+                Text(
+                  'SESSION PAUSED',
+                  style: GoogleFonts.jetbrainsMono(
+                    color: Colors.amber.shade200,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 12,
+                    letterSpacing: 1.1,
+                  ),
+                ),
+                const SizedBox(width: 14),
+                ElevatedButton.icon(
+                  onPressed: _togglePause,
+                  icon: const Icon(Icons.play_arrow_rounded, size: 16, color: Colors.black),
+                  label: Text(
+                    'RESUME',
+                    style: GoogleFonts.plusJakartaSans(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 11,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.amber,
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _QuestionFeedbackDialog extends StatefulWidget {
+  final String questionSummary;
+  final String questionType;
+  final String languageOrDomain;
+  final VoidCallback? onDismissed;
+
+  const _QuestionFeedbackDialog({
+    required this.questionSummary,
+    required this.questionType,
+    required this.languageOrDomain,
+    this.onDismissed,
+  });
+
+  @override
+  State<_QuestionFeedbackDialog> createState() => _QuestionFeedbackDialogState();
+}
+
+class _QuestionFeedbackDialogState extends State<_QuestionFeedbackDialog> {
+  final TextEditingController _commentController = TextEditingController();
+  int _selectedCategoryIndex = 0;
+  bool _isSubmitting = false;
+
+  final List<String> _categories = [
+    'Typo / Wording',
+    'Incorrect Answer',
+    'Unclear Explanation',
+    'Feature Suggestion',
+  ];
+
+  @override
+  void dispose() {
+    _commentController.dispose();
+    super.dispose();
+  }
+
+  void _submit() async {
+    final comment = _commentController.text.trim();
+    setState(() {
+      _isSubmitting = true;
+    });
+
+    try {
+      final feedbackEntry = {
+        'category': _categories[_selectedCategoryIndex],
+        'comment': comment,
+        'question': widget.questionSummary,
+        'questionType': widget.questionType,
+        'topic': widget.languageOrDomain,
+        'timestamp': DateTime.now().toIso8601String(),
+      };
+
+      if (Hive.isBoxOpen('user_memory')) {
+        final box = Hive.box('user_memory');
+        final List<dynamic> existing = (box.get('user_feedback_list', defaultValue: []) as List).toList();
+        existing.add(feedbackEntry);
+        await box.put('user_feedback_list', existing);
+      }
+    } catch (_) {}
+
+    if (!mounted) return;
+    Navigator.of(context).pop();
+    widget.onDismissed?.call();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            const Icon(Icons.check_circle_rounded, color: Colors.greenAccent, size: 20),
+            const SizedBox(width: 10),
+            const Expanded(
+              child: Text(
+                'Feedback submitted! Thank you for improving HardCode.',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: const Color(0xFF1E293B),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Dialog(
+      backgroundColor: const Color(0xFF0F172A),
+      elevation: 12,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(
+          color: theme.colorScheme.primary.withOpacity(0.35),
+          width: 1.2,
+        ),
+      ),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 480),
+        child: Padding(
+          padding: const EdgeInsets.all(22.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primary.withOpacity(0.18),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      Icons.rate_review_rounded,
+                      color: theme.colorScheme.primary,
+                      size: 22,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Question Feedback',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          'Report an issue or suggest an improvement',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 12,
+                            color: Colors.grey.shade400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close_rounded, color: Colors.grey, size: 20),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      widget.onDismissed?.call();
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // Question context pill
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E293B),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.white10),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.primary.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            widget.languageOrDomain.toUpperCase(),
+                            style: GoogleFonts.jetbrainsMono(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w700,
+                              color: theme.colorScheme.primary,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.08),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            widget.questionType,
+                            style: GoogleFonts.jetbrainsMono(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey.shade300,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      widget.questionSummary,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 12,
+                        color: Colors.grey.shade300,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Category chips
+              Text(
+                'Category',
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.grey.shade300,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: List.generate(_categories.length, (idx) {
+                  final selected = _selectedCategoryIndex == idx;
+                  return ChoiceChip(
+                    label: Text(_categories[idx]),
+                    selected: selected,
+                    onSelected: (val) {
+                      if (val) {
+                        setState(() {
+                          _selectedCategoryIndex = idx;
+                        });
+                      }
+                    },
+                    selectedColor: theme.colorScheme.primary.withOpacity(0.25),
+                    backgroundColor: const Color(0xFF1E293B),
+                    labelStyle: GoogleFonts.plusJakartaSans(
+                      fontSize: 11,
+                      fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                      color: selected ? theme.colorScheme.primary : Colors.grey.shade300,
+                    ),
+                    side: BorderSide(
+                      color: selected ? theme.colorScheme.primary : Colors.white10,
+                      width: 1,
+                    ),
+                  );
+                }),
+              ),
+              const SizedBox(height: 14),
+
+              // Comment text area
+              Text(
+                'Comments (Optional)',
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.grey.shade300,
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _commentController,
+                maxLines: 3,
+                maxLength: 300,
+                style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 13),
+                decoration: InputDecoration(
+                  hintText: 'Describe any inaccuracies, typos, or suggestions...',
+                  hintStyle: GoogleFonts.plusJakartaSans(color: Colors.grey.shade600, fontSize: 12),
+                  filled: true,
+                  fillColor: const Color(0xFF1E293B),
+                  contentPadding: const EdgeInsets.all(12),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Colors.white10),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: theme.colorScheme.primary, width: 1.5),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 14),
+
+              // Actions
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      widget.onDismissed?.call();
+                    },
+                    child: Text(
+                      'Cancel',
+                      style: GoogleFonts.plusJakartaSans(color: Colors.grey.shade400),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  FilledButton.icon(
+                    onPressed: _isSubmitting ? null : _submit,
+                    icon: _isSubmitting
+                        ? const SizedBox(
+                            width: 14,
+                            height: 14,
+                            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                          )
+                        : const Icon(Icons.send_rounded, size: 16),
+                    label: const Text('Submit Feedback'),
+                    style: FilledButton.styleFrom(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
