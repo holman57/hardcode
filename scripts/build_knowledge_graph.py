@@ -53,6 +53,7 @@ class KnowledgeGraphBuilder:
             "os": {"color": "#06B6D4", "size": 22, "level": 2, "icon": "devices"},
             "concept": {"color": "#F59E0B", "size": 20, "level": 2, "icon": "lightbulb"},
             "syntax": {"color": "#0EA5E9", "size": 18, "level": 3, "icon": "terminal"},
+            "leaf": {"color": "#EA580C", "size": 18, "level": 3, "icon": "grain"},
             "question_tf": {"color": "#14B8A6", "size": 16, "level": 3, "icon": "check_circle"},
             "question_matching": {"color": "#F97316", "size": 16, "level": 3, "icon": "compare_arrows"},
             "question_sequencing": {"color": "#A855F7", "size": 16, "level": 3, "icon": "format_list_numbered"},
@@ -436,7 +437,177 @@ class KnowledgeGraphBuilder:
                 )
                 self.add_edge(domain_id, qid, "HAS_QUESTION", "Has Question")
 
-        # 9. Compute Adjacency & Indices
+        # 9. Granular Hierarchical Leaf Concepts & Cross-Domain Overlaps
+        # 9a. Subtopic: Programming Languages
+        pl_topic_id = "topic:programming_languages"
+        self.add_node(
+            node_id=pl_topic_id,
+            label="Programming Languages",
+            node_type="SubTopic",
+            category="Computer Science",
+            group="concept",
+            properties={
+                "description": "Type systems, operational semantics, memory safety models, and compilation targets."
+            },
+        )
+        self.add_edge(root_id, pl_topic_id, "COVERS_SUBTOPIC", "Covers Subtopic")
+        if "domain:computer_science" in self.nodes:
+            self.add_edge("domain:computer_science", pl_topic_id, "SUBTOPIC_OF", "Subtopic", weight=2.0)
+        if "domain:programming_languages_compilers" in self.nodes:
+            self.add_edge("domain:programming_languages_compilers", pl_topic_id, "RELATES_TO", "Relates to Subtopic", weight=1.8)
+
+        # Link major languages to topic:programming_languages
+        major_langs = ["lang:rust", "lang:python", "lang:go", "lang:cpp", "lang:javascript", "lang:typescript", "lang:java", "lang:csharp"]
+        for ml in major_langs:
+            if ml in self.nodes:
+                self.add_edge(pl_topic_id, ml, "INCLUDES_LANGUAGE", "Includes Language", weight=2.0)
+
+        # 9b. Rust Granular Leaf Concepts
+        rust_leaves = [
+            (
+                "leaf:rust:variable_declaration",
+                "Variable Declaration & Mutability",
+                "Rust",
+                "leaf",
+                {
+                    "keywords": ["let", "let mut", "const"],
+                    "immutability_by_default": True,
+                    "shadowing": True,
+                    "description": "Immutable by default bindings via `let`, explicit mutable bindings with `mut`, compile-time constants, and lexical variable shadowing.",
+                },
+            ),
+            (
+                "leaf:rust:ownership_borrowing",
+                "Borrow Checker & Ownership Primitives",
+                "Rust",
+                "leaf",
+                {
+                    "rules": [
+                        "Single owner per value",
+                        "Move semantics on assignment for non-Copy types",
+                        "Aliasing XOR Mutability: multiple &T OR single &mut T",
+                    ],
+                    "description": "Compile-time memory safety without garbage collection through affine type system and exclusive borrow semantics.",
+                },
+            ),
+            (
+                "leaf:rust:lifetimes",
+                "Lifetimes & Reference Validity",
+                "Rust",
+                "leaf",
+                {
+                    "annotations": ["'a", "'static"],
+                    "elision_rules": True,
+                    "description": "Generic lifetime parameters that prove to the compiler references never outlive their underlying allocation.",
+                },
+            ),
+            (
+                "leaf:rust:pattern_matching",
+                "Pattern Matching & Algebraic Enums",
+                "Rust",
+                "leaf",
+                {
+                    "constructs": ["match", "if let", "enum"],
+                    "exhaustive": True,
+                    "description": "Exhaustive destructuring of algebraic data types, tuple patterns, and guard clauses.",
+                },
+            ),
+            (
+                "leaf:rust:error_handling",
+                "Error Handling & Propagation",
+                "Rust",
+                "leaf",
+                {
+                    "types": ["Result<T, E>", "Option<T>", "?"],
+                    "description": "Ergonomic, type-safe error propagation via Result and Option with zero unhandled null pointer exceptions.",
+                },
+            ),
+        ]
+
+        for leaf_id, leaf_label, leaf_cat, leaf_group, leaf_props in rust_leaves:
+            self.add_node(leaf_id, leaf_label, "LeafConcept", leaf_cat, leaf_group, properties=leaf_props)
+            if "lang:rust" in self.nodes:
+                self.add_edge("lang:rust", leaf_id, "HAS_LEAF_CONCEPT", "Has Leaf Concept", weight=2.2)
+
+        # 9c. Granular Leaf Concepts for other core languages
+        other_leaves = [
+            ("leaf:python:variable_declaration", "Dynamic Typing & Variable Binding", "Python", "leaf", {"description": "Dynamic typing, reference assignment, global and nonlocal scope bindings."}),
+            ("leaf:python:memory_model", "Reference Counting & GIL", "Python", "leaf", {"description": "CPython reference counting, cyclic garbage collection, and Global Interpreter Lock."}),
+            ("leaf:python:iterators_generators", "Iterators, Generators & Comprehensions", "Python", "leaf", {"description": "Yield-based generator coroutines and lazy stream evaluation."}),
+            ("leaf:go:variable_declaration", "Variable Declaration & Short Assignment", "Go", "leaf", {"description": "Typed `var` declarations, `:=` short assignment syntax, and package-level scoping."}),
+            ("leaf:go:goroutines_channels", "Goroutines & CSP Channel Synchronization", "Go", "leaf", {"description": "M:N cooperative green threads and typed CSP communication channels."}),
+            ("leaf:cpp:variable_declaration", "Pointers, References & Type Specifiers", "C++", "leaf", {"description": "Pointers, lvalue/rvalue references, auto deduction, and constexpr evaluation."}),
+            ("leaf:cpp:raii_memory", "RAII & Deterministic Resource Management", "C++", "leaf", {"description": "Resource Acquisition Is Initialization, smart pointers (unique_ptr, shared_ptr), and destructors."}),
+            ("leaf:javascript:variable_declaration", "Variable Hoisting & Temporal Dead Zone", "JavaScript", "leaf", {"description": "Block scoping with `const` and `let`, temporal dead zone, and legacy `var` hoisting."}),
+            ("leaf:javascript:event_loop", "Event Loop & Asynchronous Tasks", "JavaScript", "leaf", {"description": "Single-threaded event loop, call stack, microtask queue, and macrotask phases."}),
+        ]
+
+        for leaf_id, leaf_label, leaf_cat, leaf_group, leaf_props in other_leaves:
+            self.add_node(leaf_id, leaf_label, "LeafConcept", leaf_cat, leaf_group, properties=leaf_props)
+            parent_lang = "lang:" + leaf_cat.lower().replace("+", "p").replace("#", "sharp")
+            if parent_lang in self.nodes:
+                self.add_edge(parent_lang, leaf_id, "HAS_LEAF_CONCEPT", "Has Leaf Concept", weight=2.0)
+
+        # 9d. Granular Subtopics for System & Infrastructure Domains
+        infra_subtopics = [
+            ("topic:tcp_ip", "TCP/IP Handshake & Congestion Control", "Computer Networking", "concept", "domain:computer_networking"),
+            ("topic:dns_routing", "DNS Resolution & BGP Routing", "Computer Networking", "concept", "domain:computer_networking"),
+            ("topic:tls_encryption", "TLS 1.3 Cryptographic Transport", "Computer Networking", "concept", "domain:computer_networking"),
+            ("topic:concurrency", "Concurrency Primitives & Deadlocks", "Operating Systems", "concept", "domain:operating_systems"),
+            ("topic:virtual_memory", "Virtual Memory, Paging & TLB", "Operating Systems", "concept", "domain:operating_systems"),
+            ("topic:kernel_scheduling", "CPU Scheduling & Context Switching", "Operating Systems", "concept", "domain:operating_systems"),
+            ("topic:binary_exploitation", "Binary Mitigations (ASLR, DEP, Canaries)", "Cybersecurity", "concept", "domain:cybersecurity_cryptography_security_engineering"),
+            ("topic:cryptography", "Applied Cryptography (AEAD, RSA, ECC)", "Cybersecurity", "concept", "domain:cybersecurity_cryptography_security_engineering"),
+            ("topic:threat_modeling", "Threat Modeling & SSDLC (STRIDE)", "Cybersecurity", "concept", "domain:cybersecurity_cryptography_security_engineering"),
+            ("topic:distributed_systems", "Distributed Consensus & CAP Theorem", "Cloud Computing", "concept", "domain:cloud_distributed_computing"),
+            ("topic:consensus_raft", "Raft Log Replication & Paxos", "Cloud Computing", "concept", "domain:cloud_distributed_computing"),
+            ("topic:container_orchestration", "Container Orchestration & Kubernetes", "Cloud Computing", "concept", "domain:cloud_distributed_computing"),
+        ]
+
+        for sub_id, sub_label, sub_cat, sub_group, parent_dom_id in infra_subtopics:
+            self.add_node(sub_id, sub_label, "SubTopic", sub_cat, sub_group, properties={"description": f"Core sub-domain within {sub_cat}."})
+            if parent_dom_id in self.nodes:
+                self.add_edge(parent_dom_id, sub_id, "COVERS_SUBTOPIC", "Covers Subtopic", weight=2.0)
+
+        # 9e. Interdependencies & Cross-Domain Overlapping Edges
+        cross_domain_edges = [
+            ("leaf:rust:ownership_borrowing", "domain:cybersecurity_cryptography_security_engineering", "MITIGATES_VULNERABILITIES", "Eliminates Memory Safety Vulnerabilities", 2.0),
+            ("leaf:rust:ownership_borrowing", "topic:concurrency", "ENABLES_SAFE_CONCURRENCY", "Fearless Concurrency (Send/Sync)", 2.0),
+            ("leaf:rust:variable_declaration", "concept:variable_syntax", "PARSES_VIA_ENGINE", "Syntax Engine Declaration Rules", 1.8),
+            ("leaf:rust:lifetimes", "domain:operating_systems", "PROVIDES_KERNEL_SAFETY", "Safe Kernel Execution without GC", 1.8),
+            ("leaf:rust:pattern_matching", "domain:algorithms", "APPLIES_PATTERN_ANALYSIS", "Exhaustive State Analysis", 1.5),
+            ("leaf:rust:error_handling", "domain:software_engineering", "ENFORCES_RELIABILITY", "Explicit Type-Safe Failure Domains", 1.8),
+            ("leaf:go:goroutines_channels", "topic:concurrency", "IMPLEMENTS_CSP", "Communicating Sequential Processes", 2.0),
+            ("leaf:go:goroutines_channels", "domain:cloud_distributed_computing", "POWERS_MICROSERVICES", "High Throughput Cloud Services", 1.8),
+            ("leaf:cpp:raii_memory", "domain:system_architecture", "MANAGES_HARDWARE_RESOURCES", "Hardware Determinism & Cache Control", 1.8),
+            ("leaf:javascript:event_loop", "topic:concurrency", "ASYNCHRONOUS_EVENT_LOOP", "Non-Blocking Asynchronous Concurrency", 1.8),
+            ("topic:tls_encryption", "domain:cybersecurity_cryptography_security_engineering", "APPLIES_CRYPTOGRAPHY", "End-to-End Cryptographic Security", 2.0),
+            ("topic:binary_exploitation", "domain:operating_systems", "TARGETS_MEMORY_SUBSYSTEM", "Exploits Stack/Heap Memory Layout", 2.0),
+            ("topic:virtual_memory", "domain:system_architecture", "HARDWARE_MMU_PAGING", "MMU & Page Table Traversal", 2.0),
+        ]
+
+        for src, tgt, rel, lbl, w in cross_domain_edges:
+            if src in self.nodes and tgt in self.nodes:
+                self.add_edge(src, tgt, rel, lbl, weight=w)
+
+        # 9f. Connect Rust questions to their corresponding leaf concepts
+        for nid, node in list(self.nodes.items()):
+            if node.get("type") == "Question":
+                qtext = (node.get("properties", {}).get("statement", "") + " " +
+                         node.get("properties", {}).get("question", "") + " " +
+                         node.get("properties", {}).get("prompt", "")).lower()
+                if "let mut" in qtext or ("let" in qtext and "shadowing" in qtext):
+                    self.add_edge(nid, "leaf:rust:variable_declaration", "TESTS_LEAF_CONCEPT", "Tests Variable Declaration")
+                elif "borrow checker" in qtext or "ownership" in qtext or ("copy" in qtext and "rust" in qtext):
+                    self.add_edge(nid, "leaf:rust:ownership_borrowing", "TESTS_LEAF_CONCEPT", "Tests Ownership & Borrowing")
+                elif "'static" in qtext or "lifetime" in qtext:
+                    self.add_edge(nid, "leaf:rust:lifetimes", "TESTS_LEAF_CONCEPT", "Tests Lifetimes")
+                elif "pattern matching" in qtext and "match" in qtext:
+                    self.add_edge(nid, "leaf:rust:pattern_matching", "TESTS_LEAF_CONCEPT", "Tests Pattern Matching")
+                elif "result<t" in qtext or "error propagation" in qtext or "? operator" in qtext:
+                    self.add_edge(nid, "leaf:rust:error_handling", "TESTS_LEAF_CONCEPT", "Tests Error Handling")
+
+        # 10. Compute Adjacency & Indices
         adjacency_outgoing: Dict[str, List[str]] = {nid: [] for nid in self.nodes}
         adjacency_incoming: Dict[str, List[str]] = {nid: [] for nid in self.nodes}
 

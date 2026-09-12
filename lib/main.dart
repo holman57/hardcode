@@ -1868,19 +1868,20 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     double maxWidth = 300,
   }) {
     return Container(
-      constraints: BoxConstraints(minWidth: 170, maxWidth: maxWidth),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      constraints: BoxConstraints(minWidth: 160, maxWidth: maxWidth),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color(0xFF1E293B),
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: timerColor.withOpacity(0.35),
+          color: timerColor.withOpacity(0.55),
           width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 4,
+            color: timerColor.withOpacity(0.12),
+            blurRadius: 8,
+            spreadRadius: 0,
             offset: const Offset(0, 1),
           ),
         ],
@@ -1897,15 +1898,16 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 children: [
                   Icon(
                     Icons.timer_outlined,
-                    size: 15,
+                    size: 14,
                     color: timerColor,
                   ),
                   const SizedBox(width: 5),
                   Text(
-                    _isTimerExpired ? "Time's up!" : 'Time Remaining',
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 11.5,
+                    _isTimerExpired ? "TIME'S UP" : 'TIME LEFT',
+                    style: GoogleFonts.jetBrainsMono(
+                      fontSize: 10.5,
                       fontWeight: FontWeight.w700,
+                      letterSpacing: 0.5,
                       color: timerColor,
                     ),
                   ),
@@ -1937,7 +1939,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 '${_remainingSeconds}s',
                 style: GoogleFonts.jetBrainsMono(
                   fontSize: 12.5,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w800,
                   color: timerColor,
                 ),
               ),
@@ -1950,7 +1952,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               value: (_remainingSeconds / _currentTimerCap.toDouble())
                   .clamp(0.0, 1.0),
               minHeight: 3.5,
-              backgroundColor: timerColor.withOpacity(0.16),
+              backgroundColor: const Color(0xFF0F172A),
               valueColor: AlwaysStoppedAnimation<Color>(timerColor),
             ),
           ),
@@ -1963,15 +1965,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
+        color: const Color(0xFF1E293B),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: theme.colorScheme.outline.withOpacity(0.18),
-          width: 1,
+          color: const Color(0x3338BDF8),
+          width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withOpacity(0.2),
             blurRadius: 4,
             offset: const Offset(0, 1),
           ),
@@ -1994,11 +1996,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           ),
           const SizedBox(height: 2),
           Text(
-            'Recent',
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 9.5,
-              fontWeight: FontWeight.w600,
-              color: theme.colorScheme.onSurface.withOpacity(0.65),
+            'RECENT',
+            style: GoogleFonts.jetBrainsMono(
+              fontSize: 9.0,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.8,
+              color: const Color(0xFF94A3B8),
             ),
           ),
         ],
@@ -2008,21 +2011,102 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   Widget _buildHeaderLevelBadge(ThemeData theme) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: theme.colorScheme.primaryContainer.withOpacity(0.85),
-        borderRadius: BorderRadius.circular(12),
+        color: const Color(0xFF1E293B),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: theme.colorScheme.outline.withOpacity(0.15),
-          width: 0.8,
+          color: const Color(0xFFFFB703),
+          width: 1.2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFFFFB703).withOpacity(0.18),
+            blurRadius: 8,
+            spreadRadius: 0,
+            offset: const Offset(0, 1),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.bolt_rounded,
+            size: 14,
+            color: Color(0xFFFFB703),
+          ),
+          const SizedBox(width: 4),
+          Text(
+            'LVL ${_userStats.level}',
+            style: GoogleFonts.jetBrainsMono(
+              fontSize: 11.5,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0.8,
+              color: const Color(0xFFFFB703),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeaderBrand({bool compact = false}) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(5),
+          decoration: BoxDecoration(
+            color: const Color(0xFF1E293B),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: const Color(0x4D38BDF8),
+              width: 1.0,
+            ),
+          ),
+          child: const Icon(
+            Icons.terminal_rounded,
+            size: 15,
+            color: Color(0xFF38BDF8),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          compact ? 'HARDCODE' : 'HARDCODE ACADEMY',
+          style: GoogleFonts.jetBrainsMono(
+            fontWeight: FontWeight.w900,
+            fontSize: compact ? 13.5 : 15.5,
+            letterSpacing: 1.2,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildHeaderDomainBadge() {
+    if (_language.isEmpty) return const SizedBox.shrink();
+    final displayText = _questionSubType.isNotEmpty
+        ? '$_language • $_questionSubType'
+        : _language;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1E293B),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: const Color(0x4D38BDF8),
+          width: 1.0,
         ),
       ),
       child: Text(
-        'Lvl ${_userStats.level}',
-        style: GoogleFonts.plusJakartaSans(
-          fontSize: 12,
-          fontWeight: FontWeight.w800,
-          color: theme.colorScheme.onPrimaryContainer,
+        displayText.toUpperCase(),
+        style: GoogleFonts.jetBrainsMono(
+          fontSize: 10.5,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.6,
+          color: const Color(0xFF38BDF8),
         ),
       ),
     );
@@ -2043,15 +2127,43 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     final scaffold = Scaffold(
       appBar: AppBar(
         toolbarHeight: 64,
-        backgroundColor: theme.colorScheme.inversePrimary,
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: const Icon(Icons.menu),
-            tooltip: 'Open Menu',
-            onPressed: () => Scaffold.of(context).openDrawer(),
+        elevation: 0,
+        backgroundColor: const Color(0xFF0F172A),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1.0),
+          child: Container(
+            color: const Color(0x2638BDF8),
+            height: 1.0,
           ),
         ),
-        titleSpacing: 0,
+        leading: Builder(
+          builder: (context) => Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Tooltip(
+              message: 'Open Menu',
+              child: InkWell(
+                onTap: () => Scaffold.of(context).openDrawer(),
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1E293B),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: const Color(0x3338BDF8),
+                      width: 1.0,
+                    ),
+                  ),
+                  child: const Icon(
+                    Icons.menu_rounded,
+                    color: Color(0xFF38BDF8),
+                    size: 20,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        titleSpacing: 4,
         title: LayoutBuilder(
           builder: (context, constraints) {
             final double availableWidth = constraints.maxWidth;
@@ -2059,78 +2171,39 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             // Compact layout for narrow mobile screens (< 560px)
             if (availableWidth < 560) {
               return Padding(
-                padding: const EdgeInsets.only(right: 12.0),
+                padding: const EdgeInsets.only(right: 8.0),
                 child: Row(
                   children: [
-                    Text(
-                      'HardCode',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15.5,
-                      ),
+                    _buildHeaderBrand(compact: true),
+                    const Spacer(),
+                    _buildHeaderTimer(
+                      timerColor: timerColor,
+                      theme: theme,
+                      maxWidth: 190,
                     ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: _buildHeaderTimer(
-                        timerColor: timerColor,
-                        theme: theme,
-                        maxWidth: 220,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 6),
                     _buildHeaderLevelBadge(theme),
                   ],
                 ),
               );
             }
 
-            // Medium layout for tablets / medium windows (560px - 800px)
-            if (availableWidth < 800) {
+            // Medium layout for tablets / medium windows (560px - 820px)
+            if (availableWidth < 820) {
               return Padding(
-                padding: const EdgeInsets.only(right: 14.0),
+                padding: const EdgeInsets.only(right: 12.0),
                 child: Row(
                   children: [
-                    Text(
-                      widget.title.isNotEmpty
-                          ? widget.title
-                          : 'HardCode Academy',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.5,
-                      ),
-                    ),
+                    _buildHeaderBrand(compact: false),
                     if (_language.isNotEmpty) ...[
                       const SizedBox(width: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 2.5,
-                        ),
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.primaryContainer
-                              .withOpacity(0.85),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: theme.colorScheme.outline
-                                .withOpacity(0.18),
-                            width: 1,
-                          ),
-                        ),
-                        child: Text(
-                          _language,
-                          style: GoogleFonts.plusJakartaSans(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                            color: theme.colorScheme.onPrimaryContainer,
-                          ),
-                        ),
-                      ),
+                      _buildHeaderDomainBadge(),
                     ],
                     const Spacer(),
                     _buildHeaderTimer(
                       timerColor: timerColor,
                       theme: theme,
-                      maxWidth: 240,
+                      maxWidth: 220,
                     ),
                     const SizedBox(width: 8),
                     _buildHeaderLevelBadge(theme),
@@ -2139,53 +2212,21 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               );
             }
 
-            // Full desktop layout matching the mockup screenshot
+            // Full desktop layout matching the cyber-HUD aesthetic
             return Padding(
-              padding: const EdgeInsets.only(right: 16.0),
+              padding: const EdgeInsets.only(right: 14.0),
               child: Row(
                 children: [
-                  Text(
-                    widget.title.isNotEmpty ? widget.title : 'HardCode Academy',
-                    style: GoogleFonts.plusJakartaSans(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  ),
+                  _buildHeaderBrand(compact: false),
                   if (_language.isNotEmpty) ...[
                     const SizedBox(width: 10),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 3.5,
-                      ),
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.primaryContainer
-                            .withOpacity(0.85),
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(
-                          color: theme.colorScheme.outline
-                              .withOpacity(0.18),
-                          width: 1,
-                        ),
-                      ),
-                      child: Text(
-                        _questionSubType.isNotEmpty
-                            ? '$_language • $_questionSubType'
-                            : _language,
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0.2,
-                          color: theme.colorScheme.onPrimaryContainer,
-                        ),
-                      ),
-                    ),
+                    _buildHeaderDomainBadge(),
                   ],
                   const Spacer(),
                   _buildHeaderTimer(
                     timerColor: timerColor,
                     theme: theme,
-                    maxWidth: 320,
+                    maxWidth: 280,
                   ),
                   const SizedBox(width: 10),
                   _buildHeaderSparkline(theme),
@@ -2197,13 +2238,59 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           },
         ),
         actions: [
-          IconButton(
-            key: const Key('btn_open_3d_kg'),
-            icon: const Icon(Icons.hub_rounded),
-            tooltip: 'Explore 3D Knowledge Graph',
-            onPressed: _openKnowledgeGraph3DScreen,
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: Tooltip(
+              message: 'Explore 3D Knowledge Graph',
+              child: Semantics(
+                button: true,
+                label: 'Explore 3D Knowledge Graph',
+                child: InkWell(
+                  key: const Key('btn_open_3d_kg'),
+                  onTap: _openKnowledgeGraph3DScreen,
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF1E293B),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: const Color(0xFF38BDF8),
+                        width: 1.2,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF38BDF8).withOpacity(0.22),
+                          blurRadius: 8,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.hub_rounded,
+                          size: 16,
+                          color: Color(0xFF38BDF8),
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          'GRAPH',
+                          style: GoogleFonts.jetBrainsMono(
+                            fontSize: 11.5,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 1.0,
+                            color: const Color(0xFF38BDF8),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
-          const SizedBox(width: 8),
         ],
       ),
       drawer: Drawer(

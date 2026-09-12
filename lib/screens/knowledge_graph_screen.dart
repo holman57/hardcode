@@ -35,6 +35,7 @@ class _KnowledgeGraph3DScreenState extends State<KnowledgeGraph3DScreen> {
     setState(() {
       _selectedNode = node;
     });
+    _viewKey.currentState?.focusOnNode(node.id, animate: true);
   }
 
   @override

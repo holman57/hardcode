@@ -155,6 +155,187 @@ class TestKnowledgeGraphExpansion(unittest.TestCase):
         self.assertEqual(se1["tier"], 1)
         self.assertEqual(sec_eng_service.normalize_topic("Security Engineering (STRIDE)"), "security_engineering")
 
+    def test_hierarchical_drilldown_to_rust_leaf_concepts(self):
+        """Verify the exact hierarchical chain:
+        Computer Science -> Programming Languages -> Rust -> Variable Declaration & Mutability
+        along with all core Rust leaf concepts."""
+        nodes_by_id = {n["id"]: n for n in self.kg_data.get("nodes", [])}
+        adj_out = self.kg_data.get("adjacency", {}).get("outgoing", {})
+        edges_by_id = {e["id"]: e for e in self.kg_data.get("edges", [])}
+
+        # 1. Computer Science domain exists
+        self.assertIn("domain:computer_science", nodes_by_id)
+
+        # 2. Programming Languages subtopic exists and is linked from Computer Science
+        self.assertIn("topic:programming_languages", nodes_by_id)
+        cs_targets = {edges_by_id[eid]["target"] for eid in adj_out.get("domain:computer_science", [])}
+        self.assertIn("topic:programming_languages", cs_targets)
+
+        # 3. Rust language exists and is linked from Programming Languages
+        self.assertIn("lang:rust", nodes_by_id)
+        pl_targets = {edges_by_id[eid]["target"] for eid in adj_out.get("topic:programming_languages", [])}
+        self.assertIn("lang:rust", pl_targets)
+
+        # 4. Granular Rust leaf concepts exist and are linked from Rust
+        rust_targets = {edges_by_id[eid]["target"] for eid in adj_out.get("lang:rust", [])}
+        expected_rust_leaves = [
+            "leaf:rust:variable_declaration",
+            "leaf:rust:ownership_borrowing",
+            "leaf:rust:lifetimes",
+            "leaf:rust:pattern_matching",
+            "leaf:rust:error_handling",
+        ]
+        for rleaf in expected_rust_leaves:
+            self.assertIn(rleaf, nodes_by_id, f"Missing expected leaf node '{rleaf}'")
+            self.assertIn(rleaf, rust_targets, f"Leaf node '{rleaf}' must be linked from 'lang:rust'")
+
+        # 5. Check variable declaration specifics
+        var_decl = nodes_by_id["leaf:rust:variable_declaration"]
+        self.assertIn("Variable Declaration", var_decl["label"])
+        props = var_decl.get("properties", {})
+        self.assertIn("let", props.get("keywords", []))
+        self.assertIn("let mut", props.get("keywords", []))
+        self.assertTrue(props.get("immutability_by_default"))
+
+    def test_cross_domain_overlapping_links(self):
+        """Verify cross-domain overlapping edges connecting granular concepts back across domains."""
+        edges = self.kg_data.get("edges", [])
+        edge_pairs = {(e["source"], e["target"]) for e in edges}
+
+        # Rust ownership -> Security Engineering (vulnerability elimination)
+        self.assertIn(
+            ("leaf:rust:ownership_borrowing", "domain:cybersecurity_cryptography_security_engineering"),
+            edge_pairs,
+            "Rust ownership must link to Security Engineering",
+        )
+
+        # Rust ownership -> Concurrency
+        self.assertIn(
+            ("leaf:rust:ownership_borrowing", "topic:concurrency"),
+            edge_pairs,
+            "Rust ownership must link to Concurrency",
+        )
+
+        # Rust variable declaration -> Variable syntax engine
+        self.assertIn(
+            ("leaf:rust:variable_declaration", "concept:variable_syntax"),
+            edge_pairs,
+            "Rust variable declaration must link to variable syntax engine",
+        )
+
+        # Rust lifetimes -> Operating Systems
+        self.assertIn(
+            ("leaf:rust:lifetimes", "domain:operating_systems"),
+            edge_pairs,
+            "Rust lifetimes must link to Operating Systems",
+        )
+
+        # Go goroutines -> Concurrency
+        self.assertIn(
+            ("leaf:go:goroutines_channels", "topic:concurrency"),
+            edge_pairs,
+            "Go goroutines must link to Concurrency",
+        )
+
+    def test_spatial_galaxy_clustering_properties(self):
+        """Verify 3D spatial properties:
+        - Master domains are separated across wide distances (R >= 350)
+        - Subtopics and leaf nodes are clustered tightly near their parents (distance < 75)"""
+        import math
+
+        # Parse progression nodes from progression_service.dart
+        prog_path = Path("lib/services/progression_service.dart")
+        self.assertTrue(prog_path.exists())
+        with open(prog_path, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        import re
+        # Find TopicProgressionNode entries and their position3D
+        node_pattern = re.compile(
+            r"id:\s*'([^']+)'[\s\S]*?position3D:\s*const\s*Vector3D\(\s*(-?[\d.]+)\s*,\s*(-?[\d.]+)\s*,\s*(-?[\d.]+)\s*\)",
+            re.MULTILINE,
+        )
+        positions = {}
+        for m in node_pattern.finditer(content):
+            nid, x, y, z = m.group(1), float(m.group(2)), float(m.group(3)), float(m.group(4))
+            positions[nid] = (x, y, z)
+
+        def dist(p1, p2):
+            return math.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2 + (p1[2] - p2[2])**2)
+
+        # 1. Master domains are spread far apart
+        master_domains = [
+            "domain:networking",
+            "domain:ai_ml",
+            "domain:operating_systems",
+            "domain:cloud_computing",
+            "domain:security_engineering",
+            "domain:system_architecture",
+            "domain:databases",
+            "domain:software_engineering",
+        ]
+        origin = (0.0, 0.0, 0.0)
+        for md in master_domains:
+            self.assertIn(md, positions)
+            d = dist(positions[md], origin)
+            self.assertGreaterEqual(d, 350.0, f"Master domain '{md}' should be >= 350 from core, got {d:.1f}")
+
+        # 2. Rust leaf nodes are clustered tightly around Rust
+        self.assertIn("lang:rust", positions)
+        rust_pos = positions["lang:rust"]
+        rust_leaves = [
+            "leaf:rust:variable_declaration",
+            "leaf:rust:ownership_borrowing",
+            "leaf:rust:lifetimes",
+            "leaf:rust:pattern_matching",
+            "leaf:rust:error_handling",
+        ]
+        for rl in rust_leaves:
+            self.assertIn(rl, positions)
+            d = dist(positions[rl], rust_pos)
+            self.assertLessEqual(d, 65.0, f"Rust leaf '{rl}' should be clustered <= 65 from Rust, got {d:.1f}")
+
+    def test_interactive_node_traversal_simulation(self):
+        """Simulate human learner graph traversal through the hierarchical drilldown path:
+        Computer Science -> Programming Languages -> Rust -> Variable Declaration
+        -> Rust Ownership -> Security Engineering, unlocking knowledge nodes sequentially."""
+        from python_driver import PythonKnowledgeGraph
+
+        pkg = PythonKnowledgeGraph(self.kg_data)
+        self.assertGreaterEqual(len(pkg.nodes), 600)
+
+        # Step 1: Start at Computer Science
+        cs_node = pkg.get_node("domain:computer_science")
+        self.assertIsNotNone(cs_node)
+        cs_neighbors = pkg.get_outgoing_neighbors("domain:computer_science")
+        self.assertIn("topic:programming_languages", cs_neighbors)
+
+        # Step 2: Traverse to Programming Languages
+        pl_node = pkg.get_node("topic:programming_languages")
+        self.assertIsNotNone(pl_node)
+        pl_neighbors = pkg.get_outgoing_neighbors("topic:programming_languages")
+        self.assertIn("lang:rust", pl_neighbors)
+
+        # Step 3: Traverse to Rust
+        rust_node = pkg.get_node("lang:rust")
+        self.assertIsNotNone(rust_node)
+        rust_neighbors = pkg.get_outgoing_neighbors("lang:rust")
+        self.assertIn("leaf:rust:variable_declaration", rust_neighbors)
+        self.assertIn("leaf:rust:ownership_borrowing", rust_neighbors)
+
+        # Step 4: Traverse to Leaf: Rust Variable Declaration
+        var_decl_node = pkg.get_node("leaf:rust:variable_declaration")
+        self.assertIsNotNone(var_decl_node)
+        self.assertEqual(var_decl_node["category"], "Rust")
+
+        # Step 5: Follow cross-domain link from Ownership to Security Engineering
+        ownership_node = pkg.get_node("leaf:rust:ownership_borrowing")
+        self.assertIsNotNone(ownership_node)
+        ownership_neighbors = pkg.get_outgoing_neighbors("leaf:rust:ownership_borrowing")
+        self.assertIn("domain:cybersecurity_cryptography_security_engineering", ownership_neighbors)
+        self.assertIn("topic:concurrency", ownership_neighbors)
+
 
 if __name__ == "__main__":
     unittest.main()
+

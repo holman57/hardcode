@@ -29,14 +29,22 @@ class KnowledgeGraph3DView extends StatefulWidget {
 }
 
 class KnowledgeGraph3DViewState extends State<KnowledgeGraph3DView>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   double _yaw = 0.45;
   double _pitch = -0.25;
   double _zoom = 0.85;
   Offset _panOffset = Offset.zero;
 
   Offset? _lastDragPosition;
-  late AnimationController _animationController;
+  late AnimationController _rotationController;
+  late AnimationController _pulseController;
+  late AnimationController _flightController;
+  late Animation<double> _flightCurve;
+
+  double _startYaw = 0.45, _targetYaw = 0.45;
+  double _startPitch = -0.25, _targetPitch = -0.25;
+  double _startZoom = 0.85, _targetZoom = 0.85;
+  Offset _startPan = Offset.zero, _targetPan = Offset.zero;
 
   // Stored projected positions for hit testing
   final Map<String, _ProjectedNode> _projectedNodes = {};
@@ -44,7 +52,7 @@ class KnowledgeGraph3DViewState extends State<KnowledgeGraph3DView>
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
+    _rotationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 20),
     )..addListener(() {
@@ -55,22 +63,69 @@ class KnowledgeGraph3DViewState extends State<KnowledgeGraph3DView>
           });
         }
       });
-    _animationController.repeat();
+    _rotationController.repeat();
+
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2400),
+    )..addListener(() {
+        setState(() {}); // Repaint shockwaves & orbital satellites
+      });
+    _pulseController.repeat();
+
+    _flightController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 700),
+    )..addListener(() {
+        setState(() {
+          final t = _flightCurve.value;
+          _yaw = _startYaw + (_targetYaw - _startYaw) * t;
+          _pitch = _startPitch + (_targetPitch - _startPitch) * t;
+          _zoom = _startZoom + (_targetZoom - _startZoom) * t;
+          _panOffset = Offset.lerp(_startPan, _targetPan, t)!;
+        });
+      });
+    _flightCurve = CurvedAnimation(
+      parent: _flightController,
+      curve: Curves.easeOutCubic,
+    );
+
+    if (widget.selectedNodeId != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        focusOnNode(widget.selectedNodeId!, animate: false);
+      });
+    }
+  }
+
+  @override
+  void didUpdateWidget(KnowledgeGraph3DView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.selectedNodeId != oldWidget.selectedNodeId &&
+        widget.selectedNodeId != null) {
+      focusOnNode(widget.selectedNodeId!, animate: true);
+    }
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _rotationController.dispose();
+    _pulseController.dispose();
+    _flightController.dispose();
     super.dispose();
   }
 
   void resetCamera() {
-    setState(() {
-      _yaw = 0.45;
-      _pitch = -0.25;
-      _zoom = 1.0;
-      _panOffset = Offset.zero;
-    });
+    _startYaw = _yaw;
+    _startPitch = _pitch;
+    _startZoom = _zoom;
+    _startPan = _panOffset;
+
+    _targetYaw = 0.45;
+    _targetPitch = -0.25;
+    _targetZoom = 0.85;
+    _targetPan = Offset.zero;
+
+    _flightController.forward(from: 0.0);
   }
 
   void zoomIn() {
@@ -85,21 +140,46 @@ class KnowledgeGraph3DViewState extends State<KnowledgeGraph3DView>
     });
   }
 
-  void focusOnNode(String nodeId) {
+  void focusOnNode(String nodeId, {bool animate = true}) {
     final node = widget.nodes[nodeId];
     if (node == null) return;
 
     final pos = node.position3D;
-    // Calculate angle towards node
-    final targetYaw = atan2(pos.x, pos.z) + pi;
-    final targetPitch = -atan2(pos.y, sqrt(pos.x * pos.x + pos.z * pos.z));
+    double tYaw = atan2(pos.x, pos.z) + pi;
+    double tPitch = -atan2(pos.y, sqrt(pos.x * pos.x + pos.z * pos.z));
+    tPitch = tPitch.clamp(-pi / 3, pi / 3);
+    const double tZoom = 1.25;
+    const Offset tPan = Offset.zero;
 
-    setState(() {
-      _yaw = targetYaw;
-      _pitch = targetPitch.clamp(-pi / 3, pi / 3);
-      _panOffset = Offset.zero;
-      _zoom = 1.25;
-    });
+    if (!animate) {
+      setState(() {
+        _yaw = tYaw;
+        _pitch = tPitch;
+        _zoom = tZoom;
+        _panOffset = tPan;
+      });
+      return;
+    }
+
+    _startYaw = _yaw;
+    _startPitch = _pitch;
+    _startZoom = _zoom;
+    _startPan = _panOffset;
+
+    // Normalize yaw delta to [-pi, pi] for shortest rotational flight path
+    while (tYaw - _startYaw > pi) {
+      tYaw -= 2 * pi;
+    }
+    while (tYaw - _startYaw < -pi) {
+      tYaw += 2 * pi;
+    }
+
+    _targetYaw = tYaw;
+    _targetPitch = tPitch;
+    _targetZoom = tZoom;
+    _targetPan = tPan;
+
+    _flightController.forward(from: 0.0);
   }
 
   void _handleTapUp(TapUpDetails details) {
@@ -120,8 +200,11 @@ class KnowledgeGraph3DViewState extends State<KnowledgeGraph3DView>
       }
     }
 
-    if (bestMatch != null && widget.onNodeSelected != null) {
-      widget.onNodeSelected!(bestMatch);
+    if (bestMatch != null) {
+      focusOnNode(bestMatch.id, animate: true);
+      if (widget.onNodeSelected != null) {
+        widget.onNodeSelected!(bestMatch);
+      }
     }
   }
 
@@ -153,6 +236,7 @@ class KnowledgeGraph3DViewState extends State<KnowledgeGraph3DView>
           pitch: _pitch,
           zoom: _zoom,
           panOffset: _panOffset,
+          pulseValue: _pulseController.value,
           viewMode: widget.viewMode,
           onProjectsCalculated: (projected) {
             _projectedNodes.clear();
@@ -188,6 +272,7 @@ class _KnowledgeGraph3DPainter extends CustomPainter {
   final double pitch;
   final double zoom;
   final Offset panOffset;
+  final double pulseValue;
   final Graph3DViewMode viewMode;
   final ValueChanged<Map<String, _ProjectedNode>> onProjectsCalculated;
 
@@ -198,6 +283,7 @@ class _KnowledgeGraph3DPainter extends CustomPainter {
     required this.pitch,
     required this.zoom,
     required this.panOffset,
+    required this.pulseValue,
     required this.viewMode,
     required this.onProjectsCalculated,
   });
@@ -359,8 +445,46 @@ class _KnowledgeGraph3DPainter extends CustomPainter {
       baseColor = Color(int.parse(node.colorHex.replaceFirst('#', '0xFF')));
     } catch (_) {}
 
-    // 1. Outer Aura Glow
+    // 1. Outer Aura Glow, Radiating Shockwaves & Spinning Orbital Satellites
     if (isSelected) {
+      // 1a. Radiating Shockwave Ripples (expanding concentric energy waves)
+      for (int ring = 0; ring < 3; ring++) {
+        final double ringProgress = (pulseValue + ring * 0.33) % 1.0;
+        final double ringRadius = r + 4.0 + ringProgress * 42.0;
+        final double ringOpacity = ((1.0 - ringProgress) * 0.7).clamp(0.0, 1.0);
+        final ringPaint = Paint()
+          ..color = Colors.cyanAccent.withOpacity(ringOpacity)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = (2.4 * (1.0 - ringProgress)).clamp(0.6, 2.8);
+        canvas.drawCircle(pos, ringRadius, ringPaint);
+      }
+
+      // 1b. Spinning Orbital Satellites (beacons revolving on inclined 3D plane)
+      final double orbitAngle = pulseValue * 2 * pi;
+      const int satCount = 3;
+      final double orbitRadiusX = r + 18.0;
+      final double orbitRadiusY = (r + 18.0) * 0.45; // 3D tilted ellipse perspective
+
+      for (int s = 0; s < satCount; s++) {
+        final double angle = orbitAngle + s * (2 * pi / satCount);
+        final double satX = pos.dx + orbitRadiusX * cos(angle);
+        final double satY = pos.dy + orbitRadiusY * sin(angle);
+        final Offset satPos = Offset(satX, satY);
+
+        // Satellite glowing aura
+        final satGlow = Paint()
+          ..color = Colors.amberAccent.withOpacity(0.5)
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
+        canvas.drawCircle(satPos, 5.0, satGlow);
+
+        // Satellite core
+        final satPaint = Paint()
+          ..color = (s == 0) ? Colors.cyanAccent : Colors.amberAccent
+          ..style = PaintingStyle.fill;
+        canvas.drawCircle(satPos, 2.5, satPaint);
+      }
+
+      // 1c. Selected Central Aura Glow
       final auraPaint = Paint()
         ..color = Colors.amberAccent.withOpacity(0.4)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 16);

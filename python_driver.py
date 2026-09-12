@@ -155,6 +155,12 @@ class PythonKnowledgeGraph(dict):
         edge_ids = self.adjacency.get("incoming", {}).get(node_id, [])
         return [self.edges[eid] for eid in edge_ids if eid in self.edges]
 
+    def get_outgoing_neighbors(self, node_id: str) -> List[str]:
+        return [e["target"] for e in self.get_outgoing(node_id)]
+
+    def get_incoming_neighbors(self, node_id: str) -> List[str]:
+        return [e["source"] for e in self.get_incoming(node_id)]
+
     def get_nodes_by_type(self, node_type: str) -> List[Dict[str, Any]]:
         node_ids = self.indices.get("by_type", {}).get(node_type, [])
         return [self.nodes[nid] for nid in node_ids if nid in self.nodes]
@@ -321,7 +327,8 @@ def run_automated_validation() -> bool:
             assert corr and match_c == tot, f"Matching question failed: {m['prompt']}"
         # Sequencing
         for s in q_dict.get("Sequencing", []):
-            corr, exp = evaluate_sequencing_question(s, s["ordered_sequence"])
+            seq = s.get("ordered_sequence", s.get("sequence", []))
+            corr, exp = evaluate_sequencing_question(s, seq)
             assert corr, f"Sequencing question failed: {s['prompt']}"
         # Sorting
         for sc in q_dict.get("Sorting-Classification", []):
@@ -331,7 +338,8 @@ def run_automated_validation() -> bool:
         for mc in q_dict.get("Multi-Choice", []):
             corr, exp = evaluate_multi_choice_question(mc, mc["correct_index"])
             assert corr, f"MC question failed correct evaluation: {mc['question']}"
-            wrong_idx = (mc["correct_index"] + 1) % len(mc["choices"])
+            choices = mc.get("choices", mc.get("options", []))
+            wrong_idx = (mc["correct_index"] + 1) % len(choices)
             wrong, _ = evaluate_multi_choice_question(mc, wrong_idx)
             assert not wrong, f"MC question failed incorrect evaluation: {mc['question']}"
     print("[OK] Verified mathematical correctness of all question evaluators")

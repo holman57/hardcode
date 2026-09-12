@@ -1,12 +1,12 @@
 # HardCode
 
-> **Security Engineering & Automated Versioning Edition (v1.3.0)**  
+> **Security Engineering & Automated Versioning Edition (v1.4.0)**  
 > *An automated, low-latency syntax memorization and multidimensional Knowledge Graph engine for computer science pedagogy and polyglot software engineering.*
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-success?style=for-the-badge&logo=github)](https://holman57.github.io/hardcode/)
 [![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
-[![Version](https://img.shields.io/badge/Version-v1.3.0-blue?style=for-the-badge)](https://github.com/holman57/hardcode)
+[![Version](https://img.shields.io/badge/Version-v1.4.0-blue?style=for-the-badge)](https://github.com/holman57/hardcode)
 [![Deploy Status](https://img.shields.io/badge/Deployment-Callisto%20VM%20%2B%20GH%20Pages-orange?style=for-the-badge)](https://holman57.github.io/hardcode/)
 
 ---
@@ -15,7 +15,13 @@
 
 **HardCode** is an interactive, high-velocity knowledge verification and cognitive training engine engineered to establish instant recall and syntax fluency across **18 programming languages** and the foundational disciplines of **Computer Science and Systems Engineering**.
 
-The application models pedagogical concepts as an interactive, directed **Knowledge Graph** comprising **619 vertices**, **713 directed relational edges**, and **418 interactive multi-modal questions**. HardCode continuously evaluates learner proficiency, detects conceptual struggle patterns via an **adaptive multi-tier explanation service**, and provides visual feedback through a **procedural motion graphics engine**.
+The application models pedagogical concepts as an interactive, directed **Knowledge Graph** comprising **658 vertices**, **786 directed relational edges**, and **430 interactive multi-modal questions**. HardCode features:
+- **Cyber-HUD Top Navigation**: Redesigned high-contrast dark slate (`#0F172A`/`#1E293B`) header with neon glowing accents, dynamic countdown progress bar, real-time accuracy sparkline, level badge, and dedicated 3D Knowledge Graph launcher.
+- **Granular Hierarchical Expansion**: Full drill-down ontology from Galactic Core master domains down to granular leaf concepts (e.g. `Computer Science` $\rightarrow$ `Programming Languages` $\rightarrow$ `Rust` $\rightarrow$ `Variable Declaration & Mutability`, `Borrow Checker & Ownership Primitives`, `Lifetimes`, `Pattern Matching`, `Error Handling`).
+- **Spatial Galaxy Clustering**: 3D sector separation where master domains are positioned across deep orbital distances ($R \ge 350$), while similar subtopics and leaf concepts cluster tightly ($r \le 65$) around their respective domain anchors.
+- **Interactive 3D Node Click Animations**: Tapping nodes triggers smooth camera flight transitions, multi-ring radiating shockwaves, and rotating orbital satellites.
+- **Adaptive Multi-Tier Explanation Service**: Throttled pedagogical intervention scaling from Concept Refresh hints to Architectural Deep Dives.
+- **Procedural Motion Graphics**: High-energy celebratory motion graphics for streaks, level transitions, and milestones.
 
 The live production deployment is accessible at: [https://holman57.github.io/hardcode/](https://holman57.github.io/hardcode/)
 
