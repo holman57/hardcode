@@ -1,16 +1,16 @@
 {
-  "version": 13,
-  "graph_version": "1.3.0-graph",
+  "version": 14,
+  "graph_version": "1.4.0-graph",
   "schema": "knowledge-graph",
   "metadata": {
     "name": "HardCode Knowledge Graph",
     "schema": "knowledge-graph",
-    "version": 13,
-    "graph_version": "1.3.0-graph",
+    "version": 14,
+    "graph_version": "1.4.0-graph",
     "description": "Structured graph database powering syntax flashcards, CS curriculum, and visual navigation.",
-    "node_count": 619,
-    "edge_count": 713,
-    "question_count": 418,
+    "node_count": 658,
+    "edge_count": 786,
+    "question_count": 430,
     "created_at": "2026-09-10T21:30:00Z",
     "types": [
       "Category",
@@ -19,10 +19,12 @@
       "CurriculumDomain",
       "Database",
       "Language",
+      "LeafConcept",
       "OperatingSystem",
       "OperatingSystemGroup",
       "Paradigm",
       "Question",
+      "SubTopic",
       "SyntaxCategory",
       "SyntaxEngine",
       "SystemRoot"
@@ -32,6 +34,7 @@
       "database",
       "domain",
       "language",
+      "leaf",
       "os",
       "paradigm",
       "question_matching",
@@ -51,7 +54,7 @@
       "category": "Root",
       "properties": {
         "description": "Central root for all programming languages, system paradigms, and CS curriculum.",
-        "original_version": 13
+        "original_version": 14
       },
       "visualization": {
         "group": "root",
@@ -8771,6 +8774,106 @@
       }
     },
     {
+      "id": "q:tf:programming_languages_compilers_11",
+      "label": "In Rust, variables declared with `let` are...",
+      "type": "Question",
+      "category": "True-False",
+      "properties": {
+        "domain": "Programming Languages & Compilers",
+        "sub_type": "True-False",
+        "statement": "In Rust, variables declared with `let` are immutable by default and require `let mut` for reassignment.",
+        "is_true": true,
+        "explanation": "Rust variables are immutable by default to ensure safety and avoid race conditions. Mutability must be explicitly declared with `mut`."
+      },
+      "visualization": {
+        "group": "question_tf",
+        "color": "#14B8A6",
+        "size": 16,
+        "level": 3,
+        "icon": "check_circle"
+      }
+    },
+    {
+      "id": "q:tf:programming_languages_compilers_12",
+      "label": "In Rust, variable shadowing with `let x = ...",
+      "type": "Question",
+      "category": "True-False",
+      "properties": {
+        "domain": "Programming Languages & Compilers",
+        "sub_type": "True-False",
+        "statement": "In Rust, variable shadowing with `let x = ...` is forbidden by the compiler if variable `x` already exists in scope.",
+        "is_true": false,
+        "explanation": "Rust explicitly supports variable shadowing using `let`, creating a new binding that can even change the variable's type."
+      },
+      "visualization": {
+        "group": "question_tf",
+        "color": "#14B8A6",
+        "size": 16,
+        "level": 3,
+        "icon": "check_circle"
+      }
+    },
+    {
+      "id": "q:tf:programming_languages_compilers_13",
+      "label": "Rust's borrow checker permits multiple sim...",
+      "type": "Question",
+      "category": "True-False",
+      "properties": {
+        "domain": "Programming Languages & Compilers",
+        "sub_type": "True-False",
+        "statement": "Rust's borrow checker permits multiple simultaneous mutable references (`&mut T`) to the same data within the same scope.",
+        "is_true": false,
+        "explanation": "Rust enforces the aliasing XOR mutability rule: you can have many shared references (`&T`) OR exactly one mutable reference (`&mut T`), never both."
+      },
+      "visualization": {
+        "group": "question_tf",
+        "color": "#14B8A6",
+        "size": 16,
+        "level": 3,
+        "icon": "check_circle"
+      }
+    },
+    {
+      "id": "q:tf:programming_languages_compilers_14",
+      "label": "In Rust, the `'static` lifetime indicates ...",
+      "type": "Question",
+      "category": "True-False",
+      "properties": {
+        "domain": "Programming Languages & Compilers",
+        "sub_type": "True-False",
+        "statement": "In Rust, the `'static` lifetime indicates that the referenced data lives for the entire execution duration of the program.",
+        "is_true": true,
+        "explanation": "The `'static` lifetime specifier signifies that data (such as string literals) lives for the entire duration of the running program."
+      },
+      "visualization": {
+        "group": "question_tf",
+        "color": "#14B8A6",
+        "size": 16,
+        "level": 3,
+        "icon": "check_circle"
+      }
+    },
+    {
+      "id": "q:tf:programming_languages_compilers_15",
+      "label": "In Rust, pattern matching with `match` mus...",
+      "type": "Question",
+      "category": "True-False",
+      "properties": {
+        "domain": "Programming Languages & Compilers",
+        "sub_type": "True-False",
+        "statement": "In Rust, pattern matching with `match` must be exhaustive, requiring all possible enum variants or values to be covered.",
+        "is_true": true,
+        "explanation": "The Rust compiler strictly requires exhaustive pattern matching to ensure no unhandled variant can trigger undefined behavior."
+      },
+      "visualization": {
+        "group": "question_tf",
+        "color": "#14B8A6",
+        "size": 16,
+        "level": 3,
+        "icon": "check_circle"
+      }
+    },
+    {
       "id": "q:matching:programming_languages_compilers_1",
       "label": "Match iconic programming language features...",
       "type": "Question",
@@ -8847,6 +8950,30 @@
       }
     },
     {
+      "id": "q:matching:programming_languages_compilers_4",
+      "label": "Match the Rust variable and memory constru...",
+      "type": "Question",
+      "category": "Matching",
+      "properties": {
+        "domain": "Programming Languages & Compilers",
+        "sub_type": "Matching",
+        "prompt": "Match the Rust variable and memory construct to its guarantee:",
+        "pairs": {
+          "let mut": "Permits in-place reassignment and modification",
+          "&T (Shared Ref)": "Permits concurrent read-only aliasing",
+          "&mut T (Unique Ref)": "Guarantees exclusive mutable access with zero aliasing",
+          "'a (Lifetime)": "Proves references never outlive target allocations"
+        }
+      },
+      "visualization": {
+        "group": "question_matching",
+        "color": "#F97316",
+        "size": 16,
+        "level": 3,
+        "icon": "compare_arrows"
+      }
+    },
+    {
       "id": "q:sequencing:programming_languages_compilers_1",
       "label": "Order the stages of a standard ahead-of-ti...",
       "type": "Question",
@@ -8902,6 +9029,38 @@
           "Semantic Analysis verifying types, scopes, and symbol tables",
           "Intermediate Representation (IR) generation in SSA form",
           "Target machine code generation and hardware register allocation"
+        ]
+      },
+      "visualization": {
+        "group": "question_sequencing",
+        "color": "#A855F7",
+        "size": 16,
+        "level": 3,
+        "icon": "format_list_numbered"
+      }
+    },
+    {
+      "id": "q:sequencing:programming_languages_compilers_3",
+      "label": "Order the lifecycle phases of a Rust varia...",
+      "type": "Question",
+      "category": "Sequencing",
+      "properties": {
+        "domain": "Programming Languages & Compilers",
+        "sub_type": "Sequencing",
+        "prompt": "Order the lifecycle phases of a Rust variable under borrow checking rules:",
+        "sequence": [
+          "1. Stack allocation initialized with single owner binding",
+          "2. Shared immutable references (&T) created for reading",
+          "3. Shared references go out of scope releasing read locks",
+          "4. Exclusive mutable reference (&mut T) acquired and used",
+          "5. Owner reaches end of scope and value drops deterministically"
+        ],
+        "ordered_sequence": [
+          "1. Stack allocation initialized with single owner binding",
+          "2. Shared immutable references (&T) created for reading",
+          "3. Shared references go out of scope releasing read locks",
+          "4. Exclusive mutable reference (&mut T) acquired and used",
+          "5. Owner reaches end of scope and value drops deterministically"
         ]
       },
       "visualization": {
@@ -9017,6 +9176,41 @@
             "JavaScript",
             "Ruby"
           ]
+        }
+      },
+      "visualization": {
+        "group": "question_sorting",
+        "color": "#E11D48",
+        "size": 16,
+        "level": 3,
+        "icon": "dashboard_customize"
+      }
+    },
+    {
+      "id": "q:sorting:programming_languages_compilers_4",
+      "label": "Classify the Rust constructs into Variable...",
+      "type": "Question",
+      "category": "Sorting-Classification",
+      "properties": {
+        "domain": "Programming Languages & Compilers",
+        "sub_type": "Sorting-Classification",
+        "prompt": "Classify the Rust constructs into Variable & Mutability, Ownership & Borrowing, or Error Handling:",
+        "categories": [
+          "Variable & Mutability",
+          "Ownership & Borrowing",
+          "Error Handling"
+        ],
+        "items": {
+          "let mut counter: u32 = 0": "Variable & Mutability",
+          "const MAX_SIZE: usize = 4096": "Variable & Mutability",
+          "Variable Shadowing let x = x + 1": "Variable & Mutability",
+          "Move Semantics let s2 = s1": "Ownership & Borrowing",
+          "Shared Borrow &data": "Ownership & Borrowing",
+          "Unique Borrow &mut data": "Ownership & Borrowing",
+          "Lifetime Specifier 'a": "Ownership & Borrowing",
+          "Result Ok(val) / Err(err)": "Error Handling",
+          "Question Mark Operator ?": "Error Handling",
+          "Option Some(val) / None": "Error Handling"
         }
       },
       "visualization": {
@@ -9150,6 +9344,138 @@
         "correct": "Every variable is assigned exactly once, simplifying dead code elimination, constant propagation, and register allocation",
         "correct_index": 0,
         "explanation": "In SSA form, variables are renamed per assignment (e.g. x1, x2), turning data flow analysis into clean graph algorithms."
+      },
+      "visualization": {
+        "group": "question_mc",
+        "color": "#10B981",
+        "size": 16,
+        "level": 3,
+        "icon": "quiz"
+      }
+    },
+    {
+      "id": "q:mc:programming_languages_compilers_5",
+      "label": "Which Rust statement correctly declares a ...",
+      "type": "Question",
+      "category": "Multi-Choice",
+      "properties": {
+        "domain": "Programming Languages & Compilers",
+        "sub_type": "Multi-Choice",
+        "question": "Which Rust statement correctly declares a mutable 32-bit signed integer initialized to 42?",
+        "options": [
+          "let mut count: i32 = 42;",
+          "var mut count: int = 42;",
+          "mut let count: i32 = 42;",
+          "val count: i32 = 42;"
+        ],
+        "choices": [
+          "let mut count: i32 = 42;",
+          "var mut count: int = 42;",
+          "mut let count: i32 = 42;",
+          "val count: i32 = 42;"
+        ],
+        "correct": "let mut count: i32 = 42;",
+        "correct_index": 0,
+        "explanation": "Rust uses `let mut variable_name: Type = value;` to bind mutable typed variables on the stack."
+      },
+      "visualization": {
+        "group": "question_mc",
+        "color": "#10B981",
+        "size": 16,
+        "level": 3,
+        "icon": "quiz"
+      }
+    },
+    {
+      "id": "q:mc:programming_languages_compilers_6",
+      "label": "What occurs in Rust when a value without t...",
+      "type": "Question",
+      "category": "Multi-Choice",
+      "properties": {
+        "domain": "Programming Languages & Compilers",
+        "sub_type": "Multi-Choice",
+        "question": "What occurs in Rust when a value without the `Copy` trait is assigned to another variable?",
+        "options": [
+          "Ownership is moved to the new variable, invalidating the original binding",
+          "A shallow bitwise copy is made and both variables remain fully accessible",
+          "The runtime performs an automatic deep heap clone",
+          "A compilation error occurs because non-Copy values cannot be assigned"
+        ],
+        "choices": [
+          "Ownership is moved to the new variable, invalidating the original binding",
+          "A shallow bitwise copy is made and both variables remain fully accessible",
+          "The runtime performs an automatic deep heap clone",
+          "A compilation error occurs because non-Copy values cannot be assigned"
+        ],
+        "correct": "Ownership is moved to the new variable, invalidating the original binding",
+        "correct_index": 0,
+        "explanation": "In Rust, assignment of non-Copy types transfers ownership via move semantics, preventing use-after-free and double-free bugs."
+      },
+      "visualization": {
+        "group": "question_mc",
+        "color": "#10B981",
+        "size": 16,
+        "level": 3,
+        "icon": "quiz"
+      }
+    },
+    {
+      "id": "q:mc:programming_languages_compilers_7",
+      "label": "What does the `?` operator do when applied...",
+      "type": "Question",
+      "category": "Multi-Choice",
+      "properties": {
+        "domain": "Programming Languages & Compilers",
+        "sub_type": "Multi-Choice",
+        "question": "What does the `?` operator do when applied to a `Result<T, E>` expression in Rust?",
+        "options": [
+          "Unwraps `Ok(val)` or returns early with `Err(err)` from the current function",
+          "Suppresses runtime panics and converts any error into `None`",
+          "Immediately aborts the process with an error code",
+          "Asynchronously awaits the completion of an I/O future"
+        ],
+        "choices": [
+          "Unwraps `Ok(val)` or returns early with `Err(err)` from the current function",
+          "Suppresses runtime panics and converts any error into `None`",
+          "Immediately aborts the process with an error code",
+          "Asynchronously awaits the completion of an I/O future"
+        ],
+        "correct": "Unwraps `Ok(val)` or returns early with `Err(err)` from the current function",
+        "correct_index": 0,
+        "explanation": "The `?` operator provides syntactic sugar for error propagation, extracting `Ok` or immediately returning `Err`."
+      },
+      "visualization": {
+        "group": "question_mc",
+        "color": "#10B981",
+        "size": 16,
+        "level": 3,
+        "icon": "quiz"
+      }
+    },
+    {
+      "id": "q:mc:programming_languages_compilers_8",
+      "label": "Why does Rust's borrow checker enforce exc...",
+      "type": "Question",
+      "category": "Multi-Choice",
+      "properties": {
+        "domain": "Programming Languages & Compilers",
+        "sub_type": "Multi-Choice",
+        "question": "Why does Rust's borrow checker enforce exclusive access for mutable references (`&mut T`)?",
+        "options": [
+          "To eliminate data races and pointer aliasing bugs at compile time without garbage collection",
+          "To optimize L1 cache coherency across different CPU cores",
+          "To enable automatic LLVM function inlining",
+          "To minimize binary size by stripping debug symbols"
+        ],
+        "choices": [
+          "To eliminate data races and pointer aliasing bugs at compile time without garbage collection",
+          "To optimize L1 cache coherency across different CPU cores",
+          "To enable automatic LLVM function inlining",
+          "To minimize binary size by stripping debug symbols"
+        ],
+        "correct": "To eliminate data races and pointer aliasing bugs at compile time without garbage collection",
+        "correct_index": 0,
+        "explanation": "Exclusive mutable references prevent data races (concurrent read/write) and iterator invalidation at compile time."
       },
       "visualization": {
         "group": "question_mc",
@@ -15262,6 +15588,466 @@
         "level": 3,
         "icon": "quiz"
       }
+    },
+    {
+      "id": "topic:programming_languages",
+      "label": "Programming Languages",
+      "type": "SubTopic",
+      "category": "Computer Science",
+      "properties": {
+        "description": "Type systems, operational semantics, memory safety models, and compilation targets."
+      },
+      "visualization": {
+        "group": "concept",
+        "color": "#F59E0B",
+        "size": 20,
+        "level": 2,
+        "icon": "lightbulb"
+      }
+    },
+    {
+      "id": "leaf:rust:variable_declaration",
+      "label": "Variable Declaration & Mutability",
+      "type": "LeafConcept",
+      "category": "Rust",
+      "properties": {
+        "keywords": [
+          "let",
+          "let mut",
+          "const"
+        ],
+        "immutability_by_default": true,
+        "shadowing": true,
+        "description": "Immutable by default bindings via `let`, explicit mutable bindings with `mut`, compile-time constants, and lexical variable shadowing."
+      },
+      "visualization": {
+        "group": "leaf",
+        "color": "#EA580C",
+        "size": 18,
+        "level": 3,
+        "icon": "grain"
+      }
+    },
+    {
+      "id": "leaf:rust:ownership_borrowing",
+      "label": "Borrow Checker & Ownership Primitives",
+      "type": "LeafConcept",
+      "category": "Rust",
+      "properties": {
+        "rules": [
+          "Single owner per value",
+          "Move semantics on assignment for non-Copy types",
+          "Aliasing XOR Mutability: multiple &T OR single &mut T"
+        ],
+        "description": "Compile-time memory safety without garbage collection through affine type system and exclusive borrow semantics."
+      },
+      "visualization": {
+        "group": "leaf",
+        "color": "#EA580C",
+        "size": 18,
+        "level": 3,
+        "icon": "grain"
+      }
+    },
+    {
+      "id": "leaf:rust:lifetimes",
+      "label": "Lifetimes & Reference Validity",
+      "type": "LeafConcept",
+      "category": "Rust",
+      "properties": {
+        "annotations": [
+          "'a",
+          "'static"
+        ],
+        "elision_rules": true,
+        "description": "Generic lifetime parameters that prove to the compiler references never outlive their underlying allocation."
+      },
+      "visualization": {
+        "group": "leaf",
+        "color": "#EA580C",
+        "size": 18,
+        "level": 3,
+        "icon": "grain"
+      }
+    },
+    {
+      "id": "leaf:rust:pattern_matching",
+      "label": "Pattern Matching & Algebraic Enums",
+      "type": "LeafConcept",
+      "category": "Rust",
+      "properties": {
+        "constructs": [
+          "match",
+          "if let",
+          "enum"
+        ],
+        "exhaustive": true,
+        "description": "Exhaustive destructuring of algebraic data types, tuple patterns, and guard clauses."
+      },
+      "visualization": {
+        "group": "leaf",
+        "color": "#EA580C",
+        "size": 18,
+        "level": 3,
+        "icon": "grain"
+      }
+    },
+    {
+      "id": "leaf:rust:error_handling",
+      "label": "Error Handling & Propagation",
+      "type": "LeafConcept",
+      "category": "Rust",
+      "properties": {
+        "types": [
+          "Result<T, E>",
+          "Option<T>",
+          "?"
+        ],
+        "description": "Ergonomic, type-safe error propagation via Result and Option with zero unhandled null pointer exceptions."
+      },
+      "visualization": {
+        "group": "leaf",
+        "color": "#EA580C",
+        "size": 18,
+        "level": 3,
+        "icon": "grain"
+      }
+    },
+    {
+      "id": "leaf:python:variable_declaration",
+      "label": "Dynamic Typing & Variable Binding",
+      "type": "LeafConcept",
+      "category": "Python",
+      "properties": {
+        "description": "Dynamic typing, reference assignment, global and nonlocal scope bindings."
+      },
+      "visualization": {
+        "group": "leaf",
+        "color": "#EA580C",
+        "size": 18,
+        "level": 3,
+        "icon": "grain"
+      }
+    },
+    {
+      "id": "leaf:python:memory_model",
+      "label": "Reference Counting & GIL",
+      "type": "LeafConcept",
+      "category": "Python",
+      "properties": {
+        "description": "CPython reference counting, cyclic garbage collection, and Global Interpreter Lock."
+      },
+      "visualization": {
+        "group": "leaf",
+        "color": "#EA580C",
+        "size": 18,
+        "level": 3,
+        "icon": "grain"
+      }
+    },
+    {
+      "id": "leaf:python:iterators_generators",
+      "label": "Iterators, Generators & Comprehensions",
+      "type": "LeafConcept",
+      "category": "Python",
+      "properties": {
+        "description": "Yield-based generator coroutines and lazy stream evaluation."
+      },
+      "visualization": {
+        "group": "leaf",
+        "color": "#EA580C",
+        "size": 18,
+        "level": 3,
+        "icon": "grain"
+      }
+    },
+    {
+      "id": "leaf:go:variable_declaration",
+      "label": "Variable Declaration & Short Assignment",
+      "type": "LeafConcept",
+      "category": "Go",
+      "properties": {
+        "description": "Typed `var` declarations, `:=` short assignment syntax, and package-level scoping."
+      },
+      "visualization": {
+        "group": "leaf",
+        "color": "#EA580C",
+        "size": 18,
+        "level": 3,
+        "icon": "grain"
+      }
+    },
+    {
+      "id": "leaf:go:goroutines_channels",
+      "label": "Goroutines & CSP Channel Synchronization",
+      "type": "LeafConcept",
+      "category": "Go",
+      "properties": {
+        "description": "M:N cooperative green threads and typed CSP communication channels."
+      },
+      "visualization": {
+        "group": "leaf",
+        "color": "#EA580C",
+        "size": 18,
+        "level": 3,
+        "icon": "grain"
+      }
+    },
+    {
+      "id": "leaf:cpp:variable_declaration",
+      "label": "Pointers, References & Type Specifiers",
+      "type": "LeafConcept",
+      "category": "C++",
+      "properties": {
+        "description": "Pointers, lvalue/rvalue references, auto deduction, and constexpr evaluation."
+      },
+      "visualization": {
+        "group": "leaf",
+        "color": "#EA580C",
+        "size": 18,
+        "level": 3,
+        "icon": "grain"
+      }
+    },
+    {
+      "id": "leaf:cpp:raii_memory",
+      "label": "RAII & Deterministic Resource Management",
+      "type": "LeafConcept",
+      "category": "C++",
+      "properties": {
+        "description": "Resource Acquisition Is Initialization, smart pointers (unique_ptr, shared_ptr), and destructors."
+      },
+      "visualization": {
+        "group": "leaf",
+        "color": "#EA580C",
+        "size": 18,
+        "level": 3,
+        "icon": "grain"
+      }
+    },
+    {
+      "id": "leaf:javascript:variable_declaration",
+      "label": "Variable Hoisting & Temporal Dead Zone",
+      "type": "LeafConcept",
+      "category": "JavaScript",
+      "properties": {
+        "description": "Block scoping with `const` and `let`, temporal dead zone, and legacy `var` hoisting."
+      },
+      "visualization": {
+        "group": "leaf",
+        "color": "#EA580C",
+        "size": 18,
+        "level": 3,
+        "icon": "grain"
+      }
+    },
+    {
+      "id": "leaf:javascript:event_loop",
+      "label": "Event Loop & Asynchronous Tasks",
+      "type": "LeafConcept",
+      "category": "JavaScript",
+      "properties": {
+        "description": "Single-threaded event loop, call stack, microtask queue, and macrotask phases."
+      },
+      "visualization": {
+        "group": "leaf",
+        "color": "#EA580C",
+        "size": 18,
+        "level": 3,
+        "icon": "grain"
+      }
+    },
+    {
+      "id": "topic:tcp_ip",
+      "label": "TCP/IP Handshake & Congestion Control",
+      "type": "SubTopic",
+      "category": "Computer Networking",
+      "properties": {
+        "description": "Core sub-domain within Computer Networking."
+      },
+      "visualization": {
+        "group": "concept",
+        "color": "#F59E0B",
+        "size": 20,
+        "level": 2,
+        "icon": "lightbulb"
+      }
+    },
+    {
+      "id": "topic:dns_routing",
+      "label": "DNS Resolution & BGP Routing",
+      "type": "SubTopic",
+      "category": "Computer Networking",
+      "properties": {
+        "description": "Core sub-domain within Computer Networking."
+      },
+      "visualization": {
+        "group": "concept",
+        "color": "#F59E0B",
+        "size": 20,
+        "level": 2,
+        "icon": "lightbulb"
+      }
+    },
+    {
+      "id": "topic:tls_encryption",
+      "label": "TLS 1.3 Cryptographic Transport",
+      "type": "SubTopic",
+      "category": "Computer Networking",
+      "properties": {
+        "description": "Core sub-domain within Computer Networking."
+      },
+      "visualization": {
+        "group": "concept",
+        "color": "#F59E0B",
+        "size": 20,
+        "level": 2,
+        "icon": "lightbulb"
+      }
+    },
+    {
+      "id": "topic:concurrency",
+      "label": "Concurrency Primitives & Deadlocks",
+      "type": "SubTopic",
+      "category": "Operating Systems",
+      "properties": {
+        "description": "Core sub-domain within Operating Systems."
+      },
+      "visualization": {
+        "group": "concept",
+        "color": "#F59E0B",
+        "size": 20,
+        "level": 2,
+        "icon": "lightbulb"
+      }
+    },
+    {
+      "id": "topic:virtual_memory",
+      "label": "Virtual Memory, Paging & TLB",
+      "type": "SubTopic",
+      "category": "Operating Systems",
+      "properties": {
+        "description": "Core sub-domain within Operating Systems."
+      },
+      "visualization": {
+        "group": "concept",
+        "color": "#F59E0B",
+        "size": 20,
+        "level": 2,
+        "icon": "lightbulb"
+      }
+    },
+    {
+      "id": "topic:kernel_scheduling",
+      "label": "CPU Scheduling & Context Switching",
+      "type": "SubTopic",
+      "category": "Operating Systems",
+      "properties": {
+        "description": "Core sub-domain within Operating Systems."
+      },
+      "visualization": {
+        "group": "concept",
+        "color": "#F59E0B",
+        "size": 20,
+        "level": 2,
+        "icon": "lightbulb"
+      }
+    },
+    {
+      "id": "topic:binary_exploitation",
+      "label": "Binary Mitigations (ASLR, DEP, Canaries)",
+      "type": "SubTopic",
+      "category": "Cybersecurity",
+      "properties": {
+        "description": "Core sub-domain within Cybersecurity."
+      },
+      "visualization": {
+        "group": "concept",
+        "color": "#F59E0B",
+        "size": 20,
+        "level": 2,
+        "icon": "lightbulb"
+      }
+    },
+    {
+      "id": "topic:cryptography",
+      "label": "Applied Cryptography (AEAD, RSA, ECC)",
+      "type": "SubTopic",
+      "category": "Cybersecurity",
+      "properties": {
+        "description": "Core sub-domain within Cybersecurity."
+      },
+      "visualization": {
+        "group": "concept",
+        "color": "#F59E0B",
+        "size": 20,
+        "level": 2,
+        "icon": "lightbulb"
+      }
+    },
+    {
+      "id": "topic:threat_modeling",
+      "label": "Threat Modeling & SSDLC (STRIDE)",
+      "type": "SubTopic",
+      "category": "Cybersecurity",
+      "properties": {
+        "description": "Core sub-domain within Cybersecurity."
+      },
+      "visualization": {
+        "group": "concept",
+        "color": "#F59E0B",
+        "size": 20,
+        "level": 2,
+        "icon": "lightbulb"
+      }
+    },
+    {
+      "id": "topic:distributed_systems",
+      "label": "Distributed Consensus & CAP Theorem",
+      "type": "SubTopic",
+      "category": "Cloud Computing",
+      "properties": {
+        "description": "Core sub-domain within Cloud Computing."
+      },
+      "visualization": {
+        "group": "concept",
+        "color": "#F59E0B",
+        "size": 20,
+        "level": 2,
+        "icon": "lightbulb"
+      }
+    },
+    {
+      "id": "topic:consensus_raft",
+      "label": "Raft Log Replication & Paxos",
+      "type": "SubTopic",
+      "category": "Cloud Computing",
+      "properties": {
+        "description": "Core sub-domain within Cloud Computing."
+      },
+      "visualization": {
+        "group": "concept",
+        "color": "#F59E0B",
+        "size": 20,
+        "level": 2,
+        "icon": "lightbulb"
+      }
+    },
+    {
+      "id": "topic:container_orchestration",
+      "label": "Container Orchestration & Kubernetes",
+      "type": "SubTopic",
+      "category": "Cloud Computing",
+      "properties": {
+        "description": "Core sub-domain within Cloud Computing."
+      },
+      "visualization": {
+        "group": "concept",
+        "color": "#F59E0B",
+        "size": 20,
+        "level": 2,
+        "icon": "lightbulb"
+      }
     }
   ],
   "edges": [
@@ -20136,6 +20922,56 @@
       "properties": {}
     },
     {
+      "id": "e:domain:programming_languages_compilers->HAS_QUESTION->q:tf:programming_languages_compilers_11",
+      "source": "domain:programming_languages_compilers",
+      "target": "q:tf:programming_languages_compilers_11",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:programming_languages_compilers->HAS_QUESTION->q:tf:programming_languages_compilers_12",
+      "source": "domain:programming_languages_compilers",
+      "target": "q:tf:programming_languages_compilers_12",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:programming_languages_compilers->HAS_QUESTION->q:tf:programming_languages_compilers_13",
+      "source": "domain:programming_languages_compilers",
+      "target": "q:tf:programming_languages_compilers_13",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:programming_languages_compilers->HAS_QUESTION->q:tf:programming_languages_compilers_14",
+      "source": "domain:programming_languages_compilers",
+      "target": "q:tf:programming_languages_compilers_14",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:programming_languages_compilers->HAS_QUESTION->q:tf:programming_languages_compilers_15",
+      "source": "domain:programming_languages_compilers",
+      "target": "q:tf:programming_languages_compilers_15",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
       "id": "e:domain:programming_languages_compilers->HAS_QUESTION->q:matching:programming_languages_compilers_1",
       "source": "domain:programming_languages_compilers",
       "target": "q:matching:programming_languages_compilers_1",
@@ -20166,6 +21002,16 @@
       "properties": {}
     },
     {
+      "id": "e:domain:programming_languages_compilers->HAS_QUESTION->q:matching:programming_languages_compilers_4",
+      "source": "domain:programming_languages_compilers",
+      "target": "q:matching:programming_languages_compilers_4",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
       "id": "e:domain:programming_languages_compilers->HAS_QUESTION->q:sequencing:programming_languages_compilers_1",
       "source": "domain:programming_languages_compilers",
       "target": "q:sequencing:programming_languages_compilers_1",
@@ -20179,6 +21025,16 @@
       "id": "e:domain:programming_languages_compilers->HAS_QUESTION->q:sequencing:programming_languages_compilers_2",
       "source": "domain:programming_languages_compilers",
       "target": "q:sequencing:programming_languages_compilers_2",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:programming_languages_compilers->HAS_QUESTION->q:sequencing:programming_languages_compilers_3",
+      "source": "domain:programming_languages_compilers",
+      "target": "q:sequencing:programming_languages_compilers_3",
       "relation": "HAS_QUESTION",
       "label": "Has Question",
       "weight": 1.0,
@@ -20209,6 +21065,16 @@
       "id": "e:domain:programming_languages_compilers->HAS_QUESTION->q:sorting:programming_languages_compilers_3",
       "source": "domain:programming_languages_compilers",
       "target": "q:sorting:programming_languages_compilers_3",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:programming_languages_compilers->HAS_QUESTION->q:sorting:programming_languages_compilers_4",
+      "source": "domain:programming_languages_compilers",
+      "target": "q:sorting:programming_languages_compilers_4",
       "relation": "HAS_QUESTION",
       "label": "Has Question",
       "weight": 1.0,
@@ -20249,6 +21115,46 @@
       "id": "e:domain:programming_languages_compilers->HAS_QUESTION->q:mc:programming_languages_compilers_4",
       "source": "domain:programming_languages_compilers",
       "target": "q:mc:programming_languages_compilers_4",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:programming_languages_compilers->HAS_QUESTION->q:mc:programming_languages_compilers_5",
+      "source": "domain:programming_languages_compilers",
+      "target": "q:mc:programming_languages_compilers_5",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:programming_languages_compilers->HAS_QUESTION->q:mc:programming_languages_compilers_6",
+      "source": "domain:programming_languages_compilers",
+      "target": "q:mc:programming_languages_compilers_6",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:programming_languages_compilers->HAS_QUESTION->q:mc:programming_languages_compilers_7",
+      "source": "domain:programming_languages_compilers",
+      "target": "q:mc:programming_languages_compilers_7",
+      "relation": "HAS_QUESTION",
+      "label": "Has Question",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:programming_languages_compilers->HAS_QUESTION->q:mc:programming_languages_compilers_8",
+      "source": "domain:programming_languages_compilers",
+      "target": "q:mc:programming_languages_compilers_8",
       "relation": "HAS_QUESTION",
       "label": "Has Question",
       "weight": 1.0,
@@ -22574,6 +23480,616 @@
       "weight": 1.0,
       "directed": true,
       "properties": {}
+    },
+    {
+      "id": "e:root:hardcode->COVERS_SUBTOPIC->topic:programming_languages",
+      "source": "root:hardcode",
+      "target": "topic:programming_languages",
+      "relation": "COVERS_SUBTOPIC",
+      "label": "Covers Subtopic",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:computer_science->SUBTOPIC_OF->topic:programming_languages",
+      "source": "domain:computer_science",
+      "target": "topic:programming_languages",
+      "relation": "SUBTOPIC_OF",
+      "label": "Subtopic",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:programming_languages_compilers->RELATES_TO->topic:programming_languages",
+      "source": "domain:programming_languages_compilers",
+      "target": "topic:programming_languages",
+      "relation": "RELATES_TO",
+      "label": "Relates to Subtopic",
+      "weight": 1.8,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:topic:programming_languages->INCLUDES_LANGUAGE->lang:rust",
+      "source": "topic:programming_languages",
+      "target": "lang:rust",
+      "relation": "INCLUDES_LANGUAGE",
+      "label": "Includes Language",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:topic:programming_languages->INCLUDES_LANGUAGE->lang:python",
+      "source": "topic:programming_languages",
+      "target": "lang:python",
+      "relation": "INCLUDES_LANGUAGE",
+      "label": "Includes Language",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:topic:programming_languages->INCLUDES_LANGUAGE->lang:go",
+      "source": "topic:programming_languages",
+      "target": "lang:go",
+      "relation": "INCLUDES_LANGUAGE",
+      "label": "Includes Language",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:topic:programming_languages->INCLUDES_LANGUAGE->lang:cpp",
+      "source": "topic:programming_languages",
+      "target": "lang:cpp",
+      "relation": "INCLUDES_LANGUAGE",
+      "label": "Includes Language",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:topic:programming_languages->INCLUDES_LANGUAGE->lang:javascript",
+      "source": "topic:programming_languages",
+      "target": "lang:javascript",
+      "relation": "INCLUDES_LANGUAGE",
+      "label": "Includes Language",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:topic:programming_languages->INCLUDES_LANGUAGE->lang:typescript",
+      "source": "topic:programming_languages",
+      "target": "lang:typescript",
+      "relation": "INCLUDES_LANGUAGE",
+      "label": "Includes Language",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:topic:programming_languages->INCLUDES_LANGUAGE->lang:java",
+      "source": "topic:programming_languages",
+      "target": "lang:java",
+      "relation": "INCLUDES_LANGUAGE",
+      "label": "Includes Language",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:topic:programming_languages->INCLUDES_LANGUAGE->lang:csharp",
+      "source": "topic:programming_languages",
+      "target": "lang:csharp",
+      "relation": "INCLUDES_LANGUAGE",
+      "label": "Includes Language",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:lang:rust->HAS_LEAF_CONCEPT->leaf:rust:variable_declaration",
+      "source": "lang:rust",
+      "target": "leaf:rust:variable_declaration",
+      "relation": "HAS_LEAF_CONCEPT",
+      "label": "Has Leaf Concept",
+      "weight": 2.2,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:lang:rust->HAS_LEAF_CONCEPT->leaf:rust:ownership_borrowing",
+      "source": "lang:rust",
+      "target": "leaf:rust:ownership_borrowing",
+      "relation": "HAS_LEAF_CONCEPT",
+      "label": "Has Leaf Concept",
+      "weight": 2.2,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:lang:rust->HAS_LEAF_CONCEPT->leaf:rust:lifetimes",
+      "source": "lang:rust",
+      "target": "leaf:rust:lifetimes",
+      "relation": "HAS_LEAF_CONCEPT",
+      "label": "Has Leaf Concept",
+      "weight": 2.2,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:lang:rust->HAS_LEAF_CONCEPT->leaf:rust:pattern_matching",
+      "source": "lang:rust",
+      "target": "leaf:rust:pattern_matching",
+      "relation": "HAS_LEAF_CONCEPT",
+      "label": "Has Leaf Concept",
+      "weight": 2.2,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:lang:rust->HAS_LEAF_CONCEPT->leaf:rust:error_handling",
+      "source": "lang:rust",
+      "target": "leaf:rust:error_handling",
+      "relation": "HAS_LEAF_CONCEPT",
+      "label": "Has Leaf Concept",
+      "weight": 2.2,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:lang:python->HAS_LEAF_CONCEPT->leaf:python:variable_declaration",
+      "source": "lang:python",
+      "target": "leaf:python:variable_declaration",
+      "relation": "HAS_LEAF_CONCEPT",
+      "label": "Has Leaf Concept",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:lang:python->HAS_LEAF_CONCEPT->leaf:python:memory_model",
+      "source": "lang:python",
+      "target": "leaf:python:memory_model",
+      "relation": "HAS_LEAF_CONCEPT",
+      "label": "Has Leaf Concept",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:lang:python->HAS_LEAF_CONCEPT->leaf:python:iterators_generators",
+      "source": "lang:python",
+      "target": "leaf:python:iterators_generators",
+      "relation": "HAS_LEAF_CONCEPT",
+      "label": "Has Leaf Concept",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:lang:go->HAS_LEAF_CONCEPT->leaf:go:variable_declaration",
+      "source": "lang:go",
+      "target": "leaf:go:variable_declaration",
+      "relation": "HAS_LEAF_CONCEPT",
+      "label": "Has Leaf Concept",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:lang:go->HAS_LEAF_CONCEPT->leaf:go:goroutines_channels",
+      "source": "lang:go",
+      "target": "leaf:go:goroutines_channels",
+      "relation": "HAS_LEAF_CONCEPT",
+      "label": "Has Leaf Concept",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:lang:cpp->HAS_LEAF_CONCEPT->leaf:cpp:variable_declaration",
+      "source": "lang:cpp",
+      "target": "leaf:cpp:variable_declaration",
+      "relation": "HAS_LEAF_CONCEPT",
+      "label": "Has Leaf Concept",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:lang:cpp->HAS_LEAF_CONCEPT->leaf:cpp:raii_memory",
+      "source": "lang:cpp",
+      "target": "leaf:cpp:raii_memory",
+      "relation": "HAS_LEAF_CONCEPT",
+      "label": "Has Leaf Concept",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:lang:javascript->HAS_LEAF_CONCEPT->leaf:javascript:variable_declaration",
+      "source": "lang:javascript",
+      "target": "leaf:javascript:variable_declaration",
+      "relation": "HAS_LEAF_CONCEPT",
+      "label": "Has Leaf Concept",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:lang:javascript->HAS_LEAF_CONCEPT->leaf:javascript:event_loop",
+      "source": "lang:javascript",
+      "target": "leaf:javascript:event_loop",
+      "relation": "HAS_LEAF_CONCEPT",
+      "label": "Has Leaf Concept",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:computer_networking->COVERS_SUBTOPIC->topic:tcp_ip",
+      "source": "domain:computer_networking",
+      "target": "topic:tcp_ip",
+      "relation": "COVERS_SUBTOPIC",
+      "label": "Covers Subtopic",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:computer_networking->COVERS_SUBTOPIC->topic:dns_routing",
+      "source": "domain:computer_networking",
+      "target": "topic:dns_routing",
+      "relation": "COVERS_SUBTOPIC",
+      "label": "Covers Subtopic",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:computer_networking->COVERS_SUBTOPIC->topic:tls_encryption",
+      "source": "domain:computer_networking",
+      "target": "topic:tls_encryption",
+      "relation": "COVERS_SUBTOPIC",
+      "label": "Covers Subtopic",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:operating_systems->COVERS_SUBTOPIC->topic:concurrency",
+      "source": "domain:operating_systems",
+      "target": "topic:concurrency",
+      "relation": "COVERS_SUBTOPIC",
+      "label": "Covers Subtopic",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:operating_systems->COVERS_SUBTOPIC->topic:virtual_memory",
+      "source": "domain:operating_systems",
+      "target": "topic:virtual_memory",
+      "relation": "COVERS_SUBTOPIC",
+      "label": "Covers Subtopic",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:operating_systems->COVERS_SUBTOPIC->topic:kernel_scheduling",
+      "source": "domain:operating_systems",
+      "target": "topic:kernel_scheduling",
+      "relation": "COVERS_SUBTOPIC",
+      "label": "Covers Subtopic",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->COVERS_SUBTOPIC->topic:binary_exploitation",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "topic:binary_exploitation",
+      "relation": "COVERS_SUBTOPIC",
+      "label": "Covers Subtopic",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->COVERS_SUBTOPIC->topic:cryptography",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "topic:cryptography",
+      "relation": "COVERS_SUBTOPIC",
+      "label": "Covers Subtopic",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:cybersecurity_cryptography_security_engineering->COVERS_SUBTOPIC->topic:threat_modeling",
+      "source": "domain:cybersecurity_cryptography_security_engineering",
+      "target": "topic:threat_modeling",
+      "relation": "COVERS_SUBTOPIC",
+      "label": "Covers Subtopic",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:cloud_distributed_computing->COVERS_SUBTOPIC->topic:distributed_systems",
+      "source": "domain:cloud_distributed_computing",
+      "target": "topic:distributed_systems",
+      "relation": "COVERS_SUBTOPIC",
+      "label": "Covers Subtopic",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:cloud_distributed_computing->COVERS_SUBTOPIC->topic:consensus_raft",
+      "source": "domain:cloud_distributed_computing",
+      "target": "topic:consensus_raft",
+      "relation": "COVERS_SUBTOPIC",
+      "label": "Covers Subtopic",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:domain:cloud_distributed_computing->COVERS_SUBTOPIC->topic:container_orchestration",
+      "source": "domain:cloud_distributed_computing",
+      "target": "topic:container_orchestration",
+      "relation": "COVERS_SUBTOPIC",
+      "label": "Covers Subtopic",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:leaf:rust:ownership_borrowing->MITIGATES_VULNERABILITIES->domain:cybersecurity_cryptography_security_engineering",
+      "source": "leaf:rust:ownership_borrowing",
+      "target": "domain:cybersecurity_cryptography_security_engineering",
+      "relation": "MITIGATES_VULNERABILITIES",
+      "label": "Eliminates Memory Safety Vulnerabilities",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:leaf:rust:ownership_borrowing->ENABLES_SAFE_CONCURRENCY->topic:concurrency",
+      "source": "leaf:rust:ownership_borrowing",
+      "target": "topic:concurrency",
+      "relation": "ENABLES_SAFE_CONCURRENCY",
+      "label": "Fearless Concurrency (Send/Sync)",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:leaf:rust:variable_declaration->PARSES_VIA_ENGINE->concept:variable_syntax",
+      "source": "leaf:rust:variable_declaration",
+      "target": "concept:variable_syntax",
+      "relation": "PARSES_VIA_ENGINE",
+      "label": "Syntax Engine Declaration Rules",
+      "weight": 1.8,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:leaf:rust:lifetimes->PROVIDES_KERNEL_SAFETY->domain:operating_systems",
+      "source": "leaf:rust:lifetimes",
+      "target": "domain:operating_systems",
+      "relation": "PROVIDES_KERNEL_SAFETY",
+      "label": "Safe Kernel Execution without GC",
+      "weight": 1.8,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:leaf:rust:pattern_matching->APPLIES_PATTERN_ANALYSIS->domain:algorithms",
+      "source": "leaf:rust:pattern_matching",
+      "target": "domain:algorithms",
+      "relation": "APPLIES_PATTERN_ANALYSIS",
+      "label": "Exhaustive State Analysis",
+      "weight": 1.5,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:leaf:rust:error_handling->ENFORCES_RELIABILITY->domain:software_engineering",
+      "source": "leaf:rust:error_handling",
+      "target": "domain:software_engineering",
+      "relation": "ENFORCES_RELIABILITY",
+      "label": "Explicit Type-Safe Failure Domains",
+      "weight": 1.8,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:leaf:go:goroutines_channels->IMPLEMENTS_CSP->topic:concurrency",
+      "source": "leaf:go:goroutines_channels",
+      "target": "topic:concurrency",
+      "relation": "IMPLEMENTS_CSP",
+      "label": "Communicating Sequential Processes",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:leaf:go:goroutines_channels->POWERS_MICROSERVICES->domain:cloud_distributed_computing",
+      "source": "leaf:go:goroutines_channels",
+      "target": "domain:cloud_distributed_computing",
+      "relation": "POWERS_MICROSERVICES",
+      "label": "High Throughput Cloud Services",
+      "weight": 1.8,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:leaf:cpp:raii_memory->MANAGES_HARDWARE_RESOURCES->domain:system_architecture",
+      "source": "leaf:cpp:raii_memory",
+      "target": "domain:system_architecture",
+      "relation": "MANAGES_HARDWARE_RESOURCES",
+      "label": "Hardware Determinism & Cache Control",
+      "weight": 1.8,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:leaf:javascript:event_loop->ASYNCHRONOUS_EVENT_LOOP->topic:concurrency",
+      "source": "leaf:javascript:event_loop",
+      "target": "topic:concurrency",
+      "relation": "ASYNCHRONOUS_EVENT_LOOP",
+      "label": "Non-Blocking Asynchronous Concurrency",
+      "weight": 1.8,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:topic:tls_encryption->APPLIES_CRYPTOGRAPHY->domain:cybersecurity_cryptography_security_engineering",
+      "source": "topic:tls_encryption",
+      "target": "domain:cybersecurity_cryptography_security_engineering",
+      "relation": "APPLIES_CRYPTOGRAPHY",
+      "label": "End-to-End Cryptographic Security",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:topic:binary_exploitation->TARGETS_MEMORY_SUBSYSTEM->domain:operating_systems",
+      "source": "topic:binary_exploitation",
+      "target": "domain:operating_systems",
+      "relation": "TARGETS_MEMORY_SUBSYSTEM",
+      "label": "Exploits Stack/Heap Memory Layout",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:topic:virtual_memory->HARDWARE_MMU_PAGING->domain:system_architecture",
+      "source": "topic:virtual_memory",
+      "target": "domain:system_architecture",
+      "relation": "HARDWARE_MMU_PAGING",
+      "label": "MMU & Page Table Traversal",
+      "weight": 2.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:q:tf:programming_languages_compilers_11->TESTS_LEAF_CONCEPT->leaf:rust:variable_declaration",
+      "source": "q:tf:programming_languages_compilers_11",
+      "target": "leaf:rust:variable_declaration",
+      "relation": "TESTS_LEAF_CONCEPT",
+      "label": "Tests Variable Declaration",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:q:tf:programming_languages_compilers_12->TESTS_LEAF_CONCEPT->leaf:rust:variable_declaration",
+      "source": "q:tf:programming_languages_compilers_12",
+      "target": "leaf:rust:variable_declaration",
+      "relation": "TESTS_LEAF_CONCEPT",
+      "label": "Tests Variable Declaration",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:q:tf:programming_languages_compilers_13->TESTS_LEAF_CONCEPT->leaf:rust:ownership_borrowing",
+      "source": "q:tf:programming_languages_compilers_13",
+      "target": "leaf:rust:ownership_borrowing",
+      "relation": "TESTS_LEAF_CONCEPT",
+      "label": "Tests Ownership & Borrowing",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:q:tf:programming_languages_compilers_14->TESTS_LEAF_CONCEPT->leaf:rust:lifetimes",
+      "source": "q:tf:programming_languages_compilers_14",
+      "target": "leaf:rust:lifetimes",
+      "relation": "TESTS_LEAF_CONCEPT",
+      "label": "Tests Lifetimes",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:q:tf:programming_languages_compilers_15->TESTS_LEAF_CONCEPT->leaf:rust:pattern_matching",
+      "source": "q:tf:programming_languages_compilers_15",
+      "target": "leaf:rust:pattern_matching",
+      "relation": "TESTS_LEAF_CONCEPT",
+      "label": "Tests Pattern Matching",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:q:sorting:programming_languages_compilers_4->TESTS_LEAF_CONCEPT->leaf:rust:ownership_borrowing",
+      "source": "q:sorting:programming_languages_compilers_4",
+      "target": "leaf:rust:ownership_borrowing",
+      "relation": "TESTS_LEAF_CONCEPT",
+      "label": "Tests Ownership & Borrowing",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:q:mc:programming_languages_compilers_6->TESTS_LEAF_CONCEPT->leaf:rust:ownership_borrowing",
+      "source": "q:mc:programming_languages_compilers_6",
+      "target": "leaf:rust:ownership_borrowing",
+      "relation": "TESTS_LEAF_CONCEPT",
+      "label": "Tests Ownership & Borrowing",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:q:mc:programming_languages_compilers_7->TESTS_LEAF_CONCEPT->leaf:rust:error_handling",
+      "source": "q:mc:programming_languages_compilers_7",
+      "target": "leaf:rust:error_handling",
+      "relation": "TESTS_LEAF_CONCEPT",
+      "label": "Tests Error Handling",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:q:mc:programming_languages_compilers_8->TESTS_LEAF_CONCEPT->leaf:rust:ownership_borrowing",
+      "source": "q:mc:programming_languages_compilers_8",
+      "target": "leaf:rust:ownership_borrowing",
+      "relation": "TESTS_LEAF_CONCEPT",
+      "label": "Tests Ownership & Borrowing",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:q:mc:control_flow_logic_2->TESTS_LEAF_CONCEPT->leaf:rust:pattern_matching",
+      "source": "q:mc:control_flow_logic_2",
+      "target": "leaf:rust:pattern_matching",
+      "relation": "TESTS_LEAF_CONCEPT",
+      "label": "Tests Pattern Matching",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
+    },
+    {
+      "id": "e:q:tf:error_exception_handling_2->TESTS_LEAF_CONCEPT->leaf:rust:error_handling",
+      "source": "q:tf:error_exception_handling_2",
+      "target": "leaf:rust:error_handling",
+      "relation": "TESTS_LEAF_CONCEPT",
+      "label": "Tests Error Handling",
+      "weight": 1.0,
+      "directed": true,
+      "properties": {}
     }
   ],
   "adjacency": {
@@ -22655,7 +24171,8 @@
         "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:strings_text_processing",
         "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:memory_pointers",
         "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:devops_site_reliability_engineering",
-        "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:cybersecurity_cryptography_security_engineering"
+        "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:cybersecurity_cryptography_security_engineering",
+        "e:root:hardcode->COVERS_SUBTOPIC->topic:programming_languages"
       ],
       "paradigm:oop": [],
       "paradigm:functional": [],
@@ -22688,14 +24205,19 @@
         "e:lang:python->IMPLEMENTS_SYNTAX->syntax_cat:floating_point_assignment",
         "e:lang:python->IMPLEMENTS_SYNTAX->syntax_cat:string_assignment",
         "e:lang:python->IMPLEMENTS_SYNTAX->syntax_cat:boolean_assignment",
-        "e:lang:python->IMPLEMENTS_SYNTAX->syntax_cat:constant_declaration"
+        "e:lang:python->IMPLEMENTS_SYNTAX->syntax_cat:constant_declaration",
+        "e:lang:python->HAS_LEAF_CONCEPT->leaf:python:variable_declaration",
+        "e:lang:python->HAS_LEAF_CONCEPT->leaf:python:memory_model",
+        "e:lang:python->HAS_LEAF_CONCEPT->leaf:python:iterators_generators"
       ],
       "lang:go": [
         "e:lang:go->IMPLEMENTS_SYNTAX->syntax_cat:integer_assignment",
         "e:lang:go->IMPLEMENTS_SYNTAX->syntax_cat:floating_point_assignment",
         "e:lang:go->IMPLEMENTS_SYNTAX->syntax_cat:string_assignment",
         "e:lang:go->IMPLEMENTS_SYNTAX->syntax_cat:boolean_assignment",
-        "e:lang:go->IMPLEMENTS_SYNTAX->syntax_cat:constant_declaration"
+        "e:lang:go->IMPLEMENTS_SYNTAX->syntax_cat:constant_declaration",
+        "e:lang:go->HAS_LEAF_CONCEPT->leaf:go:variable_declaration",
+        "e:lang:go->HAS_LEAF_CONCEPT->leaf:go:goroutines_channels"
       ],
       "lang:cpp": [
         "e:lang:cpp->SUPPORTS_PARADIGM->paradigm:oop",
@@ -22703,7 +24225,9 @@
         "e:lang:cpp->IMPLEMENTS_SYNTAX->syntax_cat:floating_point_assignment",
         "e:lang:cpp->IMPLEMENTS_SYNTAX->syntax_cat:string_assignment",
         "e:lang:cpp->IMPLEMENTS_SYNTAX->syntax_cat:boolean_assignment",
-        "e:lang:cpp->IMPLEMENTS_SYNTAX->syntax_cat:constant_declaration"
+        "e:lang:cpp->IMPLEMENTS_SYNTAX->syntax_cat:constant_declaration",
+        "e:lang:cpp->HAS_LEAF_CONCEPT->leaf:cpp:variable_declaration",
+        "e:lang:cpp->HAS_LEAF_CONCEPT->leaf:cpp:raii_memory"
       ],
       "lang:powershell": [
         "e:lang:powershell->IMPLEMENTS_SYNTAX->syntax_cat:integer_assignment",
@@ -22739,7 +24263,12 @@
         "e:lang:rust->IMPLEMENTS_SYNTAX->syntax_cat:floating_point_assignment",
         "e:lang:rust->IMPLEMENTS_SYNTAX->syntax_cat:string_assignment",
         "e:lang:rust->IMPLEMENTS_SYNTAX->syntax_cat:boolean_assignment",
-        "e:lang:rust->IMPLEMENTS_SYNTAX->syntax_cat:constant_declaration"
+        "e:lang:rust->IMPLEMENTS_SYNTAX->syntax_cat:constant_declaration",
+        "e:lang:rust->HAS_LEAF_CONCEPT->leaf:rust:variable_declaration",
+        "e:lang:rust->HAS_LEAF_CONCEPT->leaf:rust:ownership_borrowing",
+        "e:lang:rust->HAS_LEAF_CONCEPT->leaf:rust:lifetimes",
+        "e:lang:rust->HAS_LEAF_CONCEPT->leaf:rust:pattern_matching",
+        "e:lang:rust->HAS_LEAF_CONCEPT->leaf:rust:error_handling"
       ],
       "lang:java": [
         "e:lang:java->SUPPORTS_PARADIGM->paradigm:oop",
@@ -22755,7 +24284,9 @@
         "e:lang:javascript->IMPLEMENTS_SYNTAX->syntax_cat:floating_point_assignment",
         "e:lang:javascript->IMPLEMENTS_SYNTAX->syntax_cat:string_assignment",
         "e:lang:javascript->IMPLEMENTS_SYNTAX->syntax_cat:boolean_assignment",
-        "e:lang:javascript->IMPLEMENTS_SYNTAX->syntax_cat:constant_declaration"
+        "e:lang:javascript->IMPLEMENTS_SYNTAX->syntax_cat:constant_declaration",
+        "e:lang:javascript->HAS_LEAF_CONCEPT->leaf:javascript:variable_declaration",
+        "e:lang:javascript->HAS_LEAF_CONCEPT->leaf:javascript:event_loop"
       ],
       "lang:ruby": [
         "e:lang:ruby->IMPLEMENTS_SYNTAX->syntax_cat:integer_assignment",
@@ -23226,7 +24757,10 @@
         "e:domain:operating_systems->HAS_QUESTION->q:sorting:operating_systems_3",
         "e:domain:operating_systems->HAS_QUESTION->q:mc:operating_systems_1",
         "e:domain:operating_systems->HAS_QUESTION->q:mc:operating_systems_2",
-        "e:domain:operating_systems->HAS_QUESTION->q:mc:operating_systems_3"
+        "e:domain:operating_systems->HAS_QUESTION->q:mc:operating_systems_3",
+        "e:domain:operating_systems->COVERS_SUBTOPIC->topic:concurrency",
+        "e:domain:operating_systems->COVERS_SUBTOPIC->topic:virtual_memory",
+        "e:domain:operating_systems->COVERS_SUBTOPIC->topic:kernel_scheduling"
       ],
       "q:tf:operating_systems_1": [],
       "q:tf:operating_systems_2": [],
@@ -23285,7 +24819,10 @@
         "e:domain:computer_networking->HAS_QUESTION->q:mc:computer_networking_3",
         "e:domain:computer_networking->HAS_QUESTION->q:mc:computer_networking_4",
         "e:domain:computer_networking->HAS_QUESTION->q:mc:computer_networking_5",
-        "e:domain:computer_networking->HAS_QUESTION->q:mc:computer_networking_6"
+        "e:domain:computer_networking->HAS_QUESTION->q:mc:computer_networking_6",
+        "e:domain:computer_networking->COVERS_SUBTOPIC->topic:tcp_ip",
+        "e:domain:computer_networking->COVERS_SUBTOPIC->topic:dns_routing",
+        "e:domain:computer_networking->COVERS_SUBTOPIC->topic:tls_encryption"
       ],
       "q:tf:computer_networking_1": [],
       "q:tf:computer_networking_2": [],
@@ -23477,18 +25014,31 @@
         "e:domain:programming_languages_compilers->HAS_QUESTION->q:tf:programming_languages_compilers_8",
         "e:domain:programming_languages_compilers->HAS_QUESTION->q:tf:programming_languages_compilers_9",
         "e:domain:programming_languages_compilers->HAS_QUESTION->q:tf:programming_languages_compilers_10",
+        "e:domain:programming_languages_compilers->HAS_QUESTION->q:tf:programming_languages_compilers_11",
+        "e:domain:programming_languages_compilers->HAS_QUESTION->q:tf:programming_languages_compilers_12",
+        "e:domain:programming_languages_compilers->HAS_QUESTION->q:tf:programming_languages_compilers_13",
+        "e:domain:programming_languages_compilers->HAS_QUESTION->q:tf:programming_languages_compilers_14",
+        "e:domain:programming_languages_compilers->HAS_QUESTION->q:tf:programming_languages_compilers_15",
         "e:domain:programming_languages_compilers->HAS_QUESTION->q:matching:programming_languages_compilers_1",
         "e:domain:programming_languages_compilers->HAS_QUESTION->q:matching:programming_languages_compilers_2",
         "e:domain:programming_languages_compilers->HAS_QUESTION->q:matching:programming_languages_compilers_3",
+        "e:domain:programming_languages_compilers->HAS_QUESTION->q:matching:programming_languages_compilers_4",
         "e:domain:programming_languages_compilers->HAS_QUESTION->q:sequencing:programming_languages_compilers_1",
         "e:domain:programming_languages_compilers->HAS_QUESTION->q:sequencing:programming_languages_compilers_2",
+        "e:domain:programming_languages_compilers->HAS_QUESTION->q:sequencing:programming_languages_compilers_3",
         "e:domain:programming_languages_compilers->HAS_QUESTION->q:sorting:programming_languages_compilers_1",
         "e:domain:programming_languages_compilers->HAS_QUESTION->q:sorting:programming_languages_compilers_2",
         "e:domain:programming_languages_compilers->HAS_QUESTION->q:sorting:programming_languages_compilers_3",
+        "e:domain:programming_languages_compilers->HAS_QUESTION->q:sorting:programming_languages_compilers_4",
         "e:domain:programming_languages_compilers->HAS_QUESTION->q:mc:programming_languages_compilers_1",
         "e:domain:programming_languages_compilers->HAS_QUESTION->q:mc:programming_languages_compilers_2",
         "e:domain:programming_languages_compilers->HAS_QUESTION->q:mc:programming_languages_compilers_3",
-        "e:domain:programming_languages_compilers->HAS_QUESTION->q:mc:programming_languages_compilers_4"
+        "e:domain:programming_languages_compilers->HAS_QUESTION->q:mc:programming_languages_compilers_4",
+        "e:domain:programming_languages_compilers->HAS_QUESTION->q:mc:programming_languages_compilers_5",
+        "e:domain:programming_languages_compilers->HAS_QUESTION->q:mc:programming_languages_compilers_6",
+        "e:domain:programming_languages_compilers->HAS_QUESTION->q:mc:programming_languages_compilers_7",
+        "e:domain:programming_languages_compilers->HAS_QUESTION->q:mc:programming_languages_compilers_8",
+        "e:domain:programming_languages_compilers->RELATES_TO->topic:programming_languages"
       ],
       "q:tf:programming_languages_compilers_1": [],
       "q:tf:programming_languages_compilers_2": [],
@@ -23500,18 +25050,48 @@
       "q:tf:programming_languages_compilers_8": [],
       "q:tf:programming_languages_compilers_9": [],
       "q:tf:programming_languages_compilers_10": [],
+      "q:tf:programming_languages_compilers_11": [
+        "e:q:tf:programming_languages_compilers_11->TESTS_LEAF_CONCEPT->leaf:rust:variable_declaration"
+      ],
+      "q:tf:programming_languages_compilers_12": [
+        "e:q:tf:programming_languages_compilers_12->TESTS_LEAF_CONCEPT->leaf:rust:variable_declaration"
+      ],
+      "q:tf:programming_languages_compilers_13": [
+        "e:q:tf:programming_languages_compilers_13->TESTS_LEAF_CONCEPT->leaf:rust:ownership_borrowing"
+      ],
+      "q:tf:programming_languages_compilers_14": [
+        "e:q:tf:programming_languages_compilers_14->TESTS_LEAF_CONCEPT->leaf:rust:lifetimes"
+      ],
+      "q:tf:programming_languages_compilers_15": [
+        "e:q:tf:programming_languages_compilers_15->TESTS_LEAF_CONCEPT->leaf:rust:pattern_matching"
+      ],
       "q:matching:programming_languages_compilers_1": [],
       "q:matching:programming_languages_compilers_2": [],
       "q:matching:programming_languages_compilers_3": [],
+      "q:matching:programming_languages_compilers_4": [],
       "q:sequencing:programming_languages_compilers_1": [],
       "q:sequencing:programming_languages_compilers_2": [],
+      "q:sequencing:programming_languages_compilers_3": [],
       "q:sorting:programming_languages_compilers_1": [],
       "q:sorting:programming_languages_compilers_2": [],
       "q:sorting:programming_languages_compilers_3": [],
+      "q:sorting:programming_languages_compilers_4": [
+        "e:q:sorting:programming_languages_compilers_4->TESTS_LEAF_CONCEPT->leaf:rust:ownership_borrowing"
+      ],
       "q:mc:programming_languages_compilers_1": [],
       "q:mc:programming_languages_compilers_2": [],
       "q:mc:programming_languages_compilers_3": [],
       "q:mc:programming_languages_compilers_4": [],
+      "q:mc:programming_languages_compilers_5": [],
+      "q:mc:programming_languages_compilers_6": [
+        "e:q:mc:programming_languages_compilers_6->TESTS_LEAF_CONCEPT->leaf:rust:ownership_borrowing"
+      ],
+      "q:mc:programming_languages_compilers_7": [
+        "e:q:mc:programming_languages_compilers_7->TESTS_LEAF_CONCEPT->leaf:rust:error_handling"
+      ],
+      "q:mc:programming_languages_compilers_8": [
+        "e:q:mc:programming_languages_compilers_8->TESTS_LEAF_CONCEPT->leaf:rust:ownership_borrowing"
+      ],
       "domain:databases_distributed_storage": [
         "e:domain:databases_distributed_storage->HAS_QUESTION->q:tf:databases_distributed_storage_1",
         "e:domain:databases_distributed_storage->HAS_QUESTION->q:tf:databases_distributed_storage_2",
@@ -23568,7 +25148,8 @@
         "e:domain:computer_science->HAS_QUESTION->q:sorting:computer_science_1",
         "e:domain:computer_science->HAS_QUESTION->q:sorting:computer_science_2",
         "e:domain:computer_science->HAS_QUESTION->q:mc:computer_science_1",
-        "e:domain:computer_science->HAS_QUESTION->q:mc:computer_science_2"
+        "e:domain:computer_science->HAS_QUESTION->q:mc:computer_science_2",
+        "e:domain:computer_science->SUBTOPIC_OF->topic:programming_languages"
       ],
       "q:tf:computer_science_1": [],
       "q:tf:computer_science_2": [],
@@ -23644,7 +25225,10 @@
         "e:domain:cloud_distributed_computing->HAS_QUESTION->q:sorting:cloud_distributed_computing_2",
         "e:domain:cloud_distributed_computing->HAS_QUESTION->q:mc:cloud_distributed_computing_1",
         "e:domain:cloud_distributed_computing->HAS_QUESTION->q:mc:cloud_distributed_computing_2",
-        "e:domain:cloud_distributed_computing->HAS_QUESTION->q:mc:cloud_distributed_computing_3"
+        "e:domain:cloud_distributed_computing->HAS_QUESTION->q:mc:cloud_distributed_computing_3",
+        "e:domain:cloud_distributed_computing->COVERS_SUBTOPIC->topic:distributed_systems",
+        "e:domain:cloud_distributed_computing->COVERS_SUBTOPIC->topic:consensus_raft",
+        "e:domain:cloud_distributed_computing->COVERS_SUBTOPIC->topic:container_orchestration"
       ],
       "q:tf:cloud_distributed_computing_1": [],
       "q:tf:cloud_distributed_computing_2": [],
@@ -23743,7 +25327,9 @@
       "q:sequencing:control_flow_logic_1": [],
       "q:sorting:control_flow_logic_1": [],
       "q:mc:control_flow_logic_1": [],
-      "q:mc:control_flow_logic_2": [],
+      "q:mc:control_flow_logic_2": [
+        "e:q:mc:control_flow_logic_2->TESTS_LEAF_CONCEPT->leaf:rust:pattern_matching"
+      ],
       "domain:functions_methods": [
         "e:domain:functions_methods->HAS_QUESTION->q:tf:functions_methods_1",
         "e:domain:functions_methods->HAS_QUESTION->q:tf:functions_methods_2",
@@ -23786,7 +25372,9 @@
         "e:domain:error_exception_handling->HAS_QUESTION->q:mc:error_exception_handling_1"
       ],
       "q:tf:error_exception_handling_1": [],
-      "q:tf:error_exception_handling_2": [],
+      "q:tf:error_exception_handling_2": [
+        "e:q:tf:error_exception_handling_2->TESTS_LEAF_CONCEPT->leaf:rust:error_handling"
+      ],
       "q:tf:error_exception_handling_3": [],
       "q:matching:error_exception_handling_1": [],
       "q:sequencing:error_exception_handling_1": [],
@@ -23939,7 +25527,10 @@
         "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_6",
         "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_7",
         "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_8",
-        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_9"
+        "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_9",
+        "e:domain:cybersecurity_cryptography_security_engineering->COVERS_SUBTOPIC->topic:binary_exploitation",
+        "e:domain:cybersecurity_cryptography_security_engineering->COVERS_SUBTOPIC->topic:cryptography",
+        "e:domain:cybersecurity_cryptography_security_engineering->COVERS_SUBTOPIC->topic:threat_modeling"
       ],
       "q:tf:cybersecurity_cryptography_security_engineering_1": [],
       "q:tf:cybersecurity_cryptography_security_engineering_2": [],
@@ -23975,7 +25566,67 @@
       "q:mc:cybersecurity_cryptography_security_engineering_6": [],
       "q:mc:cybersecurity_cryptography_security_engineering_7": [],
       "q:mc:cybersecurity_cryptography_security_engineering_8": [],
-      "q:mc:cybersecurity_cryptography_security_engineering_9": []
+      "q:mc:cybersecurity_cryptography_security_engineering_9": [],
+      "topic:programming_languages": [
+        "e:topic:programming_languages->INCLUDES_LANGUAGE->lang:rust",
+        "e:topic:programming_languages->INCLUDES_LANGUAGE->lang:python",
+        "e:topic:programming_languages->INCLUDES_LANGUAGE->lang:go",
+        "e:topic:programming_languages->INCLUDES_LANGUAGE->lang:cpp",
+        "e:topic:programming_languages->INCLUDES_LANGUAGE->lang:javascript",
+        "e:topic:programming_languages->INCLUDES_LANGUAGE->lang:typescript",
+        "e:topic:programming_languages->INCLUDES_LANGUAGE->lang:java",
+        "e:topic:programming_languages->INCLUDES_LANGUAGE->lang:csharp"
+      ],
+      "leaf:rust:variable_declaration": [
+        "e:leaf:rust:variable_declaration->PARSES_VIA_ENGINE->concept:variable_syntax"
+      ],
+      "leaf:rust:ownership_borrowing": [
+        "e:leaf:rust:ownership_borrowing->MITIGATES_VULNERABILITIES->domain:cybersecurity_cryptography_security_engineering",
+        "e:leaf:rust:ownership_borrowing->ENABLES_SAFE_CONCURRENCY->topic:concurrency"
+      ],
+      "leaf:rust:lifetimes": [
+        "e:leaf:rust:lifetimes->PROVIDES_KERNEL_SAFETY->domain:operating_systems"
+      ],
+      "leaf:rust:pattern_matching": [
+        "e:leaf:rust:pattern_matching->APPLIES_PATTERN_ANALYSIS->domain:algorithms"
+      ],
+      "leaf:rust:error_handling": [
+        "e:leaf:rust:error_handling->ENFORCES_RELIABILITY->domain:software_engineering"
+      ],
+      "leaf:python:variable_declaration": [],
+      "leaf:python:memory_model": [],
+      "leaf:python:iterators_generators": [],
+      "leaf:go:variable_declaration": [],
+      "leaf:go:goroutines_channels": [
+        "e:leaf:go:goroutines_channels->IMPLEMENTS_CSP->topic:concurrency",
+        "e:leaf:go:goroutines_channels->POWERS_MICROSERVICES->domain:cloud_distributed_computing"
+      ],
+      "leaf:cpp:variable_declaration": [],
+      "leaf:cpp:raii_memory": [
+        "e:leaf:cpp:raii_memory->MANAGES_HARDWARE_RESOURCES->domain:system_architecture"
+      ],
+      "leaf:javascript:variable_declaration": [],
+      "leaf:javascript:event_loop": [
+        "e:leaf:javascript:event_loop->ASYNCHRONOUS_EVENT_LOOP->topic:concurrency"
+      ],
+      "topic:tcp_ip": [],
+      "topic:dns_routing": [],
+      "topic:tls_encryption": [
+        "e:topic:tls_encryption->APPLIES_CRYPTOGRAPHY->domain:cybersecurity_cryptography_security_engineering"
+      ],
+      "topic:concurrency": [],
+      "topic:virtual_memory": [
+        "e:topic:virtual_memory->HARDWARE_MMU_PAGING->domain:system_architecture"
+      ],
+      "topic:kernel_scheduling": [],
+      "topic:binary_exploitation": [
+        "e:topic:binary_exploitation->TARGETS_MEMORY_SUBSYSTEM->domain:operating_systems"
+      ],
+      "topic:cryptography": [],
+      "topic:threat_modeling": [],
+      "topic:distributed_systems": [],
+      "topic:consensus_raft": [],
+      "topic:container_orchestration": []
     },
     "incoming": {
       "root:hardcode": [],
@@ -24021,13 +25672,16 @@
         "e:root:hardcode->INCLUDES_LANGUAGE->lang:c"
       ],
       "lang:python": [
-        "e:root:hardcode->INCLUDES_LANGUAGE->lang:python"
+        "e:root:hardcode->INCLUDES_LANGUAGE->lang:python",
+        "e:topic:programming_languages->INCLUDES_LANGUAGE->lang:python"
       ],
       "lang:go": [
-        "e:root:hardcode->INCLUDES_LANGUAGE->lang:go"
+        "e:root:hardcode->INCLUDES_LANGUAGE->lang:go",
+        "e:topic:programming_languages->INCLUDES_LANGUAGE->lang:go"
       ],
       "lang:cpp": [
-        "e:root:hardcode->INCLUDES_LANGUAGE->lang:cpp"
+        "e:root:hardcode->INCLUDES_LANGUAGE->lang:cpp",
+        "e:topic:programming_languages->INCLUDES_LANGUAGE->lang:cpp"
       ],
       "lang:powershell": [
         "e:root:hardcode->INCLUDES_LANGUAGE->lang:powershell"
@@ -24036,19 +25690,23 @@
         "e:root:hardcode->INCLUDES_LANGUAGE->lang:php"
       ],
       "lang:csharp": [
-        "e:root:hardcode->INCLUDES_LANGUAGE->lang:csharp"
+        "e:root:hardcode->INCLUDES_LANGUAGE->lang:csharp",
+        "e:topic:programming_languages->INCLUDES_LANGUAGE->lang:csharp"
       ],
       "lang:bash": [
         "e:root:hardcode->INCLUDES_LANGUAGE->lang:bash"
       ],
       "lang:rust": [
-        "e:root:hardcode->INCLUDES_LANGUAGE->lang:rust"
+        "e:root:hardcode->INCLUDES_LANGUAGE->lang:rust",
+        "e:topic:programming_languages->INCLUDES_LANGUAGE->lang:rust"
       ],
       "lang:java": [
-        "e:root:hardcode->INCLUDES_LANGUAGE->lang:java"
+        "e:root:hardcode->INCLUDES_LANGUAGE->lang:java",
+        "e:topic:programming_languages->INCLUDES_LANGUAGE->lang:java"
       ],
       "lang:javascript": [
-        "e:root:hardcode->INCLUDES_LANGUAGE->lang:javascript"
+        "e:root:hardcode->INCLUDES_LANGUAGE->lang:javascript",
+        "e:topic:programming_languages->INCLUDES_LANGUAGE->lang:javascript"
       ],
       "lang:ruby": [
         "e:root:hardcode->INCLUDES_LANGUAGE->lang:ruby"
@@ -24060,7 +25718,8 @@
         "e:root:hardcode->INCLUDES_LANGUAGE->lang:swift"
       ],
       "lang:typescript": [
-        "e:root:hardcode->INCLUDES_LANGUAGE->lang:typescript"
+        "e:root:hardcode->INCLUDES_LANGUAGE->lang:typescript",
+        "e:topic:programming_languages->INCLUDES_LANGUAGE->lang:typescript"
       ],
       "lang:lua": [
         "e:root:hardcode->INCLUDES_LANGUAGE->lang:lua"
@@ -24480,7 +26139,8 @@
         "e:root:hardcode->COVERS_CONCEPT_GROUP->concept_group:memory_management"
       ],
       "concept:variable_syntax": [
-        "e:root:hardcode->HAS_SYNTAX_ENGINE->concept:variable_syntax"
+        "e:root:hardcode->HAS_SYNTAX_ENGINE->concept:variable_syntax",
+        "e:leaf:rust:variable_declaration->PARSES_VIA_ENGINE->concept:variable_syntax"
       ],
       "syntax_cat:notes": [
         "e:concept:variable_syntax->HAS_SYNTAX_CATEGORY->syntax_cat:notes"
@@ -24594,7 +26254,9 @@
         "e:lang:dart->IMPLEMENTS_SYNTAX->syntax_cat:constant_declaration"
       ],
       "domain:system_architecture": [
-        "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:system_architecture"
+        "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:system_architecture",
+        "e:leaf:cpp:raii_memory->MANAGES_HARDWARE_RESOURCES->domain:system_architecture",
+        "e:topic:virtual_memory->HARDWARE_MMU_PAGING->domain:system_architecture"
       ],
       "q:tf:system_architecture_1": [
         "e:domain:system_architecture->HAS_QUESTION->q:tf:system_architecture_1"
@@ -24768,7 +26430,9 @@
         "e:domain:artificial_intelligence->HAS_QUESTION->q:mc:artificial_intelligence_5"
       ],
       "domain:operating_systems": [
-        "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:operating_systems"
+        "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:operating_systems",
+        "e:leaf:rust:lifetimes->PROVIDES_KERNEL_SAFETY->domain:operating_systems",
+        "e:topic:binary_exploitation->TARGETS_MEMORY_SUBSYSTEM->domain:operating_systems"
       ],
       "q:tf:operating_systems_1": [
         "e:domain:operating_systems->HAS_QUESTION->q:tf:operating_systems_1"
@@ -25196,6 +26860,21 @@
       "q:tf:programming_languages_compilers_10": [
         "e:domain:programming_languages_compilers->HAS_QUESTION->q:tf:programming_languages_compilers_10"
       ],
+      "q:tf:programming_languages_compilers_11": [
+        "e:domain:programming_languages_compilers->HAS_QUESTION->q:tf:programming_languages_compilers_11"
+      ],
+      "q:tf:programming_languages_compilers_12": [
+        "e:domain:programming_languages_compilers->HAS_QUESTION->q:tf:programming_languages_compilers_12"
+      ],
+      "q:tf:programming_languages_compilers_13": [
+        "e:domain:programming_languages_compilers->HAS_QUESTION->q:tf:programming_languages_compilers_13"
+      ],
+      "q:tf:programming_languages_compilers_14": [
+        "e:domain:programming_languages_compilers->HAS_QUESTION->q:tf:programming_languages_compilers_14"
+      ],
+      "q:tf:programming_languages_compilers_15": [
+        "e:domain:programming_languages_compilers->HAS_QUESTION->q:tf:programming_languages_compilers_15"
+      ],
       "q:matching:programming_languages_compilers_1": [
         "e:domain:programming_languages_compilers->HAS_QUESTION->q:matching:programming_languages_compilers_1"
       ],
@@ -25205,11 +26884,17 @@
       "q:matching:programming_languages_compilers_3": [
         "e:domain:programming_languages_compilers->HAS_QUESTION->q:matching:programming_languages_compilers_3"
       ],
+      "q:matching:programming_languages_compilers_4": [
+        "e:domain:programming_languages_compilers->HAS_QUESTION->q:matching:programming_languages_compilers_4"
+      ],
       "q:sequencing:programming_languages_compilers_1": [
         "e:domain:programming_languages_compilers->HAS_QUESTION->q:sequencing:programming_languages_compilers_1"
       ],
       "q:sequencing:programming_languages_compilers_2": [
         "e:domain:programming_languages_compilers->HAS_QUESTION->q:sequencing:programming_languages_compilers_2"
+      ],
+      "q:sequencing:programming_languages_compilers_3": [
+        "e:domain:programming_languages_compilers->HAS_QUESTION->q:sequencing:programming_languages_compilers_3"
       ],
       "q:sorting:programming_languages_compilers_1": [
         "e:domain:programming_languages_compilers->HAS_QUESTION->q:sorting:programming_languages_compilers_1"
@@ -25219,6 +26904,9 @@
       ],
       "q:sorting:programming_languages_compilers_3": [
         "e:domain:programming_languages_compilers->HAS_QUESTION->q:sorting:programming_languages_compilers_3"
+      ],
+      "q:sorting:programming_languages_compilers_4": [
+        "e:domain:programming_languages_compilers->HAS_QUESTION->q:sorting:programming_languages_compilers_4"
       ],
       "q:mc:programming_languages_compilers_1": [
         "e:domain:programming_languages_compilers->HAS_QUESTION->q:mc:programming_languages_compilers_1"
@@ -25231,6 +26919,18 @@
       ],
       "q:mc:programming_languages_compilers_4": [
         "e:domain:programming_languages_compilers->HAS_QUESTION->q:mc:programming_languages_compilers_4"
+      ],
+      "q:mc:programming_languages_compilers_5": [
+        "e:domain:programming_languages_compilers->HAS_QUESTION->q:mc:programming_languages_compilers_5"
+      ],
+      "q:mc:programming_languages_compilers_6": [
+        "e:domain:programming_languages_compilers->HAS_QUESTION->q:mc:programming_languages_compilers_6"
+      ],
+      "q:mc:programming_languages_compilers_7": [
+        "e:domain:programming_languages_compilers->HAS_QUESTION->q:mc:programming_languages_compilers_7"
+      ],
+      "q:mc:programming_languages_compilers_8": [
+        "e:domain:programming_languages_compilers->HAS_QUESTION->q:mc:programming_languages_compilers_8"
       ],
       "domain:databases_distributed_storage": [
         "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:databases_distributed_storage"
@@ -25341,7 +27041,8 @@
         "e:domain:computer_science->HAS_QUESTION->q:mc:computer_science_2"
       ],
       "domain:software_engineering": [
-        "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:software_engineering"
+        "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:software_engineering",
+        "e:leaf:rust:error_handling->ENFORCES_RELIABILITY->domain:software_engineering"
       ],
       "q:tf:software_engineering_1": [
         "e:domain:software_engineering->HAS_QUESTION->q:tf:software_engineering_1"
@@ -25407,7 +27108,8 @@
         "e:domain:software_engineering->HAS_QUESTION->q:mc:software_engineering_4"
       ],
       "domain:cloud_distributed_computing": [
-        "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:cloud_distributed_computing"
+        "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:cloud_distributed_computing",
+        "e:leaf:go:goroutines_channels->POWERS_MICROSERVICES->domain:cloud_distributed_computing"
       ],
       "q:tf:cloud_distributed_computing_1": [
         "e:domain:cloud_distributed_computing->HAS_QUESTION->q:tf:cloud_distributed_computing_1"
@@ -25530,7 +27232,8 @@
         "e:domain:asymptotic_complexity_analysis->HAS_QUESTION->q:mc:asymptotic_complexity_analysis_1"
       ],
       "domain:algorithms": [
-        "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:algorithms"
+        "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:algorithms",
+        "e:leaf:rust:pattern_matching->APPLIES_PATTERN_ANALYSIS->domain:algorithms"
       ],
       "q:tf:algorithms_1": [
         "e:domain:algorithms->HAS_QUESTION->q:tf:algorithms_1"
@@ -25821,7 +27524,9 @@
         "e:domain:devops_site_reliability_engineering->HAS_QUESTION->q:mc:devops_site_reliability_engineering_4"
       ],
       "domain:cybersecurity_cryptography_security_engineering": [
-        "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:cybersecurity_cryptography_security_engineering"
+        "e:root:hardcode->COVERS_CURRICULUM_DOMAIN->domain:cybersecurity_cryptography_security_engineering",
+        "e:leaf:rust:ownership_borrowing->MITIGATES_VULNERABILITIES->domain:cybersecurity_cryptography_security_engineering",
+        "e:topic:tls_encryption->APPLIES_CRYPTOGRAPHY->domain:cybersecurity_cryptography_security_engineering"
       ],
       "q:tf:cybersecurity_cryptography_security_engineering_1": [
         "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:tf:cybersecurity_cryptography_security_engineering_1"
@@ -25927,6 +27632,103 @@
       ],
       "q:mc:cybersecurity_cryptography_security_engineering_9": [
         "e:domain:cybersecurity_cryptography_security_engineering->HAS_QUESTION->q:mc:cybersecurity_cryptography_security_engineering_9"
+      ],
+      "topic:programming_languages": [
+        "e:root:hardcode->COVERS_SUBTOPIC->topic:programming_languages",
+        "e:domain:computer_science->SUBTOPIC_OF->topic:programming_languages",
+        "e:domain:programming_languages_compilers->RELATES_TO->topic:programming_languages"
+      ],
+      "leaf:rust:variable_declaration": [
+        "e:lang:rust->HAS_LEAF_CONCEPT->leaf:rust:variable_declaration",
+        "e:q:tf:programming_languages_compilers_11->TESTS_LEAF_CONCEPT->leaf:rust:variable_declaration",
+        "e:q:tf:programming_languages_compilers_12->TESTS_LEAF_CONCEPT->leaf:rust:variable_declaration"
+      ],
+      "leaf:rust:ownership_borrowing": [
+        "e:lang:rust->HAS_LEAF_CONCEPT->leaf:rust:ownership_borrowing",
+        "e:q:tf:programming_languages_compilers_13->TESTS_LEAF_CONCEPT->leaf:rust:ownership_borrowing",
+        "e:q:sorting:programming_languages_compilers_4->TESTS_LEAF_CONCEPT->leaf:rust:ownership_borrowing",
+        "e:q:mc:programming_languages_compilers_6->TESTS_LEAF_CONCEPT->leaf:rust:ownership_borrowing",
+        "e:q:mc:programming_languages_compilers_8->TESTS_LEAF_CONCEPT->leaf:rust:ownership_borrowing"
+      ],
+      "leaf:rust:lifetimes": [
+        "e:lang:rust->HAS_LEAF_CONCEPT->leaf:rust:lifetimes",
+        "e:q:tf:programming_languages_compilers_14->TESTS_LEAF_CONCEPT->leaf:rust:lifetimes"
+      ],
+      "leaf:rust:pattern_matching": [
+        "e:lang:rust->HAS_LEAF_CONCEPT->leaf:rust:pattern_matching",
+        "e:q:tf:programming_languages_compilers_15->TESTS_LEAF_CONCEPT->leaf:rust:pattern_matching",
+        "e:q:mc:control_flow_logic_2->TESTS_LEAF_CONCEPT->leaf:rust:pattern_matching"
+      ],
+      "leaf:rust:error_handling": [
+        "e:lang:rust->HAS_LEAF_CONCEPT->leaf:rust:error_handling",
+        "e:q:mc:programming_languages_compilers_7->TESTS_LEAF_CONCEPT->leaf:rust:error_handling",
+        "e:q:tf:error_exception_handling_2->TESTS_LEAF_CONCEPT->leaf:rust:error_handling"
+      ],
+      "leaf:python:variable_declaration": [
+        "e:lang:python->HAS_LEAF_CONCEPT->leaf:python:variable_declaration"
+      ],
+      "leaf:python:memory_model": [
+        "e:lang:python->HAS_LEAF_CONCEPT->leaf:python:memory_model"
+      ],
+      "leaf:python:iterators_generators": [
+        "e:lang:python->HAS_LEAF_CONCEPT->leaf:python:iterators_generators"
+      ],
+      "leaf:go:variable_declaration": [
+        "e:lang:go->HAS_LEAF_CONCEPT->leaf:go:variable_declaration"
+      ],
+      "leaf:go:goroutines_channels": [
+        "e:lang:go->HAS_LEAF_CONCEPT->leaf:go:goroutines_channels"
+      ],
+      "leaf:cpp:variable_declaration": [
+        "e:lang:cpp->HAS_LEAF_CONCEPT->leaf:cpp:variable_declaration"
+      ],
+      "leaf:cpp:raii_memory": [
+        "e:lang:cpp->HAS_LEAF_CONCEPT->leaf:cpp:raii_memory"
+      ],
+      "leaf:javascript:variable_declaration": [
+        "e:lang:javascript->HAS_LEAF_CONCEPT->leaf:javascript:variable_declaration"
+      ],
+      "leaf:javascript:event_loop": [
+        "e:lang:javascript->HAS_LEAF_CONCEPT->leaf:javascript:event_loop"
+      ],
+      "topic:tcp_ip": [
+        "e:domain:computer_networking->COVERS_SUBTOPIC->topic:tcp_ip"
+      ],
+      "topic:dns_routing": [
+        "e:domain:computer_networking->COVERS_SUBTOPIC->topic:dns_routing"
+      ],
+      "topic:tls_encryption": [
+        "e:domain:computer_networking->COVERS_SUBTOPIC->topic:tls_encryption"
+      ],
+      "topic:concurrency": [
+        "e:domain:operating_systems->COVERS_SUBTOPIC->topic:concurrency",
+        "e:leaf:rust:ownership_borrowing->ENABLES_SAFE_CONCURRENCY->topic:concurrency",
+        "e:leaf:go:goroutines_channels->IMPLEMENTS_CSP->topic:concurrency",
+        "e:leaf:javascript:event_loop->ASYNCHRONOUS_EVENT_LOOP->topic:concurrency"
+      ],
+      "topic:virtual_memory": [
+        "e:domain:operating_systems->COVERS_SUBTOPIC->topic:virtual_memory"
+      ],
+      "topic:kernel_scheduling": [
+        "e:domain:operating_systems->COVERS_SUBTOPIC->topic:kernel_scheduling"
+      ],
+      "topic:binary_exploitation": [
+        "e:domain:cybersecurity_cryptography_security_engineering->COVERS_SUBTOPIC->topic:binary_exploitation"
+      ],
+      "topic:cryptography": [
+        "e:domain:cybersecurity_cryptography_security_engineering->COVERS_SUBTOPIC->topic:cryptography"
+      ],
+      "topic:threat_modeling": [
+        "e:domain:cybersecurity_cryptography_security_engineering->COVERS_SUBTOPIC->topic:threat_modeling"
+      ],
+      "topic:distributed_systems": [
+        "e:domain:cloud_distributed_computing->COVERS_SUBTOPIC->topic:distributed_systems"
+      ],
+      "topic:consensus_raft": [
+        "e:domain:cloud_distributed_computing->COVERS_SUBTOPIC->topic:consensus_raft"
+      ],
+      "topic:container_orchestration": [
+        "e:domain:cloud_distributed_computing->COVERS_SUBTOPIC->topic:container_orchestration"
       ]
     }
   },
@@ -26351,18 +28153,30 @@
         "q:tf:programming_languages_compilers_8",
         "q:tf:programming_languages_compilers_9",
         "q:tf:programming_languages_compilers_10",
+        "q:tf:programming_languages_compilers_11",
+        "q:tf:programming_languages_compilers_12",
+        "q:tf:programming_languages_compilers_13",
+        "q:tf:programming_languages_compilers_14",
+        "q:tf:programming_languages_compilers_15",
         "q:matching:programming_languages_compilers_1",
         "q:matching:programming_languages_compilers_2",
         "q:matching:programming_languages_compilers_3",
+        "q:matching:programming_languages_compilers_4",
         "q:sequencing:programming_languages_compilers_1",
         "q:sequencing:programming_languages_compilers_2",
+        "q:sequencing:programming_languages_compilers_3",
         "q:sorting:programming_languages_compilers_1",
         "q:sorting:programming_languages_compilers_2",
         "q:sorting:programming_languages_compilers_3",
+        "q:sorting:programming_languages_compilers_4",
         "q:mc:programming_languages_compilers_1",
         "q:mc:programming_languages_compilers_2",
         "q:mc:programming_languages_compilers_3",
         "q:mc:programming_languages_compilers_4",
+        "q:mc:programming_languages_compilers_5",
+        "q:mc:programming_languages_compilers_6",
+        "q:mc:programming_languages_compilers_7",
+        "q:mc:programming_languages_compilers_8",
         "q:tf:databases_distributed_storage_1",
         "q:tf:databases_distributed_storage_2",
         "q:tf:databases_distributed_storage_3",
@@ -26576,6 +28390,37 @@
         "q:mc:cybersecurity_cryptography_security_engineering_7",
         "q:mc:cybersecurity_cryptography_security_engineering_8",
         "q:mc:cybersecurity_cryptography_security_engineering_9"
+      ],
+      "SubTopic": [
+        "topic:programming_languages",
+        "topic:tcp_ip",
+        "topic:dns_routing",
+        "topic:tls_encryption",
+        "topic:concurrency",
+        "topic:virtual_memory",
+        "topic:kernel_scheduling",
+        "topic:binary_exploitation",
+        "topic:cryptography",
+        "topic:threat_modeling",
+        "topic:distributed_systems",
+        "topic:consensus_raft",
+        "topic:container_orchestration"
+      ],
+      "LeafConcept": [
+        "leaf:rust:variable_declaration",
+        "leaf:rust:ownership_borrowing",
+        "leaf:rust:lifetimes",
+        "leaf:rust:pattern_matching",
+        "leaf:rust:error_handling",
+        "leaf:python:variable_declaration",
+        "leaf:python:memory_model",
+        "leaf:python:iterators_generators",
+        "leaf:go:variable_declaration",
+        "leaf:go:goroutines_channels",
+        "leaf:cpp:variable_declaration",
+        "leaf:cpp:raii_memory",
+        "leaf:javascript:variable_declaration",
+        "leaf:javascript:event_loop"
       ]
     },
     "by_group": {
@@ -26755,7 +28600,20 @@
         "concept_group:cpu_scheduling",
         "concept_group:synchronization",
         "concept_group:deadlocks",
-        "concept_group:memory_management"
+        "concept_group:memory_management",
+        "topic:programming_languages",
+        "topic:tcp_ip",
+        "topic:dns_routing",
+        "topic:tls_encryption",
+        "topic:concurrency",
+        "topic:virtual_memory",
+        "topic:kernel_scheduling",
+        "topic:binary_exploitation",
+        "topic:cryptography",
+        "topic:threat_modeling",
+        "topic:distributed_systems",
+        "topic:consensus_raft",
+        "topic:container_orchestration"
       ],
       "syntax": [
         "concept:variable_syntax",
@@ -26881,6 +28739,11 @@
         "q:tf:programming_languages_compilers_8",
         "q:tf:programming_languages_compilers_9",
         "q:tf:programming_languages_compilers_10",
+        "q:tf:programming_languages_compilers_11",
+        "q:tf:programming_languages_compilers_12",
+        "q:tf:programming_languages_compilers_13",
+        "q:tf:programming_languages_compilers_14",
+        "q:tf:programming_languages_compilers_15",
         "q:tf:databases_distributed_storage_1",
         "q:tf:databases_distributed_storage_2",
         "q:tf:databases_distributed_storage_3",
@@ -27006,6 +28869,7 @@
         "q:matching:programming_languages_compilers_1",
         "q:matching:programming_languages_compilers_2",
         "q:matching:programming_languages_compilers_3",
+        "q:matching:programming_languages_compilers_4",
         "q:matching:databases_distributed_storage_1",
         "q:matching:databases_distributed_storage_2",
         "q:matching:databases_distributed_storage_3",
@@ -27069,6 +28933,7 @@
         "q:sequencing:automata_discrete_mathematics_4",
         "q:sequencing:programming_languages_compilers_1",
         "q:sequencing:programming_languages_compilers_2",
+        "q:sequencing:programming_languages_compilers_3",
         "q:sequencing:databases_distributed_storage_1",
         "q:sequencing:databases_distributed_storage_2",
         "q:sequencing:computer_science_1",
@@ -27125,6 +28990,7 @@
         "q:sorting:programming_languages_compilers_1",
         "q:sorting:programming_languages_compilers_2",
         "q:sorting:programming_languages_compilers_3",
+        "q:sorting:programming_languages_compilers_4",
         "q:sorting:databases_distributed_storage_1",
         "q:sorting:databases_distributed_storage_2",
         "q:sorting:computer_science_1",
@@ -27183,6 +29049,10 @@
         "q:mc:programming_languages_compilers_2",
         "q:mc:programming_languages_compilers_3",
         "q:mc:programming_languages_compilers_4",
+        "q:mc:programming_languages_compilers_5",
+        "q:mc:programming_languages_compilers_6",
+        "q:mc:programming_languages_compilers_7",
+        "q:mc:programming_languages_compilers_8",
         "q:mc:databases_distributed_storage_1",
         "q:mc:databases_distributed_storage_2",
         "q:mc:databases_distributed_storage_3",
@@ -27223,6 +29093,22 @@
         "q:mc:cybersecurity_cryptography_security_engineering_7",
         "q:mc:cybersecurity_cryptography_security_engineering_8",
         "q:mc:cybersecurity_cryptography_security_engineering_9"
+      ],
+      "leaf": [
+        "leaf:rust:variable_declaration",
+        "leaf:rust:ownership_borrowing",
+        "leaf:rust:lifetimes",
+        "leaf:rust:pattern_matching",
+        "leaf:rust:error_handling",
+        "leaf:python:variable_declaration",
+        "leaf:python:memory_model",
+        "leaf:python:iterators_generators",
+        "leaf:go:variable_declaration",
+        "leaf:go:goroutines_channels",
+        "leaf:cpp:variable_declaration",
+        "leaf:cpp:raii_memory",
+        "leaf:javascript:variable_declaration",
+        "leaf:javascript:event_loop"
       ]
     },
     "by_category": {
@@ -27481,7 +29367,8 @@
         "domain:strings_text_processing",
         "domain:memory_pointers",
         "domain:devops_site_reliability_engineering",
-        "domain:cybersecurity_cryptography_security_engineering"
+        "domain:cybersecurity_cryptography_security_engineering",
+        "topic:programming_languages"
       ],
       "True-False": [
         "q:tf:system_architecture_1",
@@ -27568,6 +29455,11 @@
         "q:tf:programming_languages_compilers_8",
         "q:tf:programming_languages_compilers_9",
         "q:tf:programming_languages_compilers_10",
+        "q:tf:programming_languages_compilers_11",
+        "q:tf:programming_languages_compilers_12",
+        "q:tf:programming_languages_compilers_13",
+        "q:tf:programming_languages_compilers_14",
+        "q:tf:programming_languages_compilers_15",
         "q:tf:databases_distributed_storage_1",
         "q:tf:databases_distributed_storage_2",
         "q:tf:databases_distributed_storage_3",
@@ -27693,6 +29585,7 @@
         "q:matching:programming_languages_compilers_1",
         "q:matching:programming_languages_compilers_2",
         "q:matching:programming_languages_compilers_3",
+        "q:matching:programming_languages_compilers_4",
         "q:matching:databases_distributed_storage_1",
         "q:matching:databases_distributed_storage_2",
         "q:matching:databases_distributed_storage_3",
@@ -27756,6 +29649,7 @@
         "q:sequencing:automata_discrete_mathematics_4",
         "q:sequencing:programming_languages_compilers_1",
         "q:sequencing:programming_languages_compilers_2",
+        "q:sequencing:programming_languages_compilers_3",
         "q:sequencing:databases_distributed_storage_1",
         "q:sequencing:databases_distributed_storage_2",
         "q:sequencing:computer_science_1",
@@ -27812,6 +29706,7 @@
         "q:sorting:programming_languages_compilers_1",
         "q:sorting:programming_languages_compilers_2",
         "q:sorting:programming_languages_compilers_3",
+        "q:sorting:programming_languages_compilers_4",
         "q:sorting:databases_distributed_storage_1",
         "q:sorting:databases_distributed_storage_2",
         "q:sorting:computer_science_1",
@@ -27870,6 +29765,10 @@
         "q:mc:programming_languages_compilers_2",
         "q:mc:programming_languages_compilers_3",
         "q:mc:programming_languages_compilers_4",
+        "q:mc:programming_languages_compilers_5",
+        "q:mc:programming_languages_compilers_6",
+        "q:mc:programming_languages_compilers_7",
+        "q:mc:programming_languages_compilers_8",
         "q:mc:databases_distributed_storage_1",
         "q:mc:databases_distributed_storage_2",
         "q:mc:databases_distributed_storage_3",
@@ -27910,11 +29809,55 @@
         "q:mc:cybersecurity_cryptography_security_engineering_7",
         "q:mc:cybersecurity_cryptography_security_engineering_8",
         "q:mc:cybersecurity_cryptography_security_engineering_9"
+      ],
+      "Rust": [
+        "leaf:rust:variable_declaration",
+        "leaf:rust:ownership_borrowing",
+        "leaf:rust:lifetimes",
+        "leaf:rust:pattern_matching",
+        "leaf:rust:error_handling"
+      ],
+      "Python": [
+        "leaf:python:variable_declaration",
+        "leaf:python:memory_model",
+        "leaf:python:iterators_generators"
+      ],
+      "Go": [
+        "leaf:go:variable_declaration",
+        "leaf:go:goroutines_channels"
+      ],
+      "C++": [
+        "leaf:cpp:variable_declaration",
+        "leaf:cpp:raii_memory"
+      ],
+      "JavaScript": [
+        "leaf:javascript:variable_declaration",
+        "leaf:javascript:event_loop"
+      ],
+      "Computer Networking": [
+        "topic:tcp_ip",
+        "topic:dns_routing",
+        "topic:tls_encryption"
+      ],
+      "Operating Systems": [
+        "topic:concurrency",
+        "topic:virtual_memory",
+        "topic:kernel_scheduling"
+      ],
+      "Cybersecurity": [
+        "topic:binary_exploitation",
+        "topic:cryptography",
+        "topic:threat_modeling"
+      ],
+      "Cloud Computing": [
+        "topic:distributed_systems",
+        "topic:consensus_raft",
+        "topic:container_orchestration"
       ]
     }
   },
   "legacy_bridge": {
-    "version": 13,
+    "version": 14,
     "Language": [
       "C",
       "Python",
@@ -29840,6 +31783,31 @@
               "statement": "In statically typed languages with Hindley-Milner type inference (e.g. Haskell, OCaml, Rust), compilers can infer types without explicit type annotations.",
               "is_true": true,
               "explanation": "Hindley-Milner type systems mathematically deduce the most general principal type for every expression."
+            },
+            {
+              "statement": "In Rust, variables declared with `let` are immutable by default and require `let mut` for reassignment.",
+              "is_true": true,
+              "explanation": "Rust variables are immutable by default to ensure safety and avoid race conditions. Mutability must be explicitly declared with `mut`."
+            },
+            {
+              "statement": "In Rust, variable shadowing with `let x = ...` is forbidden by the compiler if variable `x` already exists in scope.",
+              "is_true": false,
+              "explanation": "Rust explicitly supports variable shadowing using `let`, creating a new binding that can even change the variable's type."
+            },
+            {
+              "statement": "Rust's borrow checker permits multiple simultaneous mutable references (`&mut T`) to the same data within the same scope.",
+              "is_true": false,
+              "explanation": "Rust enforces the aliasing XOR mutability rule: you can have many shared references (`&T`) OR exactly one mutable reference (`&mut T`), never both."
+            },
+            {
+              "statement": "In Rust, the `'static` lifetime indicates that the referenced data lives for the entire execution duration of the program.",
+              "is_true": true,
+              "explanation": "The `'static` lifetime specifier signifies that data (such as string literals) lives for the entire duration of the running program."
+            },
+            {
+              "statement": "In Rust, pattern matching with `match` must be exhaustive, requiring all possible enum variants or values to be covered.",
+              "is_true": true,
+              "explanation": "The Rust compiler strictly requires exhaustive pattern matching to ensure no unhandled variant can trigger undefined behavior."
             }
           ],
           "Matching": [
@@ -29873,6 +31841,15 @@
                 "Intermediate Representation Generator": "LLVM IR / 3-Address Code",
                 "Code Generator": "Target machine assembly or native machine code"
               }
+            },
+            {
+              "prompt": "Match the Rust variable and memory construct to its guarantee:",
+              "pairs": {
+                "let mut": "Permits in-place reassignment and modification",
+                "&T (Shared Ref)": "Permits concurrent read-only aliasing",
+                "&mut T (Unique Ref)": "Guarantees exclusive mutable access with zero aliasing",
+                "'a (Lifetime)": "Proves references never outlive target allocations"
+              }
             }
           ],
           "Sequencing": [
@@ -29895,6 +31872,23 @@
                 "Semantic Analysis verifying types, scopes, and symbol tables",
                 "Intermediate Representation (IR) generation in SSA form",
                 "Target machine code generation and hardware register allocation"
+              ]
+            },
+            {
+              "prompt": "Order the lifecycle phases of a Rust variable under borrow checking rules:",
+              "sequence": [
+                "1. Stack allocation initialized with single owner binding",
+                "2. Shared immutable references (&T) created for reading",
+                "3. Shared references go out of scope releasing read locks",
+                "4. Exclusive mutable reference (&mut T) acquired and used",
+                "5. Owner reaches end of scope and value drops deterministically"
+              ],
+              "ordered_sequence": [
+                "1. Stack allocation initialized with single owner binding",
+                "2. Shared immutable references (&T) created for reading",
+                "3. Shared references go out of scope releasing read locks",
+                "4. Exclusive mutable reference (&mut T) acquired and used",
+                "5. Owner reaches end of scope and value drops deterministically"
               ]
             }
           ],
@@ -29968,6 +31962,26 @@
                   "Ruby"
                 ]
               }
+            },
+            {
+              "prompt": "Classify the Rust constructs into Variable & Mutability, Ownership & Borrowing, or Error Handling:",
+              "categories": [
+                "Variable & Mutability",
+                "Ownership & Borrowing",
+                "Error Handling"
+              ],
+              "items": {
+                "let mut counter: u32 = 0": "Variable & Mutability",
+                "const MAX_SIZE: usize = 4096": "Variable & Mutability",
+                "Variable Shadowing let x = x + 1": "Variable & Mutability",
+                "Move Semantics let s2 = s1": "Ownership & Borrowing",
+                "Shared Borrow &data": "Ownership & Borrowing",
+                "Unique Borrow &mut data": "Ownership & Borrowing",
+                "Lifetime Specifier 'a": "Ownership & Borrowing",
+                "Result Ok(val) / Err(err)": "Error Handling",
+                "Question Mark Operator ?": "Error Handling",
+                "Option Some(val) / None": "Error Handling"
+              }
             }
           ],
           "Multi-Choice": [
@@ -30014,6 +32028,78 @@
               ],
               "correct_index": 0,
               "explanation": "In SSA form, variables are renamed per assignment (e.g. x1, x2), turning data flow analysis into clean graph algorithms."
+            },
+            {
+              "question": "Which Rust statement correctly declares a mutable 32-bit signed integer initialized to 42?",
+              "options": [
+                "let mut count: i32 = 42;",
+                "var mut count: int = 42;",
+                "mut let count: i32 = 42;",
+                "val count: i32 = 42;"
+              ],
+              "correct": "let mut count: i32 = 42;",
+              "correct_index": 0,
+              "explanation": "Rust uses `let mut variable_name: Type = value;` to bind mutable typed variables on the stack.",
+              "choices": [
+                "let mut count: i32 = 42;",
+                "var mut count: int = 42;",
+                "mut let count: i32 = 42;",
+                "val count: i32 = 42;"
+              ]
+            },
+            {
+              "question": "What occurs in Rust when a value without the `Copy` trait is assigned to another variable?",
+              "options": [
+                "Ownership is moved to the new variable, invalidating the original binding",
+                "A shallow bitwise copy is made and both variables remain fully accessible",
+                "The runtime performs an automatic deep heap clone",
+                "A compilation error occurs because non-Copy values cannot be assigned"
+              ],
+              "correct": "Ownership is moved to the new variable, invalidating the original binding",
+              "correct_index": 0,
+              "explanation": "In Rust, assignment of non-Copy types transfers ownership via move semantics, preventing use-after-free and double-free bugs.",
+              "choices": [
+                "Ownership is moved to the new variable, invalidating the original binding",
+                "A shallow bitwise copy is made and both variables remain fully accessible",
+                "The runtime performs an automatic deep heap clone",
+                "A compilation error occurs because non-Copy values cannot be assigned"
+              ]
+            },
+            {
+              "question": "What does the `?` operator do when applied to a `Result<T, E>` expression in Rust?",
+              "options": [
+                "Unwraps `Ok(val)` or returns early with `Err(err)` from the current function",
+                "Suppresses runtime panics and converts any error into `None`",
+                "Immediately aborts the process with an error code",
+                "Asynchronously awaits the completion of an I/O future"
+              ],
+              "correct": "Unwraps `Ok(val)` or returns early with `Err(err)` from the current function",
+              "correct_index": 0,
+              "explanation": "The `?` operator provides syntactic sugar for error propagation, extracting `Ok` or immediately returning `Err`.",
+              "choices": [
+                "Unwraps `Ok(val)` or returns early with `Err(err)` from the current function",
+                "Suppresses runtime panics and converts any error into `None`",
+                "Immediately aborts the process with an error code",
+                "Asynchronously awaits the completion of an I/O future"
+              ]
+            },
+            {
+              "question": "Why does Rust's borrow checker enforce exclusive access for mutable references (`&mut T`)?",
+              "options": [
+                "To eliminate data races and pointer aliasing bugs at compile time without garbage collection",
+                "To optimize L1 cache coherency across different CPU cores",
+                "To enable automatic LLVM function inlining",
+                "To minimize binary size by stripping debug symbols"
+              ],
+              "correct": "To eliminate data races and pointer aliasing bugs at compile time without garbage collection",
+              "correct_index": 0,
+              "explanation": "Exclusive mutable references prevent data races (concurrent read/write) and iterator invalidation at compile time.",
+              "choices": [
+                "To eliminate data races and pointer aliasing bugs at compile time without garbage collection",
+                "To optimize L1 cache coherency across different CPU cores",
+                "To enable automatic LLVM function inlining",
+                "To minimize binary size by stripping debug symbols"
+              ]
             }
           ]
         }
