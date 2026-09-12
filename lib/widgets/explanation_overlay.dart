@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../services/adaptive_explanation_service.dart';
+import '../services/voice_service.dart';
 
 /// Full-screen fade-to-white overlay presenting a tailored pedagogical explanation.
 /// Includes an animated countdown dwell bar, syntax-styled code examples, mental models,
@@ -57,6 +58,18 @@ class _ExplanationOverlayState extends State<ExplanationOverlay>
 
     _animationController.forward();
 
+    // Start voice narration of explanation
+    final narrative =
+        '${widget.payload.title}. ${widget.payload.tierBadge}. ${widget.payload.explanation}. Mental model: ${widget.payload.mentalModel}';
+    VoiceService.instance.speakExplanation(
+      narrative,
+      onComplete: () {
+        if (mounted && !_isDismissed && _remainingSeconds <= 1) {
+          _dismiss();
+        }
+      },
+    );
+
     // Ticking timer for countdown bar
     _tickTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!mounted) return;
@@ -65,6 +78,10 @@ class _ExplanationOverlayState extends State<ExplanationOverlay>
           _remainingSeconds--;
         });
       } else {
+        // Hold countdown and do NOT advance to next question while voice is speaking:
+        if (VoiceService.instance.isSpeaking.value) {
+          return;
+        }
         _dismiss();
       }
     });
@@ -79,6 +96,7 @@ class _ExplanationOverlayState extends State<ExplanationOverlay>
 
   @override
   void dispose() {
+    VoiceService.instance.stop();
     _dwellTimer?.cancel();
     _tickTimer?.cancel();
     _animationController.dispose();
@@ -89,6 +107,7 @@ class _ExplanationOverlayState extends State<ExplanationOverlay>
   void _dismiss() {
     if (_isDismissed) return;
     _isDismissed = true;
+    VoiceService.instance.stop();
     _dwellTimer?.cancel();
     _tickTimer?.cancel();
 
@@ -237,20 +256,67 @@ class _ExplanationOverlayState extends State<ExplanationOverlay>
                                   ],
                                 ),
                               ),
-                              Row(
-                                children: [
-                                  Icon(Icons.timer_outlined,
-                                      size: 14, color: Colors.grey.shade600),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    '${_remainingSeconds}s',
-                                    style: GoogleFonts.jetBrainsMono(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.grey.shade700,
-                                    ),
-                                  ),
-                                ],
+                              ValueListenableBuilder<bool>(
+                                valueListenable: VoiceService.instance.isSpeaking,
+                                builder: (context, isSpeaking, _) {
+                                  return Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      if (isSpeaking) ...[
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 3,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFF0284C7).withOpacity(0.12),
+                                            borderRadius: BorderRadius.circular(6),
+                                            border: Border.all(
+                                              color: const Color(0xFF0284C7).withOpacity(0.3),
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              const Icon(
+                                                Icons.graphic_eq_rounded,
+                                                size: 14,
+                                                color: Color(0xFF0284C7),
+                                              ),
+                                              const SizedBox(width: 4),
+                                              Text(
+                                                'VOICE NARRATING',
+                                                style: GoogleFonts.jetBrainsMono(
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.w800,
+                                                  letterSpacing: 0.6,
+                                                  color: const Color(0xFF0284C7),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                      ],
+                                      Icon(Icons.timer_outlined,
+                                          size: 14, color: Colors.grey.shade600),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        isSpeaking && _remainingSeconds <= 1
+                                            ? 'NARRATING...'
+                                            : '${_remainingSeconds}s',
+                                        style: GoogleFonts.jetBrainsMono(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w700,
+                                          color: isSpeaking && _remainingSeconds <= 1
+                                              ? const Color(0xFF0284C7)
+                                              : Colors.grey.shade700,
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
                               ),
                             ],
                           ),

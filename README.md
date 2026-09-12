@@ -1,12 +1,12 @@
 # HardCode
 
-> **Security Engineering & Automated Versioning Edition (v1.4.0)**  
+> **AI Voice Synthesis & Dynamic Audio-Timer Edition (v1.5.0)**  
 > *An automated, low-latency syntax memorization and multidimensional Knowledge Graph engine for computer science pedagogy and polyglot software engineering.*
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-success?style=for-the-badge&logo=github)](https://holman57.github.io/hardcode/)
 [![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
-[![Version](https://img.shields.io/badge/Version-v1.4.0-blue?style=for-the-badge)](https://github.com/holman57/hardcode)
+[![Version](https://img.shields.io/badge/Version-v1.5.0-blue?style=for-the-badge)](https://github.com/holman57/hardcode)
 [![Deploy Status](https://img.shields.io/badge/Deployment-Callisto%20VM%20%2B%20GH%20Pages-orange?style=for-the-badge)](https://holman57.github.io/hardcode/)
 
 ---
@@ -16,7 +16,9 @@
 **HardCode** is an interactive, high-velocity knowledge verification and cognitive training engine engineered to establish instant recall and syntax fluency across **18 programming languages** and the foundational disciplines of **Computer Science and Systems Engineering**.
 
 The application models pedagogical concepts as an interactive, directed **Knowledge Graph** comprising **658 vertices**, **786 directed relational edges**, and **430 interactive multi-modal questions**. HardCode features:
-- **Cyber-HUD Top Navigation**: Redesigned high-contrast dark slate (`#0F172A`/`#1E293B`) header with neon glowing accents, dynamic countdown progress bar, real-time accuracy sparkline, level badge, and dedicated 3D Knowledge Graph launcher.
+- **Cross-Platform Female Voice Synthesis**: Client-side text-to-speech engine targeting an articulate female voice persona prioritizing Web and Android compatibility, vocalizing questions upon generation and narrating pedagogical breakdowns.
+- **Audio-Synchronized Explanation Dwell Timers**: Adaptive speech duration estimation dynamically calculating narration length with pause buffers, holding countdown bars to ensure questions never advance before spoken explanations conclude.
+- **Cyber-HUD Top Navigation**: High-contrast dark slate (`#0F172A`/`#1E293B`) header with neon glowing accents, AI Voice HUD toggle (`Key('btn_toggle_voice')`), dynamic countdown progress bar, real-time accuracy sparkline, level badge, and 3D Knowledge Graph launcher.
 - **Granular Hierarchical Expansion**: Full drill-down ontology from Galactic Core master domains down to granular leaf concepts (e.g. `Computer Science` $\rightarrow$ `Programming Languages` $\rightarrow$ `Rust` $\rightarrow$ `Variable Declaration & Mutability`, `Borrow Checker & Ownership Primitives`, `Lifetimes`, `Pattern Matching`, `Error Handling`).
 - **Spatial Galaxy Clustering**: 3D sector separation where master domains are positioned across deep orbital distances ($R \ge 350$), while similar subtopics and leaf concepts cluster tightly ($r \le 65$) around their respective domain anchors.
 - **Interactive 3D Node Click Animations**: Tapping nodes triggers smooth camera flight transitions, multi-ring radiating shockwaves, and rotating orbital satellites.

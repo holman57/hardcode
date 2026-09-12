@@ -7,6 +7,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'services/database_service.dart';
 import 'services/progression_service.dart';
 import 'services/adaptive_explanation_service.dart';
+import 'services/voice_service.dart';
 import 'widgets/explanation_overlay.dart';
 import 'widgets/motion_graphics_overlay.dart';
 import 'screens/knowledge_graph_screen.dart';
@@ -265,6 +266,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
 
   void _onExplanationDismissed() {
+    VoiceService.instance.stop();
     if (!mounted) return;
     setState(() {
       _showExplanationOverlay = false;
@@ -450,6 +452,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       _trendDelta = delta;
     });
     _graphController.forward(from: 0.0);
+    VoiceService.instance.stop();
 
     _showTopAlert(
       message: "Time's up! Correct solution revealed below.",
@@ -492,6 +495,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     String? errorMsg,
     int? session,
   }) async {
+    VoiceService.instance.stop();
     _cancelTimer();
     _topAlertTimer?.cancel();
     _idleReengagementTimer?.cancel();
@@ -830,6 +834,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     _questionSessionId++;
     _cancelAdvance();
     _cancelTimer();
+    VoiceService.instance.stop();
     _isAnswerSubmitted = false;
     _activeDraggingIndex = null;
     _topAlertTimer?.cancel();
@@ -930,6 +935,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
     _startTimer();
     _resetIdleTimer();
+    if (_question.isNotEmpty) {
+      VoiceService.instance.speakQuestion(_question);
+    }
   }
 
   void _generateTrueFalseQuestion(Map curriculum, List<String> domains, Random random) {
@@ -2238,6 +2246,74 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           },
         ),
         actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: Tooltip(
+              message: VoiceService.instance.isMuted
+                  ? 'Unmute AI Voice (Female)'
+                  : 'Mute AI Voice (Female)',
+              child: Semantics(
+                button: true,
+                label: 'Toggle AI Voice',
+                child: InkWell(
+                  key: const Key('btn_toggle_voice'),
+                  onTap: () {
+                    VoiceService.instance.toggleMute();
+                    setState(() {});
+                  },
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF1E293B),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: VoiceService.instance.isMuted
+                            ? const Color(0xFF64748B).withOpacity(0.5)
+                            : const Color(0xFF38BDF8),
+                        width: 1.2,
+                      ),
+                      boxShadow: VoiceService.instance.isMuted
+                          ? null
+                          : [
+                              BoxShadow(
+                                color: const Color(0xFF38BDF8).withOpacity(0.22),
+                                blurRadius: 8,
+                                spreadRadius: 1,
+                              ),
+                            ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          VoiceService.instance.isMuted
+                              ? Icons.voice_over_off_rounded
+                              : Icons.record_voice_over_rounded,
+                          size: 16,
+                          color: VoiceService.instance.isMuted
+                              ? const Color(0xFF94A3B8)
+                              : const Color(0xFF38BDF8),
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          VoiceService.instance.isMuted ? 'MUTED' : 'VOICE',
+                          style: GoogleFonts.jetBrainsMono(
+                            fontSize: 11.5,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 1.0,
+                            color: VoiceService.instance.isMuted
+                                ? const Color(0xFF94A3B8)
+                                : const Color(0xFF38BDF8),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.only(right: 12.0),
             child: Tooltip(

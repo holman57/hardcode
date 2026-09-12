@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'voice_service.dart';
 
 /// Representation of an explanation payload tailored to a learner's struggle level.
 class ExplanationPayload {
@@ -127,31 +128,40 @@ class AdaptiveExplanationService {
       tier = 2;
     }
 
-    // Progressive dwell time calculation:
-    // Base 4s + (tier - 1)*3s + min(misses * 1.5, 5s)
-    // Tier 1: 4.0s - 5.5s
-    // Tier 2: 7.0s - 9.0s
-    // Tier 3: 10.0s - 13.0s
-    final int dwellSeconds = (4.0 + (tier - 1) * 3.0 + min(misses * 1.5, 5.0)).round();
-
     final topicData = _curatedTopicKnowledge[key] ?? _getDefaultTopicData(topic);
     final tierData = topicData[tier] ?? topicData[1]!;
+
+    final title = tierData['title'] ?? '$topic Concept Breakdown';
+    final tierBadge = tier == 3
+        ? 'ARCHITECTURAL MASTERCLASS (TIER 3)'
+        : tier == 2
+            ? 'DEEP DIVE MECHANICS (TIER 2)'
+            : 'KEY INSIGHT (TIER 1)';
+    final explanation = customExplanation != null && customExplanation.isNotEmpty && tier == 1
+        ? '$customExplanation\n\n${tierData['explanation'] ?? ''}'
+        : (tierData['explanation'] ?? 'Review the core rules of this topic.');
+    final mentalModel = tierData['mentalModel'] ?? 'Focus on fundamental semantics.';
+
+    // Base pedagogical dwell duration:
+    // Base 4s + (tier - 1)*3s + min(misses * 1.5, 5s)
+    final int baseDwell = (4.0 + (tier - 1) * 3.0 + min(misses * 1.5, 5.0)).round();
+
+    // Spoken narrative length estimation (ensures the timer approximates audio length):
+    final spokenNarrative = '$title. $tierBadge. $explanation. Mental model: $mentalModel';
+    final int estimatedAudioSeconds = VoiceService.estimateSpeechDurationSeconds(spokenNarrative);
+
+    // Final dwell timer: ensures countdown never expires before audio finishes
+    final int dwellSeconds = max(baseDwell, estimatedAudioSeconds);
 
     return ExplanationPayload(
       topic: topic,
       subType: subType,
-      title: tierData['title'] ?? '$topic Concept Breakdown',
+      title: title,
       tier: tier,
-      tierBadge: tier == 3
-          ? 'ARCHITECTURAL MASTERCLASS (TIER 3)'
-          : tier == 2
-              ? 'DEEP DIVE MECHANICS (TIER 2)'
-              : 'KEY INSIGHT (TIER 1)',
-      explanation: customExplanation != null && customExplanation.isNotEmpty && tier == 1
-          ? '$customExplanation\n\n${tierData['explanation'] ?? ''}'
-          : (tierData['explanation'] ?? 'Review the core rules of this topic.'),
+      tierBadge: tierBadge,
+      explanation: explanation,
       codeSnippet: tierData['codeSnippet'],
-      mentalModel: tierData['mentalModel'] ?? 'Focus on fundamental semantics.',
+      mentalModel: mentalModel,
       dwellSeconds: dwellSeconds,
       consecutiveMisses: misses,
     );

@@ -2,7 +2,7 @@ name: multiprogramming
 description: Learn the syntax for different programming languages
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.4.0+2
+version: 1.5.0+3
 
 environment:
   sdk: '>=3.1.5 <4.0.0'
@@ -15,6 +15,7 @@ dependencies:
   google_fonts: ">=6.1.0 <7.0.0"
   hive: ^2.2.3
   hive_flutter: ^1.1.0
+  flutter_tts: ^4.2.2
 
 dev_dependencies:
   flutter_test:
