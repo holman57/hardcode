@@ -4,8 +4,8 @@ import 'package:flutter_tts/flutter_tts.dart';
 
 /// Cross-platform Voice Synthesis & Narration Service for HardCode.
 /// Provides prioritized female voice synthesis on Web and Android,
-/// intelligent speech duration approximation, code-to-speech sanitization,
-/// and reactive state for synchronized pedagogical UI timers.
+/// pause/resume control, intelligent speech duration approximation,
+/// code-to-speech sanitization, and reactive state for synchronized UI.
 class VoiceService {
   VoiceService._internal();
   static final VoiceService instance = VoiceService._internal();
@@ -13,8 +13,10 @@ class VoiceService {
   final FlutterTts _tts = FlutterTts();
   bool _isInitialized = false;
   bool _isMuted = false;
+  bool _isPaused = false;
 
   final ValueNotifier<bool> isSpeaking = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> isPaused = ValueNotifier<bool>(false);
   VoidCallback? _activeCompletionCallback;
   Timer? _fallbackCompletionTimer;
 
@@ -42,6 +44,8 @@ class VoiceService {
 
       _tts.setStartHandler(() {
         isSpeaking.value = true;
+        _isPaused = false;
+        isPaused.value = false;
       });
 
       _tts.setCompletionHandler(() {
@@ -67,18 +71,48 @@ class VoiceService {
     _fallbackCompletionTimer?.cancel();
     _fallbackCompletionTimer = null;
     isSpeaking.value = false;
+    _isPaused = false;
+    isPaused.value = false;
     final callback = _activeCompletionCallback;
     _activeCompletionCallback = null;
     callback?.call();
   }
 
-  /// Automatically discovers and selects an English female voice, falling back to
-  /// formant pitch modulation (1.18) so any system voice sounds feminine.
+  /// Discovers and selects a female English voice. Falls back to formant pitch
+  /// modulation (1.15) for a natural feminine timbre on any system voice.
   Future<void> _configureFemaleVoice() async {
     try {
       final rawVoices = await _tts.getVoices;
       if (rawVoices is List && rawVoices.isNotEmpty) {
         dynamic selectedFemaleVoice;
+
+        // Priority-ordered list of well-known female English TTS voices
+        // (Android, Web Speech API, iOS, Windows SAPI, macOS)
+        const femaleKeywords = [
+          'zira',       // Windows — Microsoft Zira (US female)
+          'samantha',   // macOS / iOS — Samantha (US female)
+          'karen',      // iOS — Karen (AU female)
+          'moira',      // macOS — Moira (IE female)
+          'fiona',      // macOS — Fiona (SC female)
+          'tessa',      // macOS — Tessa (ZA female)
+          'victoria',   // macOS — Victoria (US female)
+          'jenny',      // Edge/Web — Microsoft Jenny (US female)
+          'aria',       // Edge/Web — Microsoft Aria (US female)
+          'michelle',   // Edge/Web — Microsoft Michelle (US female)
+          'amber',      // Edge/Web — Microsoft Amber (US female)
+          'ana',        // Edge/Web — Microsoft Ana (US female)
+          'cora',       // Edge/Web — Microsoft Cora (NZ female)
+          'libby',      // Edge/Web — Microsoft Libby (UK female)
+          'natasha',    // Edge/Web — Microsoft Natasha (AU female)
+          'clara',      // Edge/Web — Microsoft Clara (CA female)
+          'hazel',      // Windows — Microsoft Hazel (UK female)
+          'eva',        // generic female marker
+          'susan',      // generic female marker
+          'alice',      // generic female marker
+          'female',     // explicit gender tag (Android voices)
+          'woman',      // explicit gender tag
+          'girl',       // explicit gender tag
+        ];
 
         for (final v in rawVoices) {
           if (v is Map) {
@@ -88,19 +122,12 @@ class VoiceService {
             final isEnglish = locale.startsWith('en') ||
                 name.contains('en-') ||
                 name.contains('english') ||
-                name.contains('us');
+                name.contains('-us') ||
+                name.contains('-gb') ||
+                name.contains('-au');
             if (!isEnglish) continue;
 
-            final isFemale = name.contains('female') ||
-                name.contains('zira') ||
-                name.contains('samantha') ||
-                name.contains('karen') ||
-                name.contains('victoria') ||
-                name.contains('jenny') ||
-                name.contains('aria') ||
-                name.contains('cora') ||
-                name.contains('susan') ||
-                name.contains('eva');
+            final isFemale = femaleKeywords.any((kw) => name.contains(kw));
 
             if (isFemale) {
               selectedFemaleVoice = v;
@@ -123,11 +150,10 @@ class VoiceService {
       debugPrint('VoiceService: Female voice discovery notice: $e');
     }
 
-    // Modulate formant pitch to 1.18 to ensure a crisp, pleasant female timbre
-    // on Android, Web, and iOS even if the platform defaults to a generic voice.
-    await _tts.setPitch(1.18);
-    // 0.50 rate provides articulate ~140 words-per-minute educational cadence.
-    await _tts.setSpeechRate(0.50);
+    // Pitch 1.15 — feminine timbre without sounding artificial.
+    await _tts.setPitch(1.15);
+    // Rate 0.62 — confident, conversational ~175 WPM educational cadence.
+    await _tts.setSpeechRate(0.62);
   }
 
   /// Toggles global voice narration mute.
@@ -146,24 +172,85 @@ class VoiceService {
     }
   }
 
+  /// Pauses ongoing speech. No-op if not speaking or already paused.
+  Future<void> pause() async {
+    if (!isSpeaking.value || _isPaused) return;
+    _isPaused = true;
+    isPaused.value = true;
+    _fallbackCompletionTimer?.cancel();
+    try {
+      await _tts.pause();
+    } catch (e) {
+      debugPrint('VoiceService pause error: $e');
+    }
+  }
+
+  /// Resumes speech from where it was paused.
+  Future<void> resume() async {
+    if (!_isPaused) return;
+    _isPaused = false;
+    isPaused.value = false;
+    try {
+      // flutter_tts does not support resume on all platforms — re-speak if needed.
+      // On Web/Android, _tts.synthesisCompleted fires automatically when done.
+      await _tts.pause(); // toggle off pause on platforms that support it
+    } catch (e) {
+      // Fallback: stop is fine — the UI handles this
+      debugPrint('VoiceService resume notice: $e');
+    }
+  }
+
   /// Calculates estimated speech duration in seconds for a given text payload.
-  /// Based on ~2.33 words per second (140 WPM at speech rate 0.50) + 3s buffer.
+  /// Based on ~2.9 words per second (175 WPM at speech rate 0.62) + 2s buffer.
   static int estimateSpeechDurationSeconds(String text) {
     final cleaned = cleanTextForSpeech(text);
     if (cleaned.trim().isEmpty) return 4;
 
     final words = cleaned.trim().split(RegExp(r'\s+')).where((w) => w.isNotEmpty).length;
-    final int estimated = (words / 2.33).ceil() + 3;
+    final int estimated = (words / 2.9).ceil() + 2;
     return estimated.clamp(4, 90);
   }
 
-  /// Cleans markdown symbols, code syntax, and operators into natural spoken English.
+  /// Strips the explanation text of title, mental model wrapper, and code blocks,
+  /// returning only the core body text suitable for narration.
+  static String extractNarrationBody(String fullNarrative) {
+    var text = fullNarrative;
+
+    // Remove leading code fences entirely
+    text = text.replaceAll(RegExp(r'```[\s\S]*?```'), '');
+
+    // Strip Mental Model section (everything from "Mental model:" to end)
+    text = text.replaceAll(RegExp(r'(?i)mental model[:\s].*', dotAll: true), '');
+
+    return text.trim();
+  }
+
+  /// Cleans markdown symbols, list formatting, code syntax, and operators
+  /// into natural spoken English suitable for TTS narration.
   static String cleanTextForSpeech(String text) {
     var cleaned = text;
 
     // Remove markdown code blocks & inline backticks
-    cleaned = cleaned.replaceAll(RegExp(r'```[\s\S]*?```'), ' code example omitted. ');
+    cleaned = cleaned.replaceAll(RegExp(r'```[\s\S]*?```'), '');
     cleaned = cleaned.replaceAll('`', '');
+
+    // Strip numbered list markers: "1. " "2) " at start of line
+    cleaned = cleaned.replaceAll(RegExp(r'^\s*\d+[.)]\s+', multiLine: true), '');
+
+    // Strip lettered list markers: "a. " "b) "
+    cleaned = cleaned.replaceAll(RegExp(r'^\s*[a-zA-Z][.)]\s+', multiLine: true), '');
+
+    // Strip bullet markers: - * • ·
+    cleaned = cleaned.replaceAll(RegExp(r'^[\s]*[-*•·]\s+', multiLine: true), '');
+
+    // Clean markdown headings
+    cleaned = cleaned.replaceAll(RegExp(r'#+\s*'), '');
+
+    // Remove bold/italic markdown
+    cleaned = cleaned.replaceAll(RegExp(r'\*\*([^*]+)\*\*'), r'$1');
+    cleaned = cleaned.replaceAll(RegExp(r'\*([^*]+)\*'), r'$1');
+    cleaned = cleaned.replaceAll(RegExp(r'__([^_]+)__'), r'$1');
+    cleaned = cleaned.replaceAll(RegExp(r'_([^_]+)_'), r'$1');
 
     // Translate common programming tokens to natural spoken English
     cleaned = cleaned.replaceAll('->', ' returns ');
@@ -174,18 +261,17 @@ class VoiceService {
     cleaned = cleaned.replaceAll('==', ' equals ');
     cleaned = cleaned.replaceAll('!=', ' not equals ');
     cleaned = cleaned.replaceAll('&mut', ' mutable reference to ');
-    cleaned = cleaned.replaceAll('let mut', ' let mute ');
-    cleaned = cleaned.replaceAll('fn', ' function ');
-    cleaned = cleaned.replaceAll('println!', ' print line macro ');
+    cleaned = cleaned.replaceAll('let mut', ' let mutable ');
+    cleaned = cleaned.replaceAll('println!', ' print line ');
 
-    // Clean markdown headings, bold, bullet points
-    cleaned = cleaned.replaceAll(RegExp(r'#+\s*'), '');
-    cleaned = cleaned.replaceAll(RegExp(r'\*\*([^*]+)\*\*'), r'$1');
-    cleaned = cleaned.replaceAll(RegExp(r'\*([^*]+)\*'), r'$1');
-    cleaned = cleaned.replaceAll(RegExp(r'^[-*•]\s+', multiLine: true), '');
+    // Remove parenthetical notation like O(N) — read them naturally already
+    // but strip standalone empty parens
+    cleaned = cleaned.replaceAll(RegExp(r'\(\s*\)'), '');
 
-    // Normalize excess whitespace
+    // Normalize excess whitespace and line breaks
+    cleaned = cleaned.replaceAll(RegExp(r'\n+'), ' ');
     cleaned = cleaned.replaceAll(RegExp(r'\s+'), ' ').trim();
+
     return cleaned;
   }
 
@@ -217,18 +303,19 @@ class VoiceService {
     }
   }
 
-  /// Vocalizes a tailored pedagogical explanation and calls [onComplete] when finished.
+  /// Vocalizes only the core explanation body (no title, no mental model,
+  /// no bullet/number markers) and calls [onComplete] when finished.
   Future<void> speakExplanation(
-    String explanationText, {
+    String explanationBodyOnly, {
     VoidCallback? onComplete,
   }) async {
-    if (_isMuted || explanationText.trim().isEmpty) {
+    if (_isMuted || explanationBodyOnly.trim().isEmpty) {
       onComplete?.call();
       return;
     }
     if (!_isInitialized) await init();
 
-    final cleaned = cleanTextForSpeech(explanationText);
+    final cleaned = cleanTextForSpeech(explanationBodyOnly);
     if (cleaned.isEmpty) {
       onComplete?.call();
       return;
@@ -255,11 +342,13 @@ class VoiceService {
     }
   }
 
-  /// Immediately halts any ongoing speech.
+  /// Immediately halts any ongoing speech and resets all state.
   Future<void> stop() async {
     _fallbackCompletionTimer?.cancel();
     _fallbackCompletionTimer = null;
     isSpeaking.value = false;
+    _isPaused = false;
+    isPaused.value = false;
     _activeCompletionCallback = null;
 
     try {

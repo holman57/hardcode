@@ -58,11 +58,10 @@ class _ExplanationOverlayState extends State<ExplanationOverlay>
 
     _animationController.forward();
 
-    // Start voice narration of explanation
-    final narrative =
-        '${widget.payload.title}. ${widget.payload.tierBadge}. ${widget.payload.explanation}. Mental model: ${widget.payload.mentalModel}';
+    // Narrate only the explanation body — skip title, tier badge, and mental model.
+    // Bullets and numbered lists are stripped inside VoiceService.cleanTextForSpeech.
     VoiceService.instance.speakExplanation(
-      narrative,
+      widget.payload.explanation,
       onComplete: () {
         if (mounted && !_isDismissed && _remainingSeconds <= 1) {
           _dismiss();

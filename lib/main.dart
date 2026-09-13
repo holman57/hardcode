@@ -4944,7 +4944,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         _questionTimer?.cancel();
         _questionTimer = null;
         _idleReengagementTimer?.cancel();
+        VoiceService.instance.pause();
       } else {
+        VoiceService.instance.resume();
         _resumeTimer();
       }
     });
