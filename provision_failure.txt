@@ -1,0 +1,153 @@
++ set -e
++ INSTALL_DIR=/opt/kokoro_tts
++ SERVICE_NAME=kokoro-tts
++ PORT=8088
++ echo =======================================================
+=======================================================
+ [Kokoro-82M] Provisioning Neural TTS on Callisto VM
+=======================================================
+[1/6] Installing system dependencies...
++ echo ' [Kokoro-82M] Provisioning Neural TTS on Callisto VM'
++ echo =======================================================
++ echo '[1/6] Installing system dependencies...'
++ sudo apt-get update -qq
++ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq python3 python3-venv python3-pip libsndfile1 espeak-ng curl
+[2/6] Preparing /opt/kokoro_tts directory...
++ echo '[2/6] Preparing /opt/kokoro_tts directory...'
++ sudo mkdir -p /opt/kokoro_tts
++ sudo mkdir -p /opt/kokoro_tts/cache
++++ dirname /tmp/kokoro_tts/setup_callisto.sh
+++ cd /tmp/kokoro_tts
+++ pwd
++ SCRIPT_DIR=/tmp/kokoro_tts
++ sudo cp /tmp/kokoro_tts/app.py /opt/kokoro_tts/
++ sudo cp /tmp/kokoro_tts/requirements.txt /opt/kokoro_tts/
+Installing Python dependencies...
++ '[' '!' -d /opt/kokoro_tts/venv ']'
++ echo 'Installing Python dependencies...'
++ sudo /opt/kokoro_tts/venv/bin/pip install --upgrade pip -q
++ sudo /opt/kokoro_tts/venv/bin/pip install -r /opt/kokoro_tts/requirements.txt -q
+[3/6] Verifying Kokoro-82M model files...
+[4/6] Setting permissions for www-data...
++ echo '[3/6] Verifying Kokoro-82M model files...'
++ MODEL_FILE=/opt/kokoro_tts/kokoro-v1.0.onnx
++ VOICES_FILE=/opt/kokoro_tts/voices-v1.0.bin
++ '[' '!' -f /opt/kokoro_tts/kokoro-v1.0.onnx ']'
++ '[' '!' -f /opt/kokoro_tts/voices-v1.0.bin ']'
++ echo '[4/6] Setting permissions for www-data...'
++ sudo chown -R www-data:www-data /opt/kokoro_tts
++ sudo chmod -R 755 /opt/kokoro_tts
+[5/6] Configuring systemd service: kokoro-tts...
++ echo '[5/6] Configuring systemd service: kokoro-tts...'
++ cat
++ sudo tee /etc/systemd/system/kokoro-tts.service
++ sudo systemctl daemon-reload
++ sudo systemctl enable kokoro-tts
++ sudo systemctl restart kokoro-tts
+[6/6] Checking Nginx reverse proxy configuration...
++ echo '[6/6] Checking Nginx reverse proxy configuration...'
++ sudo python3 -c '
+import glob, re, os, subprocess
+
+clean_pattern = r"([ \t]*#[^\n]*\n)?[ \t]*location\s+[\^~*]*\s*/api/voice/?\s*\{[^}]*\}[ \t]*\n?"
+proxy_block = """
+    # Kokoro-82M Neural Voice Synthesis Endpoint
+    location /api/voice/ {
+        proxy_pass http://127.0.0.1:8088;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering on;
+        proxy_read_timeout 60s;
+    }
+"""
+
+def update_nginx_file(content):
+    clean = re.sub(clean_pattern, "", content)
+    blocks = []
+    for m in re.finditer(r"^[ \t]*server\s*\{", clean, re.M):
+        open_brace = clean.find("{", m.start())
+        depth = 0
+        in_comment = False
+        closing = -1
+        for i in range(open_brace, len(clean)):
+            ch = clean[i]
+            if ch == "\n":
+                in_comment = False
+            elif ch == "#":
+                in_comment = True
+            elif not in_comment:
+                if ch == "{":
+                    depth += 1
+                elif ch == "}":
+                    depth -= 1
+                    if depth == 0:
+                        closing = i
+                        break
+        if closing != -1:
+            blocks.append((m.start(), open_brace, closing))
+
+    if not blocks:
+        return content
+
+    result = clean
+    for start, open_brace, closing in reversed(blocks):
+        block_text = clean[start:closing+1]
+        is_only = (len(blocks) == 1)
+        should_inject = is_only or (("root" in block_text or "ssl" in block_text or "443" in block_text or "hardcode" in block_text) and ("return 301" not in block_text or "root" in block_text))
+        if should_inject:
+            result = result[:open_brace+1] + proxy_block + result[open_brace+1:]
+
+    return result
+
+conf_candidates = glob.glob("/etc/nginx/sites-enabled/*") + glob.glob("/etc/nginx/conf.d/*.conf")
+visited_paths = set()
+backups = {}
+
+for conf_file in conf_candidates:
+    if not os.path.isfile(conf_file):
+        continue
+    real_p = os.path.realpath(conf_file)
+    if real_p in visited_paths:
+        continue
+    visited_paths.add(real_p)
+
+    try:
+        with open(real_p, "r") as fp:
+            orig = fp.read()
+        updated = update_nginx_file(orig)
+        if updated != orig:
+            backups[real_p] = orig
+            with open(real_p, "w") as fp:
+                fp.write(updated)
+            print(f"Configured /api/voice/ proxy in: {real_p}")
+    except Exception as e:
+        print(f"Notice on {real_p}: {e}")
+
+# Validate Nginx syntax before committing
+test_res = subprocess.run(["nginx", "-t"], capture_output=True, text=True)
+if test_res.returncode != 0:
+    import sys
+    sys.stderr.write(f"Nginx configuration test failed! Stderr: {test_res.stderr}\n")
+    sys.stderr.flush()
+    for path, orig in backups.items():
+        with open(path, "w") as fp:
+            fp.write(orig)
+    raise SystemExit(1)
+
+print("Nginx syntax validation passed.")
+reload_res = subprocess.run(["systemctl", "reload", "nginx"])
+if reload_res.returncode != 0:
+    print("Reload returned non-zero, restarting Nginx...")
+    subprocess.run(["systemctl", "restart", "nginx"], check=True)
+print("Nginx successfully reloaded.")
+'
+Nginx configuration test failed! Stderr: nginx: [emerg] "location" directive is not allowed here in /etc/nginx/sites-enabled/default:111
+nginx: configuration file /etc/nginx/nginx.conf test failed
+
+Configured /api/voice/ proxy in: /etc/nginx/sites-available/lukeholman.net.conf
+Configured /api/voice/ proxy in: /etc/nginx/sites-available/hardcode.academy.conf
+Configured /api/voice/ proxy in: /etc/nginx/sites-available/blackheartarts.com.conf
+Configured /api/voice/ proxy in: /etc/nginx/sites-available/default
+Configured /api/voice/ proxy in: /etc/nginx/conf.d/default.conf
