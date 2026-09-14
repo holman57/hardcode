@@ -91,7 +91,7 @@ sudo systemctl restart "$SERVICE_NAME"
 # 6. Configure Nginx Reverse Proxy Route for /api/voice/
 echo "[6/6] Checking Nginx reverse proxy configuration..."
 sudo python3 -c '
-import glob, re, os, subprocess
+import glob, re, os, subprocess, sys
 
 clean_pattern = r"([ \t]*#[^\n]*\n)?[ \t]*location\s+[\^~*]*\s*/api/voice/?\s*\{[^}]*\}[ \t]*\n?"
 proxy_block = """
@@ -107,16 +107,15 @@ proxy_block = """
     }
 """
 
-def update_nginx_file(content):
-    clean = re.sub(clean_pattern, "", content)
+def parse_server_blocks(text):
     blocks = []
-    for m in re.finditer(r"^[ \t]*server\s*\{", clean, re.M):
-        open_brace = clean.find("{", m.start())
+    for m in re.finditer(r"^[ \t]*server\s*\{", text, re.M):
+        open_brace = text.find("{", m.start())
         depth = 0
         in_comment = False
         closing = -1
-        for i in range(open_brace, len(clean)):
-            ch = clean[i]
+        for i in range(open_brace, len(text)):
+            ch = text[i]
             if ch == "\n":
                 in_comment = False
             elif ch == "#":
@@ -131,10 +130,29 @@ def update_nginx_file(content):
                         break
         if closing != -1:
             blocks.append((m.start(), open_brace, closing))
+    return blocks
 
+def sanitize_default_site(content):
+    clean = re.sub(clean_pattern, "", content)
+    blocks = parse_server_blocks(clean)
+    if blocks:
+        start, open_brace, closing = blocks[0]
+        server_code = clean[start:closing+1]
+        remainder = clean[closing+1:]
+        sanitized_remainder = []
+        for line in remainder.splitlines(True):
+            stripped = line.strip()
+            if stripped and not stripped.startswith("#"):
+                sanitized_remainder.append("# " + line)
+            else:
+                sanitized_remainder.append(line)
+        return clean[:start] + server_code + "".join(sanitized_remainder)
+    return clean
+
+def update_hardcode_file(clean):
+    blocks = parse_server_blocks(clean)
     if not blocks:
-        return content
-
+        return clean
     result = clean
     for start, open_brace, closing in reversed(blocks):
         block_text = clean[start:closing+1]
@@ -142,10 +160,13 @@ def update_nginx_file(content):
         should_inject = is_only or (("root" in block_text or "ssl" in block_text or "443" in block_text or "hardcode" in block_text) and ("return 301" not in block_text or "root" in block_text))
         if should_inject:
             result = result[:open_brace+1] + proxy_block + result[open_brace+1:]
-
     return result
 
-conf_candidates = glob.glob("/etc/nginx/sites-enabled/*") + glob.glob("/etc/nginx/conf.d/*.conf")
+conf_candidates = (
+    glob.glob("/etc/nginx/sites-enabled/*") +
+    glob.glob("/etc/nginx/sites-available/*") +
+    glob.glob("/etc/nginx/conf.d/*.conf")
+)
 visited_paths = set()
 backups = {}
 
@@ -160,19 +181,30 @@ for conf_file in conf_candidates:
     try:
         with open(real_p, "r") as fp:
             orig = fp.read()
-        updated = update_nginx_file(orig)
+
+        # Sanitize default site to repair any corrupted comments from previous attempts
+        if "default" in os.path.basename(real_p).lower():
+            cleaned = sanitize_default_site(orig)
+        else:
+            cleaned = re.sub(clean_pattern, "", orig)
+
+        # Only inject the /api/voice/ reverse proxy into hardcode.academy configurations
+        if "hardcode" in os.path.basename(real_p).lower() or ("hardcode.academy" in cleaned and "default" not in real_p.lower()):
+            updated = update_hardcode_file(cleaned)
+        else:
+            updated = cleaned
+
         if updated != orig:
             backups[real_p] = orig
             with open(real_p, "w") as fp:
                 fp.write(updated)
-            print(f"Configured /api/voice/ proxy in: {real_p}")
+            print(f"Updated Nginx configuration: {real_p}")
     except Exception as e:
         print(f"Notice on {real_p}: {e}")
 
 # Validate Nginx syntax before committing
 test_res = subprocess.run(["nginx", "-t"], capture_output=True, text=True)
 if test_res.returncode != 0:
-    import sys
     sys.stderr.write(f"Nginx configuration test failed! Stderr: {test_res.stderr}\n")
     sys.stderr.flush()
     for path, orig in backups.items():
