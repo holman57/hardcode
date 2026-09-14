@@ -172,7 +172,9 @@ for conf_file in conf_candidates:
 # Validate Nginx syntax before committing
 test_res = subprocess.run(["nginx", "-t"], capture_output=True, text=True)
 if test_res.returncode != 0:
-    print(f"Nginx configuration test failed! Rolling back changes...\n{test_res.stderr}")
+    import sys
+    sys.stderr.write(f"Nginx configuration test failed! Stderr: {test_res.stderr}\n")
+    sys.stderr.flush()
     for path, orig in backups.items():
         with open(path, "w") as fp:
             fp.write(orig)

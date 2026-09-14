@@ -91,8 +91,17 @@ jobs:
           ssh -i ~/.ssh/deploy_key "$VM_USER@$VM_HOST" "sudo bash -x /tmp/kokoro_tts/setup_callisto.sh" 2>&1 | tee /tmp/callisto_provision.log
           PROV_STATUS=${PIPESTATUS[0]}
           if [ $PROV_STATUS -ne 0 ]; then
-            echo "::error::Callisto provisioning failed with exit code $PROV_STATUS"
-            tail -n 60 /tmp/callisto_provision.log
+            ERROR_LINE=$(grep -E "(failed|error|emerg|syntax|Exception)" /tmp/callisto_provision.log | tail -n 1)
+            echo "::error title=Callisto Error::$ERROR_LINE"
+            git config --global user.name "github-actions"
+            git config --global user.email "github-actions@github.com"
+            git branch -D build-debug-log 2>/dev/null || true
+            git checkout --orphan build-debug-log
+            git rm -rf . 2>/dev/null || true
+            cp /tmp/callisto_provision.log provision_failure.txt
+            git add provision_failure.txt
+            git commit -m "callisto provision failure log"
+            git push -f origin build-debug-log || true
             exit $PROV_STATUS
           fi
           echo "Kokoro TTS service deployed and started successfully."
