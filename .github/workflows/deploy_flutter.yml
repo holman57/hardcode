@@ -95,7 +95,7 @@ jobs:
           VM_USER: ${{ secrets.AZURE_VM_USERNAME }}
           VM_HOST: ${{ secrets.AZURE_VM_HOST }}
         run: |
-          ssh -i ~/.ssh/deploy_key "$VM_USER@$VM_HOST" "sudo nginx -t && sudo systemctl reload nginx"
+          ssh -i ~/.ssh/deploy_key "$VM_USER@$VM_HOST" "sudo nginx -t && (sudo systemctl reload nginx || sudo systemctl restart nginx)"
           echo "Nginx reloaded successfully on Callisto."
 
       - name: Build Web Application for GitHub Pages

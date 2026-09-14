@@ -91,10 +91,10 @@ sudo systemctl restart "$SERVICE_NAME"
 # 6. Configure Nginx Reverse Proxy Route for /api/voice/
 echo "[6/6] Checking Nginx reverse proxy configuration..."
 sudo python3 -c '
-import glob, re
+import glob, re, os, subprocess
 
-proxy_block = """
-    # Kokoro-82M Neural Voice Synthesis Endpoint
+clean_pattern = r"([ \t]*#[^\n]*\n)?[ \t]*location\s+[\^~*]*\s*/api/voice/[^{]*\{[^}]*\}[ \t]*\n?"
+proxy_block = """    # Kokoro-82M Neural Voice Synthesis Endpoint
     location /api/voice/ {
         proxy_pass http://127.0.0.1:8088;
         proxy_set_header Host $host;
@@ -106,31 +106,72 @@ proxy_block = """
     }
 """
 
-for conf_file in glob.glob("/etc/nginx/sites-enabled/*"):
+def update_nginx_config(content):
+    clean = re.sub(clean_pattern, "", content)
+    server_blocks = re.split(r"(server\s*\{)", clean)
+    if len(server_blocks) <= 1:
+        return content
+    out = [server_blocks[0]]
+    for i in range(1, len(server_blocks), 2):
+        keyword = server_blocks[i]
+        body = server_blocks[i+1]
+        is_only_block = (len(server_blocks) == 3)
+        should_inject = is_only_block or (("root" in body or "ssl" in body or "443" in body or "hardcode" in body or "index" in body) and ("return 301" not in body or "root" in body))
+        if should_inject:
+            loc_match = re.search(r"(\n[ \t]*location\s+[/~^])", body)
+            if loc_match:
+                idx = loc_match.start()
+                body = body[:idx] + "\n\n" + proxy_block + body[idx:]
+            else:
+                last_brace = body.rfind("}")
+                if last_brace != -1:
+                    body = body[:last_brace] + "\n" + proxy_block + "\n" + body[last_brace:]
+                else:
+                    body = "\n" + proxy_block + body
+        out.append(keyword)
+        out.append(body)
+    return "".join(out)
+
+conf_candidates = glob.glob("/etc/nginx/sites-enabled/*") + glob.glob("/etc/nginx/conf.d/*.conf")
+visited_paths = set()
+backups = {}
+
+for conf_file in conf_candidates:
+    if not os.path.isfile(conf_file):
+        continue
+    real_p = os.path.realpath(conf_file)
+    if real_p in visited_paths:
+        continue
+    visited_paths.add(real_p)
+
     try:
-        with open(conf_file, "r") as fp:
-            content = fp.read()
-
-        # Clean any existing /api/voice/ block first
-        clean = re.sub(r"\n\s*# Kokoro-82M Neural Voice Synthesis Endpoint\s+location /api/voice/ \{[\s\S]*?\}\n", "", content)
-
-        if "location / {" in clean:
-            new_content = clean.replace("location / {", proxy_block + "\n    location / {")
-        elif "location /" in clean:
-            new_content = clean.replace("location /", proxy_block + "\n    location /")
-        else:
-            new_content = clean
-
-        if new_content != content:
-            with open(conf_file, "w") as fp:
-                fp.write(new_content)
-            print(f"Successfully configured /api/voice/ in {conf_file}")
+        with open(real_p, "r") as fp:
+            orig = fp.read()
+        updated = update_nginx_config(orig)
+        if updated != orig:
+            backups[real_p] = orig
+            with open(real_p, "w") as fp:
+                fp.write(updated)
+            print(f"Configured /api/voice/ proxy in: {real_p}")
     except Exception as e:
-        print(f"Notice on {conf_file}: {e}")
-'
+        print(f"Notice on {real_p}: {e}")
 
-sudo nginx -t && sudo systemctl reload nginx
-echo "Nginx successfully configured and reloaded."
+# Validate Nginx syntax before committing
+test_res = subprocess.run(["nginx", "-t"], capture_output=True, text=True)
+if test_res.returncode != 0:
+    print(f"Nginx configuration test failed! Rolling back changes...\n{test_res.stderr}")
+    for path, orig in backups.items():
+        with open(path, "w") as fp:
+            fp.write(orig)
+    raise SystemExit(1)
+
+print("Nginx syntax validation passed.")
+reload_res = subprocess.run(["systemctl", "reload", "nginx"])
+if reload_res.returncode != 0:
+    print("Reload returned non-zero, restarting Nginx...")
+    subprocess.run(["systemctl", "restart", "nginx"], check=True)
+print("Nginx successfully reloaded.")
+'
 
 # Verify Service Health
 sleep 3
@@ -138,7 +179,7 @@ echo "Verifying local service health directly on port 8088..."
 curl -s http://127.0.0.1:8088/api/voice/health || echo "Notice: Service starting up..."
 
 echo "Verifying service via Nginx on localhost..."
-curl -s http://127.0.0.1/api/voice/health || echo "Notice: Nginx proxy..."
+curl -s -k -H "Host: hardcode.academy" https://127.0.0.1/api/voice/health || curl -s http://127.0.0.1/api/voice/health || echo "Notice: Nginx proxy..."
 
 echo "======================================================="
 echo " [Kokoro-82M] af_heart Voice Service Setup Completed!"
