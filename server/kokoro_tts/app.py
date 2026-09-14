@@ -33,10 +33,31 @@ app.add_middleware(
 
 # Paths and Environment
 BASE_DIR = Path(os.getenv("KOKORO_DIR", Path(__file__).parent))
-MODEL_PATH = Path(os.getenv("KOKORO_MODEL_PATH", BASE_DIR / "kokoro-v0_19.onnx"))
-VOICES_PATH = Path(os.getenv("KOKORO_VOICES_PATH", BASE_DIR / "voices.bin"))
 CACHE_DIR = Path(os.getenv("KOKORO_CACHE_DIR", BASE_DIR / "cache"))
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def get_model_path() -> Path:
+    env_path = os.getenv("KOKORO_MODEL_PATH")
+    if env_path and Path(env_path).exists():
+        return Path(env_path)
+    for name in ["kokoro-v1.0.onnx", "kokoro-v0_19.onnx"]:
+        p = BASE_DIR / name
+        if p.exists():
+            return p
+    return BASE_DIR / "kokoro-v1.0.onnx"
+
+
+def get_voices_path() -> Path:
+    env_path = os.getenv("KOKORO_VOICES_PATH")
+    if env_path and Path(env_path).exists():
+        return Path(env_path)
+    for name in ["voices-v1.0.bin", "voices.bin", "voices.json"]:
+        p = BASE_DIR / name
+        if p.exists():
+            return p
+    return BASE_DIR / "voices-v1.0.bin"
+
 
 # Kokoro Instance Singleton
 _kokoro_instance = None
@@ -54,13 +75,16 @@ def get_kokoro():
             detail=f"Kokoro engine initialization failed: {_kokoro_load_error}",
         )
 
+    model_path = get_model_path()
+    voices_path = get_voices_path()
+
     try:
         from kokoro_onnx import Kokoro
-        if not MODEL_PATH.exists() or not VOICES_PATH.exists():
+        if not model_path.exists() or not voices_path.exists():
             raise FileNotFoundError(
-                f"Model files missing at {MODEL_PATH} or {VOICES_PATH}."
+                f"Model files missing at {model_path} or {voices_path}."
             )
-        _kokoro_instance = Kokoro(str(MODEL_PATH), str(VOICES_PATH))
+        _kokoro_instance = Kokoro(str(model_path), str(voices_path))
         return _kokoro_instance
     except Exception as e:
         _kokoro_load_error = str(e)
@@ -85,14 +109,16 @@ def compute_cache_key(text: str, voice: str, speed: float) -> str:
 @app.get("/api/voice/health")
 def health_check():
     """Telemetry and health check for Nginx and deployment automation."""
-    model_ready = MODEL_PATH.exists() and VOICES_PATH.exists()
+    model_path = get_model_path()
+    voices_path = get_voices_path()
+    model_ready = model_path.exists() and voices_path.exists()
     return {
         "status": "online",
         "service": "kokoro-tts",
         "default_voice": "af_heart",
         "model_file_present": model_ready,
-        "model_path": str(MODEL_PATH),
-        "voices_path": str(VOICES_PATH),
+        "model_path": str(model_path),
+        "voices_path": str(voices_path),
         "cached_clips_count": len(list(CACHE_DIR.glob("*.wav"))),
     }
 

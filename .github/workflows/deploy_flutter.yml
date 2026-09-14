@@ -87,7 +87,7 @@ jobs:
           rsync -avz \
             -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes" \
             server/kokoro_tts/ "$VM_USER@$VM_HOST:/tmp/kokoro_tts/"
-          ssh -i ~/.ssh/deploy_key "$VM_USER@$VM_HOST" "sudo bash /tmp/kokoro_tts/setup_callisto.sh"
+          ssh -i ~/.ssh/deploy_key "$VM_USER@$VM_HOST" "sudo bash -x /tmp/kokoro_tts/setup_callisto.sh"
           echo "Kokoro TTS service deployed and started successfully."
 
       - name: Reload Nginx on Callisto VM

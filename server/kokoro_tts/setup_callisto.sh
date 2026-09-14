@@ -17,7 +17,7 @@ echo "======================================================="
 # 1. Install System Dependencies
 echo "[1/6] Installing system dependencies..."
 sudo apt-get update -qq
-sudo apt-get install -y -qq python3 python3-venv python3-pip libsndfile1 curl
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq python3 python3-venv python3-pip libsndfile1 espeak-ng curl
 
 # 2. Setup Directory and Virtual Environment
 echo "[2/6] Preparing /opt/kokoro_tts directory..."
@@ -38,21 +38,21 @@ echo "Installing Python dependencies..."
 sudo "$INSTALL_DIR/venv/bin/pip" install --upgrade pip -q
 sudo "$INSTALL_DIR/venv/bin/pip" install -r "$INSTALL_DIR/requirements.txt" -q
 
-# 3. Download Model Weights and Voice Vectors (if not already cached)
+# 3. Download Model Weights and Voice Vectors (Kokoro v1.0)
 echo "[3/6] Verifying Kokoro-82M model files..."
-MODEL_FILE="$INSTALL_DIR/kokoro-v0_19.onnx"
-VOICES_FILE="$INSTALL_DIR/voices.bin"
+MODEL_FILE="$INSTALL_DIR/kokoro-v1.0.onnx"
+VOICES_FILE="$INSTALL_DIR/voices-v1.0.bin"
 
 if [ ! -f "$MODEL_FILE" ]; then
-    echo "Downloading Kokoro-82M ONNX model (~300MB)..."
+    echo "Downloading Kokoro-82M ONNX model (~310MB)..."
     sudo curl -L -s -o "$MODEL_FILE" \
-        "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files/kokoro-v0_19.onnx"
+        "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx"
 fi
 
 if [ ! -f "$VOICES_FILE" ]; then
     echo "Downloading Kokoro voices bundle (including af_heart)..."
     sudo curl -L -s -o "$VOICES_FILE" \
-        "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files/voices.bin"
+        "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin"
 fi
 
 # 4. Set Permissions
@@ -73,8 +73,8 @@ User=www-data
 Group=www-data
 WorkingDirectory=/opt/kokoro_tts
 Environment="KOKORO_DIR=/opt/kokoro_tts"
-Environment="KOKORO_MODEL_PATH=/opt/kokoro_tts/kokoro-v0_19.onnx"
-Environment="KOKORO_VOICES_PATH=/opt/kokoro_tts/voices.bin"
+Environment="KOKORO_MODEL_PATH=/opt/kokoro_tts/kokoro-v1.0.onnx"
+Environment="KOKORO_VOICES_PATH=/opt/kokoro_tts/voices-v1.0.bin"
 Environment="KOKORO_CACHE_DIR=/opt/kokoro_tts/cache"
 ExecStart=/opt/kokoro_tts/venv/bin/uvicorn app:app --host 127.0.0.1 --port 8088 --workers 2
 Restart=always
@@ -90,30 +90,60 @@ sudo systemctl restart "$SERVICE_NAME"
 
 # 6. Configure Nginx Reverse Proxy Route for /api/voice/
 echo "[6/6] Checking Nginx reverse proxy configuration..."
-NGINX_CONF_SNIPPET="
+sudo python3 -c '
+import glob, re
+
+site_conf = None
+for f in glob.glob("/etc/nginx/sites-enabled/*"):
+    try:
+        with open(f, "r") as fp:
+            c = fp.read()
+            if "server_name" in c or "listen" in c:
+                site_conf = f
+                break
+    except:
+        pass
+
+if site_conf:
+    with open(site_conf, "r") as fp:
+        content = fp.read()
+    if "/api/voice/" not in content:
+        proxy_block = """
     # Kokoro-82M Neural Voice Synthesis Endpoint
     location /api/voice/ {
         proxy_pass http://127.0.0.1:8088;
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
         proxy_buffering on;
         proxy_read_timeout 60s;
     }
-"
+"""
+        if "location / {" in content:
+            new_content = content.replace("location / {", proxy_block + "\n    location / {", 1)
+        elif "location /" in content:
+            new_content = content.replace("location /", proxy_block + "\n    location /", 1)
+        else:
+            m = re.search(r"server_name[^;]+;", content)
+            if m:
+                idx = m.end()
+                new_content = content[:idx] + proxy_block + content[idx:]
+            else:
+                new_content = content
 
-# Find existing Nginx site config
-SITE_CONF=$(grep -l "server_name" /etc/nginx/sites-enabled/* 2>/dev/null | head -n 1 || true)
-if [ -n "$SITE_CONF" ] && ! grep -q "/api/voice/" "$SITE_CONF"; then
-    echo "Adding /api/voice/ proxy pass to $SITE_CONF..."
-    sudo sed -i "/server_name/a $NGINX_CONF_SNIPPET" "$SITE_CONF"
-    sudo nginx -t && sudo systemctl reload nginx
-    echo "Nginx successfully configured with /api/voice/ proxy."
-fi
+        with open(site_conf, "w") as fp:
+            fp.write(new_content)
+        print(f"Successfully configured /api/voice/ reverse proxy in {site_conf}")
+    else:
+        print("/api/voice/ reverse proxy is already configured in Nginx.")
+'
+
+sudo nginx -t && sudo systemctl reload nginx
+echo "Nginx successfully configured and reloaded."
 
 # Verify Service Health
-sleep 2
+sleep 3
 echo "Verifying local service health..."
 curl -s http://127.0.0.1:8088/api/voice/health || echo "Notice: Service starting up..."
 
