@@ -93,22 +93,7 @@ echo "[6/6] Checking Nginx reverse proxy configuration..."
 sudo python3 -c '
 import glob, re
 
-site_conf = None
-for f in glob.glob("/etc/nginx/sites-enabled/*"):
-    try:
-        with open(f, "r") as fp:
-            c = fp.read()
-            if "server_name" in c or "listen" in c:
-                site_conf = f
-                break
-    except:
-        pass
-
-if site_conf:
-    with open(site_conf, "r") as fp:
-        content = fp.read()
-    if "/api/voice/" not in content:
-        proxy_block = """
+proxy_block = """
     # Kokoro-82M Neural Voice Synthesis Endpoint
     location /api/voice/ {
         proxy_pass http://127.0.0.1:8088;
@@ -120,23 +105,28 @@ if site_conf:
         proxy_read_timeout 60s;
     }
 """
-        if "location / {" in content:
-            new_content = content.replace("location / {", proxy_block + "\n    location / {", 1)
-        elif "location /" in content:
-            new_content = content.replace("location /", proxy_block + "\n    location /", 1)
-        else:
-            m = re.search(r"server_name[^;]+;", content)
-            if m:
-                idx = m.end()
-                new_content = content[:idx] + proxy_block + content[idx:]
-            else:
-                new_content = content
 
-        with open(site_conf, "w") as fp:
-            fp.write(new_content)
-        print(f"Successfully configured /api/voice/ reverse proxy in {site_conf}")
-    else:
-        print("/api/voice/ reverse proxy is already configured in Nginx.")
+for conf_file in glob.glob("/etc/nginx/sites-enabled/*"):
+    try:
+        with open(conf_file, "r") as fp:
+            content = fp.read()
+
+        # Clean any existing /api/voice/ block first
+        clean = re.sub(r"\n\s*# Kokoro-82M Neural Voice Synthesis Endpoint\s+location /api/voice/ \{[\s\S]*?\}\n", "", content)
+
+        if "location / {" in clean:
+            new_content = clean.replace("location / {", proxy_block + "\n    location / {")
+        elif "location /" in clean:
+            new_content = clean.replace("location /", proxy_block + "\n    location /")
+        else:
+            new_content = clean
+
+        if new_content != content:
+            with open(conf_file, "w") as fp:
+                fp.write(new_content)
+            print(f"Successfully configured /api/voice/ in {conf_file}")
+    except Exception as e:
+        print(f"Notice on {conf_file}: {e}")
 '
 
 sudo nginx -t && sudo systemctl reload nginx
@@ -144,8 +134,11 @@ echo "Nginx successfully configured and reloaded."
 
 # Verify Service Health
 sleep 3
-echo "Verifying local service health..."
+echo "Verifying local service health directly on port 8088..."
 curl -s http://127.0.0.1:8088/api/voice/health || echo "Notice: Service starting up..."
+
+echo "Verifying service via Nginx on localhost..."
+curl -s http://127.0.0.1/api/voice/health || echo "Notice: Nginx proxy..."
 
 echo "======================================================="
 echo " [Kokoro-82M] af_heart Voice Service Setup Completed!"
