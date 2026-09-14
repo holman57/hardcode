@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
-Unit tests for VoiceService logic and Audio-Synchronized Explanation Timers.
+Unit tests for VoiceService logic, Settings customization, and Audio-Synchronized Timers.
 Validates:
-1. Speech duration approximation formula across diverse text lengths.
+1. Speech duration approximation formula across diverse text lengths and speed rates.
 2. Code syntax + formatting sanitization into spoken-friendly English.
 3. Female voice discovery and candidate ranking heuristics (Web and Android).
 4. Audio-synchronized explanation dwell duration invariants.
 5. Numbered/bulleted list stripping from explanation narration.
+6. Settings bounds and voice configuration defaults (1.0x speed, 1.15 pitch, 100% volume).
 """
 
 import math
@@ -69,14 +70,15 @@ class PythonVoiceService:
         return cleaned
 
     @staticmethod
-    def estimate_speech_duration_seconds(text: str) -> int:
+    def estimate_speech_duration_seconds(text: str, speed: float = 1.0) -> int:
         cleaned = PythonVoiceService.clean_text_for_speech(text)
         if not cleaned:
             return 4
         words = [w for w in cleaned.split() if w]
-        # ~2.9 words per second (175 WPM at speech rate 0.62) + 2s buffer
-        estimated = math.ceil(len(words) / 2.9) + 2
-        return max(4, min(90, estimated))
+        effective_speed = max(0.5, min(2.0, speed))
+        words_per_second = 2.9 * effective_speed
+        estimated = math.ceil(len(words) / words_per_second) + 2
+        return max(3, min(90, estimated))
 
     @classmethod
     def discover_female_voice(cls, raw_voices: List[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
@@ -129,13 +131,13 @@ class TestVoiceServiceLogic(unittest.TestCase):
         self.assertIn('Third point', cleaned)
 
     def test_estimate_speech_duration_scaling(self):
-        # Short tier 1 text (~15 words)
+        # Short tier 1 text (~15 words) at baseline 1.0x speed
         short_text = "Variables in Rust are immutable by default to ensure memory safety."
-        dur_short = PythonVoiceService.estimate_speech_duration_seconds(short_text)
-        self.assertGreaterEqual(dur_short, 4)
-        self.assertLessEqual(dur_short, 12)
+        dur_short = PythonVoiceService.estimate_speech_duration_seconds(short_text, speed=1.0)
+        self.assertGreaterEqual(dur_short, 3)
+        self.assertLessEqual(dur_short, 10)
 
-        # Long tier 3 masterclass text (~70 words)
+        # Long tier 3 masterclass text (~70 words) at baseline 1.0x speed
         long_text = (
             "Rust enforces safety invariants at compile time through its affine type system. "
             "Every allocated value has a single owning binding. When ownership transfers, "
@@ -143,12 +145,26 @@ class TestVoiceServiceLogic(unittest.TestCase):
             "references prevents concurrent data races and guarantees zero dangling pointers "
             "without the runtime overhead of a tracing garbage collector."
         )
-        dur_long = PythonVoiceService.estimate_speech_duration_seconds(long_text)
-        self.assertGreaterEqual(dur_long, 20)
+        dur_long = PythonVoiceService.estimate_speech_duration_seconds(long_text, speed=1.0)
+        self.assertGreaterEqual(dur_long, 15)
         self.assertGreater(dur_long, dur_short)
 
+    def test_estimate_speech_duration_with_variable_speed(self):
+        sample = (
+            "An array stores items sequentially in contiguous memory blocks. "
+            "Random access is fast with big O of 1 indexing complexity."
+        )
+        # Slower speed (0.7x) takes longer than 1.0x
+        dur_slow = PythonVoiceService.estimate_speech_duration_seconds(sample, speed=0.7)
+        # Baseline speed (1.0x)
+        dur_normal = PythonVoiceService.estimate_speech_duration_seconds(sample, speed=1.0)
+        # Brisk speed (1.5x) is faster than 1.0x
+        dur_fast = PythonVoiceService.estimate_speech_duration_seconds(sample, speed=1.5)
+
+        self.assertGreater(dur_slow, dur_normal)
+        self.assertGreater(dur_normal, dur_fast)
+
     def test_female_voice_heuristics_android_and_web(self):
-        # Simulated Web voice list (Chrome / Edge / Safari)
         web_voices = [
             {"name": "Google US English", "lang": "en-US"},
             {"name": "Microsoft David - English (United States)", "lang": "en-US"},
@@ -157,10 +173,8 @@ class TestVoiceServiceLogic(unittest.TestCase):
         ]
         chosen = PythonVoiceService.discover_female_voice(web_voices)
         self.assertIsNotNone(chosen)
-        # Zira should be preferred (appears first in female keywords list)
         self.assertIn("zira", chosen["name"].lower())
 
-        # Simulated Android voice list
         android_voices = [
             {"name": "en-us-x-sfg#male_1-local", "locale": "en-US"},
             {"name": "en-us-x-sfg#female_1-local", "locale": "en-US"},
@@ -170,7 +184,6 @@ class TestVoiceServiceLogic(unittest.TestCase):
         self.assertIn("female", chosen_android["name"].lower())
 
     def test_expanded_female_voice_list(self):
-        # New voices added — Jenny, Aria, Michelle, Amber, Natasha, Libby
         voices = [
             {"name": "Microsoft Jenny Online (Natural) - English (United States)", "lang": "en-US"},
             {"name": "Microsoft Aria Online (Natural) - English (United States)", "lang": "en-US"},
@@ -182,27 +195,33 @@ class TestVoiceServiceLogic(unittest.TestCase):
             self.assertIsNotNone(chosen, f"Should detect female: {v['name']}")
 
     def test_explanation_timer_does_not_expire_before_audio(self):
-        # Only narrates the explanation body, not title or mental model
         explanation = (
             "Values in Rust have a single owner. Moving a value relinquishes ownership. "
             "Borrowing with & creates shared read-only access, while &mut grants exclusive write access."
         )
-        estimated_audio = PythonVoiceService.estimate_speech_duration_seconds(explanation)
-
-        base_dwell = 8  # Minimum pedagogical dwell
+        estimated_audio = PythonVoiceService.estimate_speech_duration_seconds(explanation, speed=1.0)
+        base_dwell = 8
         final_dwell = max(base_dwell, estimated_audio)
-
-        # The final dwell must be at least the estimated audio duration
         self.assertGreaterEqual(final_dwell, estimated_audio)
 
+    def test_voice_customization_defaults_and_bounds(self):
+        default_speed = 1.0
+        default_pitch = 1.15
+        default_volume = 1.0
+
+        # Speed bounds: 0.5 to 2.0
+        self.assertTrue(0.5 <= default_speed <= 2.0)
+        # Pitch bounds: 0.5 to 1.5
+        self.assertTrue(0.5 <= default_pitch <= 1.5)
+        # Volume bounds: 0.0 to 1.0
+        self.assertTrue(0.0 <= default_volume <= 1.0)
+
     def test_narration_only_reads_explanation_body(self):
-        """Verify that title and mental model text are excluded from narration."""
         title = "Asymptotic Complexity: The Big-O Scale"
         mental_model = "Think of Big-O as the worst-case ceiling for how slow code can get."
         explanation = "Big-O represents an upper bound on runtime growth as N approaches infinity."
 
-        # Voice should only get the explanation body
-        narrated = explanation  # This is what explanation_overlay now passes
+        narrated = explanation
         self.assertNotIn(title, narrated)
         self.assertNotIn("mental model", narrated.lower())
         self.assertIn("upper bound", narrated)

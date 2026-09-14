@@ -22,7 +22,7 @@ echo "======================================================="
 echo " [HardCode] Post-Merge Detected: Incrementing Version"
 echo "======================================================="
 
-python scripts/bump_version.py --type minor
+python3 scripts/bump_version.py --type minor
 
 if [ $? -eq 0 ]; then
   git add version.json pubspec.yaml README.md assets/knowledge_graph.json assets/db.json
@@ -42,7 +42,7 @@ echo " [HardCode] Pre-Push: Synchronizing Version & Verification"
 echo "======================================================="
 
 # Verify tests pass before push
-python -m unittest discover -s test
+python3 -m unittest discover -s test
 if [ $? -ne 0 ]; then
   echo "❌ Push blocked: unit tests failed."
   exit 1

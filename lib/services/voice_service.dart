@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'settings_service.dart';
 
 /// Cross-platform Voice Synthesis & Narration Service for HardCode.
-/// Provides prioritized female voice synthesis on Web and Android,
+/// Provides prioritized female mascot voice synthesis on Web, iOS, and Android,
+/// dynamic speed/pitch/volume customization via SettingsService,
 /// pause/resume control, intelligent speech duration approximation,
 /// code-to-speech sanitization, and reactive state for synchronized UI.
 class VoiceService {
@@ -14,6 +16,7 @@ class VoiceService {
   bool _isInitialized = false;
   bool _isMuted = false;
   bool _isPaused = false;
+  List<Map<String, String>> _cachedVoices = [];
 
   final ValueNotifier<bool> isSpeaking = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isPaused = ValueNotifier<bool>(false);
@@ -22,12 +25,45 @@ class VoiceService {
 
   bool get isMuted => _isMuted;
   bool get isInitialized => _isInitialized;
+  List<Map<String, String>> get availableVoices => List.unmodifiable(_cachedVoices);
+
+  /// Priority-ordered list of well-known female English TTS voices
+  /// (Android, Web Speech API, iOS, Windows SAPI, macOS)
+  static const List<String> femaleKeywords = [
+    'zira',       // Windows — Microsoft Zira (US female)
+    'samantha',   // macOS / iOS — Samantha (US female)
+    'karen',      // iOS — Karen (AU female)
+    'moira',      // macOS — Moira (IE female)
+    'fiona',      // macOS — Fiona (SC female)
+    'tessa',      // macOS — Tessa (ZA female)
+    'victoria',   // macOS — Victoria (US female)
+    'jenny',      // Edge/Web — Microsoft Jenny (US female)
+    'aria',       // Edge/Web — Microsoft Aria (US female)
+    'michelle',   // Edge/Web — Microsoft Michelle (US female)
+    'amber',      // Edge/Web — Microsoft Amber (US female)
+    'ana',        // Edge/Web — Microsoft Ana (US female)
+    'cora',       // Edge/Web — Microsoft Cora (NZ female)
+    'libby',      // Edge/Web — Microsoft Libby (UK female)
+    'natasha',    // Edge/Web — Microsoft Natasha (AU female)
+    'clara',      // Edge/Web — Microsoft Clara (CA female)
+    'hazel',      // Windows — Microsoft Hazel (UK female)
+    'eva',        // generic female marker
+    'susan',      // generic female marker
+    'alice',      // generic female marker
+    'female',     // explicit gender tag (Android voices)
+    'woman',      // explicit gender tag
+    'girl',       // explicit gender tag
+  ];
 
   /// Initializes the TTS engine with female voice prioritization and pitch modulation.
   Future<void> init() async {
     if (_isInitialized) return;
 
     try {
+      // Initialize settings service first
+      await SettingsService.instance.init();
+      _isMuted = !SettingsService.instance.voiceEnabled;
+
       await _tts.setLanguage('en-US');
 
       if (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
@@ -40,7 +76,13 @@ class VoiceService {
         );
       }
 
-      await _configureFemaleVoice();
+      await _refreshAvailableVoices();
+      await _applySettings(SettingsService.instance);
+
+      // Listen for settings changes
+      SettingsService.instance.addListener(() {
+        _applySettings(SettingsService.instance);
+      });
 
       _tts.setStartHandler(() {
         isSpeaking.value = true;
@@ -78,98 +120,150 @@ class VoiceService {
     callback?.call();
   }
 
+  /// Refreshes the cached list of available voices from the system.
+  Future<List<Map<String, String>>> _refreshAvailableVoices() async {
+    try {
+      final rawVoices = await _tts.getVoices;
+      if (rawVoices is List && rawVoices.isNotEmpty) {
+        final List<Map<String, String>> parsed = [];
+        for (final v in rawVoices) {
+          if (v is Map) {
+            final name = (v['name'] ?? '').toString();
+            final locale = (v['locale'] ?? v['lang'] ?? '').toString();
+            if (name.isNotEmpty) {
+              parsed.add({'name': name, 'locale': locale});
+            }
+          }
+        }
+        _cachedVoices = parsed;
+      }
+    } catch (e) {
+      debugPrint('VoiceService getVoices notice: $e');
+    }
+    return _cachedVoices;
+  }
+
+  /// Returns available voices, querying the TTS engine if cache is empty.
+  Future<List<Map<String, String>>> getAvailableVoices() async {
+    if (_cachedVoices.isEmpty) {
+      await _refreshAvailableVoices();
+    }
+    return _cachedVoices;
+  }
+
+  /// Applies active configuration from SettingsService to the TTS engine.
+  Future<void> _applySettings(SettingsService settings) async {
+    _isMuted = !settings.voiceEnabled;
+    if (_isMuted) {
+      await stop();
+    }
+
+    try {
+      // Speed (Speech Rate) - 1.0 is normal conversational rate (~190 WPM)
+      await _tts.setSpeechRate(settings.voiceSpeed);
+      // Pitch - 1.15 is pleasant feminine mascot timbre
+      await _tts.setPitch(settings.voicePitch);
+      // Volume - 0.0 to 1.0
+      await _tts.setVolume(settings.voiceVolume);
+
+      // Selected Voice
+      if (settings.selectedVoiceName != null && settings.selectedVoiceName!.isNotEmpty) {
+        await setVoiceByName(settings.selectedVoiceName!, settings.selectedVoiceLocale);
+      } else {
+        await _configureFemaleVoice();
+      }
+    } catch (e) {
+      debugPrint('VoiceService _applySettings error: $e');
+    }
+  }
+
   /// Discovers and selects a female English voice. Falls back to formant pitch
   /// modulation (1.15) for a natural feminine timbre on any system voice.
   Future<void> _configureFemaleVoice() async {
     try {
-      final rawVoices = await _tts.getVoices;
-      if (rawVoices is List && rawVoices.isNotEmpty) {
-        dynamic selectedFemaleVoice;
+      if (_cachedVoices.isEmpty) {
+        await _refreshAvailableVoices();
+      }
 
-        // Priority-ordered list of well-known female English TTS voices
-        // (Android, Web Speech API, iOS, Windows SAPI, macOS)
-        const femaleKeywords = [
-          'zira',       // Windows — Microsoft Zira (US female)
-          'samantha',   // macOS / iOS — Samantha (US female)
-          'karen',      // iOS — Karen (AU female)
-          'moira',      // macOS — Moira (IE female)
-          'fiona',      // macOS — Fiona (SC female)
-          'tessa',      // macOS — Tessa (ZA female)
-          'victoria',   // macOS — Victoria (US female)
-          'jenny',      // Edge/Web — Microsoft Jenny (US female)
-          'aria',       // Edge/Web — Microsoft Aria (US female)
-          'michelle',   // Edge/Web — Microsoft Michelle (US female)
-          'amber',      // Edge/Web — Microsoft Amber (US female)
-          'ana',        // Edge/Web — Microsoft Ana (US female)
-          'cora',       // Edge/Web — Microsoft Cora (NZ female)
-          'libby',      // Edge/Web — Microsoft Libby (UK female)
-          'natasha',    // Edge/Web — Microsoft Natasha (AU female)
-          'clara',      // Edge/Web — Microsoft Clara (CA female)
-          'hazel',      // Windows — Microsoft Hazel (UK female)
-          'eva',        // generic female marker
-          'susan',      // generic female marker
-          'alice',      // generic female marker
-          'female',     // explicit gender tag (Android voices)
-          'woman',      // explicit gender tag
-          'girl',       // explicit gender tag
-        ];
+      if (_cachedVoices.isNotEmpty) {
+        Map<String, String>? selectedFemaleVoice;
 
-        for (final v in rawVoices) {
-          if (v is Map) {
-            final name = (v['name'] ?? '').toString().toLowerCase();
-            final locale = (v['locale'] ?? v['lang'] ?? '').toString().toLowerCase();
+        for (final v in _cachedVoices) {
+          final name = (v['name'] ?? '').toLowerCase();
+          final locale = (v['locale'] ?? '').toLowerCase();
 
-            final isEnglish = locale.startsWith('en') ||
-                name.contains('en-') ||
-                name.contains('english') ||
-                name.contains('-us') ||
-                name.contains('-gb') ||
-                name.contains('-au');
-            if (!isEnglish) continue;
+          final isEnglish = locale.startsWith('en') ||
+              name.contains('en-') ||
+              name.contains('english') ||
+              name.contains('-us') ||
+              name.contains('-gb') ||
+              name.contains('-au');
+          if (!isEnglish) continue;
 
-            final isFemale = femaleKeywords.any((kw) => name.contains(kw));
+          final isFemale = femaleKeywords.any((kw) => name.contains(kw));
 
-            if (isFemale) {
-              selectedFemaleVoice = v;
-              break;
-            }
+          if (isFemale) {
+            selectedFemaleVoice = v;
+            break;
           }
         }
 
         if (selectedFemaleVoice != null) {
-          final voiceMap = Map<String, String>.from(
-            selectedFemaleVoice.map(
-              (key, val) => MapEntry(key.toString(), val.toString()),
-            ),
-          );
-          await _tts.setVoice(voiceMap);
-          debugPrint('VoiceService: Selected female voice "${voiceMap['name']}"');
+          await _tts.setVoice(selectedFemaleVoice);
+          debugPrint('VoiceService: Auto-selected female mascot voice "${selectedFemaleVoice['name']}"');
         }
       }
     } catch (e) {
       debugPrint('VoiceService: Female voice discovery notice: $e');
     }
+  }
 
-    // Pitch 1.15 — feminine timbre without sounding artificial.
-    await _tts.setPitch(1.15);
-    // Rate 0.62 — confident, conversational ~175 WPM educational cadence.
-    await _tts.setSpeechRate(0.62);
+  /// Explicitly selects a voice by name and optional locale.
+  Future<void> setVoiceByName(String name, [String? locale]) async {
+    try {
+      if (_cachedVoices.isEmpty) {
+        await _refreshAvailableVoices();
+      }
+
+      Map<String, String>? match;
+      for (final v in _cachedVoices) {
+        if (v['name'] == name) {
+          match = v;
+          break;
+        }
+      }
+
+      match ??= {'name': name, 'locale': locale ?? 'en-US'};
+      await _tts.setVoice(match);
+      debugPrint('VoiceService: Explicitly set voice to "${match['name']}"');
+    } catch (e) {
+      debugPrint('VoiceService setVoiceByName notice: $e');
+    }
+  }
+
+  /// Sets speech rate multiplier (e.g. 0.5 to 2.0).
+  Future<void> setSpeechRate(double rate) async {
+    await SettingsService.instance.setVoiceSpeed(rate);
+  }
+
+  /// Sets pitch multiplier (e.g. 0.5 to 1.5).
+  Future<void> setPitch(double pitch) async {
+    await SettingsService.instance.setVoicePitch(pitch);
+  }
+
+  /// Sets volume (0.0 to 1.0).
+  Future<void> setVolume(double volume) async {
+    await SettingsService.instance.setVoiceVolume(volume);
   }
 
   /// Toggles global voice narration mute.
   void toggleMute() {
-    _isMuted = !_isMuted;
-    if (_isMuted) {
-      stop();
-    }
+    SettingsService.instance.toggleVoiceEnabled();
   }
 
   /// Sets explicit mute state.
   void setMuted(bool muted) {
-    _isMuted = muted;
-    if (_isMuted) {
-      stop();
-    }
+    SettingsService.instance.setVoiceEnabled(!muted);
   }
 
   /// Pauses ongoing speech. No-op if not speaking or already paused.
@@ -191,24 +285,23 @@ class VoiceService {
     _isPaused = false;
     isPaused.value = false;
     try {
-      // flutter_tts does not support resume on all platforms — re-speak if needed.
-      // On Web/Android, _tts.synthesisCompleted fires automatically when done.
       await _tts.pause(); // toggle off pause on platforms that support it
     } catch (e) {
-      // Fallback: stop is fine — the UI handles this
       debugPrint('VoiceService resume notice: $e');
     }
   }
 
   /// Calculates estimated speech duration in seconds for a given text payload.
-  /// Based on ~2.9 words per second (175 WPM at speech rate 0.62) + 2s buffer.
-  static int estimateSpeechDurationSeconds(String text) {
+  /// Dynamically adjusts based on speech speed (1.0 = ~2.9 words/sec, 1.25x = ~3.6 words/sec).
+  static int estimateSpeechDurationSeconds(String text, [double? speed]) {
     final cleaned = cleanTextForSpeech(text);
     if (cleaned.trim().isEmpty) return 4;
 
+    final double effectiveSpeed = (speed ?? SettingsService.instance.voiceSpeed).clamp(0.5, 2.0);
     final words = cleaned.trim().split(RegExp(r'\s+')).where((w) => w.isNotEmpty).length;
-    final int estimated = (words / 2.9).ceil() + 2;
-    return estimated.clamp(4, 90);
+    final double wordsPerSecond = 2.9 * effectiveSpeed;
+    final int estimated = (words / wordsPerSecond).ceil() + 2;
+    return estimated.clamp(3, 90);
   }
 
   /// Strips the explanation text of title, mental model wrapper, and code blocks,
@@ -219,8 +312,8 @@ class VoiceService {
     // Remove leading code fences entirely
     text = text.replaceAll(RegExp(r'```[\s\S]*?```'), '');
 
-    // Strip Mental Model section (everything from "Mental model:" to end)
-    text = text.replaceAll(RegExp(r'(?i)mental model[:\s].*', dotAll: true), '');
+    // Strip Mental Model section (case-insensitive in Dart using caseSensitive: false)
+    text = text.replaceAll(RegExp(r'mental model[:\s].*', caseSensitive: false, dotAll: true), '');
 
     return text.trim();
   }
@@ -288,7 +381,6 @@ class VoiceService {
     try {
       isSpeaking.value = true;
       final int estSeconds = estimateSpeechDurationSeconds(cleaned);
-      // Fallback safety timer in case the browser fails to fire completion
       _fallbackCompletionTimer?.cancel();
       _fallbackCompletionTimer = Timer(Duration(seconds: estSeconds + 2), () {
         if (isSpeaking.value) {
@@ -327,7 +419,6 @@ class VoiceService {
     try {
       isSpeaking.value = true;
       final int estSeconds = estimateSpeechDurationSeconds(cleaned);
-      // Fallback safety timer in case browser completion handler drops
       _fallbackCompletionTimer?.cancel();
       _fallbackCompletionTimer = Timer(Duration(seconds: estSeconds + 3), () {
         if (isSpeaking.value) {
@@ -338,6 +429,31 @@ class VoiceService {
       await _tts.speak(cleaned);
     } catch (e) {
       debugPrint('VoiceService speakExplanation error: $e');
+      _handleSpeechFinished();
+    }
+  }
+
+  /// Vocalizes sample text for live preview in the Settings modal.
+  Future<void> speakSample([String? sampleText]) async {
+    final text = sampleText ?? "Hello! I'm Ada, your HardCode Academy mascot. Let's master computer science together!";
+    if (!_isInitialized) await init();
+    await stop();
+
+    try {
+      // Re-apply latest settings
+      await _applySettings(SettingsService.instance);
+      isSpeaking.value = true;
+      final int estSeconds = estimateSpeechDurationSeconds(text);
+      _fallbackCompletionTimer?.cancel();
+      _fallbackCompletionTimer = Timer(Duration(seconds: estSeconds + 2), () {
+        if (isSpeaking.value) {
+          _handleSpeechFinished();
+        }
+      });
+
+      await _tts.speak(cleanTextForSpeech(text));
+    } catch (e) {
+      debugPrint('VoiceService speakSample error: $e');
       _handleSpeechFinished();
     }
   }

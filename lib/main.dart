@@ -8,8 +8,10 @@ import 'services/database_service.dart';
 import 'services/progression_service.dart';
 import 'services/adaptive_explanation_service.dart';
 import 'services/voice_service.dart';
+import 'services/settings_service.dart';
 import 'widgets/explanation_overlay.dart';
 import 'widgets/motion_graphics_overlay.dart';
+import 'widgets/settings_dialog.dart';
 import 'screens/knowledge_graph_screen.dart';
 
 void main() async {
@@ -17,8 +19,10 @@ void main() async {
   try {
     await DatabaseService.instance.init().timeout(const Duration(seconds: 2));
     await TopicProgressionService.instance.init().timeout(const Duration(seconds: 2));
+    await SettingsService.instance.init().timeout(const Duration(seconds: 2));
+    await VoiceService.instance.init().timeout(const Duration(seconds: 2));
   } catch (e) {
-    debugPrint('Notice: DatabaseService/TopicProgressionService.init timed out or caught error: $e');
+    debugPrint('Notice: Service init timed out or caught error: $e');
   }
   runApp(const MyApp());
 }
@@ -1858,10 +1862,16 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         );
       }
     });
+    SettingsService.instance.addListener(_onSettingsChanged);
+  }
+
+  void _onSettingsChanged() {
+    if (mounted) setState(() {});
   }
 
   @override
   void dispose() {
+    SettingsService.instance.removeListener(_onSettingsChanged);
     _idleReengagementTimer?.cancel();
     _cancelTimer();
     _topAlertTimer?.cancel();
@@ -2609,6 +2619,20 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               onTap: () {
                 Navigator.of(context).pop();
                 _showKnowledgeGraphModal();
+              },
+            ),
+            ListTile(
+              key: const Key('drawer_open_settings'),
+              leading: const Icon(Icons.tune_rounded, color: Colors.blueAccent),
+              title: const Text('Settings'),
+              subtitle: const Text(
+                'Voice & Mascot, Speed, Pitch, Volume, Preferences',
+                style: TextStyle(fontSize: 11),
+              ),
+              trailing: const Icon(Icons.chevron_right, size: 18),
+              onTap: () {
+                Navigator.of(context).pop();
+                SettingsDialog.show(context);
               },
             ),
             const Divider(),
