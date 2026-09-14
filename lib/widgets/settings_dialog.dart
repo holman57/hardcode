@@ -520,20 +520,52 @@ class _SettingsDialogState extends State<SettingsDialog> {
 
   Widget _buildKokoroVoiceSelectorCard(ThemeData theme) {
     const voices = [
-      {'id': 'af_heart', 'label': 'Ada Mascot (af_heart) • Warm & Expressive Female', 'short': 'Ada (af_heart)'},
-      {'id': 'af_bella', 'label': 'Bella (af_bella) • Cheerful & Dynamic Female', 'short': 'Bella (af_bella)'},
-      {'id': 'af_nicole', 'label': 'Nicole (af_nicole) • Smooth & Calm Female', 'short': 'Nicole (af_nicole)'},
-      {'id': 'af_sarah', 'label': 'Sarah (af_sarah) • Professional Female', 'short': 'Sarah (af_sarah)'},
-      {'id': 'af_sky', 'label': 'Sky (af_sky) • Bright & Clear Female', 'short': 'Sky (af_sky)'},
+      {
+        'id': 'af_heart',
+        'name': 'Ada Mascot (af_heart)',
+        'desc': 'Warm & Expressive Female • Official Mascot',
+        'badge': 'Mascot',
+        'icon': Icons.star_rounded,
+      },
+      {
+        'id': 'af_bella',
+        'name': 'Bella (af_bella)',
+        'desc': 'Cheerful & Dynamic Female Persona',
+        'badge': 'Dynamic',
+        'icon': Icons.auto_awesome_rounded,
+      },
+      {
+        'id': 'af_nicole',
+        'name': 'Nicole (af_nicole)',
+        'desc': 'Smooth & Calm Female Guide',
+        'badge': 'Calm',
+        'icon': Icons.psychology_rounded,
+      },
+      {
+        'id': 'af_sarah',
+        'name': 'Sarah (af_sarah)',
+        'desc': 'Clear & Professional Academic Female',
+        'badge': 'Pro',
+        'icon': Icons.school_rounded,
+      },
+      {
+        'id': 'af_sky',
+        'name': 'Sky (af_sky)',
+        'desc': 'Bright & Fast-Paced Female Timbre',
+        'badge': 'Fast',
+        'icon': Icons.bolt_rounded,
+      },
     ];
+
+    final currentVoice = _settings.kokoroVoice;
 
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceVariant.withOpacity(0.28),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: theme.colorScheme.outline.withOpacity(0.15),
+          color: theme.colorScheme.outline.withOpacity(0.18),
         ),
       ),
       child: Column(
@@ -544,26 +576,26 @@ class _SettingsDialogState extends State<SettingsDialog> {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.face_3_rounded, size: 16),
-                  const SizedBox(width: 6),
+                  const Icon(Icons.face_3_rounded, size: 18),
+                  const SizedBox(width: 8),
                   Text(
-                    'Neural Voice Profile',
+                    'Neural Voice Mascot Profile',
                     style: GoogleFonts.plusJakartaSans(
                       fontWeight: FontWeight.bold,
-                      fontSize: 13,
+                      fontSize: 13.5,
                       color: theme.colorScheme.onSurface,
                     ),
                   ),
                 ],
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
                 decoration: BoxDecoration(
                   color: theme.colorScheme.primary.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
-                  _settings.kokoroVoice,
+                  currentVoice,
                   style: GoogleFonts.jetBrainsMono(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
@@ -573,92 +605,180 @@ class _SettingsDialogState extends State<SettingsDialog> {
               ),
             ],
           ),
-          const SizedBox(height: 8),
-          DropdownButtonFormField<String>(
-            key: ValueKey('kokoro_voice_select_${_settings.kokoroVoice}'),
-            isExpanded: true,
-            value: _settings.kokoroVoice,
-            decoration: InputDecoration(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              filled: true,
-              fillColor: theme.colorScheme.surface,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(color: theme.colorScheme.outline.withOpacity(0.2)),
-              ),
+          const SizedBox(height: 6),
+          Text(
+            'Click any voice to select it and immediately hear it speak:',
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 11.5,
+              color: theme.colorScheme.onSurface.withOpacity(0.65),
             ),
-            items: voices.map((v) {
-              final isDefault = v['id'] == 'af_heart';
-              final isSelected = v['id'] == _settings.kokoroVoice;
-              return DropdownMenuItem<String>(
-                value: v['id'],
-                child: Row(
-                  children: [
-                    if (isDefault) ...[
-                      const Icon(Icons.star_rounded, size: 16, color: Colors.amber),
-                      const SizedBox(width: 6),
-                    ] else if (isSelected) ...[
-                      Icon(Icons.check_circle_rounded, size: 16, color: theme.colorScheme.primary),
-                      const SizedBox(width: 6),
-                    ],
-                    Expanded(
-                      child: Text(
-                        v['label']!,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 12.5,
-                          fontWeight: (isDefault || isSelected) ? FontWeight.bold : FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
-            onChanged: (val) {
-              if (val != null) {
-                setState(() {
-                  _settings.setKokoroVoice(val);
-                });
-              }
-            },
           ),
-          const SizedBox(height: 10),
-          // Fast persona selector chips
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: voices.map((v) {
-                final id = v['id']!;
-                final isSelected = id == _settings.kokoroVoice;
-                return Padding(
-                  padding: const EdgeInsets.only(right: 6),
-                  child: ChoiceChip(
-                    label: Text(
-                      v['short']!,
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 11.5,
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+          const SizedBox(height: 12),
+          // 5 Distinct Interactive Persona Option Cards
+          ...voices.map((v) {
+            final id = v['id'] as String;
+            final isSelected = id == currentVoice;
+            final iconData = v['icon'] as IconData;
+
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(12),
+                  onTap: () {
+                    setState(() {
+                      _settings.setKokoroVoice(id);
+                    });
+                    // Immediately interrupt previous speech and speak in the newly selected voice
+                    _voice.stop();
+                    _voice.speakSample(null, id);
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? theme.colorScheme.primary.withOpacity(0.12)
+                          : theme.colorScheme.surface,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
                         color: isSelected
-                            ? theme.colorScheme.onPrimary
-                            : theme.colorScheme.onSurface,
+                            ? theme.colorScheme.primary
+                            : theme.colorScheme.outline.withOpacity(0.2),
+                        width: isSelected ? 2.0 : 1.0,
                       ),
+                      boxShadow: isSelected
+                          ? [
+                              BoxShadow(
+                                color: theme.colorScheme.primary.withOpacity(0.12),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              )
+                            ]
+                          : null,
                     ),
-                    selected: isSelected,
-                    selectedColor: theme.colorScheme.primary,
-                    backgroundColor: theme.colorScheme.surface,
-                    onSelected: (selected) {
-                      if (selected) {
-                        setState(() {
-                          _settings.setKokoroVoice(id);
-                        });
-                      }
-                    },
+                    child: Row(
+                      children: [
+                        // Radio / Checkmark indicator
+                        Container(
+                          width: 22,
+                          height: 22,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: isSelected
+                                ? theme.colorScheme.primary
+                                : Colors.transparent,
+                            border: Border.all(
+                              color: isSelected
+                                  ? theme.colorScheme.primary
+                                  : theme.colorScheme.outline.withOpacity(0.5),
+                              width: 2,
+                            ),
+                          ),
+                          child: isSelected
+                              ? const Icon(
+                                  Icons.check,
+                                  size: 14,
+                                  color: Colors.white,
+                                )
+                              : null,
+                        ),
+                        const SizedBox(width: 12),
+                        // Persona Icon
+                        Icon(
+                          iconData,
+                          size: 18,
+                          color: isSelected
+                              ? theme.colorScheme.primary
+                              : (id == 'af_heart' ? Colors.amber : theme.colorScheme.onSurface.withOpacity(0.6)),
+                        ),
+                        const SizedBox(width: 10),
+                        // Titles
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    v['name'] as String,
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                                      fontSize: 13,
+                                      color: isSelected
+                                          ? theme.colorScheme.primary
+                                          : theme.colorScheme.onSurface,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                                    decoration: BoxDecoration(
+                                      color: isSelected
+                                          ? theme.colorScheme.primary.withOpacity(0.2)
+                                          : theme.colorScheme.surfaceVariant,
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: Text(
+                                      v['badge'] as String,
+                                      style: GoogleFonts.jetBrainsMono(
+                                        fontSize: 9.5,
+                                        fontWeight: FontWeight.bold,
+                                        color: isSelected
+                                            ? theme.colorScheme.primary
+                                            : theme.colorScheme.onSurface.withOpacity(0.7),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                v['desc'] as String,
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 11,
+                                  color: theme.colorScheme.onSurface.withOpacity(0.65),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // Speaker / Preview Button
+                        ValueListenableBuilder<bool>(
+                          valueListenable: _voice.isSpeaking,
+                          builder: (context, isSpeaking, _) {
+                            final isThisSpeaking = isSelected && isSpeaking;
+                            return IconButton(
+                              tooltip: isThisSpeaking ? 'Stop Audition' : 'Audition Voice',
+                              icon: Icon(
+                                isThisSpeaking ? Icons.stop_circle_rounded : Icons.volume_up_rounded,
+                                color: isThisSpeaking
+                                    ? Colors.redAccent
+                                    : (isSelected ? theme.colorScheme.primary : theme.colorScheme.outline),
+                                size: 22,
+                              ),
+                              onPressed: () {
+                                if (isThisSpeaking) {
+                                  _voice.stop();
+                                } else {
+                                  setState(() {
+                                    _settings.setKokoroVoice(id);
+                                  });
+                                  _voice.stop();
+                                  _voice.speakSample(null, id);
+                                }
+                              },
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                );
-              }).toList(),
-            ),
-          ),
+                ),
+              ),
+            );
+          }),
         ],
       ),
     );
@@ -804,6 +924,8 @@ class _SettingsDialogState extends State<SettingsDialog> {
                 setState(() {
                   _settings.setSelectedVoice(targetName, locale);
                 });
+                _voice.stop();
+                _voice.speakSample();
               },
             ),
         ],

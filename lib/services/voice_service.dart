@@ -548,8 +548,8 @@ class VoiceService {
   }
 
   /// Vocalizes sample text for live preview in the Settings modal.
-  Future<void> speakSample([String? sampleText]) async {
-    final currentKokoro = SettingsService.instance.kokoroVoice;
+  Future<void> speakSample([String? sampleText, String? voice]) async {
+    final currentKokoro = voice ?? SettingsService.instance.kokoroVoice;
     final String defaultSample;
     if (SettingsService.instance.isKokoroEngine) {
       switch (currentKokoro) {
@@ -583,7 +583,7 @@ class VoiceService {
       try {
         final audioBytes = await KokoroVoiceClient.instance.fetchAudioBytes(
           text,
-          voice: SettingsService.instance.kokoroVoice,
+          voice: currentKokoro,
           speed: SettingsService.instance.voiceSpeed,
         );
 

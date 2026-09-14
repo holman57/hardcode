@@ -157,11 +157,14 @@ class KokoroVoiceClient {
   Future<bool> playAudioBytes(Uint8List bytes, {VoidCallback? onComplete}) async {
     try {
       await stop();
+      // Brief event loop tick to allow browser Web Audio context to cleanly release previous buffer
+      await Future.delayed(const Duration(milliseconds: 35));
       _onCompleteCallback = onComplete;
       isPlaying.value = true;
       isPaused.value = false;
 
       _player ??= AudioPlayer();
+      await _player!.setReleaseMode(ReleaseMode.stop);
       await _player!.play(BytesSource(bytes));
       return true;
     } catch (e) {
