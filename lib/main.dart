@@ -14,18 +14,42 @@ import 'widgets/motion_graphics_overlay.dart';
 import 'widgets/settings_dialog.dart';
 import 'screens/knowledge_graph_screen.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Mount the application UI immediately so the browser and mobile apps render Frame 1 with zero lag
+  runApp(const MyApp());
+
+  // Non-blocking asynchronous initialization of persistence, progression, and voice services
+  _initializeBackgroundServices();
+}
+
+Future<void> _initializeBackgroundServices() async {
   try {
     await DatabaseService.instance.init().timeout(const Duration(seconds: 2));
+  } catch (e) {
+    debugPrint('Background DatabaseService init notice: $e');
+  }
+
+  try {
     await TopicProgressionService.instance.init().timeout(const Duration(seconds: 2));
+  } catch (e) {
+    debugPrint('Background TopicProgressionService init notice: $e');
+  }
+
+  try {
     await SettingsService.instance.init().timeout(const Duration(seconds: 2));
+  } catch (e) {
+    debugPrint('Background SettingsService init notice: $e');
+  }
+
+  try {
     await VoiceService.instance.init().timeout(const Duration(seconds: 2));
   } catch (e) {
-    debugPrint('Notice: Service init timed out or caught error: $e');
+    debugPrint('Background VoiceService init notice: $e');
   }
-  runApp(const MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

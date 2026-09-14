@@ -38,7 +38,7 @@ class KokoroVoiceClient {
       if (Hive.isBoxOpen(_audioCacheBoxName)) {
         _cacheBox = Hive.box(_audioCacheBoxName);
       } else {
-        _cacheBox = await Hive.openBox(_audioCacheBoxName).timeout(const Duration(seconds: 2));
+        _cacheBox = await Hive.openBox(_audioCacheBoxName).timeout(const Duration(seconds: 1));
       }
     } catch (e) {
       debugPrint('KokoroVoiceClient Hive cache init notice: $e');
@@ -89,7 +89,7 @@ class KokoroVoiceClient {
     String text, {
     String voice = 'af_heart',
     double speed = 1.0,
-    Duration timeout = const Duration(seconds: 4),
+    Duration timeout = const Duration(seconds: 12),
   }) async {
     final clean = text.trim();
     if (clean.isEmpty) return null;

@@ -80,7 +80,10 @@ class VoiceService {
         }
       });
 
-      await _tts.setLanguage('en-US');
+      await _tts.setLanguage('en-US').timeout(const Duration(milliseconds: 600)).catchError((e) {
+        debugPrint('VoiceService setLanguage notice: $e');
+        return null;
+      });
 
       if (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
         await _tts.setIosAudioCategory(
@@ -89,10 +92,10 @@ class VoiceService {
             IosTextToSpeechAudioCategoryOptions.mixWithOthers,
             IosTextToSpeechAudioCategoryOptions.duckOthers,
           ],
-        );
+        ).catchError((_) {});
       }
 
-      await _refreshAvailableVoices();
+      await _refreshAvailableVoices().timeout(const Duration(milliseconds: 800)).catchError((_) => <Map<String, String>>[]);
       await _applySettings(SettingsService.instance);
 
       // Listen for settings changes
@@ -139,7 +142,7 @@ class VoiceService {
   /// Refreshes the cached list of available voices from the system.
   Future<List<Map<String, String>>> _refreshAvailableVoices() async {
     try {
-      final rawVoices = await _tts.getVoices;
+      final rawVoices = await _tts.getVoices.timeout(const Duration(milliseconds: 800));
       if (rawVoices is List && rawVoices.isNotEmpty) {
         final List<Map<String, String>> parsed = [];
         for (final v in rawVoices) {
@@ -546,7 +549,32 @@ class VoiceService {
 
   /// Vocalizes sample text for live preview in the Settings modal.
   Future<void> speakSample([String? sampleText]) async {
-    final text = sampleText ?? "Hello! I'm Ada, your HardCode Academy mascot. Let's master computer science together!";
+    final currentKokoro = SettingsService.instance.kokoroVoice;
+    final String defaultSample;
+    if (SettingsService.instance.isKokoroEngine) {
+      switch (currentKokoro) {
+        case 'af_bella':
+          defaultSample = "Hi! I'm Bella. I bring a cheerful, dynamic energy to your HardCode drills!";
+          break;
+        case 'af_nicole':
+          defaultSample = "Greetings. I'm Nicole, your smooth and focused guide to mastering algorithms.";
+          break;
+        case 'af_sarah':
+          defaultSample = "Hello. I'm Sarah, providing clear and professional computer science narration.";
+          break;
+        case 'af_sky':
+          defaultSample = "Hey there! I'm Sky, ready for bright, fast-paced coding challenges!";
+          break;
+        case 'af_heart':
+        default:
+          defaultSample = "Hello! I'm Ada, your HardCode Academy mascot. Let's master computer science together!";
+          break;
+      }
+    } else {
+      defaultSample = "Hello! I'm Ada, your HardCode Academy mascot. Let's master computer science together!";
+    }
+
+    final text = sampleText ?? defaultSample;
     if (!_isInitialized) await init();
     await stop();
 

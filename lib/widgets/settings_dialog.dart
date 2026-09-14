@@ -520,11 +520,11 @@ class _SettingsDialogState extends State<SettingsDialog> {
 
   Widget _buildKokoroVoiceSelectorCard(ThemeData theme) {
     const voices = [
-      {'id': 'af_heart', 'label': 'Ada Mascot (af_heart) • Warm & Expressive Female'},
-      {'id': 'af_bella', 'label': 'Bella (af_bella) • Cheerful & Dynamic Female'},
-      {'id': 'af_nicole', 'label': 'Nicole (af_nicole) • Smooth & Calm Female'},
-      {'id': 'af_sarah', 'label': 'Sarah (af_sarah) • Professional Female'},
-      {'id': 'af_sky', 'label': 'Sky (af_sky) • Bright & Clear Female'},
+      {'id': 'af_heart', 'label': 'Ada Mascot (af_heart) • Warm & Expressive Female', 'short': 'Ada (af_heart)'},
+      {'id': 'af_bella', 'label': 'Bella (af_bella) • Cheerful & Dynamic Female', 'short': 'Bella (af_bella)'},
+      {'id': 'af_nicole', 'label': 'Nicole (af_nicole) • Smooth & Calm Female', 'short': 'Nicole (af_nicole)'},
+      {'id': 'af_sarah', 'label': 'Sarah (af_sarah) • Professional Female', 'short': 'Sarah (af_sarah)'},
+      {'id': 'af_sky', 'label': 'Sky (af_sky) • Bright & Clear Female', 'short': 'Sky (af_sky)'},
     ];
 
     return Container(
@@ -540,21 +540,42 @@ class _SettingsDialogState extends State<SettingsDialog> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Icon(Icons.face_3_rounded, size: 16),
-              const SizedBox(width: 6),
-              Text(
-                'Neural Voice Profile',
-                style: GoogleFonts.plusJakartaSans(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 13,
-                  color: theme.colorScheme.onSurface,
+              Row(
+                children: [
+                  const Icon(Icons.face_3_rounded, size: 16),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Neural Voice Profile',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                      color: theme.colorScheme.onSurface,
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primary.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  _settings.kokoroVoice,
+                  style: GoogleFonts.jetBrainsMono(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    color: theme.colorScheme.primary,
+                  ),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 8),
           DropdownButtonFormField<String>(
+            key: ValueKey('kokoro_voice_select_${_settings.kokoroVoice}'),
             isExpanded: true,
             value: _settings.kokoroVoice,
             decoration: InputDecoration(
@@ -568,12 +589,16 @@ class _SettingsDialogState extends State<SettingsDialog> {
             ),
             items: voices.map((v) {
               final isDefault = v['id'] == 'af_heart';
+              final isSelected = v['id'] == _settings.kokoroVoice;
               return DropdownMenuItem<String>(
                 value: v['id'],
                 child: Row(
                   children: [
                     if (isDefault) ...[
                       const Icon(Icons.star_rounded, size: 16, color: Colors.amber),
+                      const SizedBox(width: 6),
+                    ] else if (isSelected) ...[
+                      Icon(Icons.check_circle_rounded, size: 16, color: theme.colorScheme.primary),
                       const SizedBox(width: 6),
                     ],
                     Expanded(
@@ -582,7 +607,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 12.5,
-                          fontWeight: isDefault ? FontWeight.bold : FontWeight.w500,
+                          fontWeight: (isDefault || isSelected) ? FontWeight.bold : FontWeight.w500,
                         ),
                       ),
                     ),
@@ -592,9 +617,47 @@ class _SettingsDialogState extends State<SettingsDialog> {
             }).toList(),
             onChanged: (val) {
               if (val != null) {
-                _settings.setKokoroVoice(val);
+                setState(() {
+                  _settings.setKokoroVoice(val);
+                });
               }
             },
+          ),
+          const SizedBox(height: 10),
+          // Fast persona selector chips
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: voices.map((v) {
+                final id = v['id']!;
+                final isSelected = id == _settings.kokoroVoice;
+                return Padding(
+                  padding: const EdgeInsets.only(right: 6),
+                  child: ChoiceChip(
+                    label: Text(
+                      v['short']!,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 11.5,
+                        fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                        color: isSelected
+                            ? theme.colorScheme.onPrimary
+                            : theme.colorScheme.onSurface,
+                      ),
+                    ),
+                    selected: isSelected,
+                    selectedColor: theme.colorScheme.primary,
+                    backgroundColor: theme.colorScheme.surface,
+                    onSelected: (selected) {
+                      if (selected) {
+                        setState(() {
+                          _settings.setKokoroVoice(id);
+                        });
+                      }
+                    },
+                  ),
+                );
+              }).toList(),
+            ),
           ),
         ],
       ),
@@ -603,6 +666,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
 
   Widget _buildVoiceSelectorCard(ThemeData theme) {
     final selectedName = _settings.selectedVoiceName;
+    final currentDropdownValue = (selectedName != null && _availableVoices.any((v) => v['name'] == selectedName))
+        ? selectedName
+        : '';
 
     return Container(
       padding: const EdgeInsets.all(14),
@@ -654,8 +720,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
             )
           else
             DropdownButtonFormField<String>(
+              key: ValueKey('system_voice_dropdown_$currentDropdownValue'),
               isExpanded: true,
-              value: selectedName,
+              value: currentDropdownValue,
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 filled: true,
@@ -673,10 +740,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
                   ),
                 ),
               ),
-              hint: const Text('✨ Auto (Optimal Mascot Female Voice)'),
               items: [
                 DropdownMenuItem<String>(
-                  value: null,
+                  value: '',
                   child: Row(
                     children: [
                       const Icon(Icons.auto_awesome, size: 16, color: Colors.amber),
@@ -728,11 +794,16 @@ class _SettingsDialogState extends State<SettingsDialog> {
                 }),
               ],
               onChanged: (value) {
-                final locale = _availableVoices.firstWhere(
-                  (v) => v['name'] == value,
-                  orElse: () => {},
-                )['locale'];
-                _settings.setSelectedVoice(value, locale);
+                final targetName = (value == null || value.isEmpty) ? null : value;
+                final locale = targetName != null
+                    ? _availableVoices.firstWhere(
+                        (v) => v['name'] == targetName,
+                        orElse: () => {},
+                      )['locale']
+                    : null;
+                setState(() {
+                  _settings.setSelectedVoice(targetName, locale);
+                });
               },
             ),
         ],
@@ -995,6 +1066,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
 
   Widget _buildVoiceActionButtons(ThemeData theme) {
     final isKokoro = _settings.isKokoroEngine;
+    final activeVoiceName = isKokoro
+        ? _settings.kokoroVoice
+        : (_settings.selectedVoiceName ?? 'Auto System');
 
     return Row(
       children: [
@@ -1005,7 +1079,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
             builder: (context, speaking, _) {
               final buttonLabel = speaking
                   ? 'Stop Preview'
-                  : (isKokoro ? 'Preview Mascot (af_heart)' : 'Preview System Voice');
+                  : 'Preview Voice ($activeVoiceName)';
 
               return FilledButton.icon(
                 onPressed: () {
@@ -1016,7 +1090,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                   }
                 },
                 icon: Icon(speaking ? Icons.stop_rounded : Icons.play_arrow_rounded),
-                label: Text(buttonLabel),
+                label: Text(buttonLabel, overflow: TextOverflow.ellipsis),
                 style: FilledButton.styleFrom(
                   backgroundColor: theme.colorScheme.primary,
                   foregroundColor: theme.colorScheme.onPrimary,
@@ -1034,7 +1108,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
           flex: 2,
           child: OutlinedButton.icon(
             onPressed: () {
-              _settings.resetVoiceToMascotDefaults();
+              setState(() {
+                _settings.resetVoiceToMascotDefaults();
+              });
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Reset voice to Ada Mascot defaults (Kokoro af_heart, 1.0x Speed)'),
