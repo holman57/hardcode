@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'kokoro_voice_client.dart';
 import 'settings_service.dart';
 
 /// Cross-platform Voice Synthesis & Narration Service for HardCode.
@@ -63,6 +64,21 @@ class VoiceService {
       // Initialize settings service first
       await SettingsService.instance.init();
       _isMuted = !SettingsService.instance.voiceEnabled;
+
+      // Initialize Kokoro neural client
+      await KokoroVoiceClient.instance.init();
+
+      KokoroVoiceClient.instance.isPlaying.addListener(() {
+        if (SettingsService.instance.isKokoroEngine) {
+          isSpeaking.value = KokoroVoiceClient.instance.isPlaying.value;
+        }
+      });
+      KokoroVoiceClient.instance.isPaused.addListener(() {
+        if (SettingsService.instance.isKokoroEngine) {
+          _isPaused = KokoroVoiceClient.instance.isPaused.value;
+          isPaused.value = _isPaused;
+        }
+      });
 
       await _tts.setLanguage('en-US');
 
@@ -273,6 +289,9 @@ class VoiceService {
     isPaused.value = true;
     _fallbackCompletionTimer?.cancel();
     try {
+      if (SettingsService.instance.isKokoroEngine && KokoroVoiceClient.instance.isPlaying.value) {
+        await KokoroVoiceClient.instance.pause();
+      }
       await _tts.pause();
     } catch (e) {
       debugPrint('VoiceService pause error: $e');
@@ -285,6 +304,9 @@ class VoiceService {
     _isPaused = false;
     isPaused.value = false;
     try {
+      if (SettingsService.instance.isKokoroEngine && KokoroVoiceClient.instance.isPaused.value) {
+        await KokoroVoiceClient.instance.resume();
+      }
       await _tts.pause(); // toggle off pause on platforms that support it
     } catch (e) {
       debugPrint('VoiceService resume notice: $e');
@@ -368,6 +390,21 @@ class VoiceService {
     return cleaned;
   }
 
+  /// Optional background pre-fetch to warm cache for question explanations.
+  Future<void> preheatSpeech(String text) async {
+    if (_isMuted || !SettingsService.instance.isKokoroEngine) return;
+    try {
+      final cleaned = cleanTextForSpeech(text);
+      if (cleaned.isNotEmpty) {
+        unawaited(KokoroVoiceClient.instance.fetchAudioBytes(
+          cleaned,
+          voice: SettingsService.instance.kokoroVoice,
+          speed: SettingsService.instance.voiceSpeed,
+        ));
+      }
+    } catch (_) {}
+  }
+
   /// Vocalizes a question prompt upon generation.
   Future<void> speakQuestion(String prompt) async {
     if (_isMuted || prompt.trim().isEmpty) return;
@@ -378,6 +415,43 @@ class VoiceService {
 
     await stop();
 
+    // 1. Try Kokoro Neural TTS (af_heart) if enabled
+    if (SettingsService.instance.isKokoroEngine) {
+      try {
+        final audioBytes = await KokoroVoiceClient.instance.fetchAudioBytes(
+          cleaned,
+          voice: SettingsService.instance.kokoroVoice,
+          speed: SettingsService.instance.voiceSpeed,
+        );
+
+        if (audioBytes != null && audioBytes.isNotEmpty) {
+          isSpeaking.value = true;
+          _isPaused = false;
+          isPaused.value = false;
+
+          final int estSeconds = estimateSpeechDurationSeconds(cleaned);
+          _fallbackCompletionTimer?.cancel();
+          _fallbackCompletionTimer = Timer(Duration(seconds: estSeconds + 4), () {
+            if (isSpeaking.value) {
+              _handleSpeechFinished();
+            }
+          });
+
+          final played = await KokoroVoiceClient.instance.playAudioBytes(
+            audioBytes,
+            onComplete: () {
+              _handleSpeechFinished();
+            },
+          );
+
+          if (played) return;
+        }
+      } catch (e) {
+        debugPrint('VoiceService Kokoro speakQuestion fallback notice: $e');
+      }
+    }
+
+    // 2. Seamless Fallback: Native Device TTS (works 100% offline)
     try {
       isSpeaking.value = true;
       final int estSeconds = estimateSpeechDurationSeconds(cleaned);
@@ -416,6 +490,43 @@ class VoiceService {
     await stop();
     _activeCompletionCallback = onComplete;
 
+    // 1. Try Kokoro Neural TTS (af_heart) if enabled
+    if (SettingsService.instance.isKokoroEngine) {
+      try {
+        final audioBytes = await KokoroVoiceClient.instance.fetchAudioBytes(
+          cleaned,
+          voice: SettingsService.instance.kokoroVoice,
+          speed: SettingsService.instance.voiceSpeed,
+        );
+
+        if (audioBytes != null && audioBytes.isNotEmpty) {
+          isSpeaking.value = true;
+          _isPaused = false;
+          isPaused.value = false;
+
+          final int estSeconds = estimateSpeechDurationSeconds(cleaned);
+          _fallbackCompletionTimer?.cancel();
+          _fallbackCompletionTimer = Timer(Duration(seconds: estSeconds + 4), () {
+            if (isSpeaking.value) {
+              _handleSpeechFinished();
+            }
+          });
+
+          final played = await KokoroVoiceClient.instance.playAudioBytes(
+            audioBytes,
+            onComplete: () {
+              _handleSpeechFinished();
+            },
+          );
+
+          if (played) return;
+        }
+      } catch (e) {
+        debugPrint('VoiceService Kokoro speakExplanation fallback notice: $e');
+      }
+    }
+
+    // 2. Seamless Fallback: Native Device TTS
     try {
       isSpeaking.value = true;
       final int estSeconds = estimateSpeechDurationSeconds(cleaned);
@@ -439,8 +550,44 @@ class VoiceService {
     if (!_isInitialized) await init();
     await stop();
 
+    // 1. Try Kokoro Neural TTS if enabled
+    if (SettingsService.instance.isKokoroEngine) {
+      try {
+        final audioBytes = await KokoroVoiceClient.instance.fetchAudioBytes(
+          text,
+          voice: SettingsService.instance.kokoroVoice,
+          speed: SettingsService.instance.voiceSpeed,
+        );
+
+        if (audioBytes != null && audioBytes.isNotEmpty) {
+          isSpeaking.value = true;
+          _isPaused = false;
+          isPaused.value = false;
+
+          final int estSeconds = estimateSpeechDurationSeconds(text);
+          _fallbackCompletionTimer?.cancel();
+          _fallbackCompletionTimer = Timer(Duration(seconds: estSeconds + 4), () {
+            if (isSpeaking.value) {
+              _handleSpeechFinished();
+            }
+          });
+
+          final played = await KokoroVoiceClient.instance.playAudioBytes(
+            audioBytes,
+            onComplete: () {
+              _handleSpeechFinished();
+            },
+          );
+
+          if (played) return;
+        }
+      } catch (e) {
+        debugPrint('VoiceService Kokoro speakSample fallback notice: $e');
+      }
+    }
+
+    // 2. Fallback to System Device TTS
     try {
-      // Re-apply latest settings
       await _applySettings(SettingsService.instance);
       isSpeaking.value = true;
       final int estSeconds = estimateSpeechDurationSeconds(text);
@@ -468,6 +615,7 @@ class VoiceService {
     _activeCompletionCallback = null;
 
     try {
+      await KokoroVoiceClient.instance.stop();
       await _tts.stop();
     } catch (e) {
       debugPrint('VoiceService stop error: $e');

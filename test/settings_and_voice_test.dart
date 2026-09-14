@@ -1,16 +1,36 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:multiprogramming/services/kokoro_voice_client.dart';
 import 'package:multiprogramming/services/settings_service.dart';
 import 'package:multiprogramming/services/voice_service.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   group('SettingsService Unit Tests', () {
     test('Default voice settings are properly calibrated for female mascot', () {
       final settings = SettingsService.instance;
       expect(settings.voiceEnabled, isTrue);
+      expect(settings.voiceEngine, equals('kokoro'));
+      expect(settings.kokoroVoice, equals('af_heart'));
+      expect(settings.isKokoroEngine, isTrue);
       expect(settings.voiceSpeed, equals(1.0));
       expect(settings.voicePitch, equals(1.15));
       expect(settings.voiceVolume, equals(1.0));
       expect(settings.selectedVoiceName, isNull);
+    });
+
+    test('Voice engine switching and Kokoro voice selection', () async {
+      final settings = SettingsService.instance;
+      await settings.setVoiceEngine('system');
+      expect(settings.voiceEngine, equals('system'));
+      expect(settings.isKokoroEngine, isFalse);
+
+      await settings.setKokoroVoice('af_bella');
+      expect(settings.kokoroVoice, equals('af_bella'));
+
+      await settings.setVoiceEngine('kokoro');
+      expect(settings.voiceEngine, equals('kokoro'));
+      expect(settings.isKokoroEngine, isTrue);
     });
 
     test('Speed clamping and updates work correctly', () async {
@@ -63,17 +83,49 @@ void main() {
 
     test('Reset to mascot defaults restores standard configuration', () async {
       final settings = SettingsService.instance;
+      await settings.setVoiceEngine('system');
+      await settings.setKokoroVoice('af_bella');
       await settings.setVoiceSpeed(1.8);
       await settings.setVoicePitch(0.8);
       await settings.setVoiceVolume(0.4);
       await settings.setSelectedVoice('TestVoice');
 
       await settings.resetVoiceToMascotDefaults();
+      expect(settings.voiceEngine, equals('kokoro'));
+      expect(settings.kokoroVoice, equals('af_heart'));
+      expect(settings.isKokoroEngine, isTrue);
       expect(settings.voiceSpeed, equals(1.0));
       expect(settings.voicePitch, equals(1.15));
       expect(settings.voiceVolume, equals(1.0));
       expect(settings.selectedVoiceName, isNull);
       expect(settings.voiceEnabled, isTrue);
+    });
+  });
+
+  group('KokoroVoiceClient Tests', () {
+    test('Deterministic cache key computation across platforms', () {
+      const text = 'Hello, world! Welcome to HardCode Academy.';
+      final k1 = KokoroVoiceClient.computeCacheKey(text, 'af_heart', 1.0);
+      final k2 = KokoroVoiceClient.computeCacheKey(text, 'af_heart', 1.0);
+      final k3 = KokoroVoiceClient.computeCacheKey(text, 'af_heart', 1.25);
+      final kOtherVoice = KokoroVoiceClient.computeCacheKey(text, 'af_bella', 1.0);
+
+      expect(k1, equals(k2));
+      expect(k1, isNot(equals(k3)));
+      expect(k1, isNot(equals(kOtherVoice)));
+      expect(k1.length, equals(64));
+    });
+
+    test('Cache key trims leading and trailing whitespace', () {
+      final k1 = KokoroVoiceClient.computeCacheKey('Binary search in O(log N)', 'af_heart', 1.0);
+      final k2 = KokoroVoiceClient.computeCacheKey('   Binary search in O(log N)  \n', 'af_heart', 1.0);
+      expect(k1, equals(k2));
+    });
+
+    test('BaseUrl trailing slash sanitization', () {
+      final client = KokoroVoiceClient.instance;
+      client.baseUrl = 'https://hardcode.academy///';
+      expect(client.baseUrl, equals('https://hardcode.academy'));
     });
   });
 

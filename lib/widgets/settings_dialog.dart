@@ -168,17 +168,26 @@ class _SettingsDialogState extends State<SettingsDialog> {
                     const SizedBox(height: 14),
 
                     if (_settings.voiceEnabled) ...[
-                      // Voice Model Selector
-                      _buildVoiceSelectorCard(theme),
+                      // Voice Engine Selector (Kokoro Neural vs System Device TTS)
+                      _buildVoiceEngineSelectorCard(theme),
+                      const SizedBox(height: 14),
+
+                      // Voice Profile / Model Selector
+                      if (_settings.isKokoroEngine)
+                        _buildKokoroVoiceSelectorCard(theme)
+                      else
+                        _buildVoiceSelectorCard(theme),
                       const SizedBox(height: 14),
 
                       // Speed / Rate Slider
                       _buildSpeedSliderCard(theme),
                       const SizedBox(height: 14),
 
-                      // Pitch Slider
-                      _buildPitchSliderCard(theme),
-                      const SizedBox(height: 14),
+                      // Pitch Slider (for System TTS)
+                      if (!_settings.isKokoroEngine) ...[
+                        _buildPitchSliderCard(theme),
+                        const SizedBox(height: 14),
+                      ],
 
                       // Volume Slider
                       _buildVolumeSliderCard(theme),
@@ -317,6 +326,277 @@ class _SettingsDialogState extends State<SettingsDialog> {
         onChanged: (val) {
           _settings.setVoiceEnabled(val);
         },
+      ),
+    );
+  }
+
+  Widget _buildVoiceEngineSelectorCard(ThemeData theme) {
+    final isKokoro = _settings.isKokoroEngine;
+
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceVariant.withOpacity(0.28),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: theme.colorScheme.outline.withOpacity(0.15),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.psychology_rounded, size: 16, color: theme.colorScheme.primary),
+              const SizedBox(width: 6),
+              Text(
+                'Voice Synthesis Engine',
+                style: GoogleFonts.plusJakartaSans(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                  color: theme.colorScheme.onSurface,
+                ),
+              ),
+              const Spacer(),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                decoration: BoxDecoration(
+                  color: isKokoro ? Colors.amber.withOpacity(0.18) : Colors.blue.withOpacity(0.18),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: isKokoro ? Colors.amber.withOpacity(0.5) : Colors.blue.withOpacity(0.5),
+                    width: 0.8,
+                  ),
+                ),
+                child: Text(
+                  isKokoro ? '✨ NEURAL' : '📱 OFFLINE TTS',
+                  style: GoogleFonts.jetBrainsMono(
+                    fontSize: 9.5,
+                    fontWeight: FontWeight.bold,
+                    color: isKokoro ? Colors.amber : Colors.blue,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          // Kokoro Option Card
+          InkWell(
+            onTap: () => _settings.setVoiceEngine('kokoro'),
+            borderRadius: BorderRadius.circular(10),
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: isKokoro
+                    ? theme.colorScheme.primaryContainer.withOpacity(0.4)
+                    : theme.colorScheme.surface,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: isKokoro
+                      ? theme.colorScheme.primary
+                      : theme.colorScheme.outline.withOpacity(0.15),
+                  width: isKokoro ? 1.5 : 1,
+                ),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Radio<String>(
+                    value: 'kokoro',
+                    groupValue: _settings.voiceEngine,
+                    activeColor: theme.colorScheme.primary,
+                    onChanged: (val) {
+                      if (val != null) _settings.setVoiceEngine(val);
+                    },
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              'Ada Mascot (Kokoro Neural)',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                                color: theme.colorScheme.onSurface,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                              decoration: BoxDecoration(
+                                color: Colors.green.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(
+                                'Recommended',
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 9.5,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.greenAccent.shade700,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          'Warm, expressive human prosody powered by Kokoro-82M (af_heart) on Callisto. Audio is cached locally on device for instant offline replay.',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 11.5,
+                            color: theme.colorScheme.onSurface.withOpacity(0.7),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          // System Device TTS Card
+          InkWell(
+            onTap: () => _settings.setVoiceEngine('system'),
+            borderRadius: BorderRadius.circular(10),
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: !isKokoro
+                    ? theme.colorScheme.primaryContainer.withOpacity(0.4)
+                    : theme.colorScheme.surface,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: !isKokoro
+                      ? theme.colorScheme.primary
+                      : theme.colorScheme.outline.withOpacity(0.15),
+                  width: !isKokoro ? 1.5 : 1,
+                ),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Radio<String>(
+                    value: 'system',
+                    groupValue: _settings.voiceEngine,
+                    activeColor: theme.colorScheme.primary,
+                    onChanged: (val) {
+                      if (val != null) _settings.setVoiceEngine(val);
+                    },
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'System Device TTS (Offline)',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                            color: theme.colorScheme.onSurface,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          'Uses the standard text-to-speech engine built into your operating system (iOS/Android/Web Speech API).',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 11.5,
+                            color: theme.colorScheme.onSurface.withOpacity(0.7),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildKokoroVoiceSelectorCard(ThemeData theme) {
+    const voices = [
+      {'id': 'af_heart', 'label': 'Ada Mascot (af_heart) • Warm & Expressive Female'},
+      {'id': 'af_bella', 'label': 'Bella (af_bella) • Cheerful & Dynamic Female'},
+      {'id': 'af_nicole', 'label': 'Nicole (af_nicole) • Smooth & Calm Female'},
+      {'id': 'af_sarah', 'label': 'Sarah (af_sarah) • Professional Female'},
+      {'id': 'af_sky', 'label': 'Sky (af_sky) • Bright & Clear Female'},
+    ];
+
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceVariant.withOpacity(0.28),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: theme.colorScheme.outline.withOpacity(0.15),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.face_3_rounded, size: 16),
+              const SizedBox(width: 6),
+              Text(
+                'Neural Voice Profile',
+                style: GoogleFonts.plusJakartaSans(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                  color: theme.colorScheme.onSurface,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          DropdownButtonFormField<String>(
+            isExpanded: true,
+            value: _settings.kokoroVoice,
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              filled: true,
+              fillColor: theme.colorScheme.surface,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: theme.colorScheme.outline.withOpacity(0.2)),
+              ),
+            ),
+            items: voices.map((v) {
+              final isDefault = v['id'] == 'af_heart';
+              return DropdownMenuItem<String>(
+                value: v['id'],
+                child: Row(
+                  children: [
+                    if (isDefault) ...[
+                      const Icon(Icons.star_rounded, size: 16, color: Colors.amber),
+                      const SizedBox(width: 6),
+                    ],
+                    Expanded(
+                      child: Text(
+                        v['label']!,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 12.5,
+                          fontWeight: isDefault ? FontWeight.bold : FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
+            onChanged: (val) {
+              if (val != null) {
+                _settings.setKokoroVoice(val);
+              }
+            },
+          ),
+        ],
       ),
     );
   }
@@ -714,6 +994,8 @@ class _SettingsDialogState extends State<SettingsDialog> {
   }
 
   Widget _buildVoiceActionButtons(ThemeData theme) {
+    final isKokoro = _settings.isKokoroEngine;
+
     return Row(
       children: [
         Expanded(
@@ -721,6 +1003,10 @@ class _SettingsDialogState extends State<SettingsDialog> {
           child: ValueListenableBuilder<bool>(
             valueListenable: _voice.isSpeaking,
             builder: (context, speaking, _) {
+              final buttonLabel = speaking
+                  ? 'Stop Preview'
+                  : (isKokoro ? 'Preview Mascot (af_heart)' : 'Preview System Voice');
+
               return FilledButton.icon(
                 onPressed: () {
                   if (speaking) {
@@ -730,7 +1016,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                   }
                 },
                 icon: Icon(speaking ? Icons.stop_rounded : Icons.play_arrow_rounded),
-                label: Text(speaking ? 'Stop Preview' : 'Preview Mascot Voice'),
+                label: Text(buttonLabel),
                 style: FilledButton.styleFrom(
                   backgroundColor: theme.colorScheme.primary,
                   foregroundColor: theme.colorScheme.onPrimary,
@@ -751,7 +1037,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
               _settings.resetVoiceToMascotDefaults();
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('Reset voice to Ada Mascot defaults (1.0x Speed, 1.15 Pitch)'),
+                  content: Text('Reset voice to Ada Mascot defaults (Kokoro af_heart, 1.0x Speed)'),
                   duration: Duration(seconds: 2),
                 ),
               );

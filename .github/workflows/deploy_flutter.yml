@@ -77,6 +77,19 @@ jobs:
             build/web/ "$VM_USER@$VM_HOST:$DEST_PATH"
           echo "Sync completed successfully."
 
+      - name: Deploy & Provision Kokoro Neural TTS Service on Callisto VM
+        env:
+          VM_USER: ${{ secrets.AZURE_VM_USERNAME }}
+          VM_HOST: ${{ secrets.AZURE_VM_HOST }}
+        run: |
+          echo "Deploying Kokoro-82M TTS service to Callisto VM ($VM_HOST)..."
+          ssh -i ~/.ssh/deploy_key "$VM_USER@$VM_HOST" "sudo mkdir -p /opt/kokoro_tts"
+          rsync -avz \
+            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes" \
+            server/kokoro_tts/ "$VM_USER@$VM_HOST:/tmp/kokoro_tts/"
+          ssh -i ~/.ssh/deploy_key "$VM_USER@$VM_HOST" "sudo bash /tmp/kokoro_tts/setup_callisto.sh"
+          echo "Kokoro TTS service deployed and started successfully."
+
       - name: Reload Nginx on Callisto VM
         env:
           VM_USER: ${{ secrets.AZURE_VM_USERNAME }}

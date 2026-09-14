@@ -16,6 +16,8 @@ class SettingsService extends ChangeNotifier {
 
   // --- Voice & Narration Preferences ---
   bool _voiceEnabled = true;
+  String _voiceEngine = 'kokoro'; // 'kokoro' (Neural Mascot) or 'system' (Local Device TTS)
+  String _kokoroVoice = 'af_heart'; // Flagship Kokoro-82M female mascot voice
   double _voiceSpeed = 1.0; // 1.0x normal conversational pace (~190 WPM)
   double _voicePitch = 1.15; // 1.15 feminine mascot timbre
   double _voiceVolume = 1.0; // 100% volume
@@ -30,6 +32,9 @@ class SettingsService extends ChangeNotifier {
 
   // Getters
   bool get voiceEnabled => _voiceEnabled;
+  String get voiceEngine => _voiceEngine;
+  String get kokoroVoice => _kokoroVoice;
+  bool get isKokoroEngine => _voiceEngine == 'kokoro';
   double get voiceSpeed => _voiceSpeed;
   double get voicePitch => _voicePitch;
   double get voiceVolume => _voiceVolume;
@@ -52,6 +57,8 @@ class SettingsService extends ChangeNotifier {
         if (raw is Map) {
           final data = Map<String, dynamic>.from(raw);
           _voiceEnabled = data['voiceEnabled'] as bool? ?? true;
+          _voiceEngine = data['voiceEngine'] as String? ?? 'kokoro';
+          _kokoroVoice = data['kokoroVoice'] as String? ?? 'af_heart';
           _voiceSpeed = ((data['voiceSpeed'] as num?)?.toDouble() ?? 1.0).clamp(0.5, 2.0);
           _voicePitch = ((data['voicePitch'] as num?)?.toDouble() ?? 1.15).clamp(0.5, 1.5);
           _voiceVolume = ((data['voiceVolume'] as num?)?.toDouble() ?? 1.0).clamp(0.0, 1.0);
@@ -79,6 +86,8 @@ class SettingsService extends ChangeNotifier {
         final box = Hive.box(_userMemoryBoxName);
         await box.put(_settingsKey, {
           'voiceEnabled': _voiceEnabled,
+          'voiceEngine': _voiceEngine,
+          'kokoroVoice': _kokoroVoice,
           'voiceSpeed': _voiceSpeed,
           'voicePitch': _voicePitch,
           'voiceVolume': _voiceVolume,
@@ -106,6 +115,20 @@ class SettingsService extends ChangeNotifier {
 
   Future<void> toggleVoiceEnabled() async {
     await setVoiceEnabled(!_voiceEnabled);
+  }
+
+  Future<void> setVoiceEngine(String engine) async {
+    if (_voiceEngine == engine) return;
+    _voiceEngine = engine;
+    notifyListeners();
+    await _persist();
+  }
+
+  Future<void> setKokoroVoice(String voice) async {
+    if (_kokoroVoice == voice) return;
+    _kokoroVoice = voice;
+    notifyListeners();
+    await _persist();
   }
 
   Future<void> setVoiceSpeed(double speed) async {
@@ -143,6 +166,8 @@ class SettingsService extends ChangeNotifier {
   /// Resets voice options back to optimal female mascot defaults.
   Future<void> resetVoiceToMascotDefaults() async {
     _voiceEnabled = true;
+    _voiceEngine = 'kokoro';
+    _kokoroVoice = 'af_heart';
     _voiceSpeed = 1.0;
     _voicePitch = 1.15;
     _voiceVolume = 1.0;
