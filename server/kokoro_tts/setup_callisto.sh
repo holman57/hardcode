@@ -93,8 +93,9 @@ echo "[6/6] Checking Nginx reverse proxy configuration..."
 sudo python3 -c '
 import glob, re, os, subprocess
 
-clean_pattern = r"([ \t]*#[^\n]*\n)?[ \t]*location\s+[\^~*]*\s*/api/voice/[^{]*\{[^}]*\}[ \t]*\n?"
-proxy_block = """    # Kokoro-82M Neural Voice Synthesis Endpoint
+clean_pattern = r"([ \t]*#[^\n]*\n)?[ \t]*location\s+[\^~*]*\s*/api/voice/?\s*\{[^}]*\}[ \t]*\n?"
+proxy_block = """
+    # Kokoro-82M Neural Voice Synthesis Endpoint
     location /api/voice/ {
         proxy_pass http://127.0.0.1:8088;
         proxy_set_header Host $host;
@@ -106,31 +107,43 @@ proxy_block = """    # Kokoro-82M Neural Voice Synthesis Endpoint
     }
 """
 
-def update_nginx_config(content):
+def update_nginx_file(content):
     clean = re.sub(clean_pattern, "", content)
-    server_blocks = re.split(r"(server\s*\{)", clean)
-    if len(server_blocks) <= 1:
+    blocks = []
+    for m in re.finditer(r"^[ \t]*server\s*\{", clean, re.M):
+        open_brace = clean.find("{", m.start())
+        depth = 0
+        in_comment = False
+        closing = -1
+        for i in range(open_brace, len(clean)):
+            ch = clean[i]
+            if ch == "\n":
+                in_comment = False
+            elif ch == "#":
+                in_comment = True
+            elif not in_comment:
+                if ch == "{":
+                    depth += 1
+                elif ch == "}":
+                    depth -= 1
+                    if depth == 0:
+                        closing = i
+                        break
+        if closing != -1:
+            blocks.append((m.start(), open_brace, closing))
+
+    if not blocks:
         return content
-    out = [server_blocks[0]]
-    for i in range(1, len(server_blocks), 2):
-        keyword = server_blocks[i]
-        body = server_blocks[i+1]
-        is_only_block = (len(server_blocks) == 3)
-        should_inject = is_only_block or (("root" in body or "ssl" in body or "443" in body or "hardcode" in body or "index" in body) and ("return 301" not in body or "root" in body))
+
+    result = clean
+    for start, open_brace, closing in reversed(blocks):
+        block_text = clean[start:closing+1]
+        is_only = (len(blocks) == 1)
+        should_inject = is_only or (("root" in block_text or "ssl" in block_text or "443" in block_text or "hardcode" in block_text) and ("return 301" not in block_text or "root" in block_text))
         if should_inject:
-            loc_match = re.search(r"(\n[ \t]*location\s+[/~^])", body)
-            if loc_match:
-                idx = loc_match.start()
-                body = body[:idx] + "\n\n" + proxy_block + body[idx:]
-            else:
-                last_brace = body.rfind("}")
-                if last_brace != -1:
-                    body = body[:last_brace] + "\n" + proxy_block + "\n" + body[last_brace:]
-                else:
-                    body = "\n" + proxy_block + body
-        out.append(keyword)
-        out.append(body)
-    return "".join(out)
+            result = result[:open_brace+1] + proxy_block + result[open_brace+1:]
+
+    return result
 
 conf_candidates = glob.glob("/etc/nginx/sites-enabled/*") + glob.glob("/etc/nginx/conf.d/*.conf")
 visited_paths = set()
@@ -147,7 +160,7 @@ for conf_file in conf_candidates:
     try:
         with open(real_p, "r") as fp:
             orig = fp.read()
-        updated = update_nginx_config(orig)
+        updated = update_nginx_file(orig)
         if updated != orig:
             backups[real_p] = orig
             with open(real_p, "w") as fp:

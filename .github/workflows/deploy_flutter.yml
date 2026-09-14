@@ -87,7 +87,14 @@ jobs:
           rsync -avz \
             -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes" \
             server/kokoro_tts/ "$VM_USER@$VM_HOST:/tmp/kokoro_tts/"
-          ssh -i ~/.ssh/deploy_key "$VM_USER@$VM_HOST" "sudo bash -x /tmp/kokoro_tts/setup_callisto.sh"
+          set +e
+          ssh -i ~/.ssh/deploy_key "$VM_USER@$VM_HOST" "sudo bash -x /tmp/kokoro_tts/setup_callisto.sh" 2>&1 | tee /tmp/callisto_provision.log
+          PROV_STATUS=${PIPESTATUS[0]}
+          if [ $PROV_STATUS -ne 0 ]; then
+            echo "::error::Callisto provisioning failed with exit code $PROV_STATUS"
+            tail -n 60 /tmp/callisto_provision.log
+            exit $PROV_STATUS
+          fi
           echo "Kokoro TTS service deployed and started successfully."
 
       - name: Reload Nginx on Callisto VM
